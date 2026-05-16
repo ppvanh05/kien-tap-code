@@ -1,0 +1,228 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span>Bảng tin</span> / <span class="active">Chính sách nhà xe</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab" [class.active]="currentTab === 'all'" (click)="setTab('all')">Tất cả</div>
+      <div class="tab" [class.active]="currentTab === 'active'" (click)="setTab('active')">Đang hoạt động</div>
+      <div class="tab" [class.active]="currentTab === 'locked'" (click)="setTab('locked')">Đã khóa</div>
+    </div>
+
+    <div class="action-bar">
+      <div class="dropdown-wrapper">
+        <button class="btn-add-policy" (click)="showAddDropdown = !showAddDropdown">
+          <span class="material-icons">add</span> Thêm chính sách
+          <span class="material-icons arrow">expand_more</span>
+        </button>
+        <div class="dropdown-menu" *ngIf="showAddDropdown">
+          <div class="dropdown-item" (click)="openModal(LoaiChinhSach.BaoHiem)">Chính sách bảo hiểm</div>
+          <div class="dropdown-item" (click)="openModal(LoaiChinhSach.ThanhToan)">Chính sách thanh toán</div>
+          <div class="dropdown-item" (click)="openModal(LoaiChinhSach.HuyVe)">Chính sách hủy vé và hoàn trả</div>
+          <div class="dropdown-item" (click)="openModal(LoaiChinhSach.Khac)">Chính sách khác</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tên chính sách</th>
+            <th>Loại chính sách</th>
+            <th width="150">
+              <div class="th-content">Ngày tạo <span class="material-icons sort-icon">unfold_more</span></div>
+            </th>
+            <th width="100" class="text-center">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cs of filteredChinhSachs">
+            <td>
+              <div class="name-cell">
+                <span class="status-dot" [class.active]="cs.trangThai === 'HoatDong'"></span>
+                {{cs.tenChinhSach}}
+              </div>
+            </td>
+            <td>
+              {{cs.loaiChinhSach === 'HuyVe' ? 'Chính sách hủy vé' : 
+                cs.loaiChinhSach === 'BaoHiem' ? 'Chính sách bảo hiểm' :
+                cs.loaiChinhSach === 'ThanhToan' ? 'Chính sách thanh toán' : 'Chính sách khác'}}
+            </td>
+            <td>{{cs.ngayTao}}</td>
+            <td class="text-center">
+              <button class="btn-edit" (click)="openModal(undefined, cs)">
+                <span class="material-icons">edit_square</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-footer">
+      <div class="pagination-btns">
+        <button class="btn-nav"><span class="material-icons">chevron_left</span></button>
+        <button class="btn-page active">1</button>
+        <button class="btn-nav"><span class="material-icons">chevron_right</span></button>
+      </div>
+      <select class="page-size">
+        <option>10 / page</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CHI TIẾT CHÍNH SÁCH -->
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>Chi tiết thông tin chính sách</h3>
+      <button class="btn-close" (click)="closeModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Tên chính sách <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="currentCS.tenChinhSach" placeholder="Nhập tên chính sách">
+      </div>
+
+      <!-- Phần cấu hình mốc thời gian (Chỉ hiện khi là chính sách Hủy vé) -->
+      <div class="policy-config-section" *ngIf="currentCS.loaiChinhSach === 'HuyVe'">
+        <div class="config-row" *ngFor="let moc of currentCS.cacMocHuy; let i = index">
+          <div class="input-unit">
+            <label>Trước giờ khởi hành <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <input type="number" [(ngModel)]="moc.truocGio">
+              <span class="unit">Giờ</span>
+            </div>
+          </div>
+          <div class="input-unit">
+            <label>Phí hủy <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <input type="number" [(ngModel)]="moc.phiHuy">
+              <span class="unit">%</span>
+            </div>
+          </div>
+          <button class="btn-remove-moc" (click)="removeMocHuy(i)">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <button class="btn-add-moc" (click)="addMocHuy()">
+          Thêm mốc thời gian <span class="material-icons">add</span>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label>Nội dung chính sách <span class="required">*</span></label>
+        <div class="rich-editor-sim">
+          <div class="editor-toolbar">
+            <!-- Dòng 1 -->
+            <div class="toolbar-row">
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'bold')">format_bold</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'italic')">format_italic</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'underline')">format_underlined</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'strikeThrough')">format_strikethrough</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'formatBlock', 'blockquote')">format_quote</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'formatBlock', 'pre')">code</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'fontSize', '5')">format_size</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'formatBlock', 'H1')">title</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'insertUnorderedList')">format_list_bulleted</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'insertOrderedList')">format_list_numbered</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="text-icon" (mousedown)="onBtnMouseDown($event, 'subscript')">X<sub>2</sub></span>
+                <span class="text-icon" (mousedown)="onBtnMouseDown($event, 'superscript')">X<sup>2</sup></span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'outdent')">format_indent_decrease</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'indent')">format_indent_increase</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons">format_textdirection_l_to_r</span>
+              </div>
+              <div class="divider"></div>
+              <select class="editor-select-v2" (change)="execAction('formatBlock', $any($event.target).value)">
+                <option value="p">Normal</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+              </select>
+            </div>
+            
+            <!-- Dòng 2 -->
+            <div class="toolbar-row mt-1">
+              <div class="toolbar-group">
+                <span class="material-icons color-icon" (mousedown)="onBtnMouseDown($event, 'foreColor', '#009ba1')">format_color_text</span>
+                <span class="material-icons color-icon" (mousedown)="onBtnMouseDown($event, 'hiliteColor', '#ffff00')">format_color_fill</span>
+              </div>
+              <div class="divider"></div>
+              <select class="editor-select-v2 font-family" (change)="execAction('fontName', $any($event.target).value)">
+                <option value="Arial">Arial</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Open Sans">Open Sans</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+              </select>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'justifyLeft')">format_align_left</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'justifyCenter')">format_align_center</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'justifyRight')">format_align_right</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'justifyFull')">format_align_justify</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'createLink')">link</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'insertImage')">image</span>
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'insertHTML', 'table')">table_chart</span>
+              </div>
+              <div class="divider"></div>
+              <div class="toolbar-group">
+                <span class="material-icons" (mousedown)="onBtnMouseDown($event, 'removeFormat')">format_clear</span>
+              </div>
+            </div>
+          </div>
+          <!-- Sử dụng div contenteditable để hiển thị HTML thật thay vì textarea -->
+          <div class="editor-content" 
+               contenteditable="true" 
+               spellcheck="false"
+               [innerHTML]="currentCS.noiDung"
+               (input)="onEditorInput($event)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-lock" (click)="toggleLock()">
+        <span class="material-icons">lock</span>
+        {{currentCS.trangThai === 'HoatDong' ? 'Khóa chính sách' : 'Mở khóa chính sách'}}
+      </button>
+      <div class="footer-right">
+        <button class="btn-cancel" (click)="closeModal()">Hủy</button>
+        <button class="btn-save" (click)="save()">Lưu</button>
+      </div>
+    </div>
+  </div>
+</div>
