@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// --- MODELS (MERGED AS REQUESTED) ---
+// --- MODELS ---
 export enum LoaiTaiKhoan {
   BanVe = 'BanVe',
   DieuPhoi = 'DieuPhoi',
@@ -18,7 +18,13 @@ export enum TrangThaiTaiKhoan {
 export interface QuyenHan {
   id: string;
   label: string;
+}
+
+export interface ModuleQuyen {
+  tenModule: string;
+  icon: string;
   role: LoaiTaiKhoan;
+  danhSachQuyen: QuyenHan[];
 }
 
 export interface NhanVien {
@@ -33,50 +39,67 @@ export interface NhanVien {
   ngaySinh: Date | string;
   diaChi: string;
   soDienThoai: string;
-  dienThoaiCoDinh?: string;
   email: string;
-  fax?: string;
-  whatsApp?: string;
-  skype?: string;
   maVanPhong: string;
   anhDaiDien?: string;
   ghiChu?: string;
   trangThai: TrangThaiTaiKhoan;
-  danhSachQuyen: string[]; // Lưu ID các quyền được cấp
+  danhSachQuyen: string[]; 
 }
 
-// --- CONSTANTS & MOCK DATA ---
-const ALL_PERMISSIONS: QuyenHan[] = [
-  // Bán vé
-  { id: 'BV_BAN_VE', label: 'Bán vé mới', role: LoaiTaiKhoan.BanVe },
-  { id: 'BV_DOI_TRA', label: 'Đổi/Trả vé', role: LoaiTaiKhoan.BanVe },
-  { id: 'BV_TRA_CUU', label: 'Tra cứu lịch sử vé', role: LoaiTaiKhoan.BanVe },
-  { id: 'BV_HO_TRO', label: 'Hỗ trợ khách hàng', role: LoaiTaiKhoan.BanVe },
-
-  // Điều phối
-  { id: 'DP_TUYEN_XE', label: 'Quản lý tuyến xe', role: LoaiTaiKhoan.DieuPhoi },
-  { id: 'DP_LICH_TRINH', label: 'Quản lý lịch trình', role: LoaiTaiKhoan.DieuPhoi },
-  { id: 'DP_PHUONG_TIEN', label: 'Quản lý phương tiện', role: LoaiTaiKhoan.DieuPhoi },
-  { id: 'DP_PHAN_CONG', label: 'Phân công tài/phụ xe', role: LoaiTaiKhoan.DieuPhoi },
-
-  // Ban quản lý
-  { id: 'BQL_DOANH_THU', label: 'Xem báo cáo doanh thu', role: LoaiTaiKhoan.BanQuanLy },
-  { id: 'BQL_THONG_KE', label: 'Thống kê hiệu suất', role: LoaiTaiKhoan.BanQuanLy },
-  { id: 'BQL_CHINH_SACH', label: 'Quản lý chính sách giá/hủy', role: LoaiTaiKhoan.BanQuanLy },
-  { id: 'BQL_GIAM_SAT', label: 'Theo dõi hoạt động kinh doanh', role: LoaiTaiKhoan.BanQuanLy },
-
-  // Quản trị viên
-  { id: 'QTV_NHAN_VIEN', label: 'Quản lý tài khoản nhân viên', role: LoaiTaiKhoan.QuanTriVien },
-  { id: 'QTV_TIN_TUC', label: 'Quản lý tin tức', role: LoaiTaiKhoan.QuanTriVien },
-  { id: 'QTV_DANH_GIA', label: 'Kiểm duyệt nội dung đánh giá', role: LoaiTaiKhoan.QuanTriVien },
-  { id: 'QTV_HE_THONG', label: 'Cấu hình hệ thống', role: LoaiTaiKhoan.QuanTriVien },
+// --- CONSTANTS: CHI QUYỀN THEO CỤC (MODULES) ---
+const MODUL_QUYEN_HE_THONG: ModuleQuyen[] = [
+  {
+    tenModule: 'Nghiệp vụ Bán vé',
+    icon: 'confirmation_number',
+    role: LoaiTaiKhoan.BanVe,
+    danhSachQuyen: [
+      { id: 'BV_BAN_VE', label: 'Bán vé mới' },
+      { id: 'BV_DOI_TRA', label: 'Đổi/Trả vé' },
+      { id: 'BV_TRA_CUU', label: 'Tra cứu lịch sử vé' },
+      { id: 'BV_HO_TRO', label: 'Hỗ trợ khách hàng' }
+    ]
+  },
+  {
+    tenModule: 'Điều phối vận hành',
+    icon: 'local_shipping',
+    role: LoaiTaiKhoan.DieuPhoi,
+    danhSachQuyen: [
+      { id: 'DP_TUYEN_XE', label: 'Quản lý tuyến xe' },
+      { id: 'DP_LICH_TRINH', label: 'Quản lý lịch trình' },
+      { id: 'DP_PHUONG_TIEN', label: 'Quản lý phương tiện' },
+      { id: 'DP_PHAN_CONG', label: 'Phân công tài/phụ xe' }
+    ]
+  },
+  {
+    tenModule: 'Quản lý & Thống kê',
+    icon: 'analytics',
+    role: LoaiTaiKhoan.BanQuanLy,
+    danhSachQuyen: [
+      { id: 'BQL_DOANH_THU', label: 'Xem báo cáo doanh thu' },
+      { id: 'BQL_THONG_KE', label: 'Thống kê hiệu suất' },
+      { id: 'BQL_CHINH_SACH', label: 'Quản lý chính sách giá/hủy' },
+      { id: 'BQL_GIAM_SAT', label: 'Theo dõi hoạt động kinh doanh' }
+    ]
+  },
+  {
+    tenModule: 'Quản trị hệ thống',
+    icon: 'settings_suggest',
+    role: LoaiTaiKhoan.QuanTriVien,
+    danhSachQuyen: [
+      { id: 'QTV_NHAN_VIEN', label: 'Quản lý tài khoản nhân viên' },
+      { id: 'QTV_TIN_TUC', label: 'Quản lý tin tức' },
+      { id: 'QTV_DANH_GIA', label: 'Kiểm duyệt nội dung đánh giá' },
+      { id: 'QTV_HE_THONG', label: 'Cấu hình hệ thống' }
+    ]
+  }
 ];
 
 const MOCK_NHAN_VIEN: NhanVien[] = [
   {
     maNhanVien: 'CL364',
     tenTruyCap: 'dailyminhtam',
-    tenHienThi: 'Minh Tâm BOSS',
+    tenHienThi: 'Nguyễn Minh Tâm',
     hoVaTenDem: 'Nguyễn Minh',
     ten: 'Tâm',
     loaiTaiKhoan: LoaiTaiKhoan.QuanTriVien,
@@ -87,43 +110,10 @@ const MOCK_NHAN_VIEN: NhanVien[] = [
     soDienThoai: '0912345678',
     email: 'minhtam@gmail.com',
     maVanPhong: 'VP01',
-    danhSachQuyen: ['QTV_NHAN_VIEN', 'QTV_TIN_TUC', 'QTV_DANH_GIA', 'QTV_HE_THONG']
-  },
-  {
-    maNhanVien: 'CL363',
-    tenTruyCap: 'nhanvienanhhuydatcang1',
-    tenHienThi: 'Linhll1 NV',
-    hoVaTenDem: 'Lý Long',
-    ten: 'Linh',
-    loaiTaiKhoan: LoaiTaiKhoan.BanVe,
-    trangThai: TrangThaiTaiKhoan.HoatDong,
-    gioiTinh: 'Nam',
-    ngaySinh: '1990-09-20',
-    diaChi: 'Hải Phòng',
-    soDienThoai: '0987654321',
-    email: 'linhll1@gmail.com',
-    maVanPhong: 'VP30 Mỹ Đình',
-    danhSachQuyen: ['BV_BAN_VE', 'BV_DOI_TRA']
-  },
-  {
-    maNhanVien: 'CL330',
-    tenTruyCap: 'cuongkaratekit',
-    tenHienThi: 'Anh Huy BOSS',
-    hoVaTenDem: 'Trần Anh',
-    ten: 'Huy',
-    loaiTaiKhoan: LoaiTaiKhoan.BanQuanLy,
-    trangThai: TrangThaiTaiKhoan.VoHieuHoa,
-    gioiTinh: 'Nam',
-    ngaySinh: '1982-12-10',
-    diaChi: 'Quảng Ninh',
-    soDienThoai: '0900112233',
-    email: 'anhhuy@gmail.com',
-    maVanPhong: 'VP02',
-    danhSachQuyen: ['BQL_DOANH_THU', 'BQL_THONG_KE']
+    danhSachQuyen: ['QTV_NHAN_VIEN', 'QTV_TIN_TUC']
   }
 ];
 
-// --- COMPONENT ---
 @Component({
   selector: 'app-quan-ly-tai-khoan-nhan-vien',
   standalone: true,
@@ -134,17 +124,16 @@ const MOCK_NHAN_VIEN: NhanVien[] = [
 export class QuanLyTaiKhoanNhanVienComponent implements OnInit {
   nhanViens: NhanVien[] = [...MOCK_NHAN_VIEN];
   filteredNhanViens: NhanVien[] = [];
+  roles = [LoaiTaiKhoan.BanVe, LoaiTaiKhoan.DieuPhoi, LoaiTaiKhoan.BanQuanLy, LoaiTaiKhoan.QuanTriVien];
 
-  // Filter & Search
+  // UI State
   currentFilterStatus: 'all' | 'active' | 'locked' = 'all';
   searchText: string = '';
   selectedRoleFilter: string = '';
-
-  // Modal State
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
   activeTab: 'basic' | 'permission' | 'contact' = 'basic';
-
+  
   // Form State
   currentNhanVien: Partial<NhanVien> = {};
   passwordConfirm: string = '';
@@ -153,10 +142,7 @@ export class QuanLyTaiKhoanNhanVienComponent implements OnInit {
   isChangingPassword = false;
 
   // Permissions helper
-  availablePermissions: QuyenHan[] = [];
-
-  // Roles for template
-  roles = [LoaiTaiKhoan.BanVe, LoaiTaiKhoan.DieuPhoi, LoaiTaiKhoan.BanQuanLy, LoaiTaiKhoan.QuanTriVien];
+  activeModule?: ModuleQuyen;
 
   constructor() { }
 
@@ -169,40 +155,22 @@ export class QuanLyTaiKhoanNhanVienComponent implements OnInit {
     this.applyFilters();
   }
 
-  search(): void {
-    this.applyFilters();
-  }
+  search(): void { this.applyFilters(); }
 
   applyFilters(): void {
     let result = [...this.nhanViens];
-
-    // Filter by Status
-    if (this.currentFilterStatus === 'active') {
-      result = result.filter(nv => nv.trangThai === TrangThaiTaiKhoan.HoatDong);
-    } else if (this.currentFilterStatus === 'locked') {
-      result = result.filter(nv => nv.trangThai === TrangThaiTaiKhoan.VoHieuHoa);
-    }
-
-    // Filter by Role
-    if (this.selectedRoleFilter) {
-      result = result.filter(nv => nv.loaiTaiKhoan === (this.selectedRoleFilter as LoaiTaiKhoan));
-    }
-
-    // Search text
+    if (this.currentFilterStatus === 'active') result = result.filter(nv => nv.trangThai === TrangThaiTaiKhoan.HoatDong);
+    else if (this.currentFilterStatus === 'locked') result = result.filter(nv => nv.trangThai === TrangThaiTaiKhoan.VoHieuHoa);
+    if (this.selectedRoleFilter) result = result.filter(nv => nv.loaiTaiKhoan === (this.selectedRoleFilter as LoaiTaiKhoan));
     if (this.searchText) {
-      const search = this.searchText.toLowerCase();
-      result = result.filter(nv =>
-        nv.maNhanVien.toLowerCase().includes(search) ||
-        nv.tenTruyCap.toLowerCase().includes(search) ||
-        nv.tenHienThi.toLowerCase().includes(search)
-      );
+      const s = this.searchText.toLowerCase();
+      result = result.filter(nv => nv.maNhanVien.toLowerCase().includes(s) || nv.tenTruyCap.toLowerCase().includes(s) || nv.tenHienThi.toLowerCase().includes(s));
     }
-
     this.filteredNhanViens = result;
   }
 
   getRoleLabel(role: LoaiTaiKhoan | string | undefined): string {
-    if (!role) return 'Chưa xác định';
+    if (!role) return 'Chưa chọn';
     switch (role) {
       case LoaiTaiKhoan.BanVe: return 'Nhân viên bán vé';
       case LoaiTaiKhoan.DieuPhoi: return 'Nhân viên điều phối';
@@ -212,80 +180,38 @@ export class QuanLyTaiKhoanNhanVienComponent implements OnInit {
     }
   }
 
-  // Modal Actions
   openModal(nv?: NhanVien): void {
     this.isEditMode = !!nv;
-    if (nv) {
-      this.currentNhanVien = JSON.parse(JSON.stringify(nv)); // Deep clone
-    } else {
-      this.currentNhanVien = {
-        loaiTaiKhoan: LoaiTaiKhoan.BanVe,
-        trangThai: TrangThaiTaiKhoan.HoatDong,
-        gioiTinh: 'Nam',
-        danhSachQuyen: []
-      };
-    }
-    this.updateAvailablePermissions();
+    this.currentNhanVien = nv ? JSON.parse(JSON.stringify(nv)) : { loaiTaiKhoan: LoaiTaiKhoan.BanVe, trangThai: TrangThaiTaiKhoan.HoatDong, gioiTinh: 'Nam', danhSachQuyen: [] };
+    this.updateActiveModule();
     this.activeTab = 'basic';
     this.isModalOpen = true;
   }
 
-  closeModal(): void {
-    this.isModalOpen = false;
-    this.resetForm();
-  }
+  closeModal(): void { this.isModalOpen = false; this.resetForm(); }
+  editNhanVien(nv: NhanVien): void { this.openModal(nv); }
 
-  editNhanVien(nv: NhanVien): void {
-    this.openModal(nv);
-  }
-
-  updateAvailablePermissions(): void {
-    if (this.currentNhanVien.loaiTaiKhoan) {
-      this.availablePermissions = ALL_PERMISSIONS.filter(p => p.role === this.currentNhanVien.loaiTaiKhoan);
-    }
+  updateActiveModule(): void {
+    this.activeModule = MODUL_QUYEN_HE_THONG.find(m => m.role === this.currentNhanVien.loaiTaiKhoan);
   }
 
   onRoleChange(): void {
-    this.updateAvailablePermissions();
-    // Reset permissions when role changes to avoid inconsistency
+    this.updateActiveModule();
     this.currentNhanVien.danhSachQuyen = [];
   }
 
-  togglePermission(permId: string): void {
-    if (!this.currentNhanVien.danhSachQuyen) {
-      this.currentNhanVien.danhSachQuyen = [];
-    }
-    const index = this.currentNhanVien.danhSachQuyen.indexOf(permId);
-    if (index > -1) {
-      this.currentNhanVien.danhSachQuyen.splice(index, 1);
-    } else {
-      this.currentNhanVien.danhSachQuyen.push(permId);
-    }
+  togglePermission(id: string): void {
+    if (!this.currentNhanVien.danhSachQuyen) this.currentNhanVien.danhSachQuyen = [];
+    const idx = this.currentNhanVien.danhSachQuyen.indexOf(id);
+    if (idx > -1) this.currentNhanVien.danhSachQuyen.splice(idx, 1);
+    else this.currentNhanVien.danhSachQuyen.push(id);
   }
 
-  isPermissionChecked(permId: string): boolean {
-    return this.currentNhanVien.danhSachQuyen?.includes(permId) || false;
-  }
+  isPermissionChecked(id: string): boolean { return this.currentNhanVien.danhSachQuyen?.includes(id) || false; }
 
   toggleAccountStatus(): void {
-    if (this.currentNhanVien.trangThai === TrangThaiTaiKhoan.HoatDong) {
-      this.currentNhanVien.trangThai = TrangThaiTaiKhoan.VoHieuHoa;
-    } else {
-      this.currentNhanVien.trangThai = TrangThaiTaiKhoan.HoatDong;
-    }
-
-    // Nếu đang ở chế độ sửa, cập nhật trực tiếp luôn cho tiện
-    if (this.isEditMode) {
-      this.save();
-    }
-  }
-
-  quickToggleLock(nv: NhanVien): void {
-    const original = this.nhanViens.find(item => item.maNhanVien === nv.maNhanVien);
-    if (original) {
-      original.trangThai = original.trangThai === TrangThaiTaiKhoan.HoatDong ? TrangThaiTaiKhoan.VoHieuHoa : TrangThaiTaiKhoan.HoatDong;
-      this.applyFilters();
-    }
+    this.currentNhanVien.trangThai = this.currentNhanVien.trangThai === TrangThaiTaiKhoan.HoatDong ? TrangThaiTaiKhoan.VoHieuHoa : TrangThaiTaiKhoan.HoatDong;
+    if (this.isEditMode) this.save();
   }
 
   nextTab(): void {
@@ -293,50 +219,21 @@ export class QuanLyTaiKhoanNhanVienComponent implements OnInit {
     else if (this.activeTab === 'permission') this.activeTab = 'contact';
     else this.save();
   }
-
   prevTab(): void {
     if (this.activeTab === 'contact') this.activeTab = 'permission';
     else if (this.activeTab === 'permission') this.activeTab = 'basic';
   }
 
   save(): void {
-    if (!this.currentNhanVien.tenTruyCap || !this.currentNhanVien.ten) {
-      alert('Vui lòng điền các thông tin bắt buộc');
-      return;
-    }
-
     if (this.isEditMode) {
-      const index = this.nhanViens.findIndex(item => item.maNhanVien === this.currentNhanVien.maNhanVien);
-      if (index !== -1) {
-        this.nhanViens[index] = this.currentNhanVien as NhanVien;
-      }
+      const idx = this.nhanViens.findIndex(n => n.maNhanVien === this.currentNhanVien.maNhanVien);
+      if (idx !== -1) this.nhanViens[idx] = this.currentNhanVien as NhanVien;
     } else {
-      const newNv = {
-        ...this.currentNhanVien,
-        maNhanVien: 'NV' + Math.floor(Math.random() * 1000)
-      } as NhanVien;
-      this.nhanViens.push(newNv);
+      this.nhanViens.push({ ...this.currentNhanVien, maNhanVien: 'NV' + Math.floor(Math.random() * 1000) } as NhanVien);
     }
     this.applyFilters();
     this.closeModal();
   }
 
-  resetForm(): void {
-    this.currentNhanVien = {};
-    this.passwordConfirm = '';
-    this.isChangingPassword = false;
-    this.showPassword = false;
-    this.showPasswordConfirm = false;
-  }
-
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.currentNhanVien.anhDaiDien = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
+  resetForm(): void { this.currentNhanVien = {}; this.passwordConfirm = ''; this.isChangingPassword = false; }
 }

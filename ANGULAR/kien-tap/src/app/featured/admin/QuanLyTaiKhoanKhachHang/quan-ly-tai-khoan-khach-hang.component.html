@@ -1,0 +1,180 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span>Hệ thống</span> / <span class="active">Quản lý tài khoản khách hàng</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <!-- Tabs trạng thái -->
+    <div class="tabs">
+      <div class="tab" [class.active]="currentFilterStatus === 'all'" (click)="filterByStatus('all')">Tất cả</div>
+      <div class="tab" [class.active]="currentFilterStatus === 'active'" (click)="filterByStatus('active')">Đang hoạt động</div>
+      <div class="tab" [class.active]="currentFilterStatus === 'locked'" (click)="filterByStatus('locked')">Đã khóa</div>
+    </div>
+
+    <!-- Thanh công cụ tìm kiếm -->
+    <div class="search-filter-bar">
+      <div class="search-input">
+        <span class="material-icons">search</span>
+        <input type="text" placeholder="Tìm theo ID, tên, SĐT hoặc email..." [(ngModel)]="searchText" (keyup.enter)="search()">
+      </div>
+      <button class="btn-search" (click)="search()">Tìm kiếm</button>
+      <div class="spacer"></div>
+      <button class="btn-add" (click)="openModal()">
+        <span class="material-icons">add</span> Thêm khách hàng
+      </button>
+    </div>
+
+    <!-- Bảng danh sách -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th width="100">Mã KH</th>
+            <th>Khách hàng</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Giới tính</th>
+            <th>Địa chỉ</th>
+            <th>Ngày đăng ký</th>
+            <th class="text-center" width="120">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let kh of filteredKhachHangs" [class.row-locked]="kh.trangThaiTaiKhoan === 'DaKhoa'">
+            <td><span class="id-tag">{{kh.maKhachHang}}</span></td>
+            <td>
+              <div class="user-cell">
+                <img [src]="kh.anhDaiDien" class="avatar-sm" alt="avatar">
+                <div class="user-info">
+                  <span class="user-name">{{kh.hoTenKhachHang}}</span>
+                  <span class="user-status" [class.active]="kh.trangThaiTaiKhoan === 'HoatDong'">
+                    {{kh.trangThaiTaiKhoan === 'HoatDong' ? 'Hoạt động' : 'Đã khóa'}}
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td>{{kh.soDienThoai}}</td>
+            <td>{{kh.email}}</td>
+            <td>{{kh.gioiTinh}}</td>
+            <td><div class="text-truncate" style="max-width: 150px;" [title]="kh.diaChi">{{kh.diaChi}}</div></td>
+            <td>{{kh.ngayDangKy}}</td>
+            <td class="text-center">
+              <button class="btn-action" (click)="openModal(kh)" title="Xem/Sửa">
+                <span class="material-icons">edit</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredKhachHangs.length === 0">
+            <td colspan="7" class="no-data">Không tìm thấy khách hàng nào</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phân trang (Mock) -->
+    <div class="pagination">
+      <span class="page-info">Hiển thị {{filteredKhachHangs.length}} khách hàng</span>
+      <div class="page-btns">
+        <button class="btn-nav" disabled><span class="material-icons">chevron_left</span></button>
+        <button class="btn-page active">1</button>
+        <button class="btn-nav" disabled><span class="material-icons">chevron_right</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CHI TIẾT KHÁCH HÀNG -->
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>{{isEditMode ? 'Cập nhật thông tin khách hàng' : 'Thêm khách hàng mới'}}</h3>
+      <button class="btn-close" (click)="closeModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-left">
+          <div class="avatar-upload">
+            <img [src]="currentKH.anhDaiDien || 'https://via.placeholder.com/150'" alt="Avatar">
+            <button class="btn-upload-overlay">
+              <span class="material-icons">camera_alt</span>
+            </button>
+          </div>
+        </div>
+        <div class="form-right">
+          <div class="input-row">
+            <div class="form-group">
+              <label>Họ và tên <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="currentKH.hoTenKhachHang" placeholder="Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+              <label>Mã khách hàng</label>
+              <input type="text" [disabled]="true" [ngModel]="currentKH.maKhachHang" placeholder="Tự động tạo">
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="form-group">
+              <label>Số điện thoại <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="currentKH.soDienThoai" placeholder="090...">
+            </div>
+            <div class="form-group">
+              <label>Email <span class="required">*</span></label>
+              <input type="email" [(ngModel)]="currentKH.email" placeholder="example@gmail.com">
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="form-group">
+              <label>Số CCCD</label>
+              <input type="text" [(ngModel)]="currentKH.cccd" placeholder="Số căn cước công dân">
+            </div>
+            <div class="form-group">
+              <label>Ngày sinh</label>
+              <input type="date" [(ngModel)]="currentKH.ngaySinh">
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="form-group">
+              <label>Giới tính</label>
+              <select [(ngModel)]="currentKH.gioiTinh">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ</label>
+              <input type="text" [(ngModel)]="currentKH.diaChi" placeholder="Số nhà, tên đường, quận/huyện...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Ghi chú khách hàng</label>
+            <textarea [(ngModel)]="currentKH.ghiChu" placeholder="Lưu ý về khách hàng này..." rows="2" style="padding:10px; border:1px solid var(--border); border-radius:6px; outline:none; font-family:inherit;"></textarea>
+          </div>
+
+          <div class="form-group" *ngIf="!isEditMode">
+            <label>Mật khẩu mặc định <span class="required">*</span></label>
+            <input type="password" [(ngModel)]="currentKH.matKhau" placeholder="Nhập mật khẩu cho khách">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="closeModal()">Hủy</button>
+      <div class="spacer"></div>
+      <button class="btn-lock" *ngIf="isEditMode" (click)="toggleAccountStatus()" [class.locked]="currentKH.trangThaiTaiKhoan === 'DaKhoa'">
+        <span class="material-icons">{{currentKH.trangThaiTaiKhoan === 'HoatDong' ? 'lock' : 'lock_open'}}</span>
+        {{currentKH.trangThaiTaiKhoan === 'HoatDong' ? 'Khóa tài khoản' : 'Mở khóa'}}
+      </button>
+      <button class="btn-save" (click)="save()">Lưu thay đổi</button>
+    </div>
+  </div>
+</div>

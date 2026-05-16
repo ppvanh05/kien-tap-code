@@ -28,9 +28,9 @@ export const ADMIN_ROUTES: Routes = [
         ]
       },
       { path: 'quan-ly-tin-tuc', loadComponent: () => import('../trang-chu/trang-chu.component').then(m => m.TrangChuComponent) },
-      { path: 'quan-ly-khach-hang', loadComponent: () => import('../trang-chu/trang-chu.component').then(m => m.TrangChuComponent) },
-      { path: 'quan-ly-nhan-vien', loadComponent: () => import('../trang-chu/trang-chu.component').then(m => m.TrangChuComponent) },
-      { path: 'quan-ly-chinh-sach', loadComponent: () => import('../trang-chu/trang-chu.component').then(m => m.TrangChuComponent) },
+      { path: 'quan-ly-khach-hang', loadComponent: () => import('../QuanLyTaiKhoanKhachHang/quan-ly-tai-khoan-khach-hang.component').then(m => m.QuanLyTaiKhoanKhachHangComponent) },
+      { path: 'quan-ly-nhan-vien', loadComponent: () => import('../QuanLyTaiKhoanNhanVien/quan-ly-tai-khoan-nhan-vien.component').then(m => m.QuanLyTaiKhoanNhanVienComponent) },
+      { path: 'quan-ly-chinh-sach', loadComponent: () => import('../QuanLyChinhSach/quan-ly-chinh-sach.component').then(m => m.QuanLyChinhSachComponent) },
       { path: '', redirectTo: 'trang-chu', pathMatch: 'full' }
     ]
   }
