@@ -1,0 +1,214 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo chi tiết</span>
+    </div>
+    <h1>Báo cáo chi tiết vé bán</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid">
+    <!-- Card 1: Tổng vé đã bán -->
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">local_activity</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng vé đã bán</span>
+        <span class="kpi-value">{{ stats.totalTickets }} vé</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Tổng doanh thu -->
+    <div class="kpi-card teal">
+      <div class="kpi-icon-container">
+        <span class="material-icons">account_balance_wallet</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng doanh thu vé</span>
+        <span class="kpi-value">{{ stats.totalRevenue | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Đặt vé Online -->
+    <div class="kpi-card orange">
+      <div class="kpi-icon-container">
+        <span class="material-icons">devices</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Đặt vé Online (Website)</span>
+        <span class="kpi-value">{{ stats.onlineCount }} vé</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Đặt tại Văn phòng -->
+    <div class="kpi-card purple">
+      <div class="kpi-icon-container">
+        <span class="material-icons">storefront</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Đặt qua Văn phòng/Hotline</span>
+        <span class="kpi-value">{{ stats.officeCount }} vé</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc báo cáo chi tiết
+    </h3>
+
+    <div class="search-grid">
+      <!-- Khoảng thời gian -->
+      <div class="form-group">
+        <label>Lọc thời gian theo</label>
+        <select [(ngModel)]="filters.dateType">
+          <option value="NgayDi">Theo ngày khởi hành</option>
+          <option value="NgayDat">Theo ngày đặt vé</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="grid-column: span 2;">
+        <label>Khoảng thời gian (Từ ngày - Đến ngày)</label>
+        <div class="date-range-inputs">
+          <input type="date" [(ngModel)]="filters.fromDate">
+          <span class="date-range-separator">→</span>
+          <input type="date" [(ngModel)]="filters.toDate">
+        </div>
+      </div>
+
+      <!-- Tuyến xe -->
+      <div class="form-group">
+        <label>Tuyến xe</label>
+        <select [(ngModel)]="filters.route">
+          <option value="Tất cả">Tất cả các tuyến</option>
+          <option *ngFor="let route of routesList" [value]="route">{{ route }}</option>
+        </select>
+      </div>
+
+      <!-- Giờ đi -->
+      <div class="form-group">
+        <label>Giờ khởi hành</label>
+        <select [(ngModel)]="filters.time">
+          <option value="Tất cả">Tất cả khung giờ</option>
+          <option *ngFor="let t of timesList" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <!-- Phương thức thanh toán -->
+      <div class="form-group">
+        <label>Phương thức thanh toán</label>
+        <select [(ngModel)]="filters.paymentMethod">
+          <option value="Tất cả">Tất cả phương thức</option>
+          <option *ngFor="let p of paymentMethods" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+
+      <!-- Văn phòng/Kênh đặt -->
+      <div class="form-group">
+        <label>Văn phòng / Kênh đặt vé</label>
+        <select [(ngModel)]="filters.office">
+          <option value="Tất cả">Tất cả văn phòng/Kênh</option>
+          <option *ngFor="let o of officesList" [value]="o">{{ o }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <div class="table-card-header">
+      <h2>
+        Chi tiết vé bán theo bộ lọc
+        <span class="count">Tổng cộng {{ filteredData.length }} bản ghi</span>
+      </h2>
+    </div>
+
+    <div class="table-responsive" *ngIf="filteredData.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã vé</th>
+            <th>Tuyến xe</th>
+            <th>Ngày đi</th>
+            <th>Giờ đi</th>
+            <th>Ngày đặt</th>
+            <th>P.Thức T.Toán</th>
+            <th>Kênh đặt vé</th>
+            <th style="text-align: right;">Giá vé (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedData">
+            <td class="id-col">{{ item.maVe }}</td>
+            <td class="route-col">{{ item.tuyen }}</td>
+            <td>{{ item.ngayDi | date:'dd/MM/yyyy' }}</td>
+            <td style="font-weight: 600;">{{ item.gioDi }}</td>
+            <td>{{ item.ngayDat | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="pttt-pill" [ngClass]="{
+                'pttt-momo': item.pttt === 'Momo',
+                'pttt-zalopay': item.pttt === 'ZaloPay',
+                'pttt-ck': item.pttt.includes('Chuyển khoản'),
+                'pttt-cash': item.pttt === 'Tiền mặt'
+              }">
+                {{ item.pttt }}
+              </span>
+            </td>
+            <td>{{ item.vpDatVe }}</td>
+            <td class="price-col" style="text-align: right; font-weight: 700;">{{ item.giaVe | number:'1.0-0' }}đ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- No Data State -->
+    <div class="no-data-container" *ngIf="filteredData.length === 0">
+      <span class="material-icons">inbox</span>
+      <p>Không tìm thấy dữ liệu báo cáo chi tiết nào khớp với bộ lọc hiện tại.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="filteredData.length > 0">
+      <div class="page-info">
+        Hiển thị {{ (currentPage - 1) * pageSize + 1 }} - {{ (currentPage * pageSize > filteredData.length) ? filteredData.length : (currentPage * pageSize) }} của {{ filteredData.length }} bản ghi
+      </div>
+      <div class="page-controls">
+        <button class="btn-prev" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <button 
+          *ngFor="let p of getPageNumbers()" 
+          class="btn-page" 
+          [class.active]="p === currentPage"
+          (click)="setPage(p)">
+          {{ p }}
+        </button>
+        <button class="btn-next" [disabled]="currentPage === totalPages" (click)="setPage(currentPage + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

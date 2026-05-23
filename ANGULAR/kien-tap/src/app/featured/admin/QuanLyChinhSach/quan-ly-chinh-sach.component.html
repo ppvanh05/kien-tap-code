@@ -1,0 +1,450 @@
+<div class="page-container" (click)="closeDropdowns()">
+  <!-- Custom Premium Alert Modal Overlay -->
+  <div class="custom-alert-overlay" *ngIf="notification.show" (click)="closeNotification()">
+    <div class="custom-alert-card" (click)="$event.stopPropagation()">
+      <div class="custom-alert-body">
+        <!-- Icon Section -->
+        <div class="custom-alert-icon-wrapper" [class]="notification.type">
+          <span class="material-icons" *ngIf="notification.type === 'success'">check</span>
+          <span class="material-icons" *ngIf="notification.type === 'warning'">priority_high</span>
+          <span class="material-icons" *ngIf="notification.type === 'error'">close</span>
+        </div>
+        
+        <!-- Content Text -->
+        <div class="custom-alert-content">
+          <p class="custom-alert-message" [innerHTML]="notification.message"></p>
+        </div>
+      </div>
+      
+      <!-- Footer OK Button -->
+      <div class="custom-alert-footer">
+        <button class="btn-alert-ok" [class]="notification.type" (click)="closeNotification()">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản lý chính sách</span>
+      <span class="separator">/</span>
+      <span class="current">Chính sách nhà xe</span>
+    </div>
+    <h1>Chính sách nhà xe</h1>
+  </div>
+
+  <!-- Content Card -->
+  <div class="card">
+    <!-- Filter Tabs -->
+    <div class="tabs-container">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'all'" 
+        (click)="setTab('all')">
+        Tất cả
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'active'" 
+        (click)="setTab('active')">
+        Đang hoạt động
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'locked'" 
+        (click)="setTab('locked')">
+        Đã khóa
+      </button>
+    </div>
+
+    <!-- Actions Row -->
+    <div class="actions-row">
+      <div class="dropdown-wrapper">
+        <button class="btn-add-policy" (click)="toggleAddDropdown($event)">
+          <span class="material-icons">add</span>
+          Thêm chính sách mới
+          <span class="material-icons caret">arrow_drop_down</span>
+        </button>
+        
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" *ngIf="showAddDropdown" (click)="$event.stopPropagation()">
+          <button (click)="openAddModal('insurance')">Chính sách bảo hiểm</button>
+          <button (click)="openAddModal('payment')">Chính sách thanh toán</button>
+          <button (click)="openAddModal('cancellation')">Chính sách hủy vé và hoàn trả</button>
+          <button (click)="openAddModal('other')">Chính sách khác</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filters bar -->
+    <div class="search-filter-bar" style="margin-bottom: 20px;">
+      <div class="search-input-wrapper">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="search()"
+          placeholder="Tìm theo tên chính sách..." 
+          class="form-control-search" />
+      </div>
+
+      <div class="select-wrapper">
+        <select class="form-select-type" (change)="onFilterTypeChange()" [(ngModel)]="filterType">
+          <option value="all">Tất cả loại chính sách</option>
+          <option value="insurance">Chính sách bảo hiểm</option>
+          <option value="payment">Chính sách thanh toán</option>
+          <option value="cancellation">Chính sách hủy vé</option>
+          <option value="other">Chính sách khác</option>
+        </select>
+      </div>
+
+      <button class="btn-search-outline" (click)="search()">Tìm kiếm</button>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Tên chính sách</th>
+            <th>Loại chính sách</th>
+            <th>Ngày tạo</th>
+            <th class="text-center">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let policy of displayPolicies">
+            <td class="policy-name-col">
+              <div class="policy-name-wrapper">
+                <span class="status-dot" [class.active]="policy.status === 'DangApDung'"></span>
+                {{ policy.title }}
+              </div>
+            </td>
+            <td>{{ policy.typeLabel }}</td>
+            <td class="date-col">{{ policy.effectiveDate | date:'dd-MM-yyyy' }}</td>
+            <td class="text-center action-col">
+              <button class="btn-edit" (click)="openEditModal(policy)" title="Chỉnh sửa chính sách">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="displayPolicies.length === 0">
+            <td colspan="4" class="no-data">Không tìm thấy chính sách nào.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredPolicies.length > 0">
+      <div class="pagination-controls">
+        <button class="btn-page" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        
+        <button 
+          *ngFor="let p of getPageNumbers()" 
+          class="btn-page" 
+          [class.active]="currentPage === p" 
+          (click)="setPage(p)">
+          {{ p }}
+        </button>
+        
+        <button class="btn-page" [disabled]="currentPage === totalPages" (click)="setPage(currentPage + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="page-size-selector">
+        <select [ngModel]="pageSize" (change)="changePageSize($event)" class="form-control-page-size">
+          <option [value]="5">5 / trang</option>
+          <option [value]="10">10 / trang</option>
+          <option [value]="20">20 / trang</option>
+          <option [value]="50">50 / trang</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policy Detail Modal Overlay -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Chi tiết thông tin chính sách' : 'Thêm chính sách mới' }}</h3>
+        <button class="btn-close" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- Policy Title -->
+        <div class="form-group">
+          <label>Tên chính sách <span class="required">*</span></label>
+          <input 
+            type="text" 
+            [(ngModel)]="formModel.title" 
+            placeholder="Nhập tên chính sách"
+            class="form-control" />
+        </div>
+
+        <!-- Cancellation Policy Specific Inputs -->
+        <div class="cancellation-section" *ngIf="formModel.type === 'cancellation'">
+          <label class="section-label">Mốc thời gian hủy vé & hoàn tiền <span class="required">*</span></label>
+          
+          <div class="milestones-container">
+            <div class="milestone-row" *ngFor="let ms of formModel.milestones; let i = index">
+              <div class="input-unit-group">
+                <span class="input-label">Trước giờ khởi hành <span class="required">*</span></span>
+                <div class="input-wrapper">
+                  <input type="number" [(ngModel)]="ms.hoursBeforeDeparture" class="form-control text-right" />
+                  <span class="unit">Giờ</span>
+                </div>
+              </div>
+
+              <div class="input-unit-group">
+                <span class="input-label">Phí hủy <span class="required">*</span></span>
+                <div class="input-wrapper">
+                  <input type="number" [(ngModel)]="ms.refundPercentage" class="form-control text-right" />
+                  <span class="unit">%</span>
+                </div>
+              </div>
+
+              <button class="btn-remove-milestone" (click)="removeMilestone(i)" title="Xóa mốc">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn-add-milestone" (click)="addMilestone()">
+            Thêm mốc thời gian <span class="plus-icon">+</span>
+          </button>
+        </div>
+
+        <!-- Rich Text Editor Section -->
+        <div class="form-group editor-group">
+          <label>Nội dung chính sách <span class="required">*</span></label>
+          
+          <div class="editor-wrapper">
+            <!-- Toolbar -->
+            <div class="editor-toolbar">
+              <!-- Formatting -->
+              <button class="toolbar-btn" (click)="formatDoc('bold')" title="Chữ đậm">
+                <span class="material-icons">format_bold</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('italic')" title="Chữ nghiêng">
+                <span class="material-icons">format_italic</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('underline')" title="Gạch chân">
+                <span class="material-icons">format_underlined</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('strikeThrough')" title="Gạch ngang">
+                <span class="material-icons">format_strikethrough</span>
+              </button>
+              
+              <div class="divider"></div>
+
+              <button class="toolbar-btn" (click)="formatDoc('formatBlock', 'blockquote')" title="Trích dẫn">
+                <span class="material-icons">format_quote</span>
+              </button>
+              <button class="toolbar-btn" (click)="insertCodeBlock()" title="Khối mã nguồn">
+                <span class="material-icons">code</span>
+              </button>
+
+              <div class="divider"></div>
+
+              <button class="toolbar-btn" (click)="formatDoc('formatBlock', 'h1')" title="Tiêu đề 1">
+                <strong>H<sub>1</sub></strong>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('formatBlock', 'h2')" title="Tiêu đề 2">
+                <strong>H<sub>2</sub></strong>
+              </button>
+
+              <div class="divider"></div>
+
+              <button class="toolbar-btn" (click)="formatDoc('insertUnorderedList')" title="Danh sách không thứ tự">
+                <span class="material-icons">format_list_bulleted</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('insertOrderedList')" title="Danh sách có thứ tự">
+                <span class="material-icons">format_list_numbered</span>
+              </button>
+
+              <div class="divider"></div>
+
+              <button class="toolbar-btn" (click)="formatDoc('subscript')" title="Chỉ số dưới">
+                <span class="material-icons">subscript</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('superscript')" title="Chỉ số trên">
+                <span class="material-icons">superscript</span>
+              </button>
+
+              <div class="divider"></div>
+
+              <button class="toolbar-btn" (click)="formatDoc('justifyLeft')" title="Canh trái">
+                <span class="material-icons">format_align_left</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('justifyCenter')" title="Canh giữa">
+                <span class="material-icons">format_align_center</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('justifyRight')" title="Canh phải">
+                <span class="material-icons">format_align_right</span>
+              </button>
+              <button class="toolbar-btn" (click)="formatDoc('justifyFull')" title="Canh đều">
+                <span class="material-icons">format_align_justify</span>
+              </button>
+
+              <div class="divider"></div>
+
+              <!-- Font Family Dropdown -->
+              <select class="toolbar-select font-select" (change)="changeFont($event)" [(ngModel)]="selectedFont">
+                <option *ngFor="let font of fonts" [value]="font">{{ font }}</option>
+              </select>
+
+              <!-- Font Size Dropdown -->
+              <select class="toolbar-select size-select" (change)="changeFontSize($event)" [(ngModel)]="selectedFontSize">
+                <option *ngFor="let size of fontSizes" [value]="size.value">{{ size.label }}</option>
+              </select>
+
+              <div class="divider"></div>
+
+              <!-- Media & Link inserts -->
+              <button class="toolbar-btn" (click)="insertLink()" (mousedown)="$event.preventDefault()" title="Chèn liên kết">
+                <span class="material-icons">link</span>
+              </button>
+              <button class="toolbar-btn" (click)="triggerImageUpload()" title="Chèn ảnh từ máy">
+                <span class="material-icons">image</span>
+              </button>
+              <input type="file" #imageInput style="display: none" accept="image/*" (change)="onImageSelected($event)" />
+              <button class="toolbar-btn" (click)="formatDoc('insertHTML', '<table border=1 style=\'border-collapse:collapse;width:100%\'><tr><td>Cột 1</td><td>Cột 2</td></tr><tr><td>Dữ liệu 1</td><td>Dữ liệu 2</td></tr></table>')" title="Chèn bảng mẫu">
+                <span class="material-icons">table_view</span>
+              </button>
+
+              <div class="divider"></div>
+
+              <!-- Clean formats -->
+              <button class="toolbar-btn" (click)="formatDoc('removeFormat')" title="Xóa định dạng">
+                <span class="material-icons">format_clear</span>
+              </button>
+            </div>
+
+            <!-- Image Context Toolbar -->
+            <div class="image-context-bar" *ngIf="selectedImage" (click)="$event.stopPropagation()">
+              <span class="context-label">
+                <span class="material-icons">image</span> Định dạng ảnh:
+              </span>
+              
+              <div class="context-group">
+                <button class="context-btn" [class.active]="isImgAlign('left')" (click)="alignImage('left')" title="Căn trái">
+                  <span class="material-icons">format_align_left</span>
+                </button>
+                <button class="context-btn" [class.active]="isImgAlign('center')" (click)="alignImage('center')" title="Căn giữa">
+                  <span class="material-icons">format_align_center</span>
+                </button>
+                <button class="context-btn" [class.active]="isImgAlign('right')" (click)="alignImage('right')" title="Căn phải">
+                  <span class="material-icons">format_align_right</span>
+                </button>
+              </div>
+              
+              <div class="divider"></div>
+              
+              <span class="context-label">Kích thước:</span>
+              <div class="slider-wrapper">
+                <input type="range" min="10" max="100" [value]="getImageWidth()" (input)="changeImageWidth($event)" class="width-slider" />
+                <span class="width-val">{{ getImageWidth() }}%</span>
+              </div>
+              
+              <div class="divider"></div>
+              
+              <button class="context-btn delete-btn" (click)="deleteSelectedImage()" title="Xóa hình ảnh">
+                <span class="material-icons">delete</span>
+                Xóa ảnh
+              </button>
+              
+              <button class="context-btn close-btn" (click)="clearImageSelection()" title="Đóng">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+
+            <!-- Editor Editable Canvas -->
+            <div 
+              #editor 
+              contenteditable="true" 
+              class="editor-canvas" 
+              (input)="onEditorChange()"
+              (blur)="onEditorChange()"
+              (scroll)="updateResizeOverlay()"
+              (click)="onEditorClick($event)"
+              placeholder="Nhập nội dung điều khoản, chính sách chi tiết tại đây...">
+            </div>
+
+            <!-- Image Resize Overlay with 4 Corner Handles -->
+            <div 
+              class="image-resize-overlay" 
+              *ngIf="selectedImage" 
+              [ngStyle]="{
+                'top.px': resizeBox.top,
+                'left.px': resizeBox.left,
+                'width.px': resizeBox.width,
+                'height.px': resizeBox.height
+              }">
+              <div class="resize-handle tl" (mousedown)="startResize($event, 'tl')"></div>
+              <div class="resize-handle tr" (mousedown)="startResize($event, 'tr')"></div>
+              <div class="resize-handle bl" (mousedown)="startResize($event, 'bl')"></div>
+              <div class="resize-handle br" (mousedown)="startResize($event, 'br')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <!-- Lock/Unlock status button on the left (Only shown in edit mode) -->
+        <button 
+          *ngIf="isEditing"
+          class="btn-status-toggle" 
+          [class.lock-mode]="formModel.status === 'DangApDung'"
+          [class.unlock-mode]="formModel.status === 'VoHieuHoa'"
+          (click)="toggleStatus()">
+          <span class="material-icons">{{ formModel.status === 'DangApDung' ? 'lock' : 'lock_open' }}</span>
+          {{ formModel.status === 'DangApDung' ? 'Khóa chính sách' : 'Kích hoạt chính sách' }}
+        </button>
+
+        <div class="footer-actions-right">
+          <button class="btn-modal-cancel" (click)="closeModal()">Hủy</button>
+          <button class="btn-modal-save" (click)="savePolicy()">Lưu</button>
+        </div>
+      </div>
+
+      <!-- Link Input Sub-Modal -->
+      <div class="sub-modal-overlay" *ngIf="showLinkModal" (click)="closeLinkModal()">
+        <div class="sub-modal-content" (click)="$event.stopPropagation()">
+          <!-- Modal Header -->
+          <div class="sub-modal-header">
+            <h4>Chèn liên kết (Link)</h4>
+            <button class="btn-sub-close" (click)="closeLinkModal()">
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+          <!-- Modal Body -->
+          <div class="sub-modal-body">
+            <div class="form-group">
+              <label>Văn bản hiển thị</label>
+              <input type="text" [(ngModel)]="linkForm.text" class="form-control" placeholder="Nhập chữ hiển thị" />
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ liên kết (URL)</label>
+              <input type="text" [(ngModel)]="linkForm.url" class="form-control" placeholder="https://example.com" />
+            </div>
+          </div>
+          <!-- Modal Footer -->
+          <div class="sub-modal-footer">
+            <button class="btn-sub-cancel" (click)="closeLinkModal()">Hủy</button>
+            <button class="btn-sub-save" (click)="confirmInsertLink()">Áp dụng</button>
+          </div>
+        </div>
+      </div>
+  </div> <!-- modal-overlay -->
+</div>

@@ -1,0 +1,152 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo khách hàng</span>
+    </div>
+    <h1>Báo cáo khách hàng</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">groups</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Khách hàng giao dịch</span>
+        <span class="kpi-value">{{ stats.totalCustomers }} khách</span>
+      </div>
+    </div>
+
+    <div class="kpi-card teal">
+      <div class="kpi-icon-container">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Vé đã thanh toán</span>
+        <span class="kpi-value">{{ stats.totalBookings }} vé</span>
+      </div>
+    </div>
+
+    <div class="kpi-card orange">
+      <div class="kpi-icon-container">
+        <span class="material-icons">cancel</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Vé đã hủy bỏ</span>
+        <span class="kpi-value">{{ stats.totalCancellations }} vé</span>
+      </div>
+    </div>
+
+    <div class="kpi-card purple">
+      <div class="kpi-icon-container">
+        <span class="material-icons">payments</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng thực thu từ khách</span>
+        <span class="kpi-value">{{ stats.totalRevenue | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc thống kê khách hàng
+    </h3>
+
+    <div class="search-grid">
+      <!-- Tìm kiếm -->
+      <div class="form-group">
+        <label>Tìm kiếm hành khách</label>
+        <input type="text" placeholder="Nhập tên khách, SĐT..." [(ngModel)]="filters.searchTerm" (input)="onViewReport()">
+      </div>
+
+      <!-- Khoảng thời gian -->
+      <div class="form-group" style="grid-column: span 2;">
+        <label>Khoảng thời gian (Từ ngày - Đến ngày)</label>
+        <div class="date-range-inputs">
+          <input type="date" [(ngModel)]="filters.fromDate">
+          <span class="date-range-separator">→</span>
+          <input type="date" [(ngModel)]="filters.toDate">
+        </div>
+      </div>
+
+      <!-- Tuyến xe -->
+      <div class="form-group">
+        <label>Tuyến đường di chuyển</label>
+        <select [(ngModel)]="filters.route" (change)="onViewReport()">
+          <option value="Tất cả">Tất cả tuyến đường</option>
+          <option *ngFor="let route of routesList" [value]="route">{{ route }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <div class="table-card-header">
+      <h2>
+        Thống kê chi tiết giao dịch khách hàng
+        <span class="count">Tổng cộng {{ filteredCustomers.length }} khách hàng</span>
+      </h2>
+    </div>
+
+    <div class="table-responsive" *ngIf="filteredCustomers.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Họ và tên hành khách</th>
+            <th>Số điện thoại</th>
+            <th>Tuyến đi thường xuyên</th>
+            <th style="text-align: center;">SL đặt</th>
+            <th style="text-align: center;">SL hủy</th>
+            <th style="text-align: center;">SL thanh toán</th>
+            <th style="text-align: right;">Tiền bảo hiểm</th>
+            <th style="text-align: right;">Doanh thu vé gốc</th>
+            <th style="text-align: right;">Thực thu nhà xe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredCustomers">
+            <td class="name-col">{{ item.tenKhachHang }}</td>
+            <td style="font-weight: 500;">{{ item.sdt }}</td>
+            <td class="route-col">{{ item.tuyen }}</td>
+            <td class="qty-col" style="color: #475569;">{{ item.slDat }}</td>
+            <td class="qty-col" style="color: #dc3545;">{{ item.slHuy }}</td>
+            <td class="qty-col" style="color: #16a34a;">{{ item.slThanhToan }}</td>
+            <td class="price-col">{{ item.tienBaoHiem | number:'1.0-0' }}đ</td>
+            <td class="price-col">{{ item.giaVe | number:'1.0-0' }}đ</td>
+            <td class="revenue-col">{{ item.thucThu | number:'1.0-0' }}đ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- No Data State -->
+    <div class="no-data-container" *ngIf="filteredCustomers.length === 0">
+      <span class="material-icons">inbox</span>
+      <p>Không tìm thấy dữ liệu giao dịch khách hàng nào khớp với bộ lọc.</p>
+    </div>
+  </div>
+</div>

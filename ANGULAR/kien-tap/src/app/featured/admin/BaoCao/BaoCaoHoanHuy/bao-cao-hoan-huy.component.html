@@ -1,0 +1,168 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo hoàn hủy</span>
+    </div>
+    <h1>Báo cáo hoàn hủy vé</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-icon-container">
+        <span class="material-icons">cancel</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng vé đã hủy hoàn</span>
+        <span class="kpi-value">{{ stats.totalCancelled }} vé</span>
+      </div>
+    </div>
+
+    <div class="kpi-card orange">
+      <div class="kpi-icon-container">
+        <span class="material-icons">payments</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng doanh thu gốc</span>
+        <span class="kpi-value">{{ stats.totalOriginalPrice | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">local_offer</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng phí hủy đã thu</span>
+        <span class="kpi-value">{{ stats.totalFees | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+
+    <div class="kpi-card teal">
+      <div class="kpi-icon-container">
+        <span class="material-icons">autorenew</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng tiền hoàn trả</span>
+        <span class="kpi-value">{{ stats.totalRefunded | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc nhật ký hoàn hủy vé
+    </h3>
+
+    <div class="search-grid">
+      <!-- Khoảng thời gian -->
+      <div class="form-group" style="grid-column: span 2;">
+        <label>Khoảng thời gian khởi hành (Từ ngày - Đến ngày)</label>
+        <div class="date-range-inputs">
+          <input type="date" [(ngModel)]="filters.fromDate">
+          <span class="date-range-separator">→</span>
+          <input type="date" [(ngModel)]="filters.toDate">
+        </div>
+      </div>
+
+      <!-- Tuyến xe -->
+      <div class="form-group">
+        <label>Tuyến xe</label>
+        <select [(ngModel)]="filters.route">
+          <option value="Tất cả">Tất cả các tuyến</option>
+          <option *ngFor="let route of routesList" [value]="route">{{ route }}</option>
+        </select>
+      </div>
+
+      <!-- Giờ đi -->
+      <div class="form-group">
+        <label>Giờ khởi hành</label>
+        <select [(ngModel)]="filters.time">
+          <option value="Tất cả">Tất cả khung giờ</option>
+          <option *ngFor="let t of timesList" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <!-- Lý do hủy -->
+      <div class="form-group" style="grid-column: span 2;">
+        <label>Lý do hủy hoàn</label>
+        <select [(ngModel)]="filters.cancelReason">
+          <option value="Tất cả">Tất cả các lý do</option>
+          <option *ngFor="let r of reasonsList" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <div class="table-card-header">
+      <h2>
+        Chi tiết nhật ký hoàn hủy vé
+        <span class="count">Tổng cộng {{ filteredRefunds.length }} giao dịch hủy hoàn</span>
+      </h2>
+    </div>
+
+    <div class="table-responsive" *ngIf="filteredRefunds.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã vé</th>
+            <th>Tuyến xe</th>
+            <th>Ngày đi</th>
+            <th>Giờ đi</th>
+            <th>Ngày đặt</th>
+            <th>Kênh đặt</th>
+            <th>Kênh hủy</th>
+            <th>Lý do hủy</th>
+            <th style="text-align: right;">Giá vé gốc</th>
+            <th style="text-align: right;">Phí hủy</th>
+            <th style="text-align: right;">Thực hoàn khách</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredRefunds">
+            <td class="id-col">{{ item.maVe }}</td>
+            <td class="route-col">{{ item.tuyen }}</td>
+            <td>{{ item.ngayDi | date:'dd/MM/yyyy' }}</td>
+            <td style="font-weight: 600;">{{ item.gioDi }}</td>
+            <td>{{ item.ngayDat | date:'dd/MM/yyyy' }}</td>
+            <td>{{ item.vpDat }}</td>
+            <td>{{ item.vpHuy }}</td>
+            <td class="reason-col" [title]="item.lyDoHuy">{{ item.lyDoHuy }}</td>
+            <td class="price-col" style="text-align: right;">{{ item.giaVe | number:'1.0-0' }}đ</td>
+            <td class="fee-col" style="text-align: right;">{{ item.phiHuy | number:'1.0-0' }}đ</td>
+            <td class="refund-col" style="text-align: right; font-weight: 700; color: #0f766e;">{{ item.tienHoan | number:'1.0-0' }}đ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- No Data State -->
+    <div class="no-data-container" *ngIf="filteredRefunds.length === 0">
+      <span class="material-icons">inbox</span>
+      <p>Không tìm thấy dữ liệu hoàn hủy vé nào khớp với bộ lọc.</p>
+    </div>
+  </div>
+</div>

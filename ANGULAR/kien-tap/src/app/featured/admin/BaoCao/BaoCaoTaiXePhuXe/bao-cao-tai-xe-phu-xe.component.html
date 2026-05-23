@@ -1,0 +1,162 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo tài xế, phụ xe</span>
+    </div>
+    <h1>Báo cáo tài xế & phụ xe</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card purple">
+      <div class="kpi-icon-container">
+        <span class="material-icons">badge</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng nhân sự vận hành</span>
+        <span class="kpi-value">{{ stats.totalCrew }} nhân viên</span>
+      </div>
+    </div>
+
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">schedule</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng chuyến thực hiện</span>
+        <span class="kpi-value">{{ stats.totalTrips }} chuyến</span>
+      </div>
+    </div>
+
+    <div class="kpi-card orange">
+      <div class="kpi-icon-container">
+        <span class="material-icons">paid</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng chi phí vận hành chuyến</span>
+        <span class="kpi-value">{{ stats.totalExpenses | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc hoạt động nhân sự
+    </h3>
+
+    <div class="search-grid">
+      <!-- Tìm kiếm -->
+      <div class="form-group">
+        <label>Tìm kiếm nhân sự</label>
+        <input type="text" placeholder="Nhập mã, họ tên, SĐT..." [(ngModel)]="filters.searchTerm" (input)="onViewReport()">
+      </div>
+
+      <!-- Khoảng thời gian -->
+      <div class="form-group" style="grid-column: span 2;">
+        <label>Khoảng thời gian (Từ ngày - Đến ngày)</label>
+        <div class="date-range-inputs">
+          <input type="date" [(ngModel)]="filters.fromDate">
+          <span class="date-range-separator">→</span>
+          <input type="date" [(ngModel)]="filters.toDate">
+        </div>
+      </div>
+
+      <!-- Vai trò -->
+      <div class="form-group">
+        <label>Vai trò công tác</label>
+        <select [(ngModel)]="filters.role" (change)="onViewReport()">
+          <option value="Tất cả">Tất cả vai trò</option>
+          <option *ngFor="let role of rolesList" [value]="role">{{ role }}</option>
+        </select>
+      </div>
+
+      <!-- Trạng thái -->
+      <div class="form-group">
+        <label>Trạng thái làm việc</label>
+        <select [(ngModel)]="filters.status" (change)="onViewReport()">
+          <option value="Tất cả">Tất cả trạng thái</option>
+          <option value="Đang hoạt động">Đang hoạt động</option>
+          <option value="Đã khóa">Đã khóa</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <div class="table-card-header">
+      <h2>
+        Danh sách công tác tài xế & phụ xe
+        <span class="count">Tổng cộng {{ filteredCrew.length }} nhân sự</span>
+      </h2>
+    </div>
+
+    <div class="table-responsive" *ngIf="filteredCrew.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã nhân sự</th>
+            <th>Họ và tên</th>
+            <th>Vai trò</th>
+            <th>Số điện thoại</th>
+            <th style="text-align: center;">Số chuyến đã chạy</th>
+            <th style="text-align: center;">Tổng giờ chạy (giờ)</th>
+            <th style="text-align: right;">Chi phí phát sinh</th>
+            <th style="text-align: center;">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredCrew">
+            <td class="id-col">{{ item.maNhanSu }}</td>
+            <td class="name-col">{{ item.hoTen }}</td>
+            <td>
+              <span class="role-pill" [ngClass]="{
+                'role-driver-1': item.vaiTro === 'Tài xế chính',
+                'role-driver-2': item.vaiTro === 'Tài xế phụ',
+                'role-helper': item.vaiTro === 'Phụ xe'
+              }">
+                {{ item.vaiTro }}
+              </span>
+            </td>
+            <td>{{ item.sdt }}</td>
+            <td class="qty-col" style="color: #0284c7;">{{ item.soChuyenChay }}</td>
+            <td class="qty-col" style="color: #475569;">{{ item.tongGioChay }}h</td>
+            <td class="price-col">{{ item.tongChiPhi | number:'1.0-0' }}đ</td>
+            <td style="text-align: center;">
+              <span class="status-pill" [ngClass]="item.trangThai === 'Đang hoạt động' ? 'status-active' : 'status-locked'">
+                {{ item.trangThai }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- No Data State -->
+    <div class="no-data-container" *ngIf="filteredCrew.length === 0">
+      <span class="material-icons">inbox</span>
+      <p>Không tìm thấy dữ liệu công tác nhân sự nào khớp với bộ lọc.</p>
+    </div>
+  </div>
+</div>

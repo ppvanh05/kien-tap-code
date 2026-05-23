@@ -1,0 +1,434 @@
+<div class="page-container">
+  <!-- Premium Custom Success/Warning Alert Popup Overlay (Top-level) -->
+  <div class="custom-alert-overlay" *ngIf="notification.show" (click)="closeNotification()">
+    <div class="custom-alert-card" (click)="$event.stopPropagation()">
+      <div class="custom-alert-body">
+        <div class="custom-alert-icon-wrapper" [class]="notification.type">
+          <span class="material-icons" *ngIf="notification.type === 'success'">check</span>
+          <span class="material-icons" *ngIf="notification.type === 'warning'">priority_high</span>
+          <span class="material-icons" *ngIf="notification.type === 'error'">close</span>
+        </div>
+        <div class="custom-alert-content">
+          <h4 class="custom-alert-title">{{ notification.title }}</h4>
+          <p class="custom-alert-message" [innerHTML]="notification.message"></p>
+        </div>
+      </div>
+      <div class="custom-alert-footer">
+        <button class="btn-alert-ok" [class]="notification.type" (click)="closeNotification()">
+          Đồng ý
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản trị hệ thống</span>
+      <span class="separator">/</span>
+      <span class="current">Quản lý tài khoản khách hàng</span>
+    </div>
+    <h1>Quản lý tài khoản khách hàng</h1>
+  </div>
+
+  <!-- Content Card -->
+  <div class="card">
+    <!-- Filter Tabs (Tất cả, Đang hoạt động, Đã khóa) -->
+    <div class="tabs-container">
+      <button class="tab-btn" [class.active]="activeTab === 'all'" (click)="setTab('all')">
+        Tất cả
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'active'" (click)="setTab('active')">
+        Đang hoạt động
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'locked'" (click)="setTab('locked')">
+        Đã khóa
+      </button>
+    </div>
+
+    <!-- Search and Filters bar -->
+    <div class="search-filter-bar" style="margin-top: 15px; margin-bottom: 20px;">
+      <div class="search-input-wrapper">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="search()"
+          placeholder="Tìm theo Mã KH, Họ tên, SĐT, Email..." 
+          class="form-control-search" />
+      </div>
+
+      <div class="select-wrapper">
+        <select class="form-select-type" (change)="filterCustomers()" [(ngModel)]="filterGender">
+          <option value="Tất cả giới tính">Tất cả giới tính</option>
+          <option value="Nam">Nam</option>
+          <option value="Nữ">Nữ</option>
+          <option value="Khác">Khác</option>
+        </select>
+      </div>
+
+      <button class="btn-search-outline" (click)="search()">Tìm kiếm</button>
+    </div>
+
+    <!-- Customer Table -->
+    <div class="table-responsive">
+      <table class="premium-table">
+        <thead>
+          <tr>
+            <th>Mã KH</th>
+            <th>Họ và tên</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Ngày đăng ký</th>
+            <th>Vé đã đặt</th>
+            <th>Trạng thái</th>
+            <th class="text-right">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cust of displayCustomers">
+            <td>
+              <div class="id-wrapper">
+                <span class="status-bullet" [class.active]="cust.trangThaiTaiKhoan === 'HoatDong'" [class.locked]="cust.trangThaiTaiKhoan === 'DaKhoa'"></span>
+                <strong>{{ cust.maKhachHang }}</strong>
+              </div>
+            </td>
+            <td>
+              <div class="customer-profile-cell">
+                <img *ngIf="cust.anhDaiDien" [src]="cust.anhDaiDien" alt="avatar" class="table-avatar" />
+                <div *ngIf="!cust.anhDaiDien" class="table-avatar-fallback">{{ getInitials(cust.hoTenKhachHang) }}</div>
+                <span>{{ cust.hoTenKhachHang }}</span>
+              </div>
+            </td>
+            <td>{{ cust.soDienThoai }}</td>
+            <td>
+              <span class="email-text" [title]="cust.email || 'Chưa cung cấp'">{{ cust.email || 'Chưa cung cấp' }}</span>
+            </td>
+            <td>{{ cust.ngayDangKy | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="ticket-badge">{{ cust.tongSoVeDaDat }} vé</span>
+            </td>
+            <td>
+              <span class="status-badge" [class.active]="cust.trangThaiTaiKhoan === 'HoatDong'" [class.locked]="cust.trangThaiTaiKhoan === 'DaKhoa'">
+                <span class="material-icons">{{ cust.trangThaiTaiKhoan === 'HoatDong' ? 'check_circle' : 'block' }}</span>
+                {{ cust.trangThaiTaiKhoan === 'HoatDong' ? 'Đang hoạt động' : 'Đã khóa' }}
+              </span>
+            </td>
+            <td class="text-right">
+              <div class="table-actions">
+                <button *ngIf="cust.trangThaiTaiKhoan === 'HoatDong'" class="btn-action-lock" (click)="openLockCustomerModal(cust)" title="Khóa tài khoản">
+                  <span class="material-icons">lock</span>
+                </button>
+                <button *ngIf="cust.trangThaiTaiKhoan === 'DaKhoa'" class="btn-action-unlock" (click)="unlockCustomer(cust)" title="Mở khóa tài khoản">
+                  <span class="material-icons">lock_open</span>
+                </button>
+                <button class="btn-action-view" (click)="openDetailModal(cust)" title="Xem chi tiết & Cập nhật">
+                  <span class="material-icons">edit</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="displayCustomers.length === 0">
+            <td colspan="8" class="empty-row">Không tìm thấy tài khoản khách hàng nào khớp với điều kiện.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination-container" *ngIf="filteredCustomers.length > 0">
+      <div class="pagination-info">
+        Hiển thị từ {{ (currentPage - 1) * pageSize + 1 }} đến {{ Math.min(currentPage * pageSize, filteredCustomers.length) }} trong tổng số {{ filteredCustomers.length }} khách hàng
+      </div>
+      <div class="pagination-actions">
+        <!-- Page size selector dropdown -->
+        <div class="page-size-selector">
+          <span>Hiển thị</span>
+          <select class="form-control-page-size" (change)="changePageSize($event)" [value]="pageSize">
+            <option [value]="5">5 dòng/trang</option>
+            <option [value]="10">10 dòng/trang</option>
+            <option [value]="20">20 dòng/trang</option>
+            <option [value]="50">50 dòng/trang</option>
+          </select>
+        </div>
+        <div class="page-numbers">
+          <button class="btn-page-nav" (click)="prevPage()" [disabled]="currentPage === 1">
+            <span class="material-icons">chevron_left</span>
+          </button>
+          <button 
+            *ngFor="let page of getPaginationPages()" 
+            class="btn-page-number" 
+            [class.active]="currentPage === page" 
+            (click)="goToPage(page)">
+            {{ page }}
+          </button>
+          <button class="btn-page-nav" (click)="nextPage()" [disabled]="currentPage === totalPages">
+            <span class="material-icons">chevron_right</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lock Customer Reason Prompt Modal -->
+<div class="modal-overlay lock-modal-overlay" *ngIf="showLockModal" (click)="closeLockModal()">
+  <div class="modal-content lock-reason-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="title-left">
+        <span class="material-icons text-danger">warning</span>
+        <h3>Xác nhận khóa tài khoản</h3>
+      </div>
+      <button class="btn-close" (click)="closeLockModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    
+    <div class="modal-body text-left">
+      <p>Bạn đang thực hiện khóa tài khoản của khách hàng <strong>{{ lockingCustomer?.hoTenKhachHang }}</strong> (Mã: <strong>{{ lockingCustomer?.maKhachHang }}</strong>).</p>
+      <p class="text-secondary text-13">Tài khoản sau khi bị khóa sẽ không thể đăng nhập vào website đặt vé, không đặt được ghế mới và không thể chỉnh sửa vé xe.</p>
+      
+      <div class="form-group margin-top-15">
+        <label class="required-field">Lý do khóa tài khoản</label>
+        <textarea 
+          [(ngModel)]="lockReason" 
+          placeholder="Nhập chi tiết lý do khóa (Ví dụ: Spam giữ chỗ nhiều lần không thanh toán, Vi phạm nghiêm trọng điều khoản...)" 
+          class="form-control textarea-reason"
+          rows="3">
+        </textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeLockModal()">Hủy bỏ</button>
+      <button class="btn-danger" (click)="confirmLockCustomer()">
+        <span class="material-icons">lock</span> Khóa tài khoản
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Detail & Update Modal (Tabbed Drawer) -->
+<div class="modal-overlay" *ngIf="selectedCustomer" (click)="closeDetailModal()">
+  <div class="modal-content customer-detail-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="title-left">
+        <div class="header-avatar">
+          <img *ngIf="selectedCustomer.anhDaiDien" [src]="selectedCustomer.anhDaiDien" alt="avatar" />
+          <div *ngIf="!selectedCustomer.anhDaiDien" class="avatar-fallback">{{ getInitials(selectedCustomer.hoTenKhachHang) }}</div>
+        </div>
+        <div>
+          <h3>{{ selectedCustomer.hoTenKhachHang }}</h3>
+          <span class="sub-text">Mã khách hàng: {{ selectedCustomer.maKhachHang }}</span>
+        </div>
+        <span class="status-badge" [class.active]="selectedCustomer.trangThaiTaiKhoan === 'HoatDong'" [class.locked]="selectedCustomer.trangThaiTaiKhoan === 'DaKhoa'">
+          <span class="status-bullet" [class.active]="selectedCustomer.trangThaiTaiKhoan === 'HoatDong'" [class.locked]="selectedCustomer.trangThaiTaiKhoan === 'DaKhoa'"></span>
+          {{ selectedCustomer.trangThaiTaiKhoan === 'HoatDong' ? 'Hoạt động' : 'Đã khóa' }}
+        </span>
+      </div>
+      <button class="btn-close" (click)="closeDetailModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <!-- Layout Split -->
+    <div class="modal-body-split">
+      <!-- Left sidebar navigation tabs inside detail popup -->
+      <div class="detail-sidebar">
+        <button class="sidebar-tab-btn" [class.active]="detailTabActive === 'info'" (click)="setDetailTab('info')">
+          <span class="material-icons">person</span> Thông tin tài khoản
+        </button>
+        <button class="sidebar-tab-btn" [class.active]="detailTabActive === 'booking'" (click)="setDetailTab('booking')">
+          <span class="material-icons">confirmation_number</span> Lịch sử đặt vé ({{ customerTickets.length }})
+        </button>
+        <button class="sidebar-tab-btn" [class.active]="detailTabActive === 'logs'" (click)="setDetailTab('logs')">
+          <span class="material-icons">history</span> Nhật ký hoạt động
+        </button>
+
+        <div class="sidebar-footer-stats">
+          <div class="stat-item">
+            <span class="stat-label">Ngày đăng ký</span>
+            <span class="stat-val">{{ selectedCustomer.ngayDangKy | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tổng vé đặt</span>
+            <span class="stat-val">{{ selectedCustomer.tongSoVeDaDat }} vé</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Content Pane -->
+      <div class="detail-content-pane">
+        <!-- Sub-tab 1: Account Info & Editing -->
+        <div *ngIf="detailTabActive === 'info' && editedCustomer" class="tab-pane-content">
+          <h4 class="section-title">Cập nhật hồ sơ khách hàng</h4>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="required-field">Mã khách hàng</label>
+              <input type="text" [value]="editedCustomer.maKhachHang" class="form-control" disabled />
+            </div>
+
+            <div class="form-group">
+              <label class="required-field">Họ và tên khách hàng</label>
+              <input 
+                type="text" 
+                [(ngModel)]="editedCustomer.hoTenKhachHang" 
+                class="form-control" 
+                [class.has-error]="formErrors['hoTenKhachHang']" />
+              <span class="error-msg" *ngIf="formErrors['hoTenKhachHang']">{{ formErrors['hoTenKhachHang'] }}</span>
+            </div>
+
+            <div class="form-group">
+              <label class="required-field">Số điện thoại</label>
+              <input 
+                type="text" 
+                [(ngModel)]="editedCustomer.soDienThoai" 
+                class="form-control" 
+                [class.has-error]="formErrors['soDienThoai']" />
+              <span class="error-msg" *ngIf="formErrors['soDienThoai']">{{ formErrors['soDienThoai'] }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Địa chỉ Email</label>
+              <input 
+                type="email" 
+                [(ngModel)]="editedCustomer.email" 
+                class="form-control" 
+                [class.has-error]="formErrors['email']" />
+              <span class="error-msg" *ngIf="formErrors['email']">{{ formErrors['email'] }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Giới tính</label>
+              <select [(ngModel)]="editedCustomer.gioiTinh" class="form-control">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Ngày sinh</label>
+              <input 
+                type="date" 
+                [(ngModel)]="editedCustomer.ngaySinh" 
+                class="form-control" 
+                [class.has-error]="formErrors['ngaySinh']" />
+              <span class="error-msg" *ngIf="formErrors['ngaySinh']">{{ formErrors['ngaySinh'] }}</span>
+            </div>
+          </div>
+
+          <!-- Lock status details display -->
+          <div class="lock-details-box" *ngIf="selectedCustomer.trangThaiTaiKhoan === 'DaKhoa'">
+            <div class="lock-details-header">
+              <span class="material-icons">info</span>
+              <strong>Thông tin chi tiết khóa tài khoản</strong>
+            </div>
+            <div class="lock-details-body">
+              <p><strong>Ngày khóa:</strong> {{ selectedCustomer.ngayKhoa | date:'dd/MM/yyyy' }}</p>
+              <p><strong>Lý do khóa:</strong> <span class="text-danger">{{ selectedCustomer.lyDoKhoa }}</span></p>
+            </div>
+          </div>
+
+          <!-- Account lock options -->
+          <div class="account-actions-box">
+            <h5 class="box-title">Trạng thái bảo mật tài khoản</h5>
+            <div class="box-actions-row">
+              <div *ngIf="selectedCustomer.trangThaiTaiKhoan === 'HoatDong'">
+                <p class="text-secondary text-13">Tài khoản này đang hoạt động tốt. Bạn có thể tạm thời khóa nếu phát hiện có hành vi gian lận hoặc vi phạm.</p>
+                <button class="btn-outline-danger" (click)="openLockCustomerModal(selectedCustomer)">
+                  <span class="material-icons">lock</span> Khóa tài khoản khách hàng
+                </button>
+              </div>
+              <div *ngIf="selectedCustomer.trangThaiTaiKhoan === 'DaKhoa'">
+                <p class="text-secondary text-13">Tài khoản này đã bị khóa. Khách hàng không thể giao dịch. Bạn có thể mở khóa lại nếu đã giải quyết xong khiếu nại.</p>
+                <button class="btn-outline-success" (click)="unlockCustomer(selectedCustomer)">
+                  <span class="material-icons">lock_open</span> Mở khóa tài khoản ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-tab 2: Booking history -->
+        <div *ngIf="detailTabActive === 'booking'" class="tab-pane-content">
+          <h4 class="section-title">Lịch sử đặt mua vé xe</h4>
+          <p class="text-secondary text-13 margin-bottom-15">Lịch sử giao dịch đặt ghế/chuyến xe vật lý trên hệ thống TXP BUS của khách hàng.</p>
+
+          <div class="table-responsive">
+            <table class="premium-table-compact">
+              <thead>
+                <tr>
+                  <th>Mã vé</th>
+                  <th>Tuyến xe</th>
+                  <th>Ghế</th>
+                  <th>Ngày chạy</th>
+                  <th>Giá vé</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let t of customerTickets">
+                  <td><strong>{{ t.maVe }}</strong></td>
+                  <td>{{ t.tuyenXe }}</td>
+                  <td><span class="seat-badge">{{ t.ghe }}</span></td>
+                  <td>{{ t.ngayChay | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ t.giaVe | number }} đ</td>
+                  <td>
+                    <span class="ticket-status-badge" [class.active]="t.trangThai === 'ConHieuLuc'" [class.used]="t.trangThai === 'DaSuDung'" [class.cancelled]="t.trangThai === 'DaHuy'">
+                      {{ t.trangThai === 'ConHieuLuc' ? 'Chờ chạy' : (t.trangThai === 'DaSuDung' ? 'Đã chạy' : 'Đã hủy') }}
+                    </span>
+                  </td>
+                </tr>
+                <tr *ngIf="customerTickets.length === 0">
+                  <td colspan="6" class="empty-row-compact">Không có lịch sử đặt vé nào.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Sub-tab 3: Activity logs -->
+        <div *ngIf="detailTabActive === 'logs'" class="tab-pane-content">
+          <h4 class="section-title">Nhật ký hoạt động hệ thống</h4>
+          <p class="text-secondary text-13 margin-bottom-15">Lịch sử thao tác đăng nhập, sửa đổi hồ sơ, đặt vé và xác thực tài khoản của khách hàng.</p>
+
+          <div class="logs-timeline">
+            <div class="timeline-item" *ngFor="let log of customerLogs">
+              <div class="timeline-badge" [class.blue]="log.loaiThaoTac === 'Đăng nhập'" [class.green]="log.loaiThaoTac === 'Đặt vé thành công'" [class.orange]="log.loaiThaoTac === 'Thay đổi thông tin' || log.loaiThaoTac === 'Cập nhật thông tin'" [class.red]="log.loaiThaoTac === 'Khóa tài khoản'">
+                <span class="material-icons">
+                  {{ log.loaiThaoTac === 'Đăng nhập' ? 'login' : (log.loaiThaoTac === 'Đặt vé thành công' ? 'confirmation_number' : (log.loaiThaoTac === 'Khóa tài khoản' ? 'lock' : 'edit')) }}
+                </span>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-header">
+                  <strong>{{ log.loaiThaoTac }}</strong>
+                  <span class="timeline-time">{{ log.thoiGian }}</span>
+                </div>
+                <p class="timeline-desc">{{ log.noiDungChiTiet }}</p>
+                <div class="timeline-footer">
+                  <span class="ip-address">IP: {{ log.diaChiIP }}</span>
+                  <span class="log-id">Mã: {{ log.maNhatKy }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="empty-timeline" *ngIf="customerLogs.length === 0">
+              Không có nhật ký hoạt động nào.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions (only visible in account info tab for editing updates) -->
+    <div class="modal-footer-sticky" *ngIf="detailTabActive === 'info'">
+      <div class="footer-actions-right">
+        <button class="btn-secondary" (click)="closeDetailModal()">Đóng cửa sổ</button>
+        <button class="btn-success" (click)="updateCustomer()">
+          <span class="material-icons">save</span> Lưu thay đổi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

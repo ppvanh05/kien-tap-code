@@ -1,0 +1,595 @@
+<div class="page-container">
+  <!-- Premium Custom Success/Warning Alert Popup Overlay (Top-level) -->
+  <div class="custom-alert-overlay" *ngIf="notification.show" (click)="closeNotification()">
+    <div class="custom-alert-card" (click)="$event.stopPropagation()">
+      <div class="custom-alert-body">
+        <div class="custom-alert-icon-wrapper" [class]="notification.type">
+          <span class="material-icons" *ngIf="notification.type === 'success'">check</span>
+          <span class="material-icons" *ngIf="notification.type === 'warning'">priority_high</span>
+          <span class="material-icons" *ngIf="notification.type === 'error'">close</span>
+        </div>
+        <div class="custom-alert-content">
+          <h4 class="custom-alert-title">{{ notification.title }}</h4>
+          <p class="custom-alert-message" [innerHTML]="notification.message"></p>
+        </div>
+      </div>
+      <div class="custom-alert-footer">
+        <button class="btn-alert-ok" [class]="notification.type" (click)="closeNotification()">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản lý tài khoản</span>
+      <span class="separator">/</span>
+      <span class="current">Danh sách tài khoản</span>
+    </div>
+    <h1>Danh sách tài khoản</h1>
+  </div>
+
+  <!-- Content Card -->
+  <div class="card">
+    <!-- Filter Tabs (Tất cả, Đang hoạt động, Đã khóa) -->
+    <div class="tabs-container">
+      <button class="tab-btn" [class.active]="activeTab === 'all'" (click)="setTab('all')">
+        Tất cả
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'active'" (click)="setTab('active')">
+        Đang hoạt động
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'locked'" (click)="setTab('locked')">
+        Đã khóa
+      </button>
+    </div>
+
+    <!-- Green primary add button -->
+    <div class="actions-header">
+      <button class="btn-add-account" (click)="openAddModal()">
+        <span class="material-icons">add</span> Thêm tài khoản mới
+      </button>
+    </div>
+
+    <!-- Search and Filters bar -->
+    <div class="search-filter-bar">
+      <div class="search-input-wrapper">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="search()"
+          placeholder="Nhập ID/Tên truy cập/tên hiể..." 
+          class="form-control-search" />
+      </div>
+
+      <div class="select-wrapper">
+        <select class="form-select-type" (change)="setFilterRole($event)" [(ngModel)]="filterRole">
+          <option value="Tất cả chức vụ">Tất cả chức vụ</option>
+          <option value="BanQuanLy">Ban quản lý</option>
+          <option value="QuanTriVien">Quản trị viên</option>
+          <option value="DieuPhoi">Nhân viên điều phối</option>
+          <option value="BanVe">Nhân viên bán vé</option>
+        </select>
+      </div>
+
+      <button class="btn-search-outline" (click)="search()">Tìm kiếm</button>
+    </div>
+
+    <!-- Accounts Table -->
+    <div class="table-responsive">
+      <table class="premium-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên truy cập</th>
+            <th>Tên hiển thị</th>
+            <th>Nhóm quyền hoạt động</th>
+            <th>Chức vụ mặc định</th>
+            <th class="text-right">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of getPagedEmployees()">
+            <td>
+              <div class="id-wrapper">
+                <span class="status-bullet" [class.active]="emp.trangThai === 'HoatDong'" [class.locked]="emp.trangThai === 'VoHieuHoa'"></span>
+                {{ emp.id }}
+              </div>
+            </td>
+            <td><strong>{{ emp.tenTruyCap }}</strong></td>
+            <td>{{ emp.tenHienThi }}</td>
+            <td>
+              <!-- Dynamic permissions tag string -->
+              <span class="permission-tags-display">
+                {{ getDynamicRolesString(emp) }}
+              </span>
+            </td>
+            <td>
+              <span class="account-type-label">
+                {{ getRoleLabel(emp) }}
+              </span>
+            </td>
+            <td class="text-right">
+              <button class="btn-edit" (click)="openEditModal(emp)" title="Chỉnh sửa thông tin">
+                <span class="material-icons">edit</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredEmployees.length === 0">
+            <td colspan="6" class="empty-row">
+              <div class="empty-state">
+                <span class="material-icons">no_accounts</span>
+                <p>Không tìm thấy tài khoản nhân viên nào khớp với bộ lọc.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredEmployees.length > 0">
+      <div class="pagination-controls">
+        <button class="btn-page" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        
+        <button 
+          *ngFor="let p of getPageNumbers()" 
+          class="btn-page" 
+          [class.active]="currentPage === p" 
+          (click)="setPage(p)">
+          {{ p }}
+        </button>
+        
+        <button class="btn-page" [disabled]="currentPage === totalPages" (click)="setPage(currentPage + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="page-size-selector">
+        <select [ngModel]="pageSize" (change)="changePageSize($event)" class="form-control-page-size">
+          <option [value]="5">5 / trang</option>
+          <option [value]="10">10 / trang</option>
+          <option [value]="20">20 / trang</option>
+          <option [value]="50">50 / trang</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-step Account Edit/Create Modal Overlay -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="title-left">
+          <h3>{{ isEditMode ? 'Chỉnh sửa thông tin' : 'Tạo tài khoản mới' }}</h3>
+          
+          <!-- Corrected Badge positioning - Moved inside title-left wrapper next to title! -->
+          <span 
+            *ngIf="isEditMode"
+            class="status-badge" 
+            [class.active]="formModel.trangThai === 'HoatDong'" 
+            [class.locked]="formModel.trangThai === 'VoHieuHoa'">
+            <span class="material-icons">{{ formModel.trangThai === 'HoatDong' ? 'check_circle' : 'cancel' }}</span>
+            {{ formModel.trangThai === 'HoatDong' ? 'Đang hoạt động' : 'Vô hiệu hóa' }}
+          </span>
+        </div>
+        <button class="btn-close" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <!-- Step Navigation Tabs inside Modal (Freely navigable!) -->
+      <div class="modal-step-tabs">
+        <button class="step-tab-btn" [class.active]="modalTab === 'basic'" (click)="setModalTab('basic')">
+          Thông tin cơ bản
+        </button>
+        <button class="step-tab-btn" [class.active]="modalTab === 'permission'" (click)="setModalTab('permission')">
+          Phân quyền
+        </button>
+        <button class="step-tab-btn" [class.active]="modalTab === 'contact'" (click)="setModalTab('contact')">
+          Thông tin liên hệ
+        </button>
+      </div>
+
+      <!-- Modal Body (Step Specific Panels) -->
+      <div class="modal-body">
+        
+        <!-- STEP 1: Basic Information -->
+        <div class="step-panel" *ngIf="modalTab === 'basic'">
+          
+          <!-- Username & Password Row (Topmost Required Fields!) -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Tên truy cập <span class="required">*</span></label>
+              <input 
+                type="text" 
+                [(ngModel)]="formModel.tenTruyCap" 
+                [disabled]="isEditMode" 
+                placeholder="Nhập tên truy cập..." 
+                class="form-control" />
+            </div>
+
+            <!-- Lock Mode status if Edit -->
+            <div class="form-group" *ngIf="isEditMode">
+              <label>Trạng thái hoạt động</label>
+              <div class="status-indicator-box" [class.locked]="formModel.trangThai === 'VoHieuHoa'">
+                <span class="material-icons">{{ formModel.trangThai === 'HoatDong' ? 'verified' : 'block' }}</span>
+                <strong>{{ formModel.trangThai === 'HoatDong' ? 'ĐANG HOẠT ĐỘNG' : 'VÔ HIỆU HÓA' }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Passwords toggles in Edit Mode -->
+          <div class="form-group" *ngIf="isEditMode">
+            <div class="toggle-password-change">
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="showPasswordText" />
+                <span class="slider round"></span>
+              </label>
+              <span class="toggle-label">Hiển thị mật khẩu hiện tại</span>
+            </div>
+          </div>
+
+          <!-- Passwords entry inputs -->
+          <div class="form-row-2" *ngIf="!isEditMode || showPasswordText">
+            <div class="form-group password-group">
+              <label>Mật khẩu <span class="required">*</span></label>
+              <div class="password-input-wrapper">
+                <input 
+                  [type]="showPasswordText ? 'text' : 'password'" 
+                  [(ngModel)]="formModel.matKhau" 
+                  placeholder="Nhập mật khẩu..." 
+                  class="form-control" />
+                <button class="btn-toggle-eye" (click)="showPasswordText = !showPasswordText">
+                  <span class="material-icons">{{ showPasswordText ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group password-group" *ngIf="!isEditMode">
+              <label>Nhập lại mật khẩu <span class="required">*</span></label>
+              <div class="password-input-wrapper">
+                <input 
+                  [type]="showConfirmPasswordText ? 'text' : 'password'" 
+                  [(ngModel)]="confirmPassword" 
+                  placeholder="Nhập lại mật khẩu..." 
+                  class="form-control" />
+                <button class="btn-toggle-eye" (click)="showConfirmPasswordText = !showConfirmPasswordText">
+                  <span class="material-icons">{{ showConfirmPasswordText ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Full name row -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Họ và tên đệm <span class="required">*</span></label>
+              <input 
+                type="text" 
+                [(ngModel)]="formModel.hoVaTenDem" 
+                placeholder="Ví dụ: Nguyễn Văn" 
+                class="form-control" />
+            </div>
+            
+            <div class="form-group">
+              <label>Tên <span class="required">*</span></label>
+              <input 
+                type="text" 
+                [(ngModel)]="formModel.ten" 
+                placeholder="Ví dụ: A" 
+                class="form-control" />
+            </div>
+          </div>
+
+          <!-- Display Name -->
+          <div class="form-group">
+            <label>Tên hiển thị <span class="required">*</span></label>
+            <input 
+              type="text" 
+              [(ngModel)]="formModel.tenHienThi" 
+              placeholder="Ví dụ: Nguyễn Văn A" 
+              class="form-control" />
+          </div>
+
+          <!-- Default Role Dropdown Selection (Bidirectionally synced with permissions!) -->
+          <div class="form-group">
+            <label>Chức vụ mặc định <span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="formModel.loaiTaiKhoan" (change)="onLoaiTaiKhoanChange()" class="form-control">
+                <option value="QuanTriVien">Quản trị viên</option>
+                <option value="BanQuanLy">Ban quản lý</option>
+                <option value="DieuPhoi">Nhân viên điều phối</option>
+                <option value="BanVe">Nhân viên bán vé</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Gender & DOB row -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Giới tính</label>
+              <div class="select-wrapper">
+                <select [(ngModel)]="formModel.gioiTinh" class="form-control">
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Ngày sinh</label>
+              <input 
+                type="date" 
+                [(ngModel)]="formModel.ngaySinh" 
+                class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Select Office/Location (Secondary Fields moved below) -->
+          <div class="form-group">
+            <label>Tìm để chọn văn phòng <span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="formModel.maVanPhong" class="form-control">
+                <option *ngFor="let office of offices" [value]="office">{{ office }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Avatar Photo Upload Box -->
+          <div class="form-group">
+            <label>Ảnh đại diện</label>
+            <div class="avatar-upload-container">
+              <div class="avatar-preview-box" *ngIf="formModel.anhDaiDien">
+                <img [src]="formModel.anhDaiDien" alt="Avatar" />
+              </div>
+              <div class="avatar-upload-placeholder" *ngIf="!formModel.anhDaiDien" (click)="triggerImageUpload(avatarInput)">
+                <span class="material-icons upload-icon">file_upload</span>
+                <span class="upload-text">Tải ảnh lên</span>
+              </div>
+              <input 
+                type="file" 
+                #avatarInput 
+                style="display: none" 
+                accept="image/*" 
+                (change)="onImageSelected($event)" />
+            </div>
+          </div>
+
+          <!-- Description/Notes -->
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <textarea 
+              [(ngModel)]="formModel.ghiChu" 
+              class="form-control textarea-note" 
+              placeholder="Nhập ghi chú hoặc mô tả ngắn..." 
+              rows="3"></textarea>
+          </div>
+
+        </div>
+
+        <!-- STEP 2: FLEXIBLE Detailed Permissions Selection Grid -->
+        <div class="step-panel" *ngIf="modalTab === 'permission'">
+          <label class="section-label-main">Phân quyền chức năng linh hoạt (RBAC)</label>
+          <p class="section-description">Cấp quyền hạn thực tế cho tài khoản bằng cách chọn mẫu vai trò hoặc tự chọn các quyền cụ thể từng module.</p>
+
+          <!-- Quick presets chip selection -->
+          <div class="preset-chips-wrapper">
+            <span class="preset-label">Mẫu vai trò gợi ý nhanh:</span>
+            <div class="chips-container">
+              <button 
+                *ngFor="let template of roleTemplates" 
+                type="button" 
+                class="preset-chip" 
+                [title]="template.description"
+                (click)="applyPermissionPreset(template.key)">
+                <span class="material-icons">{{ template.icon }}</span>
+                {{ template.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Selected Permissions Summary Panel (Highly visible, allows quick audit and instant revocation) -->
+          <div class="active-permissions-summary" *ngIf="formModel.permissions.length > 0">
+            <span class="summary-label">Các quyền đang được cấp (quan sát nhanh tại đây):</span>
+            <div class="summary-badges-container">
+              <span *ngFor="let key of formModel.permissions" class="active-perm-badge">
+                {{ getPermissionName(key) }}
+                <span class="material-icons remove-badge-btn" (click)="removePermissionKey(key)" title="Thu hồi quyền này">close</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Search & Select All Actions Bar -->
+          <div class="search-selection-controls">
+            <div class="perm-search-box">
+              <span class="material-icons search-icon">search</span>
+              <input 
+                type="text" 
+                [(ngModel)]="permissionSearchQuery" 
+                placeholder="Tìm kiếm quyền hạn (ví dụ: bán vé, news...)" 
+                class="form-control-perm-search" />
+            </div>
+            
+            <div class="selection-actions">
+              <label class="checkbox-container-inline">
+                <input 
+                  type="checkbox" 
+                  [checked]="isAllPermissionsSelected()" 
+                  (change)="toggleAllPermissions($event)" />
+                <span class="checkmark"></span>
+                <span class="checkbox-label-text">Chọn tất cả</span>
+              </label>
+              
+              <span class="badge-total-selected">
+                Đã tích: <strong>{{ formModel.permissions.length }}</strong> / {{ allPermissionKeys.length }} quyền
+              </span>
+            </div>
+          </div>
+
+          <!-- Flexible Checkbox Permissions Accordions (Optimized stable rendering to prevent DOM churn) -->
+          <div class="detailed-permissions-list">
+            <ng-container *ngFor="let module of permissionModules">
+              <div 
+                *ngIf="isModuleVisible(module)" 
+                class="permission-module-card" 
+                [class.collapsed]="!module.isOpen">
+                
+                <!-- Accordion Card Header -->
+                <div class="module-card-header" (click)="module.isOpen = !module.isOpen">
+                  <div class="header-left">
+                    <label class="checkbox-container-header" (click)="$event.stopPropagation()">
+                      <input 
+                        type="checkbox" 
+                        [checked]="isModuleAllSelected(module)" 
+                        (change)="toggleModuleAll(module, $event)" />
+                      <span class="checkmark"></span>
+                    </label>
+                    
+                    <span class="material-icons module-icon">{{ module.moduleIcon }}</span>
+                    <span class="module-title-text">{{ module.moduleName }}</span>
+                  </div>
+                  
+                  <div class="header-right">
+                    <span class="badge-module-checked" [class.all-checked]="isModuleAllSelected(module)" [class.some-checked]="getModuleCheckedCount(module) > 0">
+                      Đã tích: {{ getModuleCheckedCount(module) }} / {{ module.permissions.length }}
+                    </span>
+                    <span class="material-icons expand-arrow">{{ module.isOpen ? 'expand_less' : 'expand_more' }}</span>
+                  </div>
+                </div>
+                
+                <!-- Collapsible Content Panel -->
+                <div class="module-card-body" *ngIf="module.isOpen">
+                  <div class="permissions-grid">
+                    <ng-container *ngFor="let perm of module.permissions">
+                      <div 
+                        *ngIf="isPermissionVisible(perm)" 
+                        class="permission-item-card" 
+                        [class.checked]="isPermissionChecked(perm.key)">
+                        
+                        <label class="checkbox-container">
+                          <input 
+                            type="checkbox" 
+                            [checked]="isPermissionChecked(perm.key)" 
+                            (change)="togglePermission(perm.key, $event)" />
+                          <span class="checkmark"></span>
+                          
+                          <div class="perm-card-details">
+                            <div class="perm-name-row">
+                              <strong class="perm-name">{{ perm.name }}</strong>
+                            </div>
+                            <p class="perm-description-text">{{ perm.description }}</p>
+                          </div>
+                        </label>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- STEP 3: Contact Details -->
+        <div class="step-panel" *ngIf="modalTab === 'contact'">
+          
+          <!-- Tel & Phone Row -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Số điện thoại di động <span class="required">*</span></label>
+              <input 
+                type="tel" 
+                [(ngModel)]="formModel.soDienThoai" 
+                placeholder="Ví dụ: 0987xxxxxx" 
+                class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label>Điện thoại cố định (Nếu có)</label>
+              <input 
+                type="tel" 
+                [(ngModel)]="formModel.dienThoaiCoDinh" 
+                placeholder="Ví dụ: 024xxxx" 
+                class="form-control" />
+            </div>
+          </div>
+
+          <!-- Email Row -->
+          <div class="form-group">
+            <label>Địa chỉ Email <span class="required">*</span></label>
+            <input 
+              type="email" 
+              [(ngModel)]="formModel.email" 
+              placeholder="example@txpbus.vn" 
+              class="form-control" />
+          </div>
+
+          <!-- Home Address -->
+          <div class="form-group">
+            <label>Địa chỉ liên lạc thường trú</label>
+            <input 
+              type="text" 
+              [(ngModel)]="formModel.diaChi" 
+              placeholder="Nhập địa chỉ nhà riêng, quận/huyện, thành phố..." 
+              class="form-control" />
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <!-- Soft Delete / Status lock button on Left -->
+        <div class="footer-left" *ngIf="isEditMode">
+          <button 
+            class="btn-status-toggle" 
+            [class.lock-mode]="formModel.trangThai === 'HoatDong'"
+            [class.unlock-mode]="formModel.trangThai === 'VoHieuHoa'"
+            (click)="toggleStatus()">
+            <span class="material-icons">{{ formModel.trangThai === 'HoatDong' ? 'lock' : 'lock_open' }}</span>
+            {{ formModel.trangThai === 'HoatDong' ? 'Khóa tài khoản' : 'Mở khóa tài khoản' }}
+          </button>
+        </div>
+
+        <div class="footer-actions-right">
+          <button class="btn-modal-cancel" (click)="closeModal()">Hủy</button>
+          
+          <!-- Back button -->
+          <button 
+            class="btn-modal-back" 
+            [disabled]="modalTab === 'basic'" 
+            (click)="setModalTab(modalTab === 'contact' ? 'permission' : 'basic')">
+            Trở lại
+          </button>
+
+          <!-- Continue / Save button -->
+          <button 
+            *ngIf="modalTab !== 'contact'"
+            class="btn-modal-continue" 
+            (click)="setModalTab(modalTab === 'basic' ? 'permission' : 'contact')">
+            Tiếp tục
+          </button>
+
+          <button 
+            *ngIf="modalTab === 'contact'"
+            class="btn-modal-save" 
+            (click)="saveAccount()">
+            <span class="material-icons">save</span> Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

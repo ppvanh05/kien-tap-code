@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 
 interface StatCard {
   title: string;
-  value: string;
+  value: number | string;
+  isCurrency?: boolean;
   trend: string;
   trendType: 'up' | 'down';
   icon: string;
-  color: string;
+  theme: string;
 }
 
 interface Booking {
@@ -17,7 +18,7 @@ interface Booking {
   route: string;
   seat: string;
   time: string;
-  price: string;
+  price: number;
   status: string;
 }
 
@@ -42,16 +43,17 @@ export class TrangChuComponent {
       value: '1,234', 
       trend: '+12.5% so với tháng trước', 
       trendType: 'up',
-      icon: 'confirmation_number',
-      color: '#00bfa5'
+      icon: 'local_activity',
+      theme: 'blue'
     },
     { 
       title: 'Doanh thu tháng này', 
-      value: '145M', 
+      value: 145000000, 
+      isCurrency: true,
       trend: '+8.2% so với tháng trước', 
       trendType: 'up',
       icon: 'payments',
-      color: '#f37021'
+      theme: 'orange'
     },
     { 
       title: 'Khách hàng mới', 
@@ -59,7 +61,7 @@ export class TrangChuComponent {
       trend: '-3.1% so với tháng trước', 
       trendType: 'down',
       icon: 'person_add',
-      color: '#0097a7'
+      theme: 'purple'
     },
     { 
       title: 'Phương tiện hoạt động', 
@@ -67,22 +69,37 @@ export class TrangChuComponent {
       trend: 'Tỉ lệ vận hành 87%', 
       trendType: 'up',
       icon: 'directions_bus',
-      color: '#f37021'
+      theme: 'teal'
     }
   ];
 
   bookings: Booking[] = [
-    { id: 'TXP1245678', customer: 'Nguyễn Văn A', route: 'TP HCM - Bình Dương', seat: 'A1, A2', time: '06:00', price: '170,000đ', status: 'Hoàn thành' },
-    { id: 'TXP1245679', customer: 'Trần Thị B', route: 'TP HCM - Bình Dương', seat: 'B3', time: '08:30', price: '95,000đ', status: 'Đang chờ' },
-    { id: 'TXP1245680', customer: 'Lê Văn C', route: 'TP HCM - Bình Dương', seat: 'A5, A6, A7', time: '10:00', price: '255,000đ', status: 'Hoàn thành' },
-    { id: 'TXP1245681', customer: 'Phạm Thị D', route: 'TP HCM - Bình Dương', seat: 'B10', time: '13:00', price: '100,000đ', status: 'Hoàn thành' }
+    { id: 'TXP1245678', customer: 'Nguyễn Văn A', route: 'Bến xe Miền Đông – Bến xe Hà Nội', seat: 'A1, A2', time: '06:00', price: 1720000, status: 'Hoàn thành' },
+    { id: 'TXP1245679', customer: 'Trần Thị B', route: 'Bến xe Miền Đông – Bến xe Đà Nẵng', seat: 'B3', time: '08:30', price: 960000, status: 'Đang chờ' },
+    { id: 'TXP1245680', customer: 'Lê Văn C', route: 'Bến xe Miền Đông – Bến xe Vinh', seat: 'A5, A6, A7', time: '10:00', price: 1350000, status: 'Hoàn thành' },
+    { id: 'TXP1245681', customer: 'Phạm Thị D', route: 'Bến xe Miền Đông – Bến xe Huế', seat: 'B10', time: '13:00', price: 1050000, status: 'Hoàn thành' }
   ];
 
   popularRoutes: PopularRoute[] = [
-    { name: 'TP HCM - Bình Dương', bookings: 342, trend: '+12%', trendType: 'up' },
-    { name: 'TP HCM - Đồng Nai', bookings: 289, trend: '+8%', trendType: 'up' },
-    { name: 'TP HCM - Long An', bookings: 231, trend: '-5%', trendType: 'down' },
-    { name: 'TP HCM - Tây Ninh', bookings: 187, trend: '+15%', trendType: 'up' },
-    { name: 'TP HCM - Bà Rịa', bookings: 156, trend: '+3%', trendType: 'up' }
+    { name: 'Bến xe Miền Đông – Bến xe Hà Nội', bookings: 342, trend: '+12%', trendType: 'up' },
+    { name: 'Bến xe Miền Đông – Bến xe Đà Nẵng', bookings: 289, trend: '+8%', trendType: 'up' },
+    { name: 'Bến xe Miền Đông – Bến xe Vinh', bookings: 231, trend: '-5%', trendType: 'down' },
+    { name: 'Bến xe Miền Đông – Bến xe Huế', bookings: 187, trend: '+15%', trendType: 'up' }
   ];
+
+  getSeatsList(seat: string): string[] {
+    if (!seat) return [];
+    return seat.split(',').map(s => s.trim());
+  }
+
+  getSeatColorClass(seat: string): string {
+    if (!seat) return '';
+    return seat.startsWith('A') ? 'seat-a' : 'seat-b';
+  }
+
+  getPriceColorClass(status: string): string {
+    if (status === 'Đang chờ') return 'price-unpaid';
+    if (status === 'Hoàn thành') return 'price-paid';
+    return '';
+  }
 }

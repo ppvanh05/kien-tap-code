@@ -1,0 +1,327 @@
+<div class="vehicle-management">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span>Quản lý điều hành</span> / <span class="active">Quản lý tài xế & phụ xe</span>
+  </div>
+
+  <!-- Main Card -->
+  <div class="content-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'all'" (click)="setTab('all')">Tất cả</button>
+      <button [class.active]="activeTab === 'active'" (click)="setTab('active')">Đang hoạt động</button>
+      <button [class.active]="activeTab === 'locked'" (click)="setTab('locked')">Đã khóa</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-bar">
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <button class="btn-add-vehicle-admin" (click)="openAddModal('driver')">
+          <span class="material-icons" style="font-size: 18px;">add</span>
+          Thêm tài xế & phụ xe
+        </button>
+      </div>
+      
+      <div style="display: flex; gap: 12px;">
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Họ và tên" style="padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; width: 250px; font-size: 14px; outline: none;">
+        <div style="width: 150px;">
+          <app-custom-select
+            [(value)]="roleFilter"
+            [options]="roleFilterOptions"
+            placeholder="Vai trò"
+            (valueChange)="filterDrivers()"
+          ></app-custom-select>
+        </div>
+        <button (click)="filterDrivers()" style="background-color: #f0f9fa; color: var(--primary-color); border: 1px solid #bee3e5; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+          Tìm kiếm
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 80px;">STT</th>
+            <th style="width: 240px;">Họ và tên</th>
+            <th class="text-center" style="width: 120px;">Vai trò</th>
+            <th class="text-center" style="width: 130px;">Ngày sinh</th>
+            <th class="text-center" style="width: 140px;">Số điện thoại</th>
+            <th class="text-center" style="width: 140px;">Hạng bằng lái</th>
+            <th class="text-center" style="width: 140px;">Hạn bằng lái</th>
+            <th class="text-center" style="width: 120px;">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="filteredDrivers.length === 0">
+            <td colspan="8" class="text-center" style="padding: 50px 0; background: #fafafa;">
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+                <span class="material-icons" style="font-size: 52px; color: #cbd5e0;">search_off</span>
+                <span style="font-size: 15px; color: #718096; font-weight: 500;">Không tìm thấy tài xế & phụ xe nào phù hợp</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngFor="let driver of filteredDrivers; let i = index">
+            <td class="text-center" style="font-weight: 500; color: #718096;">{{ i + 1 }}</td>
+            <td>
+              <span class="status-dot" [class.active]="driver.status === 'active'"></span>
+              <span style="font-weight: 500;">{{driver.name}}</span>
+            </td>
+            <td class="text-center">
+              <span style="padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block;"
+                    [style.background-color]="driver.role === 'driver' ? '#e0f9fa' : '#fff4ec'"
+                    [style.color]="driver.role === 'driver' ? '#007c80' : '#d95d14'">
+                {{ driver.role === 'driver' ? 'Tài xế' : 'Phụ xe' }}
+              </span>
+            </td>
+            <td class="text-center">{{driver.dob}}</td>
+            <td class="text-center">{{driver.phone}}</td>
+            <td class="text-center">{{driver.licenseClass || '-'}}</td>
+            <td class="text-center">{{driver.licenseExpiry || '-'}}</td>
+            <td class="text-center">
+              <button class="btn-edit-icon" (click)="openEditModal(driver)">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (mousedown)="onOverlayMouseDown($event)" (mouseup)="onOverlayMouseUp($event, 'main')">
+    <div class="modal-content large-modal" (mousedown)="$event.stopPropagation()" (mouseup)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? 'Chi tiết thông tin tài xế & phụ xe' : 'Thêm tài xế & phụ xe' }}</h2>
+        <button class="modal-close-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid" style="grid-template-columns: repeat(6, 1fr);">
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Vai trò <span class="required">*</span></label>
+            <app-custom-select
+              [(value)]="currentDriver.role"
+              [options]="roleFormOptions"
+              placeholder="Chọn vai trò"
+            ></app-custom-select>
+          </div>
+
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Họ và tên <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentDriver.name" placeholder="Nhập Họ và tên">
+          </div>
+          
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Ngày sinh <span class="required">*</span></label>
+            <div class="date-input-container" (click)="$event.stopPropagation()">
+              <input type="text" [(ngModel)]="currentDriver.dob" readonly (click)="toggleDatePicker('dob')" placeholder="Select date">
+              <span class="material-icons date-icon-inside" style="font-size: 18px;">calendar_today</span>
+
+              <!-- Custom Calendar Popup DOB -->
+              <div class="calendar-popup" *ngIf="isDobPickerOpen">
+                <div class="calendar-header">
+                  <button (click)="prev()"><span class="material-icons">chevron_left</span></button>
+                  <div class="month-year-labels">
+                    <span *ngIf="pickerViewMode === 'day'" class="month-label" (click)="setPickerView('month')">{{ months[viewDate.getMonth()] }}</span>
+                    <span *ngIf="pickerViewMode === 'day' || pickerViewMode === 'month'" class="year-label" (click)="setPickerView('year')">{{ viewDate.getFullYear() }}</span>
+                    <span *ngIf="pickerViewMode === 'year'" class="year-label">{{ yearRangeStart }} - {{ yearRangeStart + 11 }}</span>
+                  </div>
+                  <button (click)="next()"><span class="material-icons">chevron_right</span></button>
+                </div>
+                
+                <div class="calendar-grid" *ngIf="pickerViewMode === 'day'">
+                  <div class="weekday" *ngFor="let day of weekDays">{{day}}</div>
+                  <div class="day" *ngFor="let day of calendarDays" [class.empty]="!day" (click)="selectDate(day, 'dob')">
+                    {{day}}
+                  </div>
+                </div>
+
+                <div class="month-grid" *ngIf="pickerViewMode === 'month'">
+                  <div class="month-item" *ngFor="let m of months; let i = index" (click)="selectMonth(i)">{{ m }}</div>
+                </div>
+
+                <div class="year-grid" *ngIf="pickerViewMode === 'year'">
+                  <div class="year-item" *ngFor="let y of yearsList" (click)="selectYear(y)">{{ y }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="grid-column: span 3;">
+            <label>Số điện thoại <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentDriver.phone" placeholder="Nhập Số điện thoại" maxlength="10" (input)="onPhoneInput($event)" (blur)="onPhoneBlur()">
+            <span *ngIf="getPhoneErrorMessage()" style="color: #e53e3e; font-size: 12px; margin-top: 4px; display: block;">{{ getPhoneErrorMessage() }}</span>
+          </div>
+
+          <div class="form-group" style="grid-column: span 3;">
+            <label>Số CCCD/CMND <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentDriver.cccdNumber" placeholder="Nhập số CCCD/CMND" maxlength="12" (input)="onCccdInput($event)" (blur)="onCccdBlur()">
+            <span *ngIf="getCccdErrorMessage()" style="color: #e53e3e; font-size: 12px; margin-top: 4px; display: block;">{{ getCccdErrorMessage() }}</span>
+          </div>
+          
+          <div class="form-group" style="grid-column: span 3;">
+            <label>Hạng bằng lái <span class="required" *ngIf="currentDriver.role === 'driver'">*</span></label>
+            <input type="text" [(ngModel)]="currentDriver.licenseClass" placeholder="VD: A1, B2, C...">
+          </div>
+
+          <div class="form-group" style="grid-column: span 3;">
+            <label>Hạn bằng lái <span class="required" *ngIf="currentDriver.role === 'driver'">*</span></label>
+            <div class="date-input-container" (click)="$event.stopPropagation()">
+              <input type="text" [(ngModel)]="currentDriver.licenseExpiry" readonly (click)="toggleDatePicker('license')" placeholder="Select date">
+              <span class="material-icons date-icon-inside" style="font-size: 18px;">calendar_today</span>
+
+              <!-- Custom Calendar Popup License -->
+              <div class="calendar-popup" *ngIf="isLicPickerOpen">
+                <div class="calendar-header">
+                  <button (click)="prev()"><span class="material-icons">chevron_left</span></button>
+                  <div class="month-year-labels">
+                    <span *ngIf="pickerViewMode === 'day'" class="month-label" (click)="setPickerView('month')">{{ months[viewDate.getMonth()] }}</span>
+                    <span *ngIf="pickerViewMode === 'day' || pickerViewMode === 'month'" class="year-label" (click)="setPickerView('year')">{{ viewDate.getFullYear() }}</span>
+                    <span *ngIf="pickerViewMode === 'year'" class="year-label">{{ yearRangeStart }} - {{ yearRangeStart + 11 }}</span>
+                  </div>
+                  <button (click)="next()"><span class="material-icons">chevron_right</span></button>
+                </div>
+                
+                <div class="calendar-grid" *ngIf="pickerViewMode === 'day'">
+                  <div class="weekday" *ngFor="let day of weekDays">{{day}}</div>
+                  <div class="day" *ngFor="let day of calendarDays" [class.empty]="!day" (click)="selectDate(day, 'license')">
+                    {{day}}
+                  </div>
+                </div>
+
+                <div class="month-grid" *ngIf="pickerViewMode === 'month'">
+                  <div class="month-item" *ngFor="let m of months; let i = index" (click)="selectMonth(i)">{{ m }}</div>
+                </div>
+
+                <div class="year-grid" *ngIf="pickerViewMode === 'year'">
+                  <div class="year-item" *ngFor="let y of yearsList" (click)="selectYear(y)">{{ y }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document & Photo Uploads -->
+        <div style="display: flex; gap: 30px; margin-top: 15px; align-items: stretch;">
+          <!-- Left Column: Avatar -->
+          <div style="flex: 1; max-width: 250px; display: flex; flex-direction: column;">
+            <div class="form-group" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 0; gap: 8px;">
+              <label>Ảnh chân dung <span class="required">*</span></label>
+              <div class="upload-dashed-box" style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 320px;" (click)="avatarUpload.click()">
+                <div *ngIf="!currentDriver.avatar && !isUploadingAvatar" class="upload-centered">
+                  <span class="material-icons" style="font-size: 24px;">add</span>
+                  <span class="upload-text">Tải ảnh lên</span>
+                </div>
+                
+                <div *ngIf="isUploadingAvatar" class="upload-loading">
+                  <span class="material-icons rotating">sync</span>
+                </div>
+                
+                <img *ngIf="currentDriver.avatar && !isUploadingAvatar" [src]="currentDriver.avatar" class="img-full">
+              </div>
+              <input type="file" #avatarUpload hidden accept="image/*" (click)="$event.stopPropagation()" (change)="onImageUpload($event, 'avatar')">
+              <button *ngIf="currentDriver.avatar" class="btn-delete-photo" (click)="removeImage('avatar')">Xóa ảnh</button>
+            </div>
+          </div>
+
+          <!-- Right Column: 2x2 Grid for Licenses & CCCD -->
+          <div style="flex: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- License Front -->
+            <div class="form-group">
+              <label>Bằng lái xe mặt trước <span class="required" *ngIf="currentDriver.role === 'driver'">*</span></label>
+              <div class="upload-dashed-box" style="height: 140px;" (click)="licFrontUpload.click()">
+                <div *ngIf="!currentDriver.licenseFront && !isUploadingLicFront" class="upload-centered">
+                  <span class="material-icons" style="font-size: 24px;">add</span>
+                  <span class="upload-text">Tải ảnh lên</span>
+                </div>
+                <div *ngIf="isUploadingLicFront" class="upload-loading"><span class="material-icons rotating">sync</span></div>
+                <img *ngIf="currentDriver.licenseFront && !isUploadingLicFront" [src]="currentDriver.licenseFront" class="img-full">
+              </div>
+              <input type="file" #licFrontUpload hidden accept="image/*" (click)="$event.stopPropagation()" (change)="onImageUpload($event, 'licenseFront')">
+              <button *ngIf="currentDriver.licenseFront" class="btn-delete-photo" (click)="removeImage('licenseFront')" style="padding: 4px 10px; font-size: 12px;">Xóa</button>
+            </div>
+
+            <!-- License Back -->
+            <div class="form-group">
+              <label>Bằng lái xe mặt sau <span class="required" *ngIf="currentDriver.role === 'driver'">*</span></label>
+              <div class="upload-dashed-box" style="height: 140px;" (click)="licBackUpload.click()">
+                <div *ngIf="!currentDriver.licenseBack && !isUploadingLicBack" class="upload-centered">
+                  <span class="material-icons" style="font-size: 24px;">add</span>
+                  <span class="upload-text">Tải ảnh lên</span>
+                </div>
+                <div *ngIf="isUploadingLicBack" class="upload-loading"><span class="material-icons rotating">sync</span></div>
+                <img *ngIf="currentDriver.licenseBack && !isUploadingLicBack" [src]="currentDriver.licenseBack" class="img-full">
+              </div>
+              <input type="file" #licBackUpload hidden accept="image/*" (click)="$event.stopPropagation()" (change)="onImageUpload($event, 'licenseBack')">
+              <button *ngIf="currentDriver.licenseBack" class="btn-delete-photo" (click)="removeImage('licenseBack')" style="padding: 4px 10px; font-size: 12px;">Xóa</button>
+            </div>
+
+            <!-- CCCD Front -->
+            <div class="form-group">
+              <label>CCCD mặt trước <span class="required">*</span></label>
+              <div class="upload-dashed-box" style="height: 140px;" (click)="cccdFrontUpload.click()">
+                <div *ngIf="!currentDriver.cccdFront && !isUploadingCccdFront" class="upload-centered">
+                  <span class="material-icons" style="font-size: 24px;">add</span>
+                  <span class="upload-text">Tải ảnh lên</span>
+                </div>
+                <div *ngIf="isUploadingCccdFront" class="upload-loading"><span class="material-icons rotating">sync</span></div>
+                <img *ngIf="currentDriver.cccdFront && !isUploadingCccdFront" [src]="currentDriver.cccdFront" class="img-full">
+              </div>
+              <input type="file" #cccdFrontUpload hidden accept="image/*" (click)="$event.stopPropagation()" (change)="onImageUpload($event, 'cccdFront')">
+              <button *ngIf="currentDriver.cccdFront" class="btn-delete-photo" (click)="removeImage('cccdFront')" style="padding: 4px 10px; font-size: 12px;">Xóa</button>
+            </div>
+
+            <!-- CCCD Back -->
+            <div class="form-group">
+              <label>CCCD mặt sau <span class="required">*</span></label>
+              <div class="upload-dashed-box" style="height: 140px;" (click)="cccdBackUpload.click()">
+                <div *ngIf="!currentDriver.cccdBack && !isUploadingCccdBack" class="upload-centered">
+                  <span class="material-icons" style="font-size: 24px;">add</span>
+                  <span class="upload-text">Tải ảnh lên</span>
+                </div>
+                <div *ngIf="isUploadingCccdBack" class="upload-loading"><span class="material-icons rotating">sync</span></div>
+                <img *ngIf="currentDriver.cccdBack && !isUploadingCccdBack" [src]="currentDriver.cccdBack" class="img-full">
+              </div>
+              <input type="file" #cccdBackUpload hidden accept="image/*" (click)="$event.stopPropagation()" (change)="onImageUpload($event, 'cccdBack')">
+              <button *ngIf="currentDriver.cccdBack" class="btn-delete-photo" (click)="removeImage('cccdBack')" style="padding: 4px 10px; font-size: 12px;">Xóa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="footer-left">
+          <button *ngIf="isEditMode" class="btn-lock" (click)="toggleStatus()">
+            <span class="material-icons" style="font-size: 18px;">lock</span>
+            {{ currentDriver.status === 'active' ? (currentDriver.role === 'driver' ? 'Khóa tài xế' : 'Khóa phụ xe') : 'Mở khóa' }}
+          </button>
+          <button *ngIf="isEditMode" class="btn-delete" (click)="deleteDriver()">
+            <span class="material-icons" style="font-size: 18px;">delete</span>
+            {{ currentDriver.role === 'driver' ? 'Xóa tài xế' : 'Xóa phụ xe' }}
+          </button>
+        </div>
+        <div class="footer-right">
+          <button class="btn-cancel" (click)="closeModal()">Hủy</button>
+          <button class="btn-save" (click)="saveDriver()">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div class="modal-overlay" *ngIf="isAlertOpen" (mousedown)="onOverlayMouseDown($event)" (mouseup)="onOverlayMouseUp($event, 'alert')" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" (click)="$event.stopPropagation()">
+      <div style="margin-bottom: 20px;">
+        <span class="material-icons" style="font-size: 56px; color: var(--secondary-color);">error_outline</span>
+        <h3 style="margin-top: 15px; color: var(--text-dark); font-size: 18px; font-weight: 600;">Thông báo</h3>
+        <p style="color: var(--text-grey); font-size: 14px; margin-top: 8px;">{{ alertMessage }}</p>
+      </div>
+      <button class="btn-save" (click)="closeAlert()" style="width: 100%; padding: 12px; font-size: 15px;">Đã hiểu</button>
+    </div>
+  </div>
+</div>

@@ -5,17 +5,24 @@
   </div>
 
   <!-- Stats Cards -->
-  <div class="stats-grid">
-    <div *ngFor="let stat of stats" class="stat-card">
-      <div class="stat-content">
-        <span class="stat-title">{{ stat.title }}</span>
-        <span class="stat-value">{{ stat.value }}</span>
+  <div class="kpi-grid">
+    <div *ngFor="let stat of stats" class="kpi-card" [ngClass]="stat.theme">
+      <div class="kpi-icon-container">
+        <span class="material-icons">{{ stat.icon }}</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">{{ stat.title }}</span>
+        <span class="kpi-value">
+          <ng-container *ngIf="stat.isCurrency; else noCurrency">
+            {{ stat.value | number:'1.0-0' }}đ
+          </ng-container>
+          <ng-template #noCurrency>
+            {{ stat.value }}
+          </ng-template>
+        </span>
         <span class="stat-trend" [class.up]="stat.trendType === 'up'" [class.down]="stat.trendType === 'down'">
           {{ stat.trend }}
         </span>
-      </div>
-      <div class="stat-icon" [style.background-color]="stat.color">
-        <span class="material-icons">{{ stat.icon }}</span>
       </div>
     </div>
   </div>
@@ -25,7 +32,10 @@
     <div class="card table-card">
       <div class="card-header">
         <h2>Đặt vé gần đây</h2>
-        <button class="view-all" routerLink="/admin/quan-ly-ve/danh-sach-ve">Xem tất cả</button>
+        <button class="view-all" routerLink="/admin/quan-ly-ve/danh-sach-ve">
+          Xem tất cả
+          <span class="material-icons" style="font-size: 16px;">arrow_forward</span>
+        </button>
       </div>
       <div class="table-responsive">
         <table>
@@ -34,23 +44,25 @@
               <th>MÃ VÉ</th>
               <th>KHÁCH HÀNG</th>
               <th>TUYẾN</th>
-              <th>GHẾ</th>
-              <th>GIỜ</th>
-              <th>GIÁ</th>
+              <th style="text-align: center;">GHẾ</th>
+              <th style="text-align: center;">GIỜ</th>
+              <th style="text-align: right;">GIÁ VÉ</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let booking of bookings">
               <td class="id-col">{{ booking.id }}</td>
-              <td>
-                <div class="customer-info">
-                  <span>{{ booking.customer }}</span>
+              <td style="font-weight: 600;">{{ booking.customer }}</td>
+              <td class="route-col">{{ booking.route }}</td>
+              <td style="text-align: center;">
+                <div class="seats-container">
+                  <span *ngFor="let s of getSeatsList(booking.seat)" class="seat-badge" [ngClass]="getSeatColorClass(s)">
+                    {{ s }}
+                  </span>
                 </div>
               </td>
-              <td class="route-col">{{ booking.route }}</td>
-              <td>{{ booking.seat }}</td>
-              <td>{{ booking.time }}</td>
-              <td class="price-col">{{ booking.price }}</td>
+              <td style="text-align: center; font-weight: 600; color: #475569;">{{ booking.time }}</td>
+              <td class="price-col">{{ booking.price | number:'1.0-0' }}đ</td>
             </tr>
           </tbody>
         </table>
@@ -66,10 +78,13 @@
         <div *ngFor="let route of popularRoutes" class="route-item">
           <div class="route-info">
             <span class="route-name">{{ route.name }}</span>
-            <span class="route-count">{{ route.bookings }} vé</span>
+            <span class="route-count">
+              <span class="material-icons" style="font-size: 13px; color: #64748b; vertical-align: middle; margin-right: 3px;">local_activity</span>
+              {{ route.bookings }} vé đã bán
+            </span>
           </div>
           <div class="route-trend" [class.up]="route.trendType === 'up'" [class.down]="route.trendType === 'down'">
-            <span class="material-icons">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
+            <span class="material-icons" style="font-size: 14px;">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
             {{ route.trend }}
           </div>
         </div>
