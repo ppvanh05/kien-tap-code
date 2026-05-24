@@ -72,7 +72,7 @@ export class NhatKyHeThongService {
         NoiDungChiTiet: dto.NoiDungChiTiet,
         MaVe: dto.MaVe || null,
         TuyenXe: dto.TuyenXe || null,
-        TrangThai: dto.TrangThai ?? 'Thành công',
+        TrangThai: dto.TrangThai === 'Thất bại' ? 'ThatBai' : 'ThanhCong',
         ThietBiTrinhDuyet: dto.ThietBiTrinhDuyet || 'Web Client',
         TrangThaiCu: dto.TrangThaiCu || null,
         TrangThaiMoi: dto.TrangThaiMoi || null,

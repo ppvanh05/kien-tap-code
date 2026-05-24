@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, TrangThaiTaiKhoanEnum } from '@prisma/client';
 import { NhatKyHeThongService } from '../nhat-ky-he-thong/nhat-ky-he-thong.service';
 
 @Injectable()
@@ -67,13 +67,13 @@ export class NhanVienService {
     });
 
     // Automatically seed child role tables to avoid breaking foreign key relations
-    if (res.LoaiTaiKhoan === 'BanVe') {
+    if (res.LoaiTaiKhoan === 'NhanVienBanVe') {
       await this.prisma.nHAN_VIEN_BAN_VE.create({ data: { MaNVBanVe: res.MaNhanVien } });
     } else if (res.LoaiTaiKhoan === 'QuanTriVien') {
       await this.prisma.qUAN_TRI_VIEN.create({ data: { MaQuanTriVien: res.MaNhanVien } });
     } else if (res.LoaiTaiKhoan === 'BanQuanLy') {
       await this.prisma.bAN_QUAN_LY.create({ data: { MaBanQuanLy: res.MaNhanVien } });
-    } else if (res.LoaiTaiKhoan === 'DieuPhoi') {
+    } else if (res.LoaiTaiKhoan === 'NhanVienDieuPhoi') {
       await this.prisma.nHAN_VIEN_DIEU_PHOI.create({ data: { MaNVDieuPhoi: res.MaNhanVien } });
     }
 
@@ -108,23 +108,23 @@ export class NhanVienService {
 
     // If role changed, migrate child role tables safely
     if (dto.LoaiTaiKhoan && dto.LoaiTaiKhoan !== original?.LoaiTaiKhoan) {
-      if (original?.LoaiTaiKhoan === 'BanVe') {
+      if (original?.LoaiTaiKhoan === 'NhanVienBanVe') {
         await this.prisma.nHAN_VIEN_BAN_VE.deleteMany({ where: { MaNVBanVe: id } });
       } else if (original?.LoaiTaiKhoan === 'QuanTriVien') {
         await this.prisma.qUAN_TRI_VIEN.deleteMany({ where: { MaQuanTriVien: id } });
       } else if (original?.LoaiTaiKhoan === 'BanQuanLy') {
         await this.prisma.bAN_QUAN_LY.deleteMany({ where: { MaBanQuanLy: id } });
-      } else if (original?.LoaiTaiKhoan === 'DieuPhoi') {
+      } else if (original?.LoaiTaiKhoan === 'NhanVienDieuPhoi') {
         await this.prisma.nHAN_VIEN_DIEU_PHOI.deleteMany({ where: { MaNVDieuPhoi: id } });
       }
 
-      if (dto.LoaiTaiKhoan === 'BanVe') {
+      if (dto.LoaiTaiKhoan === 'NhanVienBanVe') {
         await this.prisma.nHAN_VIEN_BAN_VE.create({ data: { MaNVBanVe: id } });
       } else if (dto.LoaiTaiKhoan === 'QuanTriVien') {
         await this.prisma.qUAN_TRI_VIEN.create({ data: { MaQuanTriVien: id } });
       } else if (dto.LoaiTaiKhoan === 'BanQuanLy') {
         await this.prisma.bAN_QUAN_LY.create({ data: { MaBanQuanLy: id } });
-      } else if (dto.LoaiTaiKhoan === 'DieuPhoi') {
+      } else if (dto.LoaiTaiKhoan === 'NhanVienDieuPhoi') {
         await this.prisma.nHAN_VIEN_DIEU_PHOI.create({ data: { MaNVDieuPhoi: id } });
       }
     }
@@ -169,7 +169,7 @@ export class NhanVienService {
     const original = await this.getById(id);
     const res = await this.prisma.nHAN_VIEN.update({
       where: { MaNhanVien: id },
-      data: { TrangThai: trangThai },
+      data: { TrangThai: trangThai as TrangThaiTaiKhoanEnum },
     });
 
     this.nhatKyService.ghiLog({
@@ -191,13 +191,13 @@ export class NhanVienService {
   async delete(id: string) {
     const original = await this.getById(id);
     // Delete linked child records first to satisfy foreign key constraints
-    if (original?.LoaiTaiKhoan === 'BanVe') {
+    if (original?.LoaiTaiKhoan === 'NhanVienBanVe') {
       await this.prisma.nHAN_VIEN_BAN_VE.deleteMany({ where: { MaNVBanVe: id } });
     } else if (original?.LoaiTaiKhoan === 'QuanTriVien') {
       await this.prisma.qUAN_TRI_VIEN.deleteMany({ where: { MaQuanTriVien: id } });
     } else if (original?.LoaiTaiKhoan === 'BanQuanLy') {
       await this.prisma.bAN_QUAN_LY.deleteMany({ where: { MaBanQuanLy: id } });
-    } else if (original?.LoaiTaiKhoan === 'DieuPhoi') {
+    } else if (original?.LoaiTaiKhoan === 'NhanVienDieuPhoi') {
       await this.prisma.nHAN_VIEN_DIEU_PHOI.deleteMany({ where: { MaNVDieuPhoi: id } });
     }
 

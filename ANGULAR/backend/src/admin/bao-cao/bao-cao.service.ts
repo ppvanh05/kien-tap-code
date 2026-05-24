@@ -283,13 +283,20 @@ export class BaoCaoService {
     const customerCount = await this.prisma.kHACH_HANG.count();
 
     if (customerCount > 0) {
+      let trangThaiFilter: any = undefined;
+      if (filters.status && filters.status !== 'Tất cả') {
+        trangThaiFilter = (filters.status === 'Đang hoạt động' || filters.status === 'HoatDong') 
+          ? 'HoatDong' 
+          : 'DaKhoa';
+      }
+
       const customers = await this.prisma.kHACH_HANG.findMany({
         where: {
           NgayDangKy: {
             gte: filters.fromDate ? new Date(filters.fromDate) : undefined,
             lte: filters.toDate ? new Date(filters.toDate) : undefined,
           },
-          TrangThaiTaiKhoan: filters.status && filters.status !== 'Tất cả' ? filters.status : undefined,
+          TrangThaiTaiKhoan: trangThaiFilter,
         },
       });
 
@@ -315,7 +322,7 @@ export class BaoCaoService {
             email: c.Email,
             ngayDangKy: c.NgayDangKy.toISOString().slice(0, 10),
             tongVeDat,
-            trangThai: c.TrangThaiTaiKhoan === 'HoatDong' || c.TrangThaiTaiKhoan === 'Đang hoạt động' ? 'Đang hoạt động' : 'Đã khóa',
+            trangThai: c.TrangThaiTaiKhoan === 'HoatDong' ? 'Đang hoạt động' : 'Đã khóa',
           };
         })
       );
@@ -327,7 +334,7 @@ export class BaoCaoService {
           return (
             item.tenKhachHang.toLowerCase().includes(query) ||
             item.sdt.includes(query) ||
-            item.email.toLowerCase().includes(query) ||
+            (item.email ? item.email.toLowerCase().includes(query) : false) ||
             item.maKhachHang.toLowerCase().includes(query)
           );
         }

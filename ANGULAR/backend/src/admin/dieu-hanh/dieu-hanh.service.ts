@@ -28,7 +28,7 @@ export class DieuHanhService implements OnModuleInit {
           await this.prisma.nHAN_VIEN.create({
             data: {
               MaNhanVien: this.defaultCoordinatorId,
-              LoaiTaiKhoan: 'DieuPhoi',
+              LoaiTaiKhoan: 'NhanVienDieuPhoi',
               TenTruyCap: 'dieuphoi1',
               HoVaTenDem: 'Nguyễn Văn',
               Ten: 'Điều Phối',

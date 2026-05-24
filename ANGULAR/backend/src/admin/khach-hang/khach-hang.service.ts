@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, TrangThaiTaiKhoanEnum } from '@prisma/client';
 import { NhatKyHeThongService } from '../nhat-ky-he-thong/nhat-ky-he-thong.service';
 
 @Injectable()
@@ -93,7 +93,7 @@ export class KhachHangService {
   // ===== LẤY THEO TRẠNG THÁI =====
   async getByTrangThai(trangThai: string) {
     return this.prisma.kHACH_HANG.findMany({
-      where: { TrangThaiTaiKhoan: trangThai },
+      where: { TrangThaiTaiKhoan: trangThai as TrangThaiTaiKhoanEnum },
       orderBy: { NgayDangKy: 'desc' },
     });
   }

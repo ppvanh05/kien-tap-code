@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, TrangThaiTinTucEnum, LoaiTinTucEnum } from '@prisma/client';
 import { NhatKyHeThongService } from '../nhat-ky-he-thong/nhat-ky-he-thong.service';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class TinTucService {
   // ===== LẤY THEO TRẠNG THÁI =====
   async getByTrangThai(trangThai: string) {
     return this.prisma.tIN_TUC.findMany({
-      where: { TrangThai: trangThai },
+      where: { TrangThai: trangThai as TrangThaiTinTucEnum },
       orderBy: { NgayDang: 'desc' },
     });
   }
@@ -35,7 +35,7 @@ export class TinTucService {
   // ===== LẤY THEO LOẠI TIN TỨC =====
   async getByLoai(loaiTinTuc: string) {
     return this.prisma.tIN_TUC.findMany({
-      where: { LoaiTinTuc: loaiTinTuc },
+      where: { LoaiTinTuc: loaiTinTuc as LoaiTinTucEnum },
       orderBy: { NgayDang: 'desc' },
     });
   }
@@ -111,7 +111,7 @@ export class TinTucService {
   // ===== CẬP NHẬT TRẠNG THÁI =====
   async updateTrangThai(id: string, trangThai: string) {
     const original = await this.getById(id);
-    const data: any = { TrangThai: trangThai };
+    const data: any = { TrangThai: trangThai as TrangThaiTinTucEnum };
     // Nếu đổi sang "Đã đăng" thì ghi ngày đăng hiện tại
     if (trangThai === 'DaDang') {
       data.NgayDang = new Date();

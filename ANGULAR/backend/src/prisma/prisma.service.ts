@@ -25,7 +25,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
         create: {
           MaNhanVien: 'NVDP100001',
-          LoaiTaiKhoan: 'DieuPhoi',
+          LoaiTaiKhoan: 'NhanVienDieuPhoi',
           TenTruyCap: 'dieuphoi1',
           HoVaTenDem: 'Nguyễn Văn',
           Ten: 'Điều Phối',
