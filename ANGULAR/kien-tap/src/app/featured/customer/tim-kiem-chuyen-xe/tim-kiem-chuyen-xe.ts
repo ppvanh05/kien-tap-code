@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
 import { AuthModalService } from '../auth/auth-modal.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 interface Seat {
   name: string;
@@ -57,6 +59,19 @@ export class TimKiemChuyenXe implements OnInit {
   showDepartureCalendar: boolean = false;
   showReturnCalendar: boolean = false;
   showPassengerPopover: boolean = false;
+
+  showDepartureDropdown: boolean = false;
+  showDestinationDropdown: boolean = false;
+  departureSearch: string = 'TP. Hồ Chí Minh';
+  destinationSearch: string = 'Bình Định';
+  isLoggedIn: boolean = false;
+
+  sharedSeats1: Seat[] = [];
+  sharedSeats2: Seat[] = [];
+  sharedSeats3: Seat[] = [];
+  sharedSeats4: Seat[] = [];
+  sharedSeats5: Seat[] = [];
+  sharedSeats6: Seat[] = [];
 
   locations = ['TP. Hồ Chí Minh', 'Bình Định', 'Phú Yên'];
 
@@ -139,7 +154,90 @@ export class TimKiemChuyenXe implements OnInit {
     { day: 31, label: '15', dateStr: '31/05/2026' }
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router, private authModalService: AuthModalService) {}
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private authModalService: AuthModalService,
+    private authService: AuthService,
+    private toastService: ToastService
+  ) {
+    this.authService.isLoggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
+  }
+
+  isPastDate(dateStr: string): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const parts = dateStr.split('/');
+    const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+    
+    return date < today;
+  }
+
+  parseDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const parts = dateStr.split('/');
+    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+  }
+
+  selectDepartureDate(dateStr: string) {
+    if (this.isPastDate(dateStr)) {
+      this.toastService.show('Không thể chọn ngày trong quá khứ', 'error');
+      return;
+    }
+    
+    this.departureDate = dateStr;
+    
+    // Check if return date is now before departure date
+    if (this.isRoundTrip && this.returnDate) {
+      const depDate = this.parseDate(this.departureDate);
+      const retDate = this.parseDate(this.returnDate);
+      
+      if (depDate && retDate && retDate < depDate) {
+        this.returnDate = ''; // Clear invalid return date
+        this.toastService.show('Ngày về phải sau ngày đi. Vui lòng chọn lại ngày về.', 'warning');
+      }
+    }
+    
+    this.showDepartureCalendar = false;
+  }
+
+  selectReturnDate(dateStr: string) {
+    if (this.isPastDate(dateStr)) {
+      this.toastService.show('Không thể chọn ngày trong quá khứ', 'error');
+      return;
+    }
+
+    const depDate = this.parseDate(this.departureDate);
+    const retDate = this.parseDate(dateStr);
+
+    if (depDate && retDate && retDate < depDate) {
+      this.toastService.show('Ngày về phải sau ngày đi', 'error');
+      return;
+    }
+
+    this.returnDate = dateStr;
+    this.showReturnCalendar = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    
+    // Close departure calendar if click is outside
+    const clickedInsideDeparture = target.closest('.departure-calendar-container');
+    if (!clickedInsideDeparture) {
+      this.showDepartureCalendar = false;
+    }
+    
+    // Close return calendar if click is outside
+    const clickedInsideReturn = target.closest('.return-calendar-container');
+    if (!clickedInsideReturn) {
+      this.showReturnCalendar = false;
+    }
+  }
 
   ngOnInit() {
     this.initMockTrips();
@@ -153,6 +251,10 @@ export class TimKiemChuyenXe implements OnInit {
       this.childCount = Number(params['children']) || 0;
       this.infantCount = Number(params['infants']) || 0;
       this.updatePassengerCount();
+      
+      this.departureSearch = this.departure;
+      this.destinationSearch = this.destination;
+      
       this.filterTrips();
     });
   }
@@ -169,6 +271,60 @@ export class TimKiemChuyenXe implements OnInit {
     return this.locations.filter(loc => loc !== this.departure);
   }
 
+  get filteredDepartures() {
+    const search = (this.departureSearch || '').toLowerCase().trim();
+    const opts = this.locations.filter(loc => loc !== this.destination);
+    if (!search) return opts;
+    return opts.filter(loc => loc.toLowerCase().includes(search));
+  }
+
+  get filteredDestinations() {
+    const search = (this.destinationSearch || '').toLowerCase().trim();
+    const opts = this.locations.filter(loc => loc !== this.departure);
+    if (!search) return opts;
+    return opts.filter(loc => loc.toLowerCase().includes(search));
+  }
+
+  selectDeparture(loc: string) {
+    this.departure = loc;
+    this.departureSearch = loc;
+    this.showDepartureDropdown = false;
+  }
+
+  selectDestination(loc: string) {
+    this.destination = loc;
+    this.destinationSearch = loc;
+    this.showDestinationDropdown = false;
+  }
+
+  onDepartureFocus() {
+    this.showDepartureDropdown = true;
+    if (this.departure) {
+      this.departureSearch = '';
+    }
+  }
+
+  onDepartureBlur() {
+    setTimeout(() => {
+      this.showDepartureDropdown = false;
+      this.departureSearch = this.departure;
+    }, 250);
+  }
+
+  onDestinationFocus() {
+    this.showDestinationDropdown = true;
+    if (this.destination) {
+      this.destinationSearch = '';
+    }
+  }
+
+  onDestinationBlur() {
+    setTimeout(() => {
+      this.showDestinationDropdown = false;
+      this.destinationSearch = this.destination;
+    }, 250);
+  }
+
   // Generate standard 22 limousine rooms with A (lower) & B (upper) seat coordinates
   private generateLimousineRooms(basePrice: number): Seat[] {
     const rooms: Seat[] = [];
@@ -177,11 +333,9 @@ export class TimKiemChuyenXe implements OnInit {
     const lowerNames = ['1A', '2A', '3A', '4A', '5A', '6A', '7A', '8A', '9A', '10A', '11A', '12A'];
     lowerNames.forEach((name, index) => {
       let status: 'sold' | 'available' = 'available';
-      const num = index + 1;
-      if (num === 2 || num === 3 || num === 5 || num === 10) {
+      // Mark a fixed number of seats as sold to ensure some are always available
+      if ([2, 3, 5, 10].includes(index + 1)) { // Example: seats 2A, 3A, 5A, 10A are sold
         status = 'sold';
-      } else {
-        status = Math.random() > 0.4 ? 'sold' : 'available';
       }
 
       rooms.push({
@@ -197,11 +351,9 @@ export class TimKiemChuyenXe implements OnInit {
     const upperNames = ['1B', '2B', '3B', '4B', '5B', '6B', '7B', '8B', '9B', '10B'];
     upperNames.forEach((name, index) => {
       let status: 'sold' | 'available' = 'available';
-      const num = index + 1;
-      if (num === 2 || num === 5 || num === 8) {
+      // Mark a fixed number of seats as sold to ensure some are always available
+      if ([2, 5, 8].includes(index + 1)) { // Example: seats 2B, 5B, 8B are sold
         status = 'sold';
-      } else {
-        status = Math.random() > 0.4 ? 'sold' : 'available';
       }
 
       rooms.push({
@@ -218,7 +370,17 @@ export class TimKiemChuyenXe implements OnInit {
 
   // Initialize trips data (Evening departures starting from 18:00)
   initMockTrips() {
+    if (this.sharedSeats1.length === 0) {
+      this.sharedSeats1 = this.generateLimousineRooms(400000);
+      this.sharedSeats2 = this.generateLimousineRooms(400000);
+      this.sharedSeats3 = this.generateLimousineRooms(400000);
+      this.sharedSeats4 = this.generateLimousineRooms(400000);
+      this.sharedSeats5 = this.generateLimousineRooms(400000);
+      this.sharedSeats6 = this.generateLimousineRooms(400000);
+    }
+
     this.allTrips = [
+      // === TPHCM -> BÌNH ĐỊNH ===
       {
         id: 1,
         departureTime: '18:00',
@@ -227,11 +389,11 @@ export class TimKiemChuyenXe implements OnInit {
         distance: '550Km',
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
-        availableSeats: 12,
+        availableSeats: 0,
         startStation: 'Bến xe Miền Đông',
-        endStation: 'Bến xe Quy Nhơn',
+        endStation: 'Bến xe Quy Nhơn (Bình Định)',
         price: 400000,
-        seats: this.generateLimousineRooms(400000),
+        seats: this.sharedSeats1,
         expanded: false,
         selectedTab: 'seat'
       },
@@ -243,63 +405,186 @@ export class TimKiemChuyenXe implements OnInit {
         distance: '580Km',
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
-        availableSeats: 15,
+        availableSeats: 0,
         startStation: 'Bến xe Miền Tây',
-        endStation: 'Bến xe Quy Nhơn',
+        endStation: 'Bến xe Quy Nhơn (Bình Định)',
         price: 400000,
-        seats: this.generateLimousineRooms(400000),
+        seats: this.sharedSeats2,
         expanded: false,
         selectedTab: 'seat'
       },
       {
         id: 3,
         departureTime: '19:00',
-        arrivalTime: '06:00',
-        duration: '11:00 h',
-        distance: '550Km',
-        timezone: 'Asian/Ho Chi Minh',
-        type: 'Limousine',
-        availableSeats: 9,
-        startStation: 'Bến xe An Sương',
-        endStation: 'Bến xe Quy Nhơn',
-        price: 520000,
-        seats: this.generateLimousineRooms(520000),
-        expanded: false,
-        selectedTab: 'seat'
-      },
-      {
-        id: 4,
-        departureTime: '19:30',
-        arrivalTime: '07:30',
+        arrivalTime: '07:00',
         duration: '12:00 h',
         distance: '570Km',
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
-        availableSeats: 10,
-        startStation: 'Bến xe Miền Đông',
-        endStation: 'Tuy Hòa (Phú Yên)',
+        availableSeats: 0,
+        startStation: 'Bến xe Bến Cát',
+        endStation: 'Bến xe Quy Nhơn (Bình Định)',
         price: 400000,
-        seats: this.generateLimousineRooms(400000),
+        seats: this.sharedSeats3,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+
+      // === BÌNH ĐỊNH -> TPHCM ===
+      {
+        id: 4,
+        departureTime: '18:00',
+        arrivalTime: '05:00',
+        duration: '11:00 h',
+        distance: '550Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Bến xe Quy Nhơn (Bình Định)',
+        endStation: 'Bến xe Miền Đông',
+        price: 400000,
+        seats: this.sharedSeats4,
         expanded: false,
         selectedTab: 'seat'
       },
       {
         id: 5,
-        departureTime: '20:00',
-        arrivalTime: '07:30',
-        duration: '11:30 h',
-        distance: '540Km',
+        departureTime: '18:30',
+        arrivalTime: '06:30',
+        duration: '12:00 h',
+        distance: '580Km',
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
-        availableSeats: 11,
+        availableSeats: 0,
+        startStation: 'Bến xe Quy Nhơn (Bình Định)',
+        endStation: 'Bến xe Miền Tây',
+        price: 400000,
+        seats: this.sharedSeats5,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 6,
+        departureTime: '19:00',
+        arrivalTime: '07:00',
+        duration: '12:00 h',
+        distance: '570Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Bến xe Quy Nhơn (Bình Định)',
+        endStation: 'Bến xe Bến Cát',
+        price: 400000,
+        seats: this.sharedSeats6,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+
+      // === TPHCM -> PHÚ YÊN ===
+      {
+        id: 7,
+        departureTime: '18:00',
+        arrivalTime: '03:00',
+        duration: '9:00 h',
+        distance: '450Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
         startStation: 'Bến xe Miền Đông',
         endStation: 'Tuy Hòa (Phú Yên)',
-        price: 520000,
-        seats: this.generateLimousineRooms(520000),
+        price: 350000,
+        seats: this.sharedSeats1,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 8,
+        departureTime: '18:30',
+        arrivalTime: '04:30',
+        duration: '10:00 h',
+        distance: '480Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Bến xe Miền Tây',
+        endStation: 'Tuy Hòa (Phú Yên)',
+        price: 350000,
+        seats: this.sharedSeats2,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 9,
+        departureTime: '19:00',
+        arrivalTime: '05:00',
+        duration: '10:00 h',
+        distance: '470Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Bến xe Bến Cát',
+        endStation: 'Tuy Hòa (Phú Yên)',
+        price: 350000,
+        seats: this.sharedSeats3,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+
+      // === PHÚ YÊN -> TPHCM ===
+      {
+        id: 10,
+        departureTime: '20:00',
+        arrivalTime: '05:00',
+        duration: '9:00 h',
+        distance: '450Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Tuy Hòa (Phú Yên)',
+        endStation: 'Bến xe Miền Đông',
+        price: 350000,
+        seats: this.sharedSeats4,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 11,
+        departureTime: '20:30',
+        arrivalTime: '06:30',
+        duration: '10:00 h',
+        distance: '480Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Tuy Hòa (Phú Yên)',
+        endStation: 'Bến xe Miền Tây',
+        price: 350000,
+        seats: this.sharedSeats5,
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 12,
+        departureTime: '21:00',
+        arrivalTime: '07:00',
+        duration: '10:00 h',
+        distance: '470Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 0,
+        startStation: 'Tuy Hòa (Phú Yên)',
+        endStation: 'Bến xe Bến Cát',
+        price: 350000,
+        seats: this.sharedSeats6,
         expanded: false,
         selectedTab: 'seat'
       }
     ];
+
+    // Compute active available seats count dynamically
+    this.allTrips.forEach(t => {
+      t.availableSeats = t.seats.filter(s => s.status === 'available').length;
+    });
   }
 
   // Handle Search button
@@ -322,7 +607,30 @@ export class TimKiemChuyenXe implements OnInit {
 
   // Apply Sidebar filters and sorts
   filterTrips() {
+    // Force re-computing dynamic available seats count
+    this.allTrips.forEach(t => {
+      t.availableSeats = t.seats.filter(s => s.status === 'available').length;
+    });
+
     let result = [...this.allTrips];
+
+    // 0. Filter by Departure & Destination (Route filtering)
+    if (this.departure && this.destination) {
+      result = this.allTrips.filter(trip => {
+        const fromMatch = trip.startStation.toLowerCase().includes(this.departure.toLowerCase()) || 
+                          (this.departure.includes('Hồ Chí Minh') && (trip.startStation.includes('Miền Đông') || trip.startStation.includes('Miền Tây') || trip.startStation.includes('Bến Cát')));
+        
+        let toMatch = trip.endStation.toLowerCase().includes(this.destination.toLowerCase()) || 
+                        (this.destination.includes('Hồ Chí Minh') && (trip.endStation.includes('Miền Đông') || trip.endStation.includes('Miền Tây') || trip.endStation.includes('Bến Cát')));
+        
+        // Ensure exact destination match: TPHCM - Bình Định won't show Phú Yên
+        if (this.destination === 'Bình Định' && trip.endStation.includes('Phú Yên')) {
+          toMatch = false;
+        }
+
+        return (fromMatch && toMatch);
+      });
+    }
 
     // 1. Filter by Time
     const hasTimeFilter = this.timeFilters.early || this.timeFilters.morning || this.timeFilters.afternoon || this.timeFilters.evening;
@@ -351,7 +659,6 @@ export class TimKiemChuyenXe implements OnInit {
       result = result.filter(trip => {
         return trip.seats.some(seat => {
           if (seat.status !== 'available') return false;
-          // Parse number from name (e.g. "11A" -> 11, "2B" -> 2)
           const num = parseInt(seat.name.replace(/[^0-9]/g, ''), 10);
           if (this.rowFilters.front && ((num >= 1 && num <= 4))) return true;
           if (this.rowFilters.middle && ((num >= 5 && num <= 8))) return true;
@@ -371,15 +678,6 @@ export class TimKiemChuyenXe implements OnInit {
       });
     }
 
-    // Apply Sorting
-    if (this.sortBy === 'price') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (this.sortBy === 'time') {
-      result.sort((a, b) => a.departureTime.localeCompare(b.departureTime));
-    } else if (this.sortBy === 'seats') {
-      result.sort((a, b) => b.availableSeats - a.availableSeats);
-    }
-
     this.filteredTrips = result;
   }
 
@@ -396,6 +694,8 @@ export class TimKiemChuyenXe implements OnInit {
   selectRecentSearch(search: any) {
     this.departure = search.from;
     this.destination = search.to;
+    this.departureSearch = search.from;
+    this.destinationSearch = search.to;
     this.departureDate = search.date;
     this.filterTrips();
   }
@@ -425,15 +725,7 @@ export class TimKiemChuyenXe implements OnInit {
     this.showReturnCalendar = false;
   }
 
-  selectDepartureDate(dateStr: string) {
-    this.departureDate = dateStr;
-    this.showDepartureCalendar = false;
-  }
 
-  selectReturnDate(dateStr: string) {
-    this.returnDate = dateStr;
-    this.showReturnCalendar = false;
-  }
 
   // Passenger increment/decrement
   incrementAdults() {
@@ -516,6 +808,11 @@ export class TimKiemChuyenXe implements OnInit {
     }
 
     this.updateSelectedSeats(trip);
+
+    // Sync available seats for all trips
+    this.allTrips.forEach(t => {
+      t.availableSeats = t.seats.filter(s => s.status === 'available').length;
+    });
   }
 
   updateSelectedSeats(trip: Trip) {
@@ -541,7 +838,7 @@ export class TimKiemChuyenXe implements OnInit {
 
   confirmSelection(trip: Trip) {
     if (this.selectedSeatsList.length === 0) {
-      alert('Vui lòng chọn ít nhất 1 ghế.');
+      this.toastService.show('Vui lòng chọn ít nhất 1 ghế.', 'warning');
       return;
     }
     this.selectTripAndNavigate(trip, true);

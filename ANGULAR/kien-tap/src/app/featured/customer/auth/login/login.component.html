@@ -1,7 +1,7 @@
 <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
   <div class="w-full max-w-md bg-surface rounded-2xl shadow-modal overflow-hidden">
     <div class="px-6 py-5 border-b border-outline-variant/30 text-center relative">
-      <h2 class="text-headline-sm font-bold text-primary">Đăng nhập</h2>
+      <h2 class="text-title-lg font-bold text-navy mb-2">Đăng nhập</h2>
       <button (click)="closeModal()" class="absolute top-5 right-5 text-on-surface-variant hover:text-primary transition-colors">
         <span class="material-symbols-outlined">close</span>
       </button>
@@ -17,6 +17,7 @@
             <input type="text" [(ngModel)]="phoneOrEmail" name="phoneOrEmail" placeholder="Nhập số điện thoại hoặc email"
               class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none" />
           </div>
+          <p *ngIf="phoneOrEmailError" class="text-sm text-danger font-semibold mt-1 text-center">{{ phoneOrEmailError }}</p>
         </div>
 
         <!-- Password input with eye toggle -->
@@ -30,11 +31,12 @@
               <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
             </button>
           </div>
+          <p *ngIf="passwordError" class="text-sm text-danger font-semibold mt-1 text-center">{{ passwordError }}</p>
         </div>
 
         <!-- Forgot password link -->
         <div class="flex items-center justify-end text-body-sm">
-          <a href="#" (click)="openForgot($event)" class="text-primary font-bold hover:underline">Quên mật khẩu?</a>
+          <a href="#" (click)="openForgot($event)" class="text-secondary font-bold hover:underline">Quên mật khẩu?</a>
         </div>
 
         <!-- Validation error -->
@@ -43,9 +45,9 @@
         </div>
 
         <!-- Submit button -->
-        <button type="submit" class="w-full rounded-xl bg-primary text-on-primary py-3 text-title-md font-bold hover:opacity-95 transition-all">
-          Đăng nhập
-        </button>
+        <button type="submit" class="w-full rounded-xl bg-secondary text-on-primary py-3 text-title-md font-bold hover:bg-secondary-hover transition-all">
+            Đăng nhập
+          </button>
       </form>
 
       <div class="text-center border-t border-outline-variant/20 pt-4">

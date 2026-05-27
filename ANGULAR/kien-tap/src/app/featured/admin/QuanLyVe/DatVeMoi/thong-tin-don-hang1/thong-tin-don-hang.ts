@@ -19,6 +19,11 @@ interface Seat {
   styleUrl: './thong-tin-don-hang.css',
 })
 export class ThongTinDonHang implements OnInit {
+  // Alert modal
+  showAlertModal: boolean = false;
+  alertMessage: string = '';
+  alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
+
   bookingData: any = {
     tripId: 1,
     departureTime: '18:00',
@@ -199,6 +204,17 @@ export class ThongTinDonHang implements OnInit {
     return dayNames[date.getDay()];
   }
 
+  showAlert(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlertModal = true;
+  }
+
+  closeAlert() {
+    this.showAlertModal = false;
+    this.alertMessage = '';
+  }
+
   getPickupArrivalTime(): string {
     // Departure time minus 30 minutes
     const timeParts = this.bookingData.departureTime.split(':');
@@ -323,27 +339,27 @@ export class ThongTinDonHang implements OnInit {
 
   payBooking() {
     if (this.bookingData.selectedSeats.length === 0) {
-      alert('Vui lòng chọn ít nhất 1 ghế.');
+      this.showAlert('Vui lòng chọn ít nhất 1 ghế.', 'warning');
       return;
     }
     if (!this.customerName.trim()) {
-      alert('Vui lòng nhập Họ và tên.');
+      this.showAlert('Vui lòng nhập Họ và tên.', 'warning');
       return;
     }
     if (!this.customerPhone.trim()) {
-      alert('Vui lòng nhập Số điện thoại.');
+      this.showAlert('Vui lòng nhập Số điện thoại.', 'warning');
       return;
     }
     if (!this.agreeTerms) {
-      alert('Quý khách vui lòng đồng ý với điều khoản đặt vé.');
+      this.showAlert('Quý khách vui lòng đồng ý với điều khoản đặt vé.', 'warning');
       return;
     }
     if (!this.selectedPickup) {
-      alert('Vui lòng chọn Điểm đón.');
+      this.showAlert('Vui lòng chọn Điểm đón.', 'warning');
       return;
     }
     if (!this.selectedDropoff) {
-      alert('Vui lòng chọn Điểm trả.');
+      this.showAlert('Vui lòng chọn Điểm trả.', 'warning');
       return;
     }
 

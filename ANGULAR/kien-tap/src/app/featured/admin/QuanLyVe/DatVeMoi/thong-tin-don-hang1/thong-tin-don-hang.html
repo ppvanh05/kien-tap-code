@@ -1,18 +1,14 @@
-<!-- Banner Header - Using darker teal to distinguish from home header -->
-<div class="relative bg-gradient-to-r from-primary to-primary-hover py-8 text-white text-center shadow-md mt-4">
-  <button (click)="cancelBooking()"
-    class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-lg transition-all text-body-sm">
-    Quay lại
-  </button>
-  <h1 class="text-2xl sm:text-3xl font-bold tracking-wide uppercase">
-    {{ bookingData.startStation }} - {{ bookingData.endStation }}
-  </h1>
-  <p class="text-body-md opacity-90 mt-1 font-semibold">
-    {{ bookingData.departureTime }} - {{ getDayOfWeek() }}, {{ getSelectedDate() }}
-  </p>
-</div>
+<div class="page-container">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản lý vé</span>
+      <span class="separator">/</span>
+      <span class="current">Đặt vé mới</span>
+    </div>
+    <h1>Thông tin đơn hàng</h1>
+  </div>
 
-<main class="max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="card">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
     <!-- LEFT COLUMN (70% width) -->
@@ -425,4 +421,39 @@
     </div>
 
   </div>
-</main>
+  </div>
+</div>
+
+<!-- Alert Modal - Thông báo trung tâm -->
+<div *ngIf="showAlertModal"
+  class="fixed inset-0 z-[250] flex items-center justify-center bg-navy/60 backdrop-blur-xs p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-xl border border-outline-variant/10 animate-scale-up">
+    <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
+      <h3 class="font-bold text-primary text-title-md uppercase tracking-wider flex items-center gap-2">
+        <span class="material-icons" [ngClass]="{
+          'text-success': alertType === 'success',
+          'text-danger': alertType === 'error',
+          'text-warning': alertType === 'warning'
+        }">
+          {{ alertType === 'success' ? 'check_circle' : alertType === 'error' ? 'error' : 'warning' }}
+        </span>
+        {{ alertType === 'success' ? 'THÀNH CÔNG' : alertType === 'error' ? 'LỖI' : 'CẢNH BÁO' }}
+      </h3>
+      <span class="material-icons text-outline-variant hover:text-navy cursor-pointer select-none text-2xl"
+        (click)="closeAlert()">close</span>
+    </div>
+
+    <div class="p-6">
+      <p class="text-body-md text-on-surface font-semibold leading-relaxed text-center">
+        {{ alertMessage }}
+      </p>
+    </div>
+
+    <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-center">
+      <button (click)="closeAlert()"
+        class="px-8 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover shadow-md transition-all">
+        ĐÓNG
+      </button>
+    </div>
+  </div>
+</div>

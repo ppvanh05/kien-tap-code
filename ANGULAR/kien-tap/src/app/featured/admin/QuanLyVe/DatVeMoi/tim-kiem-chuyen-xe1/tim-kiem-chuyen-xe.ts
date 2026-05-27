@@ -36,6 +36,11 @@ interface Trip {
   styleUrl: './tim-kiem-chuyen-xe.css',
 })
 export class TimKiemChuyenXe implements OnInit {
+  // Alert modal
+  showAlertModal: boolean = false;
+  alertMessage: string = '';
+  alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
+
   // Form search inputs
   isRoundTrip: boolean = false;
   departure: string = 'TP. Hồ Chí Minh';
@@ -54,7 +59,7 @@ export class TimKiemChuyenXe implements OnInit {
   showReturnCalendar: boolean = false;
   showPassengerPopover: boolean = false;
 
-  locations = ['TP. Hồ Chí Minh', 'Bình Định', 'Phú Yên'];
+  locations = ['TP. Hồ Chí Minh', 'Bình Định', 'Phú Yên', 'Khánh Hòa', 'Đà Lạt', 'Hà Nội', 'Đà Nẵng'];
 
   // Recent searches list
   recentSearches = [
@@ -211,6 +216,7 @@ export class TimKiemChuyenXe implements OnInit {
   // Initialize trips data (Evening departures starting from 18:00)
   initMockTrips() {
     this.allTrips = [
+      // TP. Hồ Chí Minh → Bình Định
       {
         id: 1,
         departureTime: '18:00',
@@ -220,8 +226,8 @@ export class TimKiemChuyenXe implements OnInit {
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
         availableSeats: 12,
-        startStation: 'Bến xe Miền Đông',
-        endStation: 'Bến xe Quy Nhơn',
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Bình Định',
         price: 400000,
         seats: this.generateLimousineRooms(400000),
         expanded: false,
@@ -236,8 +242,8 @@ export class TimKiemChuyenXe implements OnInit {
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
         availableSeats: 15,
-        startStation: 'Bến xe Miền Tây',
-        endStation: 'Bến xe Quy Nhơn',
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Bình Định',
         price: 400000,
         seats: this.generateLimousineRooms(400000),
         expanded: false,
@@ -252,15 +258,32 @@ export class TimKiemChuyenXe implements OnInit {
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
         availableSeats: 9,
-        startStation: 'Bến xe An Sương',
-        endStation: 'Bến xe Quy Nhơn',
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Bình Định',
         price: 520000,
         seats: this.generateLimousineRooms(520000),
         expanded: false,
         selectedTab: 'seat'
       },
+      // TP. Hồ Chí Minh → Phú Yên
       {
         id: 4,
+        departureTime: '06:00',
+        arrivalTime: '17:00',
+        duration: '11:00 h',
+        distance: '450Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 8,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Phú Yên',
+        price: 350000,
+        seats: this.generateLimousineRooms(350000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 5,
         departureTime: '19:30',
         arrivalTime: '07:30',
         duration: '12:00 h',
@@ -268,15 +291,15 @@ export class TimKiemChuyenXe implements OnInit {
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
         availableSeats: 10,
-        startStation: 'Bến xe Miền Đông',
-        endStation: 'Tuy Hòa (Phú Yên)',
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Phú Yên',
         price: 400000,
         seats: this.generateLimousineRooms(400000),
         expanded: false,
         selectedTab: 'seat'
       },
       {
-        id: 5,
+        id: 6,
         departureTime: '20:00',
         arrivalTime: '07:30',
         duration: '11:30 h',
@@ -284,10 +307,208 @@ export class TimKiemChuyenXe implements OnInit {
         timezone: 'Asian/Ho Chi Minh',
         type: 'Limousine',
         availableSeats: 11,
-        startStation: 'Bến xe Miền Đông',
-        endStation: 'Tuy Hòa (Phú Yên)',
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Phú Yên',
         price: 520000,
         seats: this.generateLimousineRooms(520000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      // TP. Hồ Chí Minh → Khánh Hòa
+      {
+        id: 7,
+        departureTime: '07:00',
+        arrivalTime: '15:00',
+        duration: '8:00 h',
+        distance: '400Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 5,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Khánh Hòa',
+        price: 300000,
+        seats: this.generateLimousineRooms(300000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 8,
+        departureTime: '13:00',
+        arrivalTime: '21:00',
+        duration: '8:00 h',
+        distance: '400Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 18,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Khánh Hòa',
+        price: 320000,
+        seats: this.generateLimousineRooms(320000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 9,
+        departureTime: '21:00',
+        arrivalTime: '05:00',
+        duration: '8:00 h',
+        distance: '400Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 20,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Khánh Hòa',
+        price: 350000,
+        seats: this.generateLimousineRooms(350000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      // TP. Hồ Chí Minh → Đà Lạt
+      {
+        id: 10,
+        departureTime: '05:00',
+        arrivalTime: '12:00',
+        duration: '7:00 h',
+        distance: '300Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 3,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Đà Lạt',
+        price: 280000,
+        seats: this.generateLimousineRooms(280000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 11,
+        departureTime: '08:00',
+        arrivalTime: '15:00',
+        duration: '7:00 h',
+        distance: '300Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 12,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Đà Lạt',
+        price: 300000,
+        seats: this.generateLimousineRooms(300000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 12,
+        departureTime: '14:00',
+        arrivalTime: '21:00',
+        duration: '7:00 h',
+        distance: '300Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 16,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Đà Lạt',
+        price: 320000,
+        seats: this.generateLimousineRooms(320000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      // TP. Hồ Chí Minh → Hà Nội
+      {
+        id: 13,
+        departureTime: '17:00',
+        arrivalTime: '12:00',
+        duration: '19:00 h',
+        distance: '1700Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 10,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Hà Nội',
+        price: 800000,
+        seats: this.generateLimousineRooms(800000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 14,
+        departureTime: '18:00',
+        arrivalTime: '13:00',
+        duration: '19:00 h',
+        distance: '1700Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 8,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Hà Nội',
+        price: 850000,
+        seats: this.generateLimousineRooms(850000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      // TP. Hồ Chí Minh → Đà Nẵng
+      {
+        id: 15,
+        departureTime: '09:00',
+        arrivalTime: '20:00',
+        duration: '11:00 h',
+        distance: '800Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 6,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Đà Nẵng',
+        price: 550000,
+        seats: this.generateLimousineRooms(550000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      {
+        id: 16,
+        departureTime: '19:00',
+        arrivalTime: '06:00',
+        duration: '11:00 h',
+        distance: '800Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 14,
+        startStation: 'TP. Hồ Chí Minh',
+        endStation: 'Đà Nẵng',
+        price: 600000,
+        seats: this.generateLimousineRooms(600000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      // Đảo chiều: Bình Định → TP. Hồ Chí Minh
+      {
+        id: 17,
+        departureTime: '18:00',
+        arrivalTime: '05:00',
+        duration: '11:00 h',
+        distance: '550Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 10,
+        startStation: 'Bình Định',
+        endStation: 'TP. Hồ Chí Minh',
+        price: 400000,
+        seats: this.generateLimousineRooms(400000),
+        expanded: false,
+        selectedTab: 'seat'
+      },
+      // Đảo chiều: Phú Yên → TP. Hồ Chí Minh
+      {
+        id: 18,
+        departureTime: '19:00',
+        arrivalTime: '06:30',
+        duration: '11:30 h',
+        distance: '540Km',
+        timezone: 'Asian/Ho Chi Minh',
+        type: 'Limousine',
+        availableSeats: 15,
+        startStation: 'Phú Yên',
+        endStation: 'TP. Hồ Chí Minh',
+        price: 400000,
+        seats: this.generateLimousineRooms(400000),
         expanded: false,
         selectedTab: 'seat'
       }
@@ -315,6 +536,11 @@ export class TimKiemChuyenXe implements OnInit {
   // Apply Sidebar filters and sorts
   filterTrips() {
     let result = [...this.allTrips];
+    
+    // 0. Filter by Departure and Destination (most important!)
+    result = result.filter(trip => 
+      trip.startStation === this.departure && trip.endStation === this.destination
+    );
 
     // 1. Filter by Time
     const hasTimeFilter = this.timeFilters.early || this.timeFilters.morning || this.timeFilters.afternoon || this.timeFilters.evening;
@@ -531,9 +757,20 @@ export class TimKiemChuyenXe implements OnInit {
     return price.toLocaleString('vi-VN') + 'đ';
   }
 
+  showAlert(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlertModal = true;
+  }
+
+  closeAlert() {
+    this.showAlertModal = false;
+    this.alertMessage = '';
+  }
+
   confirmSelection(trip: Trip) {
     if (this.selectedSeatsList.length === 0) {
-      alert('Vui lòng chọn ít nhất 1 ghế.');
+      this.showAlert('Vui lòng chọn ít nhất 1 ghế.', 'warning');
       return;
     }
     this.selectTripAndNavigate(trip, true);

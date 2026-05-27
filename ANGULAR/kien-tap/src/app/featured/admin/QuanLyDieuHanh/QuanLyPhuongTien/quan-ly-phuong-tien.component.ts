@@ -102,6 +102,11 @@ export class QuanLyPhuongTienComponent implements OnInit {
   ngOnInit() {
     this.vehicles = this.phuongTienService.getVehicles();
     this.filterVehicles();
+
+    this.phuongTienService.vehiclesUpdated$.subscribe(() => {
+      this.vehicles = this.phuongTienService.getVehicles();
+      this.filterVehicles();
+    });
   }
 
   @HostListener('document:click')
@@ -263,8 +268,11 @@ export class QuanLyPhuongTienComponent implements OnInit {
     });
   }
 
+  errors: { name?: boolean; licensePlate?: boolean; registrationExpiry?: boolean; insuranceExpiry?: boolean; type?: boolean } = {};
+
   openAddModal() {
     this.isEditMode = false;
+    this.errors = {};
     this.currentVehicle = {
       status: 'active',
       type: '',
@@ -281,6 +289,7 @@ export class QuanLyPhuongTienComponent implements OnInit {
 
   openEditModal(vehicle: Vehicle) {
     this.isEditMode = true;
+    this.errors = {};
     this.currentVehicle = { ...vehicle };
     this.generateSeatLayout();
     this.isModalOpen = true;
@@ -290,6 +299,7 @@ export class QuanLyPhuongTienComponent implements OnInit {
     this.isModalOpen = false;
     this.isRegPickerOpen = false;
     this.isInsPickerOpen = false;
+    this.errors = {};
   }
 
   onOverlayClick(event: MouseEvent) {
@@ -309,24 +319,15 @@ export class QuanLyPhuongTienComponent implements OnInit {
 
   saveVehicle() {
     // Validation
-    if (!this.currentVehicle.name) {
-      this.showAlert('Hãy điền thông tin Tên xe!');
-      return;
-    }
-    if (!this.currentVehicle.licensePlate) {
-      this.showAlert('Hãy điền thông tin Biển số xe!');
-      return;
-    }
-    if (!this.currentVehicle.registrationExpiry) {
-      this.showAlert('Hãy điền thông tin Hạn đăng kiểm!');
-      return;
-    }
-    if (!this.currentVehicle.insuranceExpiry) {
-      this.showAlert('Hãy điền thông tin Hạn bảo hiểm xe!');
-      return;
-    }
-    if (!this.currentVehicle.type) {
-      this.showAlert('Hãy điền thông tin Loại xe!');
+    this.errors = {
+      name: !this.currentVehicle.name,
+      licensePlate: !this.currentVehicle.licensePlate,
+      registrationExpiry: !this.currentVehicle.registrationExpiry,
+      insuranceExpiry: !this.currentVehicle.insuranceExpiry,
+      type: !this.currentVehicle.type
+    };
+
+    if (Object.values(this.errors).some(Boolean)) {
       return;
     }
 

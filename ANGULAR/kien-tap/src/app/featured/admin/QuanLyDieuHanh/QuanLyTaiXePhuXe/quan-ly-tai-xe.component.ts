@@ -88,6 +88,11 @@ export class QuanLyTaiXeComponent implements OnInit {
     this.drivers = this.taiXeService.getDrivers();
     this.filterDrivers();
     this.generateCalendar();
+
+    this.taiXeService.driversUpdated$.subscribe(() => {
+      this.drivers = this.taiXeService.getDrivers();
+      this.filterDrivers();
+    });
   }
 
   @HostListener('document:click')
@@ -111,8 +116,18 @@ export class QuanLyTaiXeComponent implements OnInit {
     });
   }
 
+  errors: {
+    name?: boolean;
+    dob?: boolean;
+    phone?: string | null;
+    cccdNumber?: string | null;
+    licenseClass?: boolean;
+    licenseExpiry?: boolean;
+  } = {};
+
   openAddModal(role: 'driver' | 'assistant' = 'driver') {
     this.isEditMode = false;
+    this.errors = {};
     this.currentDriver = {
       status: 'active',
       role: role,
@@ -133,6 +148,7 @@ export class QuanLyTaiXeComponent implements OnInit {
 
   openEditModal(driver: Driver) {
     this.isEditMode = true;
+    this.errors = {};
     this.currentDriver = { ...driver };
     this.phoneTouched = false;
     this.cccdTouched = false;
@@ -148,6 +164,7 @@ export class QuanLyTaiXeComponent implements OnInit {
 
   closeModal() {
     this.isModalOpen = false;
+    this.errors = {};
   }
 
   mousedownTarget: HTMLElement | null = null;
@@ -205,44 +222,20 @@ export class QuanLyTaiXeComponent implements OnInit {
     this.cccdTouched = true;
     
     // Validation
-    if (!this.currentDriver.name) {
-      this.showAlert('Hãy điền thông tin Họ và tên!');
-      return;
-    }
-    if (!this.currentDriver.dob) {
-      this.showAlert('Hãy điền thông tin Ngày sinh!');
-      return;
-    }
-    
-    if (!this.currentDriver.phone) {
-      this.showAlert('Số điện thoại không được để trống!');
-      return;
-    }
-    const phoneError = this.getPhoneErrorMessage();
-    if (phoneError) {
-      this.showAlert(phoneError);
-      return;
-    }
+    const phoneError = !this.currentDriver.phone ? 'Số điện thoại không được để trống!' : this.getPhoneErrorMessage();
+    const cccdError = !this.currentDriver.cccdNumber ? 'Số CCCD/CMND không được để trống!' : this.getCccdErrorMessage();
 
-    if (!this.currentDriver.cccdNumber) {
-      this.showAlert('Số CCCD/CMND không được để trống!');
-      return;
-    }
-    const cccdError = this.getCccdErrorMessage();
-    if (cccdError) {
-      this.showAlert(cccdError);
-      return;
-    }
+    this.errors = {
+      name: !this.currentDriver.name,
+      dob: !this.currentDriver.dob,
+      phone: phoneError,
+      cccdNumber: cccdError,
+      licenseClass: this.currentDriver.role === 'driver' && !this.currentDriver.licenseClass,
+      licenseExpiry: this.currentDriver.role === 'driver' && !this.currentDriver.licenseExpiry
+    };
 
-    if (this.currentDriver.role === 'driver') {
-      if (!this.currentDriver.licenseClass) {
-        this.showAlert('Hãy điền thông tin Hạng bằng lái!');
-        return;
-      }
-      if (!this.currentDriver.licenseExpiry) {
-        this.showAlert('Hãy điền thông tin Hạn bằng lái!');
-        return;
-      }
+    if (Object.values(this.errors).some(Boolean)) {
+      return;
     }
 
     if (this.isEditMode) {

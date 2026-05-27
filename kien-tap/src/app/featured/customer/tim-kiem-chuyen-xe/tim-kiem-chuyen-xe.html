@@ -1,0 +1,919 @@
+<div class="bg-background font-body-md text-on-surface min-h-screen flex flex-col">
+  <app-header></app-header>
+
+  <main class="pt-24 flex-grow pb-16">
+    <div class="max-w-container-max mx-auto px-margin-desktop">
+
+      <!-- Top Search Form Card (Synchronized with Trang Home) -->
+      <section
+        class="bg-surface rounded-2xl shadow-[0px_8px_30px_rgba(11,42,74,0.08)] p-6 mb-8 border border-outline-variant/10 relative z-25">
+        <!-- Radio/Tabs Toggle -->
+        <div class="flex justify-between items-center mb-6 border-b border-outline-variant pb-3">
+          <div class="flex items-center gap-6">
+            <button (click)="isRoundTrip = false"
+              [class]="!isRoundTrip ? 'flex items-center gap-2 font-bold text-body-md text-primary border-b-2 border-primary pb-3 -mb-[14px]' : 'flex items-center gap-2 font-bold text-body-md text-on-surface-variant hover:text-primary transition-colors pb-3 -mb-[14px]'">
+              <span class="material-symbols-outlined text-body-md"
+                [style.font-variation-settings]="!isRoundTrip ? '' : 'FILL 0'">
+                {{ !isRoundTrip ? 'radio_button_checked' : 'radio_button_unchecked' }}
+              </span>
+              Một chiều
+            </button>
+            <button (click)="isRoundTrip = true"
+              [class]="isRoundTrip ? 'flex items-center gap-2 font-bold text-body-md text-primary border-b-2 border-primary pb-3 -mb-[14px]' : 'flex items-center gap-2 font-bold text-body-md text-on-surface-variant hover:text-primary transition-colors pb-3 -mb-[14px]'">
+              <span class="material-symbols-outlined text-body-md"
+                [style.font-variation-settings]="isRoundTrip ? '' : 'FILL 0'">
+                {{ isRoundTrip ? 'radio_button_checked' : 'radio_button_unchecked' }}
+              </span>
+              Khứ hồi
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Inputs Flex Row -->
+        <div class="flex flex-col lg:flex-row gap-4 items-end w-full">
+          <!-- Điểm đi -->
+          <div class="flex-grow space-y-1.5 min-w-[200px]">
+            <label class="font-bold text-body-md text-secondary">Điểm đi</label>
+            <div
+              class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
+              <span class="material-symbols-outlined text-primary mr-2">radio_button_checked</span>
+              <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer"
+                [(ngModel)]="departure">
+                <option *ngFor="let loc of departureOptions" [value]="loc">{{ loc }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Switch button -->
+          <div class="flex justify-center pb-2">
+            <button (click)="swapLocations()"
+              class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary-light hover:border-primary transition-all active:scale-95 shadow-sm bg-surface">
+              <span class="material-symbols-outlined">sync_alt</span>
+            </button>
+          </div>
+
+          <!-- Điểm đến -->
+          <div class="flex-grow space-y-1.5 min-w-[200px]">
+            <label class="font-bold text-body-md text-secondary">Điểm đến</label>
+            <div
+              class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
+              <span class="material-symbols-outlined text-primary mr-2">location_on</span>
+              <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer"
+                [(ngModel)]="destination">
+                <option *ngFor="let loc of destinationOptions" [value]="loc">{{ loc }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Ngày đi -->
+          <div class="flex-grow space-y-1.5 relative min-w-[150px]">
+            <label class="font-bold text-body-md text-secondary">Ngày đi</label>
+            <div (click)="toggleDepartureCalendar(); $event.stopPropagation()"
+              class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
+              <input readonly
+                class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                [(ngModel)]="departureDate">
+            </div>
+
+            <!-- Calendar Popover (Departure) -->
+            <div *ngIf="showDepartureCalendar"
+              class="absolute z-50 top-full left-0 mt-2 bg-white rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.15)] border border-outline-variant/30 p-4 w-72 select-none"
+              (click)="$event.stopPropagation()">
+              <div class="flex justify-between items-center mb-3">
+                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                  <span class="material-symbols-outlined text-title-md">chevron_left</span>
+                </button>
+                <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
+                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                  <span class="material-symbols-outlined text-title-md">chevron_right</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-7 gap-1 text-center font-bold text-body-xs text-on-surface-variant mb-2">
+                <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+              </div>
+              <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center">
+                <div class="w-8 h-8"></div>
+                <div class="w-8 h-8"></div>
+                <div class="w-8 h-8"></div>
+                <div class="w-8 h-8"></div>
+                <div *ngFor="let d of calendarDays" (click)="selectDepartureDate(d.dateStr)"
+                  [class]="d.dateStr === departureDate
+                    ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
+                    : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
+                  <span class="text-[8px] text-on-surface-variant font-normal absolute top-0.5 leading-none">{{ d.label
+                    }}</span>
+                  <span class="text-body-sm font-semibold absolute bottom-1 leading-none"
+                    [class.text-red-500]="d.highlighted">{{ d.day }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ngày về (Conditional) -->
+          <div *ngIf="isRoundTrip" class="flex-grow space-y-1.5 relative min-w-[150px]">
+            <label class="font-bold text-body-md text-secondary">Ngày về</label>
+            <div (click)="toggleReturnCalendar(); $event.stopPropagation()"
+              class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
+              <input readonly
+                class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                [placeholder]="'Thêm ngày về'" [(ngModel)]="returnDate">
+            </div>
+
+            <!-- Calendar Popover (Return) -->
+            <div *ngIf="showReturnCalendar"
+              class="absolute z-50 top-full left-0 mt-2 bg-white rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.15)] border border-outline-variant/30 p-4 w-72 select-none"
+              (click)="$event.stopPropagation()">
+              <div class="flex justify-between items-center mb-3">
+                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                  <span class="material-symbols-outlined text-title-md">chevron_left</span>
+                </button>
+                <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
+                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                  <span class="material-symbols-outlined text-title-md">chevron_right</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-7 gap-1 text-center font-bold text-body-xs text-on-surface-variant mb-2">
+                <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+              </div>
+              <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center">
+                <div class="w-8 h-8"></div>
+                <div class="w-8 h-8"></div>
+                <div class="w-8 h-8"></div>
+                <div class="w-8 h-8"></div>
+                <div *ngFor="let d of calendarDays" (click)="selectReturnDate(d.dateStr)"
+                  [class]="d.dateStr === returnDate
+                    ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
+                    : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
+                  <span class="text-[8px] text-on-surface-variant font-normal absolute top-0.5 leading-none">{{ d.label
+                    }}</span>
+                  <span class="text-body-sm font-semibold absolute bottom-1 leading-none"
+                    [class.text-red-500]="d.highlighted">{{ d.day }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Số vé -->
+          <div class="flex-grow space-y-1.5 min-w-[150px]">
+            <label class="font-bold text-body-md text-secondary block whitespace-nowrap">Số vé</label>
+            <div
+              class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
+              <span class="material-symbols-outlined text-primary mr-2">confirmation_number</span>
+              <select
+                class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg font-medium cursor-pointer"
+                [(ngModel)]="passengerCount">
+                <option [value]="1">1 vé</option>
+                <option [value]="2">2 vé</option>
+                <option [value]="3">3 vé</option>
+                <option [value]="4">4 vé</option>
+                <option [value]="5">5 vé</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Searches list -->
+        <div class="mt-4 pt-4 border-t border-outline-variant/30 flex items-center gap-3">
+          <span class="text-body-sm font-bold text-secondary">Tìm kiếm gần đây:</span>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let s of recentSearches" (click)="selectRecentSearch(s)"
+              class="bg-surface-container text-on-surface-variant px-3.5 py-1 rounded-full text-label-md border border-outline-variant/30 cursor-pointer hover:bg-primary-light hover:text-primary transition-colors">
+              {{ s.from }} → {{ s.to }} <span class="opacity-60 ml-1 text-label-sm">{{ s.date }}</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Centered Search Button below recent searches -->
+        <div class="mt-5 flex justify-center w-full">
+          <button (click)="searchTrip()"
+            class="px-16 py-3.5 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-secondary-hover hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 max-w-xs w-full text-body-lg">
+            TÌM KIẾM
+          </button>
+        </div>
+      </section>
+
+      <!-- Main Layout Columns -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Sidebar: Filters & Ticket summary -->
+        <aside class="lg:col-span-4 space-y-6">
+
+          <!-- Chuyến đi của bạn Card -->
+          <div *ngIf="activeTrip"
+            class="bg-surface rounded-xl shadow-md border border-outline-variant/20 p-5 space-y-4 transition-all duration-300">
+            <h3
+              class="font-bold text-title-lg text-secondary flex items-center gap-2 border-b border-outline-variant/30 pb-2">
+              <span class="material-symbols-outlined text-secondary">departure_board</span>
+              CHUYẾN ĐI CỦA BẠN
+            </h3>
+
+            <div class="flex items-start gap-3">
+              <div
+                class="w-8 h-8 rounded-lg bg-secondary text-white font-bold flex items-center justify-center text-title-md shrink-0">
+                1
+              </div>
+              <div class="space-y-1">
+                <p class="font-bold text-body-md text-navy">{{ departureDate }}</p>
+                <p class="text-body-sm text-on-surface-variant font-medium">{{ activeTrip.startStation }} → {{
+                  activeTrip.endStation }}</p>
+              </div>
+            </div>
+
+            <div class="pl-11 relative">
+              <!-- Left connector line -->
+              <div class="absolute left-4 top-2 bottom-2 w-0.5 border-l-2 border-dotted border-primary"></div>
+
+              <div class="flex items-center justify-between text-body-md mb-2">
+                <span class="font-bold text-navy">{{ activeTrip.departureTime }}</span>
+                <span
+                  class="text-body-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full border border-outline-variant/30 font-semibold">{{
+                  activeTrip.duration }}</span>
+                <span class="font-bold text-navy">{{ activeTrip.arrivalTime }}</span>
+              </div>
+            </div>
+
+            <!-- Selected seats info -->
+            <div *ngIf="selectedSeatsList.length > 0"
+              class="pt-3 border-t border-outline-variant/30 flex justify-between items-center">
+              <span class="text-body-sm font-bold text-on-surface-variant">GHẾ ĐÃ CHỌN:</span>
+              <span
+                class="text-body-md font-bold text-primary bg-primary-light px-3 py-1 rounded-lg border border-primary/20">
+                Ghế {{ selectedSeatsList.join(', ') }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Bộ lọc tìm kiếm Card -->
+          <div class="bg-surface rounded-xl shadow-md border border-outline-variant/20 p-5 space-y-6">
+            <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+              <h3 class="font-bold text-title-lg text-navy flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">filter_alt</span>
+                BỘ LỌC TÌM KIẾM
+              </h3>
+              <button (click)="clearFilters()"
+                class="text-danger hover:text-danger/80 font-bold text-body-md flex items-center gap-1 transition-colors">
+                <span class="material-symbols-outlined text-body-lg">delete</span>
+                Bỏ lọc
+              </button>
+            </div>
+
+            <!-- Giờ đi -->
+            <div class="space-y-3">
+              <h4 class="font-bold text-body-md text-navy">Giờ đi</h4>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="timeFilters.early" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Sáng sớm 00:00 - 06:00</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="timeFilters.morning" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Buổi sáng 06:00 - 12:00</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="timeFilters.afternoon" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Buổi chiều 12:00 - 18:00</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="timeFilters.evening" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Buổi tối 18:00 - 24:00</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tầng -->
+            <div class="space-y-3 border-t border-outline-variant/30 pt-4">
+              <h4 class="font-bold text-body-md text-navy">Tầng</h4>
+              <div class="grid grid-cols-2 gap-2">
+                <button (click)="floorFilters.upper = !floorFilters.upper; filterTrips()"
+                  [class]="floorFilters.upper ? 'py-2 px-2 text-center font-bold text-body-sm rounded-lg border-2 border-primary bg-primary-light text-primary transition-all' : 'py-2 px-2 text-center text-body-sm font-semibold rounded-lg border border-outline-variant bg-surface text-on-surface-variant hover:border-primary hover:text-primary transition-all'">
+                  Tầng trên
+                </button>
+                <button (click)="floorFilters.lower = !floorFilters.lower; filterTrips()"
+                  [class]="floorFilters.lower ? 'py-2 px-2 text-center font-bold text-body-sm rounded-lg border-2 border-primary bg-primary-light text-primary transition-all' : 'py-2 px-2 text-center text-body-sm font-semibold rounded-lg border border-outline-variant bg-surface text-on-surface-variant hover:border-primary hover:text-primary transition-all'">
+                  Tầng dưới
+                </button>
+              </div>
+            </div>
+
+            <!-- Hàng ghế (New Filter) -->
+            <div class="space-y-3 border-t border-outline-variant/30 pt-4">
+              <h4 class="font-bold text-body-md text-navy">Hàng ghế</h4>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="rowFilters.front" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Hàng đầu (Ghế 1-4)</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="rowFilters.middle" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Hàng giữa (Ghế 5-8)</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="rowFilters.back" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Hàng cuối (Ghế 9-12)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Giá vé (New Filter) -->
+            <div class="space-y-3 border-t border-outline-variant/30 pt-4">
+              <h4 class="font-bold text-body-md text-navy">Giá vé</h4>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="priceFilters.under500" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Dưới 500.000đ</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-md text-on-surface-variant cursor-pointer group">
+                  <input type="checkbox" [(ngModel)]="priceFilters.above500" (change)="filterTrips()"
+                    class="rounded border-outline-variant text-primary focus:ring-primary w-4.5 h-4.5">
+                  <span class="group-hover:text-primary transition-colors">Từ 500.000đ trở lên</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Side: List of Trip Results -->
+        <section class="lg:col-span-8 space-y-6">
+          <!-- Header and Quick filters / Sorters (NO WRAPPING - Straight Line - Smaller text title) -->
+          <div
+            class="flex flex-row justify-between items-center w-full gap-4 border-b border-outline-variant/20 pb-4 whitespace-nowrap">
+            <h2 class="text-title-md font-bold text-navy shrink-0">
+              {{ departure }} - {{ destination }} ({{ filteredTrips.length }} chuyến)
+            </h2>
+
+            <!-- Quick Sorting Toggles -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 shrink-0">
+              <span class="text-body-sm font-bold text-on-surface-variant mr-1">Sắp xếp:</span>
+              <button (click)="sortBy = 'price'; filterTrips()"
+                [class]="sortBy === 'price' ? 'flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-full text-label-md font-bold transition-all shadow-sm' : 'flex items-center gap-1 px-3 py-1.5 bg-surface text-on-surface-variant rounded-full text-label-md font-semibold border border-outline-variant hover:bg-surface-container transition-all'">
+                <span class="material-symbols-outlined text-label-lg">sell</span>
+                Giá rẻ bất ngờ
+              </button>
+              <button (click)="sortBy = 'time'; filterTrips()"
+                [class]="sortBy === 'time' ? 'flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-full text-label-md font-bold transition-all shadow-sm' : 'flex items-center gap-1 px-3 py-1.5 bg-surface text-on-surface-variant rounded-full text-label-md font-semibold border border-outline-variant hover:bg-surface-container transition-all'">
+                <span class="material-symbols-outlined text-label-lg">schedule</span>
+                Giờ khởi hành
+              </button>
+              <button (click)="sortBy = 'seats'; filterTrips()"
+                [class]="sortBy === 'seats' ? 'flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-full text-label-md font-bold transition-all shadow-sm' : 'flex items-center gap-1 px-3 py-1.5 bg-surface text-on-surface-variant rounded-full text-label-md font-semibold border border-outline-variant hover:bg-surface-container transition-all'">
+                <span class="material-symbols-outlined text-label-lg">chair</span>
+                Ghế trống
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty result state -->
+          <div *ngIf="filteredTrips.length === 0"
+            class="bg-surface rounded-2xl p-12 text-center border border-outline-variant/20 space-y-4">
+            <span class="material-symbols-outlined text-6xl text-on-surface-disabled">directions_bus</span>
+            <h3 class="font-bold text-headline-sm text-navy">Không tìm thấy chuyến xe</h3>
+            <p class="text-on-surface-variant max-w-md mx-auto">Vui lòng điều chỉnh lại bộ lọc tìm kiếm hoặc quay lại
+              sau để tìm chuyến đi phù hợp của bạn.</p>
+            <button (click)="clearFilters()"
+              class="px-6 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-primary-light transition-all">
+              Đặt lại bộ lọc
+            </button>
+          </div>
+
+          <!-- List of Trips -->
+          <div class="space-y-4">
+            <ng-container *ngFor="let trip of filteredTrips; let i = index">
+
+              <!-- Membership Benefit Banner -->
+              <div *ngIf="i === 1"
+                class="bg-surface-container rounded-xl p-5 border border-primary-light flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-primary shrink-0">
+                    <span class="material-symbols-outlined text-3xl">card_membership</span>
+                  </div>
+                  <div class="space-y-1">
+                    <h4 class="font-bold text-navy text-body-lg">Đăng nhập ngay để nhận được nhiều quyền lợi dành cho
+                      thành viên</h4>
+                    <p class="text-body-sm text-on-surface-variant leading-relaxed">
+                      Khi đăng nhập và tải App, bạn sẽ dễ dàng quản lý đặt chỗ, hoặc nhận thông tin khuyến mãi khi mua
+                      vé, và còn nhiều ưu đãi khác v.v...
+                    </p>
+                  </div>
+                </div>
+                <button
+                  (click)="openLoginModal()"
+                  class="bg-info text-white font-bold px-6 py-2.5 rounded-lg hover:bg-info/90 transition-colors whitespace-nowrap">
+                  Đăng nhập ngay
+                </button>
+              </div>
+
+              <!-- Trip Card (Layout updated to match Figure 2) -->
+              <div
+                class="bg-surface rounded-xl border border-outline-variant/15 hover:border-primary/30 shadow-[0px_4px_16px_rgba(11,42,74,0.03)] hover:shadow-[0px_8px_24px_rgba(11,42,74,0.06)] overflow-hidden transition-all duration-300">
+                <!-- Trip Summary Header (Click triggers expansion) -->
+                <div (click)="toggleTripDetails(trip)" class="p-6 cursor-pointer select-none space-y-1">
+                  <!-- Row 1: Departure Time, Timeline, Arrival Time, Specs (all on 1 line) -->
+                  <div class="grid grid-cols-12 gap-x-4 items-center">
+                    <!-- Departure (col-span-2) -->
+                    <div class="col-span-2 text-left">
+                      <span class="text-3xl font-bold text-navy leading-none">{{ trip.departureTime }}</span>
+                    </div>
+
+                    <!-- Progress Bar (col-span-4) -->
+                    <div class="col-span-4 flex flex-col items-center justify-center relative px-2">
+                      <span class="text-[10px] text-on-surface-variant font-semibold mb-1">
+                        {{ trip.duration }} - {{ trip.distance }}
+                      </span>
+                      <div class="w-full flex items-center justify-center relative">
+                        <!-- Green circle dot at start -->
+                        <span
+                          class="w-3 h-3 rounded-full bg-success border-2 border-white ring-1 ring-success absolute left-2"></span>
+
+                        <!-- Dotted line -->
+                        <div class="w-full h-0.5 border-t border-dashed border-outline-variant"></div>
+
+                        <!-- Orange pin at end (placed exactly at the end, not overlapping arrival time) -->
+                        <span
+                          class="material-symbols-outlined text-secondary absolute right-2 text-2xl font-bold select-none leading-none">location_on</span>
+                      </div>
+                    </div>
+
+                    <!-- Arrival (col-span-2) -->
+                    <div class="col-span-2 pl-2 text-left">
+                      <span class="text-3xl font-bold text-navy leading-none">{{ trip.arrivalTime }}</span>
+                    </div>
+
+                    <!-- Specs (col-span-4) -->
+                    <div
+                      class="col-span-4 flex items-center gap-1.5 text-body-sm font-semibold text-on-surface-variant justify-end">
+                      <span>•</span>
+                      <span>Limousine</span>
+                      <span>•</span>
+                      <span class="text-success">{{ trip.availableSeats }} chỗ trống</span>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Stations and Price -->
+                  <div class="grid grid-cols-12 gap-x-4 items-center">
+                    <!-- Start station under departure -->
+                    <div class="col-span-4 text-left whitespace-nowrap text-[12px] sm:text-body-sm">
+                      <span class="font-medium text-on-surface-variant leading-none">{{ trip.startStation }}</span>
+                    </div>
+
+                    <!-- Empty spacer -->
+                    <div class="col-span-2"></div>
+
+                    <!-- End station under arrival -->
+                    <div class="col-span-3 text-left whitespace-nowrap text-[12px] sm:text-body-sm pl-2">
+                      <span class="font-medium text-on-surface-variant leading-none">{{ trip.endStation }}</span>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="col-span-3 text-right">
+                      <span class="text-2xl font-bold text-secondary">{{ formatPrice(trip.price) }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer Tab Bar & Selection button (Direct selections enabled!) -->
+                <div
+                  class="bg-surface-container-low px-6 py-3 flex justify-between items-center border-t border-outline-variant/20">
+                  <!-- Tab triggers -->
+                  <div class="flex items-center gap-1 overflow-x-auto -ml-2">
+                    <button (click)="switchTab(trip, 'seat'); $event.stopPropagation()"
+                      [class]="trip.expanded && trip.selectedTab === 'seat' ? 'px-3 py-1.5 font-bold text-primary bg-primary-light rounded-lg text-body-sm transition-all' : 'px-3 py-1.5 text-on-surface-variant font-semibold hover:text-primary transition-colors text-body-sm'">
+                      Chọn ghế
+                    </button>
+                    <button (click)="switchTab(trip, 'schedule'); $event.stopPropagation()"
+                      [class]="trip.expanded && trip.selectedTab === 'schedule' ? 'px-3 py-1.5 font-bold text-primary bg-primary-light rounded-lg text-body-sm transition-all' : 'px-3 py-1.5 text-on-surface-variant font-semibold hover:text-primary transition-colors text-body-sm'">
+                      Lịch trình
+                    </button>
+                    <button (click)="switchTab(trip, 'shuttle'); $event.stopPropagation()"
+                      [class]="trip.expanded && trip.selectedTab === 'shuttle' ? 'px-3 py-1.5 font-bold text-primary bg-primary-light rounded-lg text-body-sm transition-all' : 'px-3 py-1.5 text-on-surface-variant font-semibold hover:text-primary transition-colors text-body-sm'">
+                      Đón/Trả
+                    </button>
+                    <button (click)="switchTab(trip, 'utilities'); $event.stopPropagation()"
+                      [class]="trip.expanded && trip.selectedTab === 'utilities' ? 'px-3 py-1.5 font-bold text-primary bg-primary-light rounded-lg text-body-sm transition-all' : 'px-3 py-1.5 text-on-surface-variant font-semibold hover:text-primary transition-colors text-body-sm'">
+                      Tiện ích
+                    </button>
+                    <button (click)="switchTab(trip, 'policy'); $event.stopPropagation()"
+                      [class]="trip.expanded && trip.selectedTab === 'policy' ? 'px-3 py-1.5 font-bold text-primary bg-primary-light rounded-lg text-body-sm transition-all' : 'px-3 py-1.5 text-on-surface-variant font-semibold hover:text-primary transition-colors text-body-sm'">
+                      Chính sách
+                    </button>
+                  </div>
+
+                  <!-- Toggle/Select button (Always "Chọn chuyến" text) -->
+                  <button (click)="selectTripAndNavigate(trip, false); $event.stopPropagation()"
+                    class="px-6 py-2 bg-secondary text-white font-bold rounded-lg hover:bg-secondary-hover transition-all text-body-sm shadow-sm">
+                    Chọn chuyến
+                  </button>
+                </div>
+
+                <!-- Expanded Content Area -->
+                <div *ngIf="trip.expanded"
+                  class="border-t border-outline-variant/30 bg-surface p-6 transition-all duration-300">
+
+                  <!-- 1. Seat Selection Tab Content (Legend on the left) -->
+                  <div *ngIf="trip.selectedTab === 'seat'" class="space-y-6">
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                      <!-- CHÚ THÍCH (Legend) - Left aligned (Đang chọn color set to orange!) -->
+                      <div
+                        class="lg:col-span-4 space-y-4 bg-surface-container-low rounded-xl p-4 border border-outline-variant/20 shadow-xs">
+                        <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">Chú thích
+                        </h4>
+
+                        <div class="space-y-3 font-semibold text-body-sm text-on-surface-variant">
+                          <div class="flex items-center gap-3">
+                            <span
+                              class="w-6 h-6 rounded bg-surface-container-lowest border border-outline-variant inline-block shadow-sm"></span>
+                            <span class="text-on-surface-disabled">Đã bán</span>
+                          </div>
+
+                          <div class="flex items-center gap-3">
+                            <span
+                              class="w-6 h-6 rounded bg-white border-2 border-primary inline-block shadow-sm"></span>
+                            <span>Còn trống</span>
+                          </div>
+
+                          <div class="flex items-center gap-3">
+                            <span
+                              class="w-6 h-6 rounded bg-secondary border-2 border-secondary inline-block shadow-sm"></span>
+                            <span>Đang chọn</span>
+                          </div>
+
+                          <div
+                            class="pt-3 border-t border-outline-variant/20 space-y-1 text-label-md font-bold text-navy leading-normal">
+                            <p>Phòng đơn (1 khách người lớn): {{ formatPrice(trip.price) }}</p>
+                            <p>Phòng đôi (2 khách người lớn hoặc 1 người lớn + 1 trẻ em trên 6 tuổi): {{
+                              formatPrice(trip.price + 200000) }}.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- INTERACTIVE SEAT DECKS GRID - Right side -->
+                      <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <!-- TẦNG DƯỚI (Lower deck - 12 rooms) -->
+                        <div
+                          class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-5 shadow-inner">
+                          <p class="text-center font-bold text-navy text-body-md mb-4 uppercase tracking-wider">
+                            Tầng dưới
+                          </p>
+
+                          <div class="space-y-4">
+                            <!-- Steering wheel row -->
+                            <div class="flex justify-between items-center px-6">
+                              <!-- Symmetrical Driver steering wheel SVG icon -->
+                              <div class="w-12 h-12 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-navy" viewBox="0 0 24 24"
+                                  fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                  stroke-linejoin="round">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <circle cx="12" cy="12" r="2.5" />
+                                  <path d="M12 2v7.5M2 12h7.5M14.5 12h7.5M12 14.5v7.5" />
+                                </svg>
+                              </div>
+                              <!-- Spacer -->
+                              <div class="w-16 h-11"></div>
+                            </div>
+
+                            <!-- Columns Header -->
+                            <div
+                              class="flex justify-between text-center px-6 text-label-sm font-bold text-on-surface-variant">
+                              <span>Dãy Trái</span>
+                              <span>Dãy Phải</span>
+                            </div>
+
+                            <!-- Rows 1 to 6 Grid (12 rooms: 6 rows of 2 rooms) -->
+                            <div class="grid grid-cols-2 gap-y-3 gap-x-8 px-4 justify-items-center">
+                              <ng-container *ngFor="let seat of trip.seats">
+                                <button *ngIf="seat.deck === 'lower'"
+                                  (click)="toggleSeat(trip, seat); $event.stopPropagation()"
+                                  [disabled]="seat.status === 'sold'"
+                                  [class]="seat.status === 'sold'
+                                    ? 'w-16 h-11 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface-disabled cursor-not-allowed flex items-center justify-center shadow-sm text-lg font-bold'
+                                    : seat.status === 'selected'
+                                    ? 'w-16 h-11 rounded-lg bg-secondary border-secondary border-2 text-white flex items-center justify-center shadow-md scale-105 transition-all text-lg font-bold'
+                                    : 'w-16 h-11 rounded-lg bg-white border-2 border-primary text-primary flex items-center justify-center shadow-sm transition-all active:scale-95 hover:bg-primary-light text-lg font-bold'">
+                                  {{ seat.name }}
+                                </button>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- TẦNG TRÊN (Upper deck - 10 rooms) -->
+                        <div
+                          class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-5 shadow-inner">
+                          <p class="text-center font-bold text-navy text-body-md mb-4 uppercase tracking-wider">
+                            Tầng trên
+                          </p>
+
+                          <div class="space-y-4">
+                            <!-- Blank spacer row to align with steering wheel height -->
+                            <div class="h-12 flex items-center justify-center"></div>
+
+                            <!-- Columns Header -->
+                            <div
+                              class="flex justify-between text-center px-6 text-label-sm font-bold text-on-surface-variant">
+                              <span>Dãy Trái</span>
+                              <span>Dãy Phải</span>
+                            </div>
+
+                            <!-- Rows 1 to 5 Grid (10 rooms: 5 rows of 2 rooms) -->
+                            <div class="grid grid-cols-2 gap-y-3 gap-x-8 px-4 justify-items-center">
+                              <ng-container *ngFor="let seat of trip.seats">
+                                <button *ngIf="seat.deck === 'upper'"
+                                  (click)="toggleSeat(trip, seat); $event.stopPropagation()"
+                                  [disabled]="seat.status === 'sold'"
+                                  [class]="seat.status === 'sold'
+                                    ? 'w-16 h-11 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface-disabled cursor-not-allowed flex items-center justify-center shadow-sm text-lg font-bold'
+                                    : seat.status === 'selected'
+                                    ? 'w-16 h-11 rounded-lg bg-secondary border-secondary border-2 text-white flex items-center justify-center shadow-md scale-105 transition-all text-lg font-bold'
+                                    : 'w-16 h-11 rounded-lg bg-white border-2 border-primary text-primary flex items-center justify-center shadow-sm transition-all active:scale-95 hover:bg-primary-light text-lg font-bold'">
+                                  {{ seat.name }}
+                                </button>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- Dynamic room guest settings & checkout container -->
+                    <div *ngIf="selectedSeatsList.length > 0"
+                      class="pt-6 border-t border-outline-variant/20 max-w-2xl mx-auto space-y-4">
+                      <p class="font-bold text-navy text-body-md">Chọn loại ghế:</p>
+
+                      <!-- Guest configuration rows -->
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div *ngFor="let seatName of selectedSeatsList"
+                          class="flex items-center justify-between p-3 bg-surface-container rounded-lg border border-outline-variant/25">
+                          <span class="font-bold text-navy font-semibold text-body-md">Ghế {{ seatName }}</span>
+                          <select [(ngModel)]="selectedRoomGuests[seatName]" (change)="recalculatePrice()"
+                            class="bg-white border border-outline-variant rounded-md text-body-sm font-bold py-1 px-2 focus:ring-primary focus:border-primary cursor-pointer">
+                            <option [value]="1">Phòng đơn ({{ formatPrice(trip.price) }})</option>
+                            <option [value]="2">Phòng đôi ({{ formatPrice(trip.price + 200000) }})</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div
+                        class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-outline-variant/10">
+                        <div class="text-center sm:text-left space-y-1">
+                          <p class="text-body-sm text-on-surface-variant font-medium">
+                            Đã chọn <span class="font-bold text-navy">{{ selectedSeatsList.length }}</span> ghế:
+                            <span class="font-bold text-primary">Ghế {{ selectedSeatsList.join(', ') }}</span>
+                          </p>
+                          <p class="text-title-lg font-bold text-navy">
+                            Tổng tiền: <span class="text-secondary">{{ formatPrice(totalPrice) }}</span>
+                          </p>
+                        </div>
+
+                        <button (click)="confirmSelection(trip)"
+                          class="px-8 py-2.5 bg-secondary text-white font-bold rounded-lg hover:bg-secondary-hover shadow-[0px_4px_12px_rgba(243,112,33,0.2)] transition-all">
+                          Chọn ghế
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 2. Schedule Tab Content -->
+                  <div *ngIf="trip.selectedTab === 'schedule'" class="space-y-6">
+                    <div
+                      class="relative pl-6 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant/40">
+
+                      <!-- Node 1: Pickup point -->
+                      <div class="relative flex items-start gap-4">
+                        <!-- Neutral grey dot -->
+                        <div
+                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-body-md font-bold text-navy">17:00</p>
+                          <p class="text-body-sm font-semibold text-on-surface">Văn phòng đón khách</p>
+                          <p class="text-label-md text-on-surface-variant">202 Lê Hồng Phong - P.4 - Q.5 - TP. Hồ Chí
+                            Minh</p>
+                        </div>
+                      </div>
+
+                      <!-- Node 2: Start Station (Green dot) -->
+                      <div class="relative flex items-start gap-4">
+                        <!-- Green circle dot -->
+                        <div
+                          class="absolute left-[-20px] top-1.5 w-3 h-3 rounded-full bg-success border-2 border-white shadow-sm ring-1 ring-success">
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-body-md font-bold text-navy">{{ trip.departureTime }}</p>
+                          <p class="text-body-sm font-bold text-success">{{ trip.startStation }}</p>
+                          <p class="text-label-md text-on-surface-variant">Điểm khởi hành chính thức của chuyến đi</p>
+                        </div>
+                      </div>
+
+                      <!-- Node 3: Highway Pickup -->
+                      <div class="relative flex items-start gap-4">
+                        <!-- Neutral grey dot -->
+                        <div
+                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-body-md font-bold text-navy">18:15</p>
+                          <p class="text-body-sm font-semibold text-on-surface">Điểm đón Mai Chí Thọ</p>
+                          <p class="text-label-md text-on-surface-variant">Dọc tuyến đường Mai Chí Thọ, Quận 2, TP. Hồ
+                            Chí Minh</p>
+                        </div>
+                      </div>
+
+                      <!-- Node 4: Intermediate Station -->
+                      <div class="relative flex items-start gap-4">
+                        <!-- Neutral grey dot -->
+                        <div
+                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-body-md font-bold text-navy">21:30</p>
+                          <p class="text-body-sm font-semibold text-on-surface">Trạm dừng chân dọc tuyến</p>
+                          <p class="text-label-md text-on-surface-variant">Điểm dừng nghỉ ngơi, ăn uống của hành khách
+                          </p>
+                        </div>
+                      </div>
+
+                      <!-- Node 5: Destination Station (Orange location pin) -->
+                      <div class="relative flex items-start gap-4">
+                        <!-- Orange location pin -->
+                        <span
+                          class="material-symbols-outlined text-secondary absolute left-[-25px] top-0.5 text-2xl font-bold select-none leading-none">location_on</span>
+                        <div class="space-y-0.5 pl-1">
+                          <p class="text-body-md font-bold text-navy">{{ trip.arrivalTime }}</p>
+                          <p class="text-body-sm font-bold text-secondary">{{ trip.endStation }}</p>
+                          <p class="text-label-md text-on-surface-variant">Điểm trả khách cuối cùng của hành trình</p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- Note -->
+                    <div
+                      class="mt-6 p-4 bg-surface-container-low rounded-lg border border-outline-variant/20 text-body-sm text-on-surface-variant leading-relaxed space-y-1">
+                      <p class="font-bold text-navy">Lưu ý</p>
+                      <p>Thời gian các mốc lịch trình là thời gian dự kiến. Lịch trình này có thể thay đổi tuỳ vào tình
+                        hình thực tế và điều kiện giao thông tại thời điểm khởi hành.</p>
+                    </div>
+                  </div>
+
+                  <!-- 3. Shuttle / Đón Trả Tab Content -->
+                  <div *ngIf="trip.selectedTab === 'shuttle'" class="space-y-4">
+                    <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">Đón/trả tận
+                      nơi</h4>
+                    <ul class="list-disc list-inside space-y-2.5 text-body-md text-on-surface-variant leading-relaxed">
+                      <li>
+                        <span class="font-bold text-navy">Thời gian nhận khách:</span> Trước 4 tiếng.
+                      </li>
+                      <li>
+                        <span class="font-bold text-navy">Thời gian xe đón:</span> Chuẩn bị trước 2 - 3 tiếng, do mật độ
+                        giao thông trong thành phố và sẽ kết hợp đón nhiều điểm khác nhau nên thời gian cụ thể tài xế sẽ
+                        liên hệ hẹn giờ.
+                      </li>
+                      <li>
+                        <span class="font-bold text-navy">Hẻm nhỏ xe không quay đầu được:</span> Xe trung chuyển sẽ đón
+                        Khách đầu hẻm/đầu đường.
+                      </li>
+                      <li>
+                        <span class="font-bold text-navy">Khu vực có biển cấm dừng đỗ xe không đón được:</span> Xe trung
+                        chuyển sẽ đón tại vị trí gần nhất có thể.
+                      </li>
+                      <li>
+                        <span class="font-bold text-navy">Hành lý:</span> Hành lý nhỏ gọn dưới 20 kg, không vận chuyển
+                        kèm động vật, thú cưng, không mang đồ có mùi, đồ dễ cháy nổ trên xe.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- 4. Utilities / Tiện ích Tab Content -->
+                  <div *ngIf="trip.selectedTab === 'utilities'" class="space-y-6">
+                    <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">Tiện ích phục
+                      vụ trên chuyến xe</h4>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      <div
+                        class="p-4 bg-surface-container rounded-xl text-center space-y-2 border border-outline-variant/10">
+                        <span class="material-symbols-outlined text-primary text-3xl">wifi</span>
+                        <p class="font-bold text-navy text-body-sm">Wifi tốc độ cao</p>
+                        <p class="text-label-xs text-on-surface-variant">Lướt web, xem phim mượt mà</p>
+                      </div>
+
+                      <div
+                        class="p-4 bg-surface-container rounded-xl text-center space-y-2 border border-outline-variant/10">
+                        <span class="material-symbols-outlined text-primary text-3xl">usb</span>
+                        <p class="font-bold text-navy text-body-sm">Cổng sạc USB</p>
+                        <p class="text-label-xs text-on-surface-variant">Đầu sạc tại mỗi vị trí phòng nằm</p>
+                      </div>
+
+                      <div
+                        class="p-4 bg-surface-container rounded-xl text-center space-y-2 border border-outline-variant/10">
+                        <span class="material-symbols-outlined text-primary text-3xl">water_drop</span>
+                        <p class="font-bold text-navy text-body-sm">Nước & Khăn lạnh</p>
+                        <p class="text-label-xs text-on-surface-variant">Được cấp miễn phí khi lên xe</p>
+                      </div>
+
+                      <div
+                        class="p-4 bg-surface-container rounded-xl text-center space-y-2 border border-outline-variant/10">
+                        <span class="material-symbols-outlined text-primary text-3xl">ac_unit</span>
+                        <p class="font-bold text-navy text-body-sm">Điều hòa mát mẻ</p>
+                        <p class="text-label-xs text-on-surface-variant">Luôn bật suốt hành trình</p>
+                      </div>
+                    </div>
+
+                    <!-- Bus interior visual mock -->
+                    <div class="rounded-xl overflow-hidden shadow-md h-48 relative bg-cover bg-center"
+                      style="background-image: url('asset/images/customer/nhaxe1.png')">
+                      <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent flex flex-col justify-end p-4">
+                        <p class="text-white font-bold text-body-lg">Nội thất phòng nằm VIP Limousine</p>
+                        <p class="text-gray-300 text-body-sm">Mang đến sự riêng tư, sang trọng và dễ chịu tuyệt đối suốt
+                          đêm.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 5. Policy / Chính sách Tab Content -->
+                  <div *ngIf="trip.selectedTab === 'policy'" class="space-y-6">
+                    <!-- 1. Cancel policy -->
+                    <div class="space-y-3">
+                      <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">1. CHÍNH
+                        SÁCH HỦY VÉ VÀ HOÀN TIỀN</h4>
+                      <ul class="list-disc list-inside space-y-2 text-body-md text-on-surface-variant leading-relaxed">
+                        <li>Hủy vé trước <span class="font-bold text-navy">24 giờ</span> (so với giờ xe chạy): Hệ thống
+                          hoàn trả <span class="font-bold text-success">100%</span> giá trị vé cho khách hàng.</li>
+                        <li>Hủy vé từ <span class="font-bold text-navy">12 giờ đến 24 giờ</span> (so với giờ xe chạy):
+                          Hệ thống hoàn trả <span class="font-bold text-secondary">50%</span> giá trị vé cho khách hàng.
+                        </li>
+                        <li>Hủy vé dưới <span class="font-bold text-navy">12 giờ</span> (sát giờ xe chạy): Nhà xe <span
+                            class="font-bold text-danger">không hỗ trợ</span> hủy vé và không hoàn tiền dưới mọi hình
+                          thức.</li>
+                      </ul>
+                    </div>
+
+                    <!-- 2. Children & Pregnant Women -->
+                    <div class="space-y-3 pt-2">
+                      <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">2. TRẺ EM
+                        DƯỚI 6 TUỔI VÀ PHỤ NỮ CÓ THAI</h4>
+                      <ul class="list-disc list-inside space-y-2 text-body-md text-on-surface-variant leading-relaxed">
+                        <li>Trẻ em dưới <span class="font-bold text-navy">6 tuổi</span> (hoặc cao từ 1.3m trở xuống,
+                          nặng dưới 30kg): Không phải mua vé. Mỗi người lớn chỉ được đi kèm tối đa 01 trẻ em.</li>
+                        <li>Trẻ em từ <span class="font-bold text-navy">6 tuổi trở lên</span> (hoặc vượt quá các tiêu
+                          chuẩn trên): Tính như người lớn, bắt buộc phải đặt Phòng Đôi khi lựa chọn cabin.</li>
+                        <li><span class="italic text-secondary">Lưu ý</span>: Nhà xe sẽ kiểm tra độ tuổi/chiều cao của
+                          bé khi lên xe. Nếu không thỏa mãn điều kiện phòng đơn, quý khách vui lòng phụ thu nâng cấp lên
+                          phòng đôi.</li>
+                        <li>Phụ nữ có thai: Cần đảm bảo và tự chịu trách nhiệm về sức khỏe của bản thân trong suốt quá
+                          trình di chuyển cùng nhà xe.</li>
+                      </ul>
+                    </div>
+
+                    <!-- 3. Boarding Requirements -->
+                    <div class="space-y-3 pt-2">
+                      <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">3. YÊU CẦU
+                        KHI LÊN XE</h4>
+                      <ul class="list-disc list-inside space-y-2 text-body-md text-on-surface-variant leading-relaxed">
+                        <li>Thời gian có mặt: Quý khách vui lòng có mặt tại điểm đón trước giờ khởi hành <span
+                            class="font-bold text-navy">30 phút</span> để làm thủ tục (ngày Lễ/Tết cần ra trước <span
+                            class="font-bold text-navy">60 phút</span>).</li>
+                        <li>Thủ tục lên xe: Xuất trình thông tin vé được gửi qua SMS/Zalo/Email/Website hoặc liên hệ
+                          quầy vé để nhận thông tin vé trước khi lên xe.</li>
+                        <li>Hành lý xách tay: Trọng lượng tối đa <span class="font-bold text-navy">20kg/khách</span>.
+                        </li>
+                        <li>Quy định chung:
+                          <ul class="list-none pl-6 space-y-1 mt-1">
+                            <li>- Không mang động vật/thú cưng lên xe.</li>
+                            <li>- Không mang thức ăn, đồ uống có mùi nặng vào cabin.</li>
+                            <li>- Nghiêm cấm hút thuốc, sử dụng chất kích thích hoặc mang vật liệu dễ cháy nổ lên xe.
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+</div>

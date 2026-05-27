@@ -10,7 +10,13 @@ import { AuthModalService, AuthModalMode } from '../../auth/auth-modal.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoginComponent, RegisterComponent, ForgotPasswordComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    LoginComponent,
+    RegisterComponent,
+    ForgotPasswordComponent
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

@@ -34,8 +34,8 @@ export class ThanhToan implements OnInit, OnDestroy {
 
   selectedPayment: string = 'vietqr';
 
-  // Timer: 15 minutes = 900 seconds
-  timeLeft: number = 900;
+  // Timer: 10 minutes = 600 seconds
+  timeLeft: number = 600;
   timerInterval: any = null;
 
   // Modal states
@@ -44,13 +44,15 @@ export class ThanhToan implements OnInit, OnDestroy {
   expirationRedirectTime: number = 5;
   expirationInterval: any = null;
 
+  showSuccessModal: boolean = false;
+  successRedirectTime: number = 20;
+  successInterval: any = null;
+
   paymentMethods = [
-    { id: 'vietqr', name: 'Thanh toán qua VietQR', icon: '/asset/images/customer/VietQR_Logo.png', badge: '' },
-    { id: 'momo', name: 'Ví MoMo', icon: '/asset/images/customer/MoMo_Logo.png', badge: '' },
-    { id: 'vnpay', name: 'Ví VNPay', icon: '/asset/images/customer/VNPay_logo.png', badge: '' },
-    { id: 'zalopay', name: 'Ví ZaloPay', icon: 'https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png', badge: 'Giảm 25% tối đa 20k cho khách lần đầu thanh toán. Giảm tối đa 50k cho đơn từ 500k cho tất cả các giao dịch' },
-    { id: 'atm', name: 'Thẻ ATM nội địa', icon: '/asset/images/customer/napas_logo.png', badge: '' },
-    { id: 'card', name: 'Thẻ Visa/Master/JCB', icon: '/asset/images/customer/the-quoc-te_logo.jpg', badge: '' }
+    { id: 'vietqr', name: 'Thanh toán qua VietQR', icon: 'asset/images/customer/VietQR_Logo.png', badge: '' },
+    { id: 'momo', name: 'Ví MoMo', icon: 'asset/images/customer/MoMo_Logo.png', badge: '' },
+    { id: 'vnpay', name: 'Ví VNPay', icon: 'asset/images/customer/VNPay_logo.png', badge: '' },
+    { id: 'zalopay', name: 'Ví ZaloPay', icon: 'https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png', badge: 'Giảm 25% tối đa 20k cho khách lần đầu thanh toán. Giảm tối đa 50k cho đơn từ 500k cho tất cả các giao dịch' }
   ];
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
@@ -84,6 +86,9 @@ export class ThanhToan implements OnInit, OnDestroy {
     }
     if (this.expirationInterval) {
       clearInterval(this.expirationInterval);
+    }
+    if (this.successInterval) {
+      clearInterval(this.successInterval);
     }
   }
 
@@ -155,9 +160,32 @@ export class ThanhToan implements OnInit, OnDestroy {
   }
 
   finishPayment() {
-    alert('Thanh toán thành công! Vé điện tử đã được gửi tới số điện thoại/email của bạn.');
+    this.showSuccessModal = true;
+    this.successRedirectTime = 20;
     localStorage.removeItem('current_booking');
     localStorage.removeItem('final_booking');
+    
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    
+    if (typeof window !== 'undefined') {
+      this.successInterval = setInterval(() => {
+        if (this.successRedirectTime > 1) {
+          this.successRedirectTime--;
+          this.cdr.detectChanges();
+        } else {
+          this.closeSuccessModal();
+        }
+      }, 1000);
+    }
+  }
+
+  closeSuccessModal() {
+    if (this.successInterval) {
+      clearInterval(this.successInterval);
+    }
+    this.showSuccessModal = false;
     this.router.navigate(['/home']);
   }
 
@@ -199,5 +227,20 @@ export class ThanhToan implements OnInit, OnDestroy {
   getPaymentLogo(): string {
     const selected = this.paymentMethods.find(m => m.id === this.selectedPayment);
     return selected ? selected.icon : '';
+  }
+
+  simulateSuccess() {
+    this.finishPayment();
+  }
+
+  viewTicketDetails() {
+    if (this.successInterval) {
+      clearInterval(this.successInterval);
+    }
+    this.router.navigate(['/tra-cuu-ve']);
+  }
+
+  printTicket() {
+    window.print();
   }
 }

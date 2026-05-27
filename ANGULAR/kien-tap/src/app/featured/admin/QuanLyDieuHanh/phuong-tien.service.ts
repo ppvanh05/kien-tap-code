@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 export interface Vehicle {
   id: string | number;
@@ -20,12 +21,59 @@ export interface Vehicle {
   createdAt: Date;
 }
 
+const dbToFrontendMap: { [key: string]: string } = {
+  'Tivi': 'tivi',
+  'Ổ sạc, USB': 'usb',
+  'Wifi': 'wifi',
+  'Nước, khăn ướt': 'water',
+  'GPS': 'gps',
+  'Điều hòa': 'ac',
+  'tivi': 'tivi',
+  'usb': 'usb',
+  'wifi': 'wifi',
+  'water': 'water',
+  'gps': 'gps',
+  'ac': 'ac',
+  'OSac+USB': 'usb',
+  'Nuoc+KhanUot': 'water',
+  'DieuHoa': 'ac'
+};
+
+function parsePgArray(str: string): string[] {
+  if (!str) return [];
+  if (!str.startsWith('{') || !str.endsWith('}')) {
+    return str.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  
+  const clean = str.slice(1, -1);
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < clean.length; i++) {
+    const char = clean[i];
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  if (current) {
+    result.push(current.trim());
+  }
+  return result;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PhuongTienService {
   private apiUrl = 'http://localhost:3000/dieu-hanh/phuong-tien';
   private vehicles: Vehicle[] = [];
+  public vehiclesUpdated$ = new Subject<void>();
 
   constructor(private http: HttpClient) {
     this.refreshVehicles();
@@ -46,13 +94,14 @@ export class PhuongTienService {
             rows: v.SoDay,
             registrationExpiry: v.HanDangKiem ? new Date(v.HanDangKiem).toLocaleDateString('vi-VN') : '',
             insuranceExpiry: v.HanBaoHiem ? new Date(v.HanBaoHiem).toLocaleDateString('vi-VN') : '',
-            amenities: v.TienIch ? v.TienIch.split(', ').filter((x: string) => x.length > 0) : [],
-            status: v.TrangThai || 'active',
+            amenities: v.TienIch ? parsePgArray(v.TienIch).map((x: string) => dbToFrontendMap[x] || x) : [],
+            status: v.TrangThaiPhuongTien === 'DaKhoa' ? 'locked' : 'active',
             vehicleImage: v.AnhXe || undefined,
             selectedSeats: [],
             createdAt: new Date(),
           });
         });
+        this.vehiclesUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi tải danh sách xe:', err)
     });
@@ -70,6 +119,7 @@ export class PhuongTienService {
     this.http.post<any>(this.apiUrl, vehicle).subscribe({
       next: (res) => {
         newVehicle.id = res.MaXe;
+        this.vehiclesUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi thêm phương tiện:', err)
     });
@@ -95,6 +145,9 @@ export class PhuongTienService {
     }
 
     this.http.put(`${this.apiUrl}/${id}`, payload).subscribe({
+      next: () => {
+        this.vehiclesUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi cập nhật phương tiện:', err)
     });
   }
@@ -106,6 +159,9 @@ export class PhuongTienService {
     }
 
     this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.vehiclesUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi xóa phương tiện:', err)
     });
   }

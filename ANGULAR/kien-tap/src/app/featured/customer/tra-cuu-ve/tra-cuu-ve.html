@@ -1,13 +1,9 @@
-<div class="bg-background font-body text-on-surface min-h-screen flex flex-col">
-  <!-- Header -->
+﻿<div class="bg-background font-body text-on-surface min-h-screen flex flex-col">
   <app-header></app-header>
 
-  <!-- Main Content Wrapper -->
   <main class="pt-24 flex-grow pb-16">
     <div class="max-w-container-max mx-auto px-margin-desktop">
-
-      <!-- Toast Feedback -->
-      <div *ngIf="toastMessage" 
+      <div *ngIf="toastMessage"
            class="fixed top-24 right-6 z-[100] flex items-center gap-3 bg-white border-l-4 px-6 py-4 rounded-xl shadow-lg transform transition-all duration-300 animate-slide-in"
            [class.border-success]="toastType === 'success'"
            [class.border-danger]="toastType === 'error'">
@@ -19,7 +15,6 @@
         <span class="font-semibold text-navy text-body-md">{{ toastMessage }}</span>
       </div>
 
-      <!-- STAGE 1: TICKET LOOKUP SEARCH FORM (Figure 1) -->
       <div *ngIf="currentStep === 'search'" class="flex justify-center items-center min-h-[60vh] py-8">
         <div class="bg-white rounded-2xl shadow-md border border-outline-variant/10 p-8 md:p-12 w-full max-w-[540px] transition-all hover:shadow-lg">
           <h2 class="text-center text-headline-md font-bold text-primary mb-8 tracking-wide uppercase">
@@ -27,7 +22,6 @@
           </h2>
 
           <form (ngSubmit)="searchTickets()" class="space-y-6">
-            <!-- Phone Input -->
             <div class="relative flex items-center">
               <span class="material-symbols-outlined absolute left-4 text-outline-variant text-[22px] pointer-events-none">phone_iphone</span>
               <input
@@ -40,22 +34,20 @@
               />
             </div>
 
-            <!-- Ticket / Booking Code Input -->
             <div class="relative flex items-center">
               <span class="material-symbols-outlined absolute left-4 text-outline-variant text-[22px] pointer-events-none">confirmation_number</span>
               <input
                 type="text"
                 [(ngModel)]="bookingCode"
                 name="bookingCode"
-                placeholder="Vui lòng nhập mã đặt vé"
+                placeholder="Vui lòng nhập mã đơn hàng"
                 class="w-full pl-12 pr-4 py-3.5 bg-surface-container-low border border-outline-variant rounded-xl text-body-lg text-on-surface focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all placeholder-outline-variant/60"
                 required
               />
             </div>
 
-            <!-- Submit Button (Peach light bg, orange hover) -->
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               class="w-full py-4 bg-secondary-light text-secondary hover:bg-secondary hover:text-white rounded-full font-bold text-body-lg shadow-sm hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2"
               [disabled]="isLoading">
               <span *ngIf="!isLoading">Tra cứu</span>
@@ -63,15 +55,14 @@
             </button>
           </form>
 
-          <!-- Pre-filled Mock Data Helpers (User Convenience) -->
           <div class="mt-8 pt-6 border-t border-outline-variant/20">
             <p class="text-label-md font-bold text-navy mb-3 text-center uppercase tracking-wider">
               Chọn dữ liệu mẫu để xem giao diện:
             </p>
             <div class="grid grid-cols-1 gap-2.5">
-              <button 
-                type="button" 
-                (click)="fillMockData(1)" 
+              <button
+                type="button"
+                (click)="fillMockData(1)"
                 class="w-full flex items-center justify-between px-4 py-3 bg-primary-light hover:bg-primary/10 border border-primary/20 rounded-xl text-left text-body-sm font-bold text-primary transition-all">
                 <span class="flex items-center gap-2">
                   <span class="material-symbols-outlined">person</span>
@@ -80,9 +71,9 @@
                 <span class="text-label-sm opacity-80">P5CDWE67</span>
               </button>
 
-              <button 
-                type="button" 
-                (click)="fillMockData(2)" 
+              <button
+                type="button"
+                (click)="fillMockData(2)"
                 class="w-full flex items-center justify-between px-4 py-3 bg-secondary-light hover:bg-secondary/15 border border-secondary/20 rounded-xl text-left text-body-sm font-bold text-secondary transition-all">
                 <span class="flex items-center gap-2">
                   <span class="material-symbols-outlined">group</span>
@@ -93,7 +84,6 @@
             </div>
           </div>
 
-          <!-- Error Message -->
           <div *ngIf="searchError" class="mt-6 flex items-start gap-3 bg-danger-light border border-danger/20 p-4 rounded-xl">
             <span class="material-symbols-outlined text-danger">warning</span>
             <p class="text-danger-text text-body-sm font-semibold leading-relaxed">{{ searchError }}</p>
@@ -101,108 +91,79 @@
         </div>
       </div>
 
-      <!-- STAGE 2: TICKET RESULTS VIEW -->
       <div *ngIf="currentStep === 'results' && currentOrder" class="space-y-8 animate-fade-in">
-        <!-- Navigation bar -->
-        <div class="flex justify-between items-center">
-          <button 
-            (click)="backToSearch()" 
+        <div class="flex justify-between items-center gap-3">
+          <button
+            (click)="backToSearch()"
             class="flex items-center gap-2 bg-white hover:bg-surface-container-low border border-outline-variant/60 px-5 py-2.5 rounded-full font-bold text-body-sm text-navy transition-all shadow-sm">
             <span class="material-symbols-outlined text-lg">arrow_back</span>
             Quay lại tra cứu
           </button>
-          
-          <div class="bg-primary-light border border-primary/20 text-primary px-4 py-1.5 rounded-full font-bold text-body-sm">
-            Mã đặt vé: {{ currentOrder.maDonHang }}
-          </div>
         </div>
 
-        <!-- BOOKING SUMMARY CARD (Figure 2) -->
         <section class="bg-white rounded-2xl border border-outline-variant/15 p-6 md:p-8 shadow-card">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-outline-variant/10 pb-4 mb-6 gap-4">
-            <h3 class="text-title-lg font-bold text-navy tracking-wider uppercase">THÔNG TIN MUA VÉ</h3>
-            
+            <h3 class="text-title-lg font-bold text-navy tracking-wider uppercase">THÔNG TIN ĐƠN HÀNG</h3>
+
             <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              <!-- Edit Ticket Info Button (Disabled if limit reached) -->
-              <button 
+              <button
                 *ngIf="currentOrder.trangThaiDonHang !== 'Đã hủy'"
-                [disabled]="(currentOrder.soLanDaSua || 0) >= (currentOrder.gioiHanChinhSua || 2)"
-                (click)="openEditOrderModal()" 
-                class="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-hover font-bold px-6 py-2.5 rounded-full text-body-sm transition-all active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                [disabled]="!canEditOrder()"
+                (click)="openEditOrderModal()"
+                class="flex items-center gap-1.5 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-2.5 rounded-full text-body-sm transition-all active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                 <span class="material-symbols-outlined text-lg">edit</span>
                 Sửa thông tin
-              </button>
-
-              <button 
-                (click)="rebookTickets()" 
-                class="bg-secondary text-white font-bold px-6 py-2.5 rounded-full hover:bg-secondary-hover hover:shadow-md transition-all active:scale-[0.98] text-body-sm shadow-sm">
-                Mua lại vé xe
               </button>
             </div>
           </div>
 
-          <!-- Summary Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Column 1: Customer Info -->
             <div class="space-y-4">
-              <h4 class="font-bold text-primary text-body-md uppercase tracking-wider border-b border-outline-variant/10 pb-1">1. Thông tin khách hàng</h4>
-              
-              <!-- Customer Name -->
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
-                <span class="text-body-sm text-on-surface-variant font-medium">Họ tên khách hàng</span>
-                <span class="font-bold text-navy text-body-md">{{ currentOrder.hoTenKhachHang }}</span>
+                <span class="text-body-sm text-on-surface-variant font-medium">Mã đơn hàng</span>
+                <span class="font-bold text-navy text-body-md">{{ currentOrder.maDonHang }}</span>
               </div>
 
-              <!-- Phone (Masked) -->
+              <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
+                <span class="text-body-sm text-on-surface-variant font-medium">Họ tên người đi</span>
+                <span class="font-bold text-navy text-body-md">{{ currentOrder.hoTenNguoiDi }}</span>
+              </div>
+
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Số điện thoại</span>
                 <span class="font-bold text-navy text-body-md">{{ maskPhone(currentOrder.soDienThoai) }}</span>
               </div>
 
-              <!-- Email (Masked) -->
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Email</span>
                 <span class="font-bold text-navy text-body-md">{{ maskEmail(currentOrder.email) }}</span>
               </div>
+
+              <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
+                <span class="text-body-sm text-on-surface-variant font-medium">Thời gian đặt</span>
+                <span class="font-bold text-navy text-body-md">{{ currentOrder.thoiGianDat }}</span>
+              </div>
             </div>
 
-            <!-- Column 2: Journey & Payments Info -->
             <div class="space-y-4">
-              <h4 class="font-bold text-primary text-body-md uppercase tracking-wider border-b border-outline-variant/10 pb-1">2. Thông tin chuyến đi & Thanh toán</h4>
-              
-              <!-- Route -->
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
-                <span class="text-body-sm text-on-surface-variant font-medium">Tên tuyến đường</span>
-                <span class="font-bold text-navy text-body-md">{{ currentOrder.tenTuyen }}</span>
+                <span class="text-body-sm text-on-surface-variant font-medium">Số lượng vé đã đặt</span>
+                <span class="font-bold text-navy text-body-md">{{ currentOrder.soLuongVeDaDat }}</span>
               </div>
 
-              <!-- Departure Time -->
-              <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
-                <span class="text-body-sm text-on-surface-variant font-medium">Giờ khởi hành</span>
-                <span class="font-bold text-navy text-body-md text-primary">{{ currentOrder.gioKhoiHanh }} - {{ currentOrder.departureDate }}</span>
-              </div>
-
-              <!-- Price -->
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Tổng giá vé</span>
-                <span class="font-bold text-secondary text-body-lg">{{ currentOrder.tongGiaVe | number:'1.0-0' }}đ</span>
+                <span class="font-bold text-secondary text-body-lg">{{ formatPrice(currentOrder.tongGiaVe) }}</span>
               </div>
 
-              <!-- Payment Method -->
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Phương thức thanh toán</span>
                 <span class="font-semibold text-navy text-body-md">{{ currentOrder.phuongThucThanhToan }}</span>
               </div>
 
-              <!-- Order Status -->
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Trạng thái đơn hàng</span>
-                <span 
-                  class="px-3.5 py-1 rounded-full font-bold text-label-md shadow-xs"
-                  [class.bg-success-light]="currentOrder.trangThaiDonHang === 'Thành công'"
-                  [class.text-success-text]="currentOrder.trangThaiDonHang === 'Thành công'"
-                  [class.bg-danger-light]="currentOrder.trangThaiDonHang === 'Đã hủy'"
-                  [class.text-danger-text]="currentOrder.trangThaiDonHang === 'Đã hủy'">
+                <span class="px-3.5 py-1 rounded-full font-bold text-label-md shadow-xs" [ngClass]="getStatusClasses(currentOrder.trangThaiDonHang)">
                   {{ currentOrder.trangThaiDonHang }}
                 </span>
               </div>
@@ -210,75 +171,67 @@
           </div>
         </section>
 
-        <!-- DETAILED TICKETS LIST (Figure 3) -->
         <section class="space-y-6">
           <div class="flex items-center justify-between">
-            <h3 class="text-title-lg font-bold text-navy tracking-wider uppercase">THÔNG TIN VÉ CHI TIẾT</h3>
+            <h3 class="text-title-lg font-bold text-navy tracking-wider uppercase">THÔNG TIN VÉ ĐIỆN TỬ</h3>
           </div>
 
-          <!-- Multi-ticket Notice Banner -->
           <div *ngIf="currentOrder.tickets.length > 1" class="flex items-center gap-3 bg-info-light border border-info/20 text-info-text p-4 rounded-xl shadow-xs">
             <span class="material-symbols-outlined text-info text-[22px]">info</span>
             <span class="font-semibold text-body-sm">Đơn hàng của bạn gồm {{ currentOrder.tickets.length }} vé. Dưới đây là thông tin chi tiết từng vé:</span>
           </div>
 
-          <!-- Flow of Tickets -->
           <div class="space-y-6">
-            <div 
-              *ngFor="let ticket of currentOrder.tickets; let idx = index" 
-              class="bg-white rounded-2xl border border-outline-variant/15 shadow-card overflow-hidden flex flex-col">
-              
-              <!-- Ticket Header -->
+            <div *ngFor="let ticket of currentOrder.tickets; let idx = index" class="bg-white rounded-2xl border border-outline-variant/15 shadow-card overflow-hidden flex flex-col">
               <div class="bg-surface-container-low px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
-                <div class="flex items-center gap-2 text-body-sm font-bold text-navy">
-                  <span class="material-symbols-outlined text-outline">directions_bus</span>
-                  Chuyến xe đi: {{ currentOrder.tenTuyen }}
+                <div class="text-body-sm font-bold text-navy">
+                  Vé {{ idx + 1 }} / {{ currentOrder.tickets.length }}
                 </div>
                 <div class="bg-outline-variant/30 text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-bold">
-                  Vé {{ idx + 1 }} / {{ currentOrder.tickets.length }}
+                  {{ ticket.trangThaiVe }}
                 </div>
               </div>
 
-              <!-- Ticket Body -->
-              <div class="p-6 md:p-8 flex flex-col md:flex-row gap-8">
-                <!-- Left Details -->
+              <div class="p-6 md:p-8 flex flex-col lg:flex-row gap-8">
                 <div class="flex-grow space-y-6">
-                  <div class="text-headline-sm font-bold text-primary">{{ currentOrder.tenTuyen }}</div>
 
-                  <!-- Vertical timeline grid -->
-                  <div class="relative pl-6 border-l-2 border-dotted border-outline-variant/60 space-y-6 ml-2">
-                    
-                    <!-- Pickup node -->
-                    <div class="relative">
-                      <span class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white border-[4px] border-secondary"></span>
-                      <div class="space-y-1">
-                        <div class="text-body-lg font-bold text-navy leading-none">{{ currentOrder.gioKhoiHanh }}</div>
-                        <div class="text-label-sm text-outline-variant uppercase font-bold tracking-wider">ĐIỂM ĐÓN</div>
-                        <p class="text-body-md text-on-surface-variant font-medium">{{ currentOrder.diemDon }}</p>
+                  <div class="flex flex-col gap-1 mb-2">
+                    <span class="font-bold text-lg text-black">Tuyến xe: <span class="font-normal">{{ currentOrder.tenTuyen }}</span></span>
+                    <span class="font-bold text-lg text-black">Thời gian khởi hành: <span class="font-normal">{{ currentOrder.gioKhoiHanh }} {{ formatDisplayDate(currentOrder.departureDate) }}</span></span>
+                  </div>
+
+                  <div class="relative pl-6 border-l-2 border-dotted border-outline-variant/60 space-y-8 ml-2">
+                    <!-- Điểm đón -->
+                    <div class="relative flex items-center gap-3">
+                      <span class="absolute -left-[31px] top-1 w-5 h-5 rounded-full border-[4px] border-orange-500 bg-white"></span>
+                      <div>
+                        <div class="font-bold text-base text-black leading-none mb-0.5">ĐIỂM ĐÓN</div>
+                        <div class="font-extrabold text-xl text-navy">{{ ticket.diemDon }}</div>
+                        <div class="text-body-sm text-on-surface-variant">{{ ticket.diemDonThoiGian }}</div>
                       </div>
                     </div>
-
-                    <!-- Dropoff node -->
-                    <div class="relative">
-                      <span class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white border-[4px] border-primary"></span>
-                      <div class="space-y-1">
-                        <div class="text-body-lg font-bold text-navy leading-none">--:--</div>
-                        <div class="text-label-sm text-outline-variant uppercase font-bold tracking-wider">ĐIỂM TRẢ</div>
-                        <p class="text-body-md text-on-surface-variant font-medium">{{ currentOrder.diemTra }}</p>
+                    <!-- Điểm trả -->
+                    <div class="relative flex items-center gap-3">
+                      <span class="absolute -left-[31px] top-1">
+                        <span class="material-symbols-outlined text-green-600 text-2xl align-middle">location_on</span>
+                      </span>
+                      <div>
+                        <div class="font-bold text-base text-black leading-none mb-0.5">ĐIỂM TRẢ</div>
+                        <div class="font-extrabold text-xl text-navy">{{ ticket.diemTra }}</div>
+                        <div class="text-body-sm text-on-surface-variant">{{ ticket.diemTraThoiGian }}</div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Presence Info Warning (Calculated departure time minus 30 mins) -->
                   <div class="flex items-center gap-2.5 bg-secondary-light/40 border border-secondary/15 p-4 rounded-xl text-secondary">
                     <span class="material-symbols-outlined text-[22px]">schedule</span>
                     <span class="text-body-sm font-semibold leading-relaxed">
-                      Có mặt tại điểm đón trước 30 phút để chuẩn bị làm thủ tục lên xe. Giờ cần có mặt: 
-                      <span class="font-bold text-navy">{{ calculatePresenceTime(currentOrder.gioKhoiHanh, currentOrder.departureDate) }}</span>.
+                      Có mặt tại điểm đón <span class="font-bold text-secondary">trước 30 phút</span> để chuẩn bị làm thủ tục lên xe.
+                      <span class="font-bold text-secondary">Giờ cần có mặt: </span>
+                      <span class="font-bold text-secondary">{{ getPresenceTimeLabel() }}</span>.
                     </span>
                   </div>
 
-                  <!-- Bottom ticket data grids -->
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 text-center">
                     <div class="flex flex-col gap-1">
                       <span class="text-label-sm text-outline uppercase tracking-wider">Số ghế</span>
@@ -290,60 +243,44 @@
                     </div>
                     <div class="flex flex-col gap-1 border-l border-outline-variant/20">
                       <span class="text-label-sm text-outline uppercase tracking-wider">Biển số xe</span>
-                      <span class="font-bold text-navy text-body-md">{{ currentOrder.bienSoXe }}</span>
+                      <span class="font-bold text-navy text-body-md">{{ ticket.bienSoXe }}</span>
                     </div>
                     <div class="flex flex-col gap-1 border-l border-outline-variant/20">
                       <span class="text-label-sm text-outline uppercase tracking-wider">Trạng thái</span>
-                      <span class="font-bold text-success text-body-md">Đã thanh toán</span>
+                      <span class="font-bold text-body-md" [ngClass]="getTicketStatusClasses(ticket.trangThaiVe)">{{ ticket.trangThaiVe }}</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Right Side QR Block -->
-                <div class="w-full md:w-[220px] flex-shrink-0 flex flex-col items-center justify-center border-t-2 md:border-t-0 md:border-l-2 border-dashed border-outline-variant/30 pt-6 md:pt-0 md:pl-8">
-                  <div class="bg-surface-container-low border border-outline-variant/15 p-4 rounded-xl flex flex-col items-center gap-3 w-full shadow-xs">
-                    <!-- QR Graphic Card -->
-                    <div class="relative w-[130px] h-[130px] bg-white border border-outline-variant/10 p-2 rounded-xl">
-                      <!-- Top-left eye -->
-                      <div class="absolute top-2 left-2 w-7 h-7 border-4 border-navy rounded">
-                        <div class="w-2.5 h-2.5 bg-navy m-0.5 rounded-sm"></div>
-                      </div>
-                      <!-- Top-right eye -->
-                      <div class="absolute top-2 right-2 w-7 h-7 border-4 border-navy rounded">
-                        <div class="w-2.5 h-2.5 bg-navy m-0.5 rounded-sm"></div>
-                      </div>
-                      <!-- Bottom-left eye -->
-                      <div class="absolute bottom-2 left-2 w-7 h-7 border-4 border-navy rounded">
-                        <div class="w-2.5 h-2.5 bg-navy m-0.5 rounded-sm"></div>
-                      </div>
-                      <!-- Matrix noise mock dots -->
-                      <div class="absolute bottom-2 right-2 top-[38px] left-[38px] bg-[radial-gradient(#0B2A4A_25%,transparent_25%)] bg-[length:6px_6px]"></div>
-                    </div>
-
-                    <!-- Label -->
-                    <div class="text-center">
-                      <p class="text-label-sm text-outline font-semibold uppercase tracking-wider mb-0.5">Mã tra cứu hóa đơn</p>
-                      <p class="font-bold text-navy text-body-md font-mono">{{ ticket.maVe }}</p>
-                    </div>
+                <div class="w-full lg:w-[260px] flex-shrink-0 flex flex-col items-center justify-center border-t-2 lg:border-t-0 lg:border-l-2 border-dashed border-outline-variant/30 pt-6 lg:pt-0 lg:pl-8">
+                  <div class="flex flex-col items-center justify-center w-full gap-3">
+                    <img [src]="getQrCodeUrl(ticket)" alt="QR Code" class="w-[140px] h-[140px] rounded-xl border border-outline-variant/20 bg-white object-contain p-2 mb-2" />
+                    <button
+                      (click)="printTicket(ticket)"
+                      class="mx-auto flex items-center justify-center gap-2 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-3 rounded-full text-body-md transition-all active:scale-[0.98] shadow-sm">
+                      <span class="material-symbols-outlined text-lg">print</span>
+                      In vé
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Bottom Main Ticket Cancel/Review Actions -->
           <div class="flex justify-end gap-3 pt-6 border-t border-outline-variant/10">
-            <button 
-              [disabled]="currentOrder.trangThaiDonHang === 'Đã hủy'"
-              (click)="openCancelModal()" 
+            <button
+              [disabled]="isCancelDisabled()"
+              (click)="openCancelModal()"
               class="flex items-center gap-2 bg-white hover:bg-danger-light text-danger hover:text-danger-text border border-danger/20 rounded-xl px-6 py-3 font-bold text-body-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
               <span class="material-symbols-outlined text-lg">cancel</span>
               Yêu cầu hủy vé
             </button>
 
-            <button 
-              (click)="openReviewModal()" 
-              class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white rounded-xl px-6 py-3 font-bold text-body-sm transition-all shadow-sm">
+            <button
+              [disabled]="!canReview"
+              (click)="openReviewModal()"
+              class="flex items-center gap-2 rounded-xl px-6 py-3 font-bold text-body-sm transition-all shadow-sm"
+              [ngClass]="canReview ? 'bg-secondary text-white hover:bg-secondary-hover' : 'bg-secondary-light text-secondary border border-secondary/30 opacity-70 cursor-not-allowed'">
               <span class="material-symbols-outlined text-lg">star</span>
               Đánh giá dịch vụ
             </button>
@@ -353,186 +290,269 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <app-footer></app-footer>
 
-  <!-- UNIFIED EDIT TICKET INFORMATION MODAL -->
   <div class="fixed inset-0 z-50 bg-navy/60 backdrop-blur-xs flex items-center justify-center p-4" *ngIf="showEditModal && currentOrder">
-    <div class="bg-white rounded-2xl max-w-[540px] w-full overflow-hidden shadow-modal border border-outline-variant/10 animate-scale-up">
+    <div class="bg-white rounded-2xl max-w-[760px] w-full overflow-hidden shadow-modal border border-outline-variant/10 animate-scale-up">
       <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
         <h3 class="font-bold text-primary text-title-lg uppercase tracking-wider">CHỈNH SỬA THÔNG TIN VÉ</h3>
         <span class="material-symbols-outlined text-outline-variant hover:text-navy cursor-pointer select-none" (click)="closeEditOrderModal()">close</span>
       </div>
-      
-      <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-        <!-- Mã Đơn Hàng (Read-Only) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Mã đặt vé (Mã đơn hàng)</label>
-          <input 
-            type="text" 
-            [value]="currentOrder.maDonHang" 
-            disabled 
-            class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/10 rounded-xl text-body-md text-outline cursor-not-allowed font-semibold"
-          />
-        </div>
 
-        <!-- Họ tên khách hàng (Text) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Họ tên khách hàng</label>
-          <input 
-            type="text" 
-            [(ngModel)]="editFullName" 
-            placeholder="Nhập họ tên đầy đủ"
-            class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
-            required
-          />
-        </div>
+      <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Mã đơn hàng</label>
+            <input
+              type="text"
+              [value]="currentOrder.maDonHang"
+              disabled
+              class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/10 rounded-xl text-body-md text-outline cursor-not-allowed font-semibold"
+            />
+          </div>
 
-        <!-- Số điện thoại (Tel) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Số điện thoại</label>
-          <input 
-            type="tel" 
-            [(ngModel)]="editPhone" 
-            placeholder="Nhập số điện thoại của bạn"
-            class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
-            required
-          />
-        </div>
-
-        <!-- Email (Email) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Email</label>
-          <input 
-            type="email" 
-            [(ngModel)]="editEmail" 
-            placeholder="Nhập địa chỉ email"
-            class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
-            required
-          />
-        </div>
-
-        <!-- Điểm đón (Dropdown Select) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Điểm đón khách</label>
-          <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/10 transition-all">
-            <span class="material-symbols-outlined text-primary mr-2 text-[20px]">radio_button_checked</span>
-            <select 
-              [(ngModel)]="editMaDiemDon" 
-              class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-md font-semibold cursor-pointer outline-none">
-              <option *ngFor="let opt of diemDonOptions" [value]="opt.maDiem">{{ opt.tenDiem }}</option>
-            </select>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Họ tên người đi</label>
+            <input
+              type="text"
+              [(ngModel)]="editFullName"
+              placeholder="Nhập họ tên đầy đủ"
+              class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+              required
+            />
           </div>
         </div>
 
-        <!-- Điểm trả (Dropdown Select) -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Điểm trả khách</label>
-          <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/10 transition-all">
-            <span class="material-symbols-outlined text-primary mr-2 text-[20px]">location_on</span>
-            <select 
-              [(ngModel)]="editMaDiemTra" 
-              class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-md font-semibold cursor-pointer outline-none">
-              <option *ngFor="let opt of diemTraOptions" [value]="opt.maDiem">{{ opt.tenDiem }}</option>
-            </select>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Số điện thoại</label>
+            <input
+              type="tel"
+              [(ngModel)]="editPhone"
+              placeholder="Nhập số điện thoại của bạn"
+              class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Email</label>
+            <input
+              type="email"
+              [(ngModel)]="editEmail"
+              placeholder="Nhập địa chỉ email"
+              class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+              required
+            />
           </div>
         </div>
 
-        <!-- Warning Limit Box -->
-        <div class="mt-4 pt-4 border-t border-outline-variant/15">
-          <!-- Text warning color styled in orange / red -->
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Điểm đón khách</label>
+            <div class="relative">
+              <input
+                type="text"
+                [(ngModel)]="editDiemDonSearchText"
+                (focus)="showDiemDonDropdown = true"
+                (blur)="onEditDiemDonBlur($event)"
+                (input)="onEditDiemDonInput()"
+                placeholder="Tìm kiếm điểm đón"
+                class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+              />
+              <div *ngIf="showDiemDonDropdown && filterDiemDonOptions.length > 0"
+                   class="absolute top-full left-0 right-0 bg-white border border-outline-variant/30 rounded-xl shadow-lg max-h-60 overflow-y-auto z-10 mt-1">
+                <div *ngFor="let opt of filterDiemDonOptions"
+                     (click)="selectDiemDon(opt)"
+                     class="px-4 py-3 hover:bg-surface-container-low cursor-pointer border-b border-outline-variant/10 last:border-0">
+                  <div class="font-bold text-navy text-body-md">{{ opt.tenDiem }}</div>
+                  <div class="text-body-sm text-on-surface-variant">{{ opt.diaChi }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Điểm trả khách</label>
+            <div class="relative">
+              <input
+                type="text"
+                [(ngModel)]="editDiemTraSearchText"
+                (focus)="showDiemTraDropdown = true"
+                (blur)="onEditDiemTraBlur($event)"
+                (input)="onEditDiemTraInput()"
+                placeholder="Tìm kiếm điểm trả"
+                class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+              />
+              <div *ngIf="showDiemTraDropdown && filterDiemTraOptions.length > 0"
+                   class="absolute top-full left-0 right-0 bg-white border border-outline-variant/30 rounded-xl shadow-lg max-h-60 overflow-y-auto z-10 mt-1">
+                <div *ngFor="let opt of filterDiemTraOptions"
+                     (click)="selectDiemTra(opt)"
+                     class="px-4 py-3 hover:bg-surface-container-low cursor-pointer border-b border-outline-variant/10 last:border-0">
+                  <div class="font-bold text-navy text-body-md">{{ opt.tenDiem }}</div>
+                  <div class="text-body-sm text-on-surface-variant">{{ opt.diaChi }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 pt-4 border-t border-outline-variant/15">
           <div class="flex items-center gap-2 text-warning-text font-bold text-body-sm"
-               [class.text-danger]="(currentOrder.soLanDaSua || 0) >= (currentOrder.gioiHanChinhSua || 2)">
+               [class.text-danger]="getEditRemaining() === 0">
             <span class="material-symbols-outlined">warning</span>
             <span>
-              Lưu ý: Bạn còn {{ (currentOrder.gioiHanChinhSua || 2) - (currentOrder.soLanDaSua || 0) }}/{{ currentOrder.gioiHanChinhSua || 2 }} lần thay đổi thông tin cho vé này.
+              Lưu ý: Bạn còn {{ getEditRemaining() }}/{{ getEditLimit() }} lần chỉnh thông tin cho vé này.
             </span>
           </div>
         </div>
       </div>
 
       <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-end gap-3">
-        <button 
-          class="bg-white hover:bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-xl font-bold text-body-sm text-navy transition-all" 
+        <button
+          class="bg-white hover:bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-xl font-bold text-body-sm text-navy transition-all"
           (click)="closeEditOrderModal()">
           Hủy
         </button>
-        <button 
-          class="bg-primary text-white hover:bg-primary-hover px-5 py-2.5 rounded-xl font-bold text-body-sm transition-all shadow-sm" 
+        <button
+          [disabled]="isEditSaveDisabled()"
+          class="bg-secondary text-white hover:bg-secondary-hover px-5 py-2.5 rounded-xl font-bold text-body-sm transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           (click)="saveEditChanges()">
-          Lưu thay đổi
+          Lưu thông tin
         </button>
       </div>
     </div>
   </div>
 
-  <!-- CANCEL CONFIRMATION MODAL -->
-  <div class="fixed inset-0 z-50 bg-navy/60 backdrop-blur-xs flex items-center justify-center p-4" *ngIf="showCancelModal">
-    <div class="bg-white rounded-2xl max-w-[480px] w-full overflow-hidden shadow-modal border border-outline-variant/10 animate-scale-up">
+  <div class="fixed inset-0 z-50 bg-navy/60 backdrop-blur-xs flex items-center justify-center p-4" *ngIf="showCancelModal && currentOrder">
+    <div class="bg-white rounded-2xl max-w-[640px] w-full overflow-hidden shadow-modal border border-outline-variant/10 animate-scale-up">
       <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
-        <h3 class="font-bold text-danger text-title-lg uppercase tracking-wider">HỦY ĐƠN ĐẶT VÉ</h3>
+        <h3 class="font-bold text-danger text-title-lg uppercase tracking-wider">XÁC NHẬN HỦY VÉ</h3>
         <span class="material-symbols-outlined text-outline-variant hover:text-navy cursor-pointer select-none" (click)="closeCancelModal()">close</span>
       </div>
-      <div class="p-6 space-y-4">
-        <p class="text-body-md text-on-surface-variant font-medium leading-relaxed">
-          Bạn có chắc chắn muốn gửi yêu cầu hủy cho đơn đặt vé <span class="font-bold text-navy">{{ currentOrder?.maDonHang }}</span>? Hành động này không thể hoàn tác.
-        </p>
-        <div class="flex gap-2.5 bg-warning-light border border-warning/20 text-warning-text p-4 rounded-xl">
-          <span class="material-symbols-outlined text-warning text-[20px]">warning</span>
-          <span class="text-body-xs font-semibold leading-relaxed">
-            Chính sách hủy vé quy định phí hủy từ 10% - 30% tùy vào thời điểm yêu cầu hủy trước giờ khởi hành.
-          </span>
+
+      <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div class="flex items-start gap-3 bg-warning-light border border-warning/20 p-4 rounded-xl">
+          <span class="material-symbols-outlined text-warning text-[22px]">warning</span>
+          <p class="text-warning-text text-body-sm font-semibold leading-relaxed">
+            Bạn đang yêu cầu hủy vé cho đơn hàng <span class="font-bold">{{ currentOrder.maDonHang }}</span>. Vui lòng đọc kỹ chính sách hoàn tiền trước khi xác nhận.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="font-bold text-navy text-body-md uppercase tracking-wider">Chính sách hoàn tiền</h4>
+          <ul class="list-disc list-inside text-body-sm text-on-surface-variant space-y-1">
+            <li>Hủy vé trước 24 giờ: hệ thống hoàn trả 100%.</li>
+            <li>Hủy vé từ 12 đến 24 giờ: hệ thống hoàn trả 50%.</li>
+            <li>Hủy vé dưới 12 giờ: nhà xe không hỗ trợ hủy vé và không hoàn tiền.</li>
+          </ul>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Lý do hủy vé</label>
+            <select
+              [(ngModel)]="selectedCancelReason"
+              class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium">
+              <option *ngFor="let reason of cancelReasons" [value]="reason">{{ reason }}</option>
+            </select>
+          </div>
+
+          <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/15 text-body-sm">
+            <div class="flex justify-between py-1">
+              <span class="text-on-surface-variant">Giá vé ban đầu:</span>
+              <span class="font-bold text-navy">{{ formatPrice(currentOrder.tongGiaVe) }}</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-on-surface-variant">Phí hủy:</span>
+              <span class="font-bold text-danger">- {{ formatPrice(getRefundFee()) }}</span>
+            </div>
+            <div class="flex justify-between py-1 border-t border-dashed border-outline-variant/20 mt-2 pt-2">
+              <span class="text-on-surface-variant font-bold">Số tiền thực nhận:</span>
+              <span class="font-bold text-success">{{ formatPrice(getRefundAmount()) }}</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-on-surface-variant">Phương thức nhận tiền:</span>
+              <span class="font-bold text-navy">{{ currentOrder.phuongThucThanhToan }}</span>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-end gap-3">
         <button class="bg-white hover:bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-xl font-bold text-body-sm text-navy transition-all" (click)="closeCancelModal()">
           Đóng
         </button>
-        <button class="bg-danger text-white hover:bg-danger/90 px-5 py-2.5 rounded-xl font-bold text-body-sm transition-all shadow-sm" (click)="confirmCancelTicket()">
+        <button
+          [disabled]="getRefundPercentage() === 0"
+          class="bg-danger text-white hover:bg-danger/90 px-5 py-2.5 rounded-xl font-bold text-body-sm transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          (click)="confirmCancelTicket()">
           Xác nhận hủy
         </button>
       </div>
     </div>
   </div>
 
-  <!-- REVIEW SUBMIT MODAL -->
-  <div class="fixed inset-0 z-50 bg-navy/60 backdrop-blur-xs flex items-center justify-center p-4" *ngIf="showReviewModal">
-    <div class="bg-white rounded-2xl max-w-[480px] w-full overflow-hidden shadow-modal border border-outline-variant/10 animate-scale-up">
-      <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
-        <h3 class="font-bold text-navy text-title-lg uppercase tracking-wider">ĐÁNH GIÁ CHẤT LƯỢNG</h3>
-        <span class="material-symbols-outlined text-outline-variant hover:text-navy cursor-pointer select-none" (click)="closeReviewModal()">close</span>
+  <div class="fixed inset-0 z-50 bg-navy/60 backdrop-blur-xs flex items-center justify-center p-4" *ngIf="showReviewModal && currentOrder">
+    <div class="relative bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-outline-variant/10">
+        <h3 class="text-title-lg font-bold text-navy uppercase tracking-tight">Đánh giá chuyến đi [{{ currentOrder.maDonHang }}]</h3>
+        <button (click)="closeReviewModal()" class="text-outline hover:text-error transition-colors">
+          <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
       </div>
-      <div class="p-6 space-y-6">
-        <p class="text-center font-semibold text-navy text-body-md">Cảm nhận của bạn về chuyến xe {{ currentOrder?.tenTuyen }}?</p>
-        
-        <!-- Stars quality selectors -->
-        <div class="flex justify-center gap-2">
-          <span 
-            *ngFor="let star of [1, 2, 3, 4, 5]" 
-            (click)="reviewStars = star"
-            class="material-symbols-outlined text-[40px] cursor-pointer select-none transition-all duration-150 hover:scale-110"
-            [class.text-warning]="star <= reviewStars"
-            [class.text-outline-variant/40]="star > reviewStars">
-            star
-          </span>
+
+      <div class="p-6 space-y-4">
+        <p class="text-on-surface-variant text-body-md font-medium">Vui lòng chấm điểm cho các dịch vụ của chuyến đi và gửi đánh giá của bạn.</p>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div *ngFor="let criteria of ratingCriteria; let i = index" class="flex flex-col gap-1.5">
+            <label class="text-body-md font-semibold text-navy">{{ criteria.label }}</label>
+            <div class="flex items-center gap-1">
+              <span *ngFor="let star of [1,2,3,4,5]"
+                    class="material-symbols-outlined text-xl cursor-pointer transition-all rounded-full border-0"
+                    [ngClass]="criteria.score >= star ? 'text-secondary' : 'text-outline-variant'"
+                    (click)="setRating(i, star)">
+                star
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Ý kiến đóng góp (nếu có)</label>
-          <textarea 
-            [(ngModel)]="reviewComment" 
-            placeholder="Chia sẻ trải nghiệm của bạn về phương tiện, tài xế hoặc điểm đón..." 
-            class="border border-outline-variant rounded-xl p-3 text-body-sm font-medium w-full h-[100px] focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all resize-none"
+        <div class="flex flex-col gap-1.5">
+          <label for="reviewComment" class="text-label-sm font-bold text-navy uppercase tracking-wide">Nhận xét thêm</label>
+          <textarea
+            id="reviewComment"
+            [(ngModel)]="reviewComment"
+            rows="3"
+            placeholder="Chia sẻ thêm trải nghiệm của bạn..."
+            class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all font-medium"
           ></textarea>
         </div>
-      </div>
-      <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-end gap-3">
-        <button class="bg-white hover:bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-xl font-bold text-body-sm text-navy transition-all" (click)="closeReviewModal()">
-          Đóng
-        </button>
-        <button class="bg-primary text-white hover:bg-primary-hover px-5 py-2.5 rounded-xl font-bold text-body-sm transition-all shadow-sm" (click)="submitReview()">
-          Gửi đánh giá
-        </button>
+
+
+
+        <div class="flex flex-col gap-1.5 mt-2">
+          <label class="text-label-sm font-bold text-navy uppercase tracking-wide">Hình ảnh/video đính kèm (tối đa 3)</label>
+          <input type="file" accept="image/*,video/*" multiple (change)="onReviewFilesSelected($event)" [disabled]="reviewFiles.length >= 3" class="block w-full text-body-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary-light file:text-secondary hover:file:bg-secondary/10" />
+          <div class="flex flex-wrap gap-2 mt-1">
+            <div *ngFor="let file of reviewFiles; let i = index" class="flex items-center gap-2 bg-surface-container-low border border-outline-variant/20 rounded-lg px-3 py-1">
+              <span class="material-symbols-outlined text-lg">attach_file</span>
+              <span class="truncate max-w-[120px]">{{ file.name }}</span>
+              <button type="button" (click)="removeReviewFile(i)" class="text-danger hover:underline ml-1">X</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button (click)="closeReviewModal()" class="flex-1 py-3 border-2 border-outline-variant/30 rounded-2xl font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">
+            Hủy bỏ
+          </button>
+          <button
+            (click)="submitReview()"
+            [disabled]="isReviewSubmitDisabled"
+            class="flex-1 py-3 bg-secondary text-white rounded-2xl font-bold shadow-lg shadow-secondary/20 hover:bg-secondary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            Gửi đánh giá
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -47,7 +47,7 @@ export const routes: Routes = [
   },
   {
     path: 'tra-cuu-ve',
-    loadComponent: () => import('./featured/customer/tra-cuu-ve/tra-cuu-ve').then(m => m.TraCuuVe)
+    loadComponent: () => import('./featured/customer/tra-cuu-ve/tra-cuu-ve').then(m => m.TraCuuVeComponent)
   },
   {
     path: 'danh-gia',

@@ -1,0 +1,198 @@
+<div class="vehicle-management">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span>Quản lý điều hành</span> / <span class="active">Quản lý điểm đón trả dừng</span>
+  </div>
+
+  <!-- Main Card -->
+  <div class="content-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'don-tra'" (click)="setTab('don-tra')">Điểm đón trả</button>
+      <button [class.active]="activeTab === 'dung'" (click)="setTab('dung')">Điểm dừng chân</button>
+      <button [class.active]="activeTab === 'locked'" (click)="setTab('locked')">Đã khóa</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-bar">
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <button class="btn-add-vehicle-admin" (click)="openAddModal()">
+          <span class="material-icons" style="font-size: 18px;">add</span>
+          <span *ngIf="activeTab === 'don-tra' || activeTab === 'locked'">Thêm điểm đón trả</span>
+          <span *ngIf="activeTab === 'dung'">Thêm điểm dừng chân</span>
+        </button>
+      </div>
+      
+      <div style="display: flex; gap: 12px;">
+        <input type="text" [(ngModel)]="searchQueries[activeTab]" placeholder="Tên địa điểm" style="padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; width: 250px; font-size: 14px; outline: none;">
+        <div style="width: 220px;">
+          <app-custom-select
+            [(value)]="cityFilters[activeTab]"
+            [options]="cityFilterOptions"
+            placeholder="Tỉnh / thành phố"
+          ></app-custom-select>
+        </div>
+        <div style="width: 180px;" *ngIf="activeTab === 'locked'">
+          <app-custom-select
+            [(value)]="typeFilters['locked']"
+            [options]="typeFilterOptions"
+            placeholder="Loại địa điểm"
+          ></app-custom-select>
+        </div>
+        <button (click)="applyFilter()" style="background-color: #f0f9fa; color: var(--primary-color); border: 1px solid #bee3e5; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+          Tìm kiếm
+        </button>
+        <button (click)="clearFilter()" style="background-color: white; color: #718096; border: 1px solid #cbd5e0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#edf2f7'" onmouseout="this.style.backgroundColor='white'">
+          Xóa bộ lọc
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center" [style.width]="activeTab === 'locked' ? '6%' : '8%'">STT</th>
+            <th [style.width]="activeTab === 'locked' ? '25%' : '27%'">
+              {{ activeTab === 'locked' ? 'Tên địa điểm' : (activeTab === 'dung' ? 'Tên điểm dừng chân' : 'Tên điểm đón trả') }}
+            </th>
+            <th [style.width]="activeTab === 'locked' ? '30%' : '40%'">Địa chỉ</th>
+            <th [style.width]="activeTab === 'locked' ? '14%' : '15%'">Tỉnh/ Thành phố</th>
+            <th *ngIf="activeTab === 'locked'" class="text-center" style="width: 15%;">Loại điểm</th>
+            <th class="text-center" style="width: 10%;">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Empty State -->
+          <tr *ngIf="filteredPoints.length === 0">
+            <td [attr.colspan]="activeTab === 'locked' ? 6 : 5" class="text-center" style="padding: 50px 0; background: #fafafa;">
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+                <span class="material-icons" style="font-size: 52px; color: #cbd5e0;">search_off</span>
+                <span style="font-size: 15px; color: #718096; font-weight: 500;">Không tìm thấy điểm đón trả dừng nào phù hợp</span>
+              </div>
+            </td>
+          </tr>
+          
+          <tr *ngFor="let point of filteredPoints; let i = index">
+            <td class="text-center" style="font-weight: 500; color: #718096;">{{i + 1}}</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-dot" [class.active]="point.status === 'active'" style="margin-right: 0; flex-shrink: 0;"></span>
+                <span style="font-weight: 500; line-height: 1.4;">{{point.name}}</span>
+              </div>
+            </td>
+            <td style="line-height: 1.4;">{{point.address}}</td>
+            <td>{{point.city}}</td>
+            <td *ngIf="activeTab === 'locked'" class="text-center">
+              <span *ngIf="point.type === 'don-tra'" style="background-color: #e6fffa; color: #0d9488; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; border: 1px solid #b2f5ea; display: inline-block; white-space: nowrap;">
+                Điểm đón trả
+              </span>
+              <span *ngIf="point.type === 'dung'" style="background-color: #ebf8ff; color: #2b6cb0; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; border: 1px solid #bee3f8; display: inline-block; white-space: nowrap;">
+                Điểm dừng chân
+              </span>
+            </td>
+            <td class="text-center">
+              <button class="btn-edit-icon" (click)="openEditModal(point)">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (mousedown)="onOverlayMouseDown($event)" (mouseup)="onOverlayMouseUp($event, 'main')">
+    <div class="modal-content large-modal" style="max-width: 750px;" (mousedown)="$event.stopPropagation()" (mouseup)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? 'Chi tiết điểm đón trả' : 'Thêm điểm đón trả' }}</h2>
+        <button class="modal-close-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid" style="grid-template-columns: repeat(6, 1fr);">
+          <div class="form-group" style="grid-column: span 4;">
+            <label>Tên điểm đón trả <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentPoint.name" placeholder="Nhập tên điểm đón trả">
+          </div>
+
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Tỉnh / thành phố <span class="required">*</span></label>
+            <app-custom-select
+              [(value)]="currentPoint.city"
+              [options]="cityFormOptions"
+              placeholder="Chọn tỉnh / thành phố"
+            ></app-custom-select>
+          </div>
+
+          <div class="form-group" style="grid-column: span 6;">
+            <label>Địa chỉ <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentPoint.address" placeholder="Nhập địa chỉ">
+          </div>
+
+          <div class="form-group" style="grid-column: span 6;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <label style="margin-bottom: 0;">Liên kết bản đồ</label>
+              <a href="https://www.google.com/maps" target="_blank" style="display: flex; align-items: center; gap: 4px; text-decoration: none; font-size: 13px; font-weight: 600; color: #3182ce; transition: all 0.2s;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                <span class="material-icons" style="font-size: 16px; color: #3182ce; vertical-align: middle;">map</span>
+                Sử dụng google map
+              </a>
+            </div>
+            <input type="text" [(ngModel)]="currentPoint.mapLink" placeholder="Nhập liên kết bản đồ Google Maps">
+          </div>
+
+
+          <!-- Document Upload for Point Image -->
+          <div class="form-group" style="grid-column: span 6; display: flex; flex-direction: column; gap: 8px;">
+            <label>{{ activeTab === 'dung' ? 'Ảnh điểm dừng chân' : 'Ảnh điểm đón trả' }}</label>
+            <div class="upload-dashed-box" style="height: 180px; width: 200px;" (click)="imageUpload.click()">
+              <div *ngIf="!currentPoint.image && !isUploadingImage" class="upload-centered">
+                <span class="material-icons" style="font-size: 24px;">publish</span>
+                <span class="upload-text">Tải ảnh lên</span>
+              </div>
+              <div *ngIf="isUploadingImage" class="upload-loading">
+                <span class="material-icons rotating">sync</span>
+              </div>
+              <img *ngIf="currentPoint.image && !isUploadingImage" [src]="currentPoint.image" class="img-full">
+            </div>
+            <input type="file" #imageUpload hidden accept="image/*" (click)="$event.stopPropagation()" (change)="onImageUpload($event)">
+            <button *ngIf="currentPoint.image" class="btn-delete-photo" (click)="removeImage()" style="padding: 4px 10px; font-size: 12px;">Xóa</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="footer-left">
+          <button *ngIf="isEditMode" class="btn-lock" (click)="toggleStatus()">
+            <span class="material-icons" style="font-size: 18px;">lock</span>
+            {{ currentPoint.status === 'active' ? 'Khóa điểm đón trả' : 'Mở khóa' }}
+          </button>
+          <button *ngIf="isEditMode" class="btn-delete" (click)="deletePoint()">
+            <span class="material-icons" style="font-size: 18px;">delete</span>
+            Xóa điểm đón trả
+          </button>
+        </div>
+        <div class="footer-right">
+          <button class="btn-cancel" (click)="closeModal()">Hủy</button>
+          <button class="btn-save" (click)="savePoint()">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div class="modal-overlay" *ngIf="isAlertOpen" (mousedown)="onOverlayMouseDown($event)" (mouseup)="onOverlayMouseUp($event, 'alert')" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" (click)="$event.stopPropagation()">
+      <div style="margin-bottom: 20px;">
+        <span class="material-icons" style="font-size: 56px; color: var(--secondary-color);">error_outline</span>
+        <h3 style="margin-top: 15px; color: var(--text-dark); font-size: 18px; font-weight: 600;">Thông báo</h3>
+        <p style="color: var(--text-grey); font-size: 14px; margin-top: 8px;">{{ alertMessage }}</p>
+      </div>
+      <button class="btn-save" (click)="closeAlert()" style="width: 100%; padding: 12px; font-size: 15px;">Đã hiểu</button>
+    </div>
+  </div>
+</div>

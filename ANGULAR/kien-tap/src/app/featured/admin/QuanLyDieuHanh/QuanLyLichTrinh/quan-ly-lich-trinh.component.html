@@ -7,8 +7,10 @@
     <!-- Tabs -->
     <div class="tabs">
       <button [class.active]="activeTab === 'all'" (click)="setTab('all')">Tất cả</button>
-      <button [class.active]="activeTab === 'active'" (click)="setTab('active')">Đang hoạt động</button>
-      <button [class.active]="activeTab === 'locked'" (click)="setTab('locked')">Đã khóa</button>
+      <button [class.active]="activeTab === 'DangChay'" (click)="setTab('DangChay')">Đang chạy</button>
+      <button [class.active]="activeTab === 'ChoKhoiHanh'" (click)="setTab('ChoKhoiHanh')">Chờ khởi hành</button>
+      <button [class.active]="activeTab === 'HoanThanh'" (click)="setTab('HoanThanh')">Hoàn thành</button>
+      <button [class.active]="activeTab === 'DaKhoa'" (click)="setTab('DaKhoa')">Đã khóa</button>
     </div>
 
     <!-- Action Bar -->
@@ -40,8 +42,8 @@
           <col style="width: 120px;">
           <col style="width: 25%;">
           <col style="width: 180px;">
-          <col style="width: 120px;">
-          <col style="width: 100px;">
+          <col style="width: 160px;">
+          <col style="width: 80px;">
         </colgroup>
         <thead>
           <tr>
@@ -58,7 +60,7 @@
           <tr *ngFor="let s of filteredSchedules; let i = index">
             <td class="text-center" style="font-weight: 500; color: #718096;">{{ i + 1 }}</td>
             <td class="font-bold">
-              <span class="status-dot" [class.active]="s.status === 'active' || s.status === 'scheduled'"></span>
+              <span class="status-dot" [class]="'status-dot ' + s.status"></span>
               {{ s.routeName }}
             </td>
             <td>
@@ -80,7 +82,7 @@
             </td>
             <td class="text-center">
               <span class="status-badge" [class]="s.status" style="display: inline-block; margin: 0 auto;">
-                {{ s.status === 'active' ? 'Đang chạy' : s.status === 'scheduled' ? 'Sắp chạy' : 'Đã khóa' }}
+                {{ s.status === 'DangChay' ? 'Đang chạy' : s.status === 'ChoKhoiHanh' ? 'Chờ khởi hành' : s.status === 'HoanThanh' ? 'Hoàn thành' : 'Đã khóa' }}
               </span>
             </td>
             <td class="text-center">
@@ -140,17 +142,23 @@
         <div *ngIf="activeModalTab === 'setup'" class="tab-fade-in">
           <div class="form-grid">
             <!-- Tuyến đường -->
-            <div class="form-group span-all">
+            <div class="form-group span-all" [class.is-invalid]="errors.routeName && !currentSchedule.routeName">
               <label>Tuyến <span class="required">*</span></label>
               <app-custom-select [(value)]="currentSchedule.routeName" [options]="routeFormOptions"
                 placeholder="Chọn tuyến đường" (valueChange)="onRouteSelect()"></app-custom-select>
+              <div class="error-text" *ngIf="errors.routeName && !currentSchedule.routeName">
+                Hãy chọn Tuyến đường!
+              </div>
             </div>
 
             <!-- Tài xế -->
-            <div class="form-group">
+            <div class="form-group" [class.is-invalid]="errors.driverName && !currentSchedule.driverName">
               <label>Tài xế <span class="required">*</span></label>
               <app-custom-select [(value)]="currentSchedule.driverName" [options]="driverFormOptions"
                 placeholder="Chọn tài xế"></app-custom-select>
+              <div class="error-text" *ngIf="errors.driverName && !currentSchedule.driverName">
+                Hãy chọn Tài xế!
+              </div>
             </div>
 
             <!-- Phụ xe -->
@@ -161,17 +169,23 @@
             </div>
 
             <!-- Tên xe -->
-            <div class="form-group span-all">
+            <div class="form-group span-all" [class.is-invalid]="errors.vehiclePlate && !currentSchedule.vehiclePlate">
               <label>Tên xe <span class="required">*</span></label>
               <app-custom-select [(value)]="currentSchedule.vehicleName" [options]="vehicleNameFormOptions"
                 placeholder="Chọn tên xe" (valueChange)="onVehicleNameSelect()"></app-custom-select>
+              <div class="error-text" *ngIf="errors.vehiclePlate && !currentSchedule.vehiclePlate">
+                Hãy chọn Tên xe!
+              </div>
             </div>
 
             <!-- Biển số xe -->
-            <div class="form-group">
+            <div class="form-group" [class.is-invalid]="errors.vehiclePlate && !currentSchedule.vehiclePlate">
               <label>Biển số xe <span class="required">*</span></label>
               <app-custom-select [(value)]="currentSchedule.vehiclePlate" [options]="vehiclePlateFormOptions"
                 placeholder="Chọn biển số xe" (valueChange)="onVehiclePlateSelect()"></app-custom-select>
+              <div class="error-text" *ngIf="errors.vehiclePlate && !currentSchedule.vehiclePlate">
+                Hãy chọn Biển số xe!
+              </div>
             </div>
 
             <!-- Số chỗ -->
@@ -179,6 +193,16 @@
               <label>Số chỗ <span class="required">*</span></label>
               <input type="text" [value]="currentSchedule.vehicleSeats || ''" disabled class="disabled-input"
                 placeholder="Tự động điền">
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="form-group span-all" [class.is-invalid]="errors.status && !currentSchedule.status">
+              <label>Trạng thái lịch trình <span class="required">*</span></label>
+              <app-custom-select [(value)]="currentSchedule.status" [options]="statusFormOptions"
+                placeholder="--Chọn--"></app-custom-select>
+              <div class="error-text" *ngIf="errors.status && !currentSchedule.status">
+                Hãy chọn Trạng thái lịch trình!
+              </div>
             </div>
           </div>
 
@@ -191,6 +215,17 @@
                 <div class="floor-header" [class.limousine-header]="isLimousine22()">{{ floor.floorName }}</div>
                 <div class="bus-layout" [class.limousine-style]="isLimousine22()">
 
+                  <!-- Driver steering wheel icon container for Limousine 22 (SVG on Floor 1, placeholder on Floor 2) -->
+                  <div class="steering-wheel-row" *ngIf="isLimousine22()">
+                    <svg *ngIf="floor.floorNumber === 1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="steering-wheel-svg">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="2" x2="12" y2="22"></line>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                    </svg>
+                    <div *ngIf="floor.floorNumber !== 1" style="height: 24px; width: 24px;"></div>
+                  </div>
+
                   <!-- Column labels only for Limousine style -->
                   <div class="column-labels" *ngIf="isLimousine22()">
                     <span class="label-text">Dãy Trái</span>
@@ -201,7 +236,8 @@
                     <div class="seat-layout-row" *ngFor="let row of floor.rows" [class.back-row]="row.isBackRow">
 
                       <ng-container *ngIf="!row.isBackRow">
-                        <div [class]="isLimousine22() ? (activeSeatGroupIndex !== null ? 'seat-room-limousine' : 'seat-room-limousine readonly') : (activeSeatGroupIndex !== null ? 'seat-room' : 'seat-room readonly')"
+                        <div
+                          [class]="isLimousine22() ? (activeSeatGroupIndex !== null ? 'seat-room-limousine' : 'seat-room-limousine readonly') : (activeSeatGroupIndex !== null ? 'seat-room' : 'seat-room readonly')"
                           *ngFor="let seat of row.seats" [class.selected]="isSeatInAnyGroup(seat)"
                           [style.--group-color]="getSeatGroupColor(seat)"
                           (click)="activeSeatGroupIndex !== null && toggleSeatInActiveGroup(seat)">
@@ -210,7 +246,8 @@
                       </ng-container>
 
                       <ng-container *ngIf="row.isBackRow">
-                        <div [class]="isLimousine22() ? (activeSeatGroupIndex !== null ? 'seat-room-limousine' : 'seat-room-limousine readonly') : (activeSeatGroupIndex !== null ? 'seat-room' : 'seat-room readonly')"
+                        <div
+                          [class]="isLimousine22() ? (activeSeatGroupIndex !== null ? 'seat-room-limousine' : 'seat-room-limousine readonly') : (activeSeatGroupIndex !== null ? 'seat-room' : 'seat-room readonly')"
                           *ngFor="let seat of row.seats" [class.selected]="isSeatInAnyGroup(seat)"
                           [style.--group-color]="getSeatGroupColor(seat)"
                           (click)="activeSeatGroupIndex !== null && toggleSeatInActiveGroup(seat)">
@@ -226,17 +263,21 @@
           </div>
 
           <!-- Base Price Section -->
-          <div class="base-price-section" *ngIf="currentSchedule.vehiclePlate && floorLayouts && floorLayouts.length > 0">
+          <div class="base-price-section"
+            *ngIf="currentSchedule.vehiclePlate && floorLayouts && floorLayouts.length > 0">
             <div class="base-price-header-row">
               <div class="header-left">
                 <div class="section-title">Giá vé chung (Mặc định) <span class="required">*</span></div>
                 <div class="section-subtext">Áp dụng cho tất cả các ghế không nằm trong nhóm giá riêng biệt</div>
               </div>
-              <div class="header-right">
+              <div class="header-right" [class.is-invalid]="errors.basePrice && (currentSchedule.basePrice === undefined || currentSchedule.basePrice === null)">
                 <div class="input-with-addon">
                   <input type="number" min="0" [(ngModel)]="currentSchedule.basePrice" placeholder="VD: 300000"
                     class="base-price-input">
                   <span class="unit-addon">VND</span>
+                </div>
+                <div class="error-text" *ngIf="errors.basePrice && (currentSchedule.basePrice === undefined || currentSchedule.basePrice === null)">
+                  Hãy nhập Giá vé chung hợp lệ!
                 </div>
               </div>
             </div>
@@ -325,7 +366,7 @@
         <div *ngIf="activeModalTab === 'time'" class="tab-fade-in">
           <div class="form-grid">
             <!-- Ngày khởi hành -->
-            <div class="form-group">
+            <div class="form-group" [class.is-invalid]="errors.departureDate && !currentSchedule.departureDate">
               <label>Ngày khởi hành <span class="required">*</span></label>
               <div class="date-input-container" (click)="$event.stopPropagation()">
                 <input type="text" [(ngModel)]="currentSchedule.departureDate" placeholder="dd/mm/yyyy"
@@ -376,10 +417,13 @@
                   </div>
                 </div>
               </div>
+              <div class="error-text" *ngIf="errors.departureDate && !currentSchedule.departureDate">
+                Hãy chọn Ngày khởi hành!
+              </div>
             </div>
 
             <!-- Giờ khởi hành -->
-            <div class="form-group">
+            <div class="form-group" [class.is-invalid]="errors.departureTime && !currentSchedule.departureTime">
               <label>Giờ khởi hành <span class="required">*</span></label>
               <div class="time-split-inputs">
                 <div class="time-input-wrapper">
@@ -393,6 +437,9 @@
                     (ngModelChange)="updateDepartureTime()" class="time-number-input" placeholder="00">
                   <span class="time-unit">phút</span>
                 </div>
+              </div>
+              <div class="error-text" *ngIf="errors.departureTime && !currentSchedule.departureTime">
+                Hãy nhập Giờ khởi hành!
               </div>
             </div>
 
@@ -535,7 +582,16 @@
       </div>
 
       <div class="modal-footer">
-        <div class="footer-left"></div>
+        <div class="footer-left">
+          <button *ngIf="isEditMode" class="btn-lock" (click)="toggleStatus()">
+            <span class="material-icons">lock</span>
+            {{ currentSchedule.status === 'DaKhoa' ? 'Mở khóa' : 'Khóa lịch trình' }}
+          </button>
+          <button *ngIf="isEditMode" class="btn-delete" (click)="deleteSchedule()">
+            <span class="material-icons">delete</span>
+            Xóa lịch trình
+          </button>
+        </div>
         <div class="footer-right">
           <button class="btn-cancel" (click)="closeModal()">Hủy</button>
           <button *ngIf="activeModalTab === 'setup'" class="btn-save" (click)="setModalTab('time')">Tiếp tục</button>

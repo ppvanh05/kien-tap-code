@@ -1,0 +1,119 @@
+<!-- TopNavBar -->
+<header class="bg-primary fixed w-full top-0 z-50 shadow-md">
+    <div class="flex justify-between items-center h-20 px-margin-desktop max-w-container-max mx-auto">
+        <div class="flex items-left gap-4">
+            <img src="/asset/images/customer/logo_removebg.png" alt="TXP Logo" class="h-[120px] w-auto">
+        </div>
+        <nav class="hidden lg:flex items-center gap-gutter">
+            <a class="font-body-lg text-body-lg text-on-primary/80 hover:text-on-primary transition-colors transition-all duration-300"
+                routerLink="/home" routerLinkActive="border-b-2 border-on-primary pb-1">TRANG CHỦ</a>
+            <a class="font-body-lg text-body-lg text-on-primary/80 hover:text-on-primary transition-colors transition-all duration-300"
+                routerLink="/tra-cuu-ve" routerLinkActive="border-b-2 border-on-primary pb-1 text-on-primary">TRA CỨU VÉ</a>
+            <a class="font-body-lg text-body-lg text-on-primary/80 hover:text-on-primary transition-colors transition-all duration-300"
+                routerLink="/tin-tuc" routerLinkActive="text-on-primary border-b-2 border-on-primary pb-1">TIN TỨC</a>
+            <a class="font-body-lg text-body-lg text-on-primary/80 hover:text-on-primary transition-colors transition-all duration-300"
+                routerLink="/danh-gia" routerLinkActive="text-on-primary border-b-2 border-on-primary pb-1">ĐÁNH GIÁ</a>
+            
+            <!-- GIỚI THIỆU with Dropdown -->
+            <div class="relative group">
+                <button (click)="toggleIntroDropdown($event)" 
+                    [class.border-b-2]="isIntroActive()"
+                    [class.border-on-primary]="isIntroActive()"
+                    [class.pb-1]="isIntroActive()"
+                    [class.text-on-primary]="isIntroActive()"
+                    [class.text-on-primary/80]="!isIntroActive()"
+                    class="flex items-center gap-1 font-body-lg text-body-lg hover:text-on-primary transition-all duration-300 uppercase">
+                    GIỚI THIỆU
+                    <span class="material-symbols-outlined text-sm transition-transform duration-300" 
+                        [class.rotate-180]="isIntroDropdownOpen">expand_more</span>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div *ngIf="isIntroDropdownOpen" 
+                    class="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-modal py-4 z-[60] transition-all duration-200">
+                    <ul class="space-y-1">
+                        <li>
+                            <a routerLink="/gioi-thieu/ve-chung-toi" (click)="closeIntroDropdown()"
+                                class="flex items-center gap-3 px-6 py-3 text-on-surface hover:bg-primary-light hover:text-primary transition-colors group/item">
+                                <div class="w-1.5 h-1.5 rounded-full bg-outline group-hover/item:bg-primary"></div>
+                                <span class="font-body-md">Về chúng tôi</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a routerLink="/gioi-thieu/chinh-sach" (click)="closeIntroDropdown()"
+                                class="flex items-center gap-3 px-6 py-3 text-on-surface hover:bg-primary-light hover:text-primary transition-colors group/item">
+                                <div class="w-1.5 h-1.5 rounded-full bg-outline group-hover/item:bg-primary"></div>
+                                <span class="font-body-md">Chính sách nhà xe</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="flex items-center gap-4">
+            <!-- Case: Not Logged In -->
+            <ng-container *ngIf="!isLoggedIn">
+                <button (click)="login()"
+                    class="bg-secondary text-on-primary px-6 py-2 rounded-xl font-body-lg text-body-lg hover:bg-secondary-hover transition-all duration-300 flex items-center shadow-md">
+                    <span class="material-symbols-outlined mr-2">account_circle</span>
+                    Đăng nhập / Đăng ký
+                </button>
+            </ng-container>
+
+            <app-login-modal *ngIf="modalMode === 'login'" (close)="closeModal()" (loggedIn)="handleLoggedIn($event)"></app-login-modal>
+            <app-register-modal *ngIf="modalMode === 'register'" (close)="closeModal()" (registered)="handleRegistered($event)"></app-register-modal>
+            <app-forgot-password *ngIf="modalMode === 'forgot'" (close)="closeModal()" (loggedIn)="handleLoggedIn($event)"></app-forgot-password>
+
+            <!-- Case: Logged In -->
+            <div *ngIf="isLoggedIn" class="relative">
+                <button (click)="toggleUserDropdown($event)"
+                    class="flex items-center gap-3 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl transition-all duration-300 border border-white/20">
+                    <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-sm">
+                        {{ userName.charAt(0) }}
+                    </div>
+                    <span class="text-on-primary font-bold text-body-md">{{ userName }}</span>
+                    <span class="material-symbols-outlined text-on-primary text-sm transition-transform duration-300"
+                        [class.rotate-180]="isUserDropdownOpen">expand_more</span>
+                </button>
+
+                <!-- User Dropdown Menu -->
+                <div *ngIf="isUserDropdownOpen"
+                    class="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-modal py-3 z-[60] overflow-hidden">
+                    <div class="px-6 py-3 border-b border-outline-variant/10 mb-2">
+                        <p class="text-label-sm text-outline uppercase tracking-wider">Tài khoản của tôi</p>
+                    </div>
+                    <ul class="space-y-1">
+                        <li>
+                            <a routerLink="/profile" (click)="isUserDropdownOpen = false"
+                                class="flex items-center gap-3 px-6 py-3 text-on-surface hover:bg-secondary-light hover:text-secondary transition-colors group">
+                                <span class="material-symbols-outlined text-xl text-outline group-hover:text-secondary">person</span>
+                                <span class="font-body-md">Thông tin cá nhân</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a routerLink="/profile" (click)="isUserDropdownOpen = false"
+                                class="flex items-center gap-3 px-6 py-3 text-on-surface hover:bg-secondary-light hover:text-secondary transition-colors group">
+                                <span class="material-symbols-outlined text-xl text-outline group-hover:text-secondary">history</span>
+                                <span class="font-body-md">Lịch sử mua vé</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a routerLink="/profile" (click)="isUserDropdownOpen = false"
+                                class="flex items-center gap-3 px-6 py-3 text-on-surface hover:bg-secondary-light hover:text-secondary transition-colors group">
+                                <span class="material-symbols-outlined text-xl text-outline group-hover:text-secondary">lock_reset</span>
+                                <span class="font-body-md">Đổi mật khẩu</span>
+                            </a>
+                        </li>
+                        <li class="pt-2 mt-2 border-t border-outline-variant/10">
+                            <button (click)="logout()"
+                                class="w-full flex items-center gap-3 px-6 py-3 text-error hover:bg-error/5 transition-colors group">
+                                <span class="material-symbols-outlined text-xl">logout</span>
+                                <span class="font-body-md font-bold">Đăng xuất</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

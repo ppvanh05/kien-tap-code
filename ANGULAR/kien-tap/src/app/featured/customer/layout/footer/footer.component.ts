@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { isBrowser } from '../../../../shared/utils/browser.utils';
 
 @Component({
   selector: 'app-footer',
@@ -17,7 +18,7 @@ export class FooterComponent {
     const shareData = {
       title: 'TXP - Tân Xuân Phúc',
       text: 'Đặt vé xe khách Tân Xuân Phúc - Chất lượng, an toàn, tin cậy.',
-      url: window.location.href
+      url: isBrowser() ? window.location.href : ''
     };
 
     try {
@@ -26,13 +27,13 @@ export class FooterComponent {
         await navigator.share(shareData);
       } else {
         // 2. Fallback: Copy link cho máy tính
-        await navigator.clipboard.writeText(window.location.href);
+        if (isBrowser()) { await navigator.clipboard.writeText(window.location.href); }
         this.showToast();
       }
     } catch (err) {
       // Nếu user cancel hoặc có lỗi, thử copy link
       if ((err as Error).name !== 'AbortError') {
-        await navigator.clipboard.writeText(window.location.href);
+        if (isBrowser()) { await navigator.clipboard.writeText(window.location.href); }
         this.showToast();
       }
     }

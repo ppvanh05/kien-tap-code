@@ -38,8 +38,22 @@ export class ThanhToan implements OnInit, OnDestroy {
   // Modal states
   showCancelModal: boolean = false;
   showExpirationModal: boolean = false;
+  showSuccessModal: boolean = false;
+  showAlertModal: boolean = false;
   expirationRedirectTime: number = 5;
   expirationInterval: any = null;
+
+  // Success order data for ticket display
+  successOrder: any = null;
+  
+  // Alert data
+  alertMessage: string = '';
+  alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
+  
+  // Confirm modal data
+  showConfirmModal: boolean = false;
+  confirmMessage: string = '';
+  confirmCallback: (() => void) | null = null;
 
   paymentMethods = [
     { id: 'vietqr', name: 'Thanh toán qua VietQR', icon: '/asset/images/customer/VietQR_Logo.png', badge: '' },
@@ -47,7 +61,8 @@ export class ThanhToan implements OnInit, OnDestroy {
     { id: 'vnpay', name: 'Ví VNPay', icon: '/asset/images/customer/VNPay_logo.png', badge: '' },
     { id: 'zalopay', name: 'Ví ZaloPay', icon: 'https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png', badge: 'Giảm 25% tối đa 20k cho khách lần đầu thanh toán. Giảm tối đa 50k cho đơn từ 500k cho tất cả các giao dịch' },
     { id: 'atm', name: 'Thẻ ATM nội địa', icon: '/asset/images/customer/napas_logo.png', badge: '' },
-    { id: 'card', name: 'Thẻ Visa/Master/JCB', icon: '/asset/images/customer/the-quoc-te_logo.jpg', badge: '' }
+    { id: 'card', name: 'Thẻ Visa/Master/JCB', icon: '/asset/images/customer/the-quoc-te_logo.jpg', badge: '' },
+    { id: 'cash', name: 'Tiền mặt', icon: 'https://img.icons8.com/ios-filled/50/money--v1.png', badge: 'Nhân viên xác nhận nhận tiền mặt từ khách hàng' }
   ];
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
@@ -152,7 +167,65 @@ export class ThanhToan implements OnInit, OnDestroy {
   }
 
   finishPayment() {
-    alert('Thanh toán thành công! Vé điện tử đã được gửi tới số điện thoại/email của bạn.');
+    this.showAlert('Thanh toán thành công! Vé điện tử đã được gửi tới số điện thoại/email của bạn.', 'success');
+    localStorage.removeItem('current_booking');
+    localStorage.removeItem('final_booking');
+    setTimeout(() => {
+      this.router.navigate(['/admin/trang-chu']);
+    }, 2000);
+  }
+
+  showAlert(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlertModal = true;
+  }
+
+  closeAlert() {
+    this.showAlertModal = false;
+    this.alertMessage = '';
+  }
+
+  showConfirm(message: string, callback: () => void) {
+    this.confirmMessage = message;
+    this.confirmCallback = callback;
+    this.showConfirmModal = true;
+  }
+
+  closeConfirm() {
+    this.showConfirmModal = false;
+    this.confirmMessage = '';
+    this.confirmCallback = null;
+  }
+
+  confirmCashPayment() {
+    this.showConfirm('Xác nhận đã nhận tiền mặt từ khách hàng?', () => {
+      // Tạo data đơn hàng giả để hiển thị vé
+      this.successOrder = {
+        maDonHang: 'TXPC' + Math.floor(Math.random() * 100000),
+        hoTenKhachHang: this.bookingData.customerName,
+        soDienThoai: this.bookingData.customerPhone,
+        email: this.bookingData.customerEmail || '',
+        tenTuyen: this.bookingData.startStation + ' - ' + this.bookingData.endStation,
+        gioKhoiHanh: this.bookingData.departureTime,
+        departureDate: this.selectedDate,
+        tongGiaVe: this.bookingData.totalPrice,
+        phuongThucThanhToan: 'Tiền mặt',
+        trangThaiDonHang: 'Thành công',
+        diemDon: this.bookingData.pickup.name + ' - ' + this.bookingData.pickup.address,
+        diemTra: this.bookingData.dropoff.name + ' - ' + this.bookingData.dropoff.address,
+        bienSoXe: '51A-123.45',
+        tickets: this.bookingData.selectedSeats.map((seat: string, index: number) => ({
+          soGhe: seat,
+          maVe: 'TX' + (index + 1) + Math.floor(Math.random() * 10000)
+        }))
+      };
+      this.showSuccessModal = true;
+    });
+  }
+
+  closeSuccessModal() {
+    this.showSuccessModal = false;
     localStorage.removeItem('current_booking');
     localStorage.removeItem('final_booking');
     this.router.navigate(['/admin/trang-chu']);

@@ -1,0 +1,365 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+
+import { HeaderComponent } from '../layout/header/header.component';
+import { FooterComponent } from '../layout/footer/footer.component';
+
+interface Seat {
+  name: string;
+  status: 'sold' | 'available' | 'selected';
+  deck: 'lower' | 'upper';
+  side: 'left' | 'right';
+  price: number;
+}
+
+@Component({
+  selector: 'app-thong-tin-don-hang',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, HeaderComponent, FooterComponent],
+  templateUrl: './thong-tin-don-hang.html',
+  styleUrl: './thong-tin-don-hang.css',
+})
+export class ThongTinDonHang implements OnInit {
+  bookingData: any = {
+    tripId: 1,
+    departureTime: '18:00',
+    arrivalTime: '05:00',
+    duration: '11 giờ',
+    distance: '550km',
+    startStation: 'Bến xe Miền Tây',
+    endStation: 'Bến xe Quy Nhơn',
+    price: 400000,
+    selectedSeats: [],
+    selectedRoomGuests: {},
+    totalPrice: 0
+  };
+
+  seats: Seat[] = [];
+  selectedRoomGuests: { [seatName: string]: number } = {};
+
+  // Customer Form Fields
+  customerName: string = 'Nghi Trần Ngọc Bảo';
+  customerPhone: string = '0981939379';
+  customerEmail: string = 'nghitnb23406@st.uel.edu.vn';
+  agreeTerms: boolean = false;
+
+  // Pickup/Dropoff dropdown states
+  pickupSearch: string = 'Bến xe Miền Tây';
+  dropoffSearch: string = 'Bến xe Quy Nhơn';
+  showPickupDropdown: boolean = false;
+  showDropoffDropdown: boolean = false;
+
+  selectedPickup: any = null;
+  selectedDropoff: any = null;
+
+  pickupOptions: any[] = [
+    { time: '18:15', name: 'Bến xe Miền Đông Cũ', address: '292 Đinh Bộ Lĩnh, P.26, Q.Bình Thạnh, TP HCM' },
+    { time: '18:15', name: '43 Nguyễn Cư Trinh', address: '43 Đ. Nguyễn Cư Trinh, Phường Nguyễn Cư Trinh, Quận 1, Thành phố Hồ Chí Minh, Vietnam' },
+    { time: '18:15', name: '202 Lê Hồng Phong', address: '202 Lê Hồng Phong - P.4 - Q.5 - TP. Hồ Chí Minh' },
+    { time: '18:30', name: 'Bến xe Miền Tây', address: '395 Kinh Dương Vương, P.An Lạc, Q.Bình Tân, TP.HCM' }
+  ];
+
+  dropoffOptions: any[] = [
+    { time: '05:00', name: 'Bến xe Quy Nhơn', address: '71 Tây Sơn, Phường Ghềnh Ráng, Quy Nhơn, Bình Định' },
+    { time: '05:20', name: 'Văn phòng Quy Nhơn', address: '333 Chương Dương, Phường Nguyễn Văn Cừ, Quy Nhơn, Bình Định' },
+    { time: '05:50', name: 'Điểm trả Phù Cát', address: 'Ngã tư huyện Phù Cát, Phù Cát, Bình Định' },
+    { time: '05:00', name: 'Bến xe Vũng Tàu', address: '192 Nam Kỳ Khởi Nghĩa, P.Thắng Tam, TP.Vũng Tàu' }
+  ];
+
+  constructor(private router: Router) { }
+
+  ngOnInit() {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('current_booking');
+      if (saved) {
+        this.bookingData = JSON.parse(saved);
+      }
+
+      // Extract selected date from booking data if available
+      if (this.bookingData && this.bookingData.selectedDate) {
+        this.selectedDate = this.bookingData.selectedDate;
+      }
+    }
+
+    // Set default pickup and dropoff based on saved data
+    this.selectedPickup = this.pickupOptions.find(opt => opt.name.toLowerCase().includes((this.bookingData?.startStation || '').toLowerCase())) || this.pickupOptions[3];
+    this.pickupSearch = this.selectedPickup.name;
+
+    this.selectedDropoff = this.dropoffOptions.find(opt => opt.name.toLowerCase().includes((this.bookingData?.endStation || '').toLowerCase())) || this.dropoffOptions[0];
+    this.dropoffSearch = this.selectedDropoff.name;
+
+    this.initSeats();
+    this.recalculatePrice();
+  }
+
+  initSeats() {
+    const lowerNames = ['1A', '2A', '3A', '4A', '5A', '6A', '7A', '8A', '9A', '10A', '11A', '12A'];
+    const upperNames = ['1B', '2B', '3B', '4B', '5B', '6B', '7B', '8B', '9B', '10B'];
+
+    const basePrice = this.bookingData.price;
+    const selected = this.bookingData.selectedSeats || [];
+
+    // Simulate consistent sold seats for realism
+    const soldLower = [1, 2, 4, 9];
+    const soldUpper = [2, 5, 8];
+
+    this.seats = [];
+
+    lowerNames.forEach((name, index) => {
+      const isSelected = selected.includes(name);
+      let status: 'sold' | 'available' | 'selected' = 'available';
+      if (isSelected) {
+        status = 'selected';
+      } else if (soldLower.includes(index)) {
+        status = 'sold';
+      }
+      this.seats.push({
+        name,
+        deck: 'lower',
+        side: index % 2 === 0 ? 'left' : 'right',
+        status,
+        price: basePrice
+      });
+    });
+
+    upperNames.forEach((name, index) => {
+      const isSelected = selected.includes(name);
+      let status: 'sold' | 'available' | 'selected' = 'available';
+      if (isSelected) {
+        status = 'selected';
+      } else if (soldUpper.includes(index)) {
+        status = 'sold';
+      }
+      this.seats.push({
+        name,
+        deck: 'upper',
+        side: index % 2 === 0 ? 'left' : 'right',
+        status,
+        price: basePrice
+      });
+    });
+
+    // Sync guest count choices
+    selected.forEach((seat: string) => {
+      this.selectedRoomGuests[seat] = this.bookingData.selectedRoomGuests[seat] || 1;
+    });
+  }
+
+  toggleSeat(seat: Seat) {
+    if (seat.status === 'sold') return;
+
+    if (seat.status === 'selected') {
+      seat.status = 'available';
+      this.bookingData.selectedSeats = this.bookingData.selectedSeats.filter((s: string) => s !== seat.name);
+      delete this.selectedRoomGuests[seat.name];
+    } else {
+      seat.status = 'selected';
+      this.bookingData.selectedSeats.push(seat.name);
+      this.selectedRoomGuests[seat.name] = 1; // Default to single
+    }
+
+    this.recalculatePrice();
+  }
+
+  recalculatePrice() {
+    const basePrice = this.bookingData.price;
+    const selected = this.seats.filter(s => s.status === 'selected');
+
+    this.bookingData.selectedSeats = selected.map(s => s.name);
+
+    let total = 0;
+    selected.forEach(s => {
+      const guests = this.selectedRoomGuests[s.name] || 1;
+      const seatPrice = Number(guests) === 2 ? (basePrice + 200000) : basePrice;
+      total += seatPrice;
+    });
+
+    this.bookingData.totalPrice = total;
+  }
+
+  // Selected date from booking context
+  selectedDate: string = '22/05/2026';
+
+  formatPrice(price: number): string {
+    return (price || 0).toLocaleString('vi-VN') + 'đ';
+  }
+
+  getSelectedDate(): string {
+    return this.selectedDate;
+  }
+
+  getDayOfWeek(): string {
+    // Parse date from dd/mm/yyyy format
+    const parts = this.selectedDate.split('/');
+    if (parts.length !== 3) return '';
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const date = new Date(year, month, day);
+    const dayNames = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+    return dayNames[date.getDay()];
+  }
+
+  getPickupArrivalTime(): string {
+    // Departure time minus 30 minutes
+    const timeParts = this.bookingData.departureTime.split(':');
+    if (timeParts.length !== 2) return this.bookingData.departureTime;
+    let hours = parseInt(timeParts[0], 10);
+    let minutes = parseInt(timeParts[1], 10);
+    minutes -= 30;
+    if (minutes < 0) {
+      minutes += 60;
+      hours -= 1;
+    }
+    if (hours < 0) {
+      hours += 24;
+    }
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+
+  // Combobox Search Logic
+  get filteredPickups() {
+    const search = this.pickupSearch.toLowerCase().trim();
+    if (!search) return this.pickupOptions;
+
+    const matched = this.pickupOptions.filter(opt =>
+      opt.name.toLowerCase().includes(search) ||
+      opt.address.toLowerCase().includes(search)
+    );
+
+    if (matched.length > 0) return matched;
+
+    // Heuristic nearest stop propose
+    let suggested = this.pickupOptions[2]; // Default: 202 Lê Hồng Phong
+    if (search.includes('gò vấp') || search.includes('quang trung') || search.includes('12')) {
+      suggested = this.pickupOptions[0]; // Bến xe Miền Đông
+    } else if (search.includes('bình tân') || search.includes('an lạc') || search.includes('miền tây')) {
+      suggested = this.pickupOptions[3]; // Bến xe Miền Tây
+    }
+
+    return [
+      {
+        ...suggested,
+        isSuggestion: true,
+        suggestionLabel: `Gợi ý điểm gần nhất cho "${this.pickupSearch}":`
+      }
+    ];
+  }
+
+  get filteredDropoffs() {
+    const search = this.dropoffSearch.toLowerCase().trim();
+    if (!search) return this.dropoffOptions;
+
+    const matched = this.dropoffOptions.filter(opt =>
+      opt.name.toLowerCase().includes(search) ||
+      opt.address.toLowerCase().includes(search)
+    );
+
+    if (matched.length > 0) return matched;
+
+    // Propose nearest dropoff
+    let suggested = this.dropoffOptions[0]; // Default: Bến xe Quy Nhơn
+    if (search.includes('vũng tàu') || search.includes('thắng tam')) {
+      suggested = this.dropoffOptions[3]; // Bến xe Vũng Tàu
+    } else if (search.includes('phù cát') || search.includes('cát')) {
+      suggested = this.dropoffOptions[2]; // Phù Cát
+    }
+
+    return [
+      {
+        ...suggested,
+        isSuggestion: true,
+        suggestionLabel: `Gợi ý điểm gần nhất cho "${this.dropoffSearch}":`
+      }
+    ];
+  }
+
+  selectPickup(option: any) {
+    this.selectedPickup = option;
+    this.pickupSearch = option.name;
+    this.showPickupDropdown = false;
+  }
+
+  selectDropoff(option: any) {
+    this.selectedDropoff = option;
+    this.dropoffSearch = option.name;
+    this.showDropoffDropdown = false;
+  }
+
+  onPickupFocus() {
+    this.showPickupDropdown = true;
+    if (this.selectedPickup && this.pickupSearch === this.selectedPickup.name) {
+      this.pickupSearch = '';
+    }
+  }
+
+  onPickupBlur() {
+    setTimeout(() => {
+      this.showPickupDropdown = false;
+      if (this.selectedPickup) {
+        this.pickupSearch = this.selectedPickup.name;
+      }
+    }, 250);
+  }
+
+  onDropoffFocus() {
+    this.showDropoffDropdown = true;
+    if (this.selectedDropoff && this.dropoffSearch === this.selectedDropoff.name) {
+      this.dropoffSearch = '';
+    }
+  }
+
+  onDropoffBlur() {
+    setTimeout(() => {
+      this.showDropoffDropdown = false;
+      if (this.selectedDropoff) {
+        this.dropoffSearch = this.selectedDropoff.name;
+      }
+    }, 250);
+  }
+
+  cancelBooking() {
+    this.router.navigate(['/tim-kiem-chuyen']);
+  }
+
+  payBooking() {
+    if (this.bookingData.selectedSeats.length === 0) {
+      alert('Vui lòng chọn ít nhất 1 ghế.');
+      return;
+    }
+    if (!this.customerName.trim()) {
+      alert('Vui lòng nhập Họ và tên.');
+      return;
+    }
+    if (!this.customerPhone.trim()) {
+      alert('Vui lòng nhập Số điện thoại.');
+      return;
+    }
+    if (!this.agreeTerms) {
+      alert('Quý khách vui lòng đồng ý với điều khoản đặt vé.');
+      return;
+    }
+    if (!this.selectedPickup) {
+      alert('Vui lòng chọn Điểm đón.');
+      return;
+    }
+    if (!this.selectedDropoff) {
+      alert('Vui lòng chọn Điểm trả.');
+      return;
+    }
+
+    // Save final details for the payment screen
+    const finalData = {
+      ...this.bookingData,
+      customerName: this.customerName,
+      customerPhone: this.customerPhone,
+      customerEmail: this.customerEmail,
+      pickup: this.selectedPickup,
+      dropoff: this.selectedDropoff
+    };
+    localStorage.setItem('final_booking', JSON.stringify(finalData));
+    this.router.navigate(['/thanh-toan']);
+  }
+}

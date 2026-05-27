@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 interface Review {
   id: number;
@@ -32,7 +33,7 @@ export class ReviewComponent {
   pages = [1, 2, 3, '...', 10];
   currentPage = 1;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private toastService: ToastService) {
     this.authService.isLoggedIn$.subscribe(status => this.isLoggedIn = status);
   }
 
@@ -96,7 +97,7 @@ export class ReviewComponent {
     if (this.isLoggedIn) {
       this.showReviewModal = true;
     } else {
-      alert('Vui lòng đăng nhập để đánh giá chuyến đi của bạn');
+      this.toastService.show('Vui lòng đăng nhập để đánh giá chuyến đi của bạn', 'warning');
     }
   }
 

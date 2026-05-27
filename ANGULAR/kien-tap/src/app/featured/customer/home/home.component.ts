@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +31,12 @@ export class HomeComponent {
   showDepartureCalendar: boolean = false;
   showReturnCalendar: boolean = false;
   showPassengerPopover: boolean = false;
+
+  showDepartureDropdown: boolean = false;
+  showDestinationDropdown: boolean = false;
+
+  departureSearch: string = 'TP. Hồ Chí Minh';
+  destinationSearch: string = 'Bình Định';
 
   locations = ['TP. Hồ Chí Minh', 'Bình Định', 'Phú Yên'];
 
@@ -78,7 +85,80 @@ export class HomeComponent {
     { day: 31, label: '15', dateStr: '31/05/2026' }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private toastService: ToastService) {}
+
+  isPastDate(dateStr: string): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const parts = dateStr.split('/');
+    const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+    
+    return date < today;
+  }
+
+  parseDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const parts = dateStr.split('/');
+    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+  }
+
+  selectDepartureDate(dateStr: string) {
+    if (this.isPastDate(dateStr)) {
+      this.toastService.show('Không thể chọn ngày trong quá khứ', 'error');
+      return;
+    }
+    
+    this.departureDate = dateStr;
+    
+    // Check if return date is now before departure date
+    if (this.isRoundTrip && this.returnDate) {
+      const depDate = this.parseDate(this.departureDate);
+      const retDate = this.parseDate(this.returnDate);
+      
+      if (depDate && retDate && retDate < depDate) {
+        this.returnDate = ''; // Clear invalid return date
+        this.toastService.show('Ngày về phải sau ngày đi. Vui lòng chọn lại ngày về.', 'warning');
+      }
+    }
+    
+    this.showDepartureCalendar = false;
+  }
+
+  selectReturnDate(dateStr: string) {
+    if (this.isPastDate(dateStr)) {
+      this.toastService.show('Không thể chọn ngày trong quá khứ', 'error');
+      return;
+    }
+
+    const depDate = this.parseDate(this.departureDate);
+    const retDate = this.parseDate(dateStr);
+
+    if (depDate && retDate && retDate < depDate) {
+      this.toastService.show('Ngày về phải sau ngày đi', 'error');
+      return;
+    }
+
+    this.returnDate = dateStr;
+    this.showReturnCalendar = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    
+    // Close departure calendar if click is outside
+    const clickedInsideDeparture = target.closest('.departure-calendar-container');
+    if (!clickedInsideDeparture) {
+      this.showDepartureCalendar = false;
+    }
+    
+    // Close return calendar if click is outside
+    const clickedInsideReturn = target.closest('.return-calendar-container');
+    if (!clickedInsideReturn) {
+      this.showReturnCalendar = false;
+    }
+  }
 
   get departureOptions() {
     return this.locations.filter(loc => loc !== this.destination);
@@ -88,10 +168,67 @@ export class HomeComponent {
     return this.locations.filter(loc => loc !== this.departure);
   }
 
+  get filteredDepartures() {
+    const search = this.departureSearch.toLowerCase().trim();
+    const opts = this.locations.filter(loc => loc !== this.destination);
+    if (!search) return opts;
+    return opts.filter(loc => loc.toLowerCase().includes(search));
+  }
+
+  get filteredDestinations() {
+    const search = this.destinationSearch.toLowerCase().trim();
+    const opts = this.locations.filter(loc => loc !== this.departure);
+    if (!search) return opts;
+    return opts.filter(loc => loc.toLowerCase().includes(search));
+  }
+
+  selectDeparture(loc: string) {
+    this.departure = loc;
+    this.departureSearch = loc;
+    this.showDepartureDropdown = false;
+  }
+
+  selectDestination(loc: string) {
+    this.destination = loc;
+    this.destinationSearch = loc;
+    this.showDestinationDropdown = false;
+  }
+
+  onDepartureFocus() {
+    this.showDepartureDropdown = true;
+    if (this.departure) {
+      this.departureSearch = '';
+    }
+  }
+
+  onDepartureBlur() {
+    setTimeout(() => {
+      this.showDepartureDropdown = false;
+      this.departureSearch = this.departure;
+    }, 250);
+  }
+
+  onDestinationFocus() {
+    this.showDestinationDropdown = true;
+    if (this.destination) {
+      this.destinationSearch = '';
+    }
+  }
+
+  onDestinationBlur() {
+    setTimeout(() => {
+      this.showDestinationDropdown = false;
+      this.destinationSearch = this.destination;
+    }, 250);
+  }
+
   swapLocations() {
     const temp = this.departure;
     this.departure = this.destination;
     this.destination = temp;
+
+    this.departureSearch = this.departure;
+    this.destinationSearch = this.destination;
   }
 
   toggleDepartureCalendar() {
@@ -109,16 +246,6 @@ export class HomeComponent {
   togglePassengerPopover() {
     this.showPassengerPopover = !this.showPassengerPopover;
     this.showDepartureCalendar = false;
-    this.showReturnCalendar = false;
-  }
-
-  selectDepartureDate(dateStr: string) {
-    this.departureDate = dateStr;
-    this.showDepartureCalendar = false;
-  }
-
-  selectReturnDate(dateStr: string) {
-    this.returnDate = dateStr;
     this.showReturnCalendar = false;
   }
 
@@ -173,7 +300,9 @@ export class HomeComponent {
     this.departure = search.from;
     this.destination = search.to;
     this.departureDate = search.date;
-    this.searchTrip();
+
+    this.departureSearch = this.departure;
+    this.destinationSearch = this.destination;
   }
 
   searchTrip() {

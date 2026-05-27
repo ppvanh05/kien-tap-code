@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 export interface Route {
   id: string | number;
@@ -21,6 +22,7 @@ export interface Route {
 export class TuyenXeService {
   private apiUrl = 'http://localhost:3000/dieu-hanh/tuyen-xe';
   private routes: Route[] = [];
+  public routesUpdated$ = new Subject<void>();
 
   constructor(private http: HttpClient) {
     this.refreshRoutes();
@@ -43,10 +45,11 @@ export class TuyenXeService {
             distance: r.KhoangCach || 0,
             estimatedHours: hours,
             estimatedMinutes: minutes,
-            status: r.TrangThai || 'active',
+            status: r.TrangThaiTuyenXe === 'DaKhoa' ? 'locked' : 'active',
             createdAt: new Date(),
           });
         });
+        this.routesUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi tải danh sách tuyến xe:', err)
     });
@@ -68,6 +71,7 @@ export class TuyenXeService {
     this.http.post<any>(this.apiUrl, route).subscribe({
       next: (res) => {
         newRoute.id = res.MaTuyenXe;
+        this.routesUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi thêm tuyến xe:', err)
     });
@@ -82,6 +86,9 @@ export class TuyenXeService {
     }
 
     this.http.put(`${this.apiUrl}/${id}`, updated).subscribe({
+      next: () => {
+        this.routesUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi cập nhật tuyến xe:', err)
     });
   }
@@ -93,6 +100,9 @@ export class TuyenXeService {
     }
 
     this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.routesUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi xóa tuyến xe:', err)
     });
   }

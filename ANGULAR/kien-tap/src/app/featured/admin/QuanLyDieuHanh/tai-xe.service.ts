@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 export interface Driver {
   id: string | number;
@@ -20,10 +21,12 @@ export interface Driver {
 
 @Injectable({
   providedIn: 'root'
-})
+}
+)
 export class TaiXeService {
   private apiUrl = 'http://localhost:3000/dieu-hanh/tai-xe-phu-xe';
   private drivers: Driver[] = [];
+  public driversUpdated$ = new Subject<void>();
 
   constructor(private http: HttpClient) {
     this.refreshDrivers();
@@ -46,11 +49,12 @@ export class TaiXeService {
             licenseBack: null,
             cccdFront: d.AnhCCCD || null,
             cccdBack: null,
-            status: d.TrangThaiLamViec || 'active',
+            status: d.TrangThaiLamViec === 'DaKhoa' ? 'locked' : 'active',
             cccdNumber: d.CCCD || '',
-            role: d.LoaiNhanVien || 'driver',
+            role: d.LoaiNhanVien === 'TaiXe' ? 'driver' : 'assistant',
           });
         });
+        this.driversUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi tải danh sách tài xế/phụ xe:', err)
     });
@@ -80,6 +84,7 @@ export class TaiXeService {
     this.http.post<any>(this.apiUrl, driver).subscribe({
       next: (res) => {
         newDriver.id = res.MaTaiXePhuXe;
+        this.driversUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi thêm nhân viên:', err)
     });
@@ -104,6 +109,9 @@ export class TaiXeService {
     }
 
     this.http.put(`${this.apiUrl}/${id}`, payload).subscribe({
+      next: () => {
+        this.driversUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi cập nhật nhân viên:', err)
     });
   }
@@ -115,6 +123,9 @@ export class TaiXeService {
     }
 
     this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.driversUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi xóa nhân viên:', err)
     });
   }

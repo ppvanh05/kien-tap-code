@@ -107,7 +107,7 @@
   <div class="modal-overlay" *ngIf="isModalOpen" (mousedown)="onOverlayMouseDown($event)" (mouseup)="onOverlayMouseUp($event, 'main')">
     <div class="modal-content large-modal" style="max-width: 750px;" (mousedown)="$event.stopPropagation()" (mouseup)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>{{ isEditMode ? 'Chi tiết điểm đón trả' : 'Thêm điểm đón trả' }}</h2>
+        <h2>{{ isEditMode ? (currentPoint.type === 'dung' ? 'Chi tiết điểm dừng chân' : 'Chi tiết điểm đón trả') : (currentPoint.type === 'dung' ? 'Thêm điểm dừng chân' : 'Thêm điểm đón trả') }}</h2>
         <button class="modal-close-btn" (click)="closeModal()">
           <span class="material-icons">close</span>
         </button>
@@ -115,23 +115,32 @@
 
       <div class="modal-body">
         <div class="form-grid" style="grid-template-columns: repeat(6, 1fr);">
-          <div class="form-group" style="grid-column: span 4;">
-            <label>Tên điểm đón trả <span class="required">*</span></label>
-            <input type="text" [(ngModel)]="currentPoint.name" placeholder="Nhập tên điểm đón trả">
+          <div class="form-group" style="grid-column: span 4;" [class.is-invalid]="errors.name && !currentPoint.name">
+            <label>{{ currentPoint.type === 'dung' ? 'Tên điểm dừng chân' : 'Tên điểm đón trả' }} <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentPoint.name" [placeholder]="currentPoint.type === 'dung' ? 'Nhập tên điểm dừng chân' : 'Nhập tên điểm đón trả'">
+            <div class="error-text" *ngIf="errors.name && !currentPoint.name">
+              Hãy điền thông tin Tên {{ currentPoint.type === 'dung' ? 'điểm dừng chân' : 'điểm đón trả' }}!
+            </div>
           </div>
 
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group" style="grid-column: span 2;" [class.is-invalid]="errors.city && !currentPoint.city">
             <label>Tỉnh / thành phố <span class="required">*</span></label>
             <app-custom-select
               [(value)]="currentPoint.city"
               [options]="cityFormOptions"
               placeholder="Chọn tỉnh / thành phố"
             ></app-custom-select>
+            <div class="error-text" *ngIf="errors.city && !currentPoint.city">
+              Hãy chọn Tỉnh / thành phố!
+            </div>
           </div>
 
-          <div class="form-group" style="grid-column: span 6;">
+          <div class="form-group" style="grid-column: span 6;" [class.is-invalid]="errors.address && !currentPoint.address">
             <label>Địa chỉ <span class="required">*</span></label>
             <input type="text" [(ngModel)]="currentPoint.address" placeholder="Nhập địa chỉ">
+            <div class="error-text" *ngIf="errors.address && !currentPoint.address">
+              Hãy điền thông tin Địa chỉ!
+            </div>
           </div>
 
           <div class="form-group" style="grid-column: span 6;">
@@ -148,7 +157,7 @@
 
           <!-- Document Upload for Point Image -->
           <div class="form-group" style="grid-column: span 6; display: flex; flex-direction: column; gap: 8px;">
-            <label>{{ activeTab === 'dung' ? 'Ảnh điểm dừng chân' : 'Ảnh điểm đón trả' }}</label>
+            <label>{{ currentPoint.type === 'dung' ? 'Ảnh điểm dừng chân' : 'Ảnh điểm đón trả' }}</label>
             <div class="upload-dashed-box" style="height: 180px; width: 200px;" (click)="imageUpload.click()">
               <div *ngIf="!currentPoint.image && !isUploadingImage" class="upload-centered">
                 <span class="material-icons" style="font-size: 24px;">publish</span>
@@ -169,11 +178,11 @@
         <div class="footer-left">
           <button *ngIf="isEditMode" class="btn-lock" (click)="toggleStatus()">
             <span class="material-icons" style="font-size: 18px;">lock</span>
-            {{ currentPoint.status === 'active' ? 'Khóa điểm đón trả' : 'Mở khóa' }}
+            {{ currentPoint.status === 'active' ? (currentPoint.type === 'dung' ? 'Khóa điểm dừng chân' : 'Khóa điểm đón trả') : 'Mở khóa' }}
           </button>
           <button *ngIf="isEditMode" class="btn-delete" (click)="deletePoint()">
             <span class="material-icons" style="font-size: 18px;">delete</span>
-            Xóa điểm đón trả
+            {{ currentPoint.type === 'dung' ? 'Xóa điểm dừng chân' : 'Xóa điểm đón trả' }}
           </button>
         </div>
         <div class="footer-right">

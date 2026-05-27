@@ -10,6 +10,14 @@ export class KhachHangService {
     private nhatKyService: NhatKyHeThongService,
   ) {}
 
+  private mapToFrontend(kh: any) {
+    if (!kh) return null;
+    return {
+      ...kh,
+      GioiTinh: kh.GioiTinh === 'Nu' ? 'Nữ' : kh.GioiTinh,
+    };
+  }
+
   // ===== TẠO MỚI KHÁCH HÀNG =====
   async create(dto: Prisma.KHACH_HANGCreateInput) {
     // Kiểm tra email đã tồn tại chưa
@@ -38,6 +46,10 @@ export class KhachHangService {
       data.NgaySinh = new Date(dto.NgaySinh as any);
     }
 
+    if (dto.GioiTinh) {
+      data.GioiTinh = (dto.GioiTinh as any) === 'Nữ' ? 'Nu' : dto.GioiTinh;
+    }
+
     // Nếu không có trạng thái, mặc định là HoatDong
     if (!data.TrangThaiTaiKhoan) {
       data.TrangThaiTaiKhoan = 'HoatDong';
@@ -55,30 +67,37 @@ export class KhachHangService {
       TrangThai: 'Thành công',
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== LẤY TẤT CẢ KHÁCH HÀNG =====
   async getAll() {
     const list = await this.prisma.kHACH_HANG.findMany({
       orderBy: { NgayDangKy: 'desc' },
-    });
-
-    return Promise.all(
-      list.map(async (kh) => {
-        const ticketCount = await this.prisma.vE_DIEN_TU.count({
-          where: {
-            DON_HANG: {
-              MaKhachHang: kh.MaKhachHang,
+      include: {
+        DON_HANG: {
+          select: {
+            _count: {
+              select: {
+                VE_DIEN_TU: true,
+              },
             },
           },
-        });
-        return {
-          ...kh,
-          tongSoVeDaDat: ticketCount,
-        };
-      }),
-    );
+        },
+      },
+    });
+
+    return list.map((kh) => {
+      const ticketCount = kh.DON_HANG.reduce(
+        (sum, dh) => sum + (dh._count?.VE_DIEN_TU || 0),
+        0,
+      );
+      const { DON_HANG, ...rest } = kh;
+      return this.mapToFrontend({
+        ...rest,
+        tongSoVeDaDat: ticketCount,
+      });
+    });
   }
 
   // ===== LẤY THEO ID =====
@@ -87,15 +106,16 @@ export class KhachHangService {
       where: { MaKhachHang: id },
     });
     if (!kh) throw new NotFoundException(`Không tìm thấy khách hàng với mã ${id}`);
-    return kh;
+    return this.mapToFrontend(kh);
   }
 
   // ===== LẤY THEO TRẠNG THÁI =====
   async getByTrangThai(trangThai: string) {
-    return this.prisma.kHACH_HANG.findMany({
+    const list = await this.prisma.kHACH_HANG.findMany({
       where: { TrangThaiTaiKhoan: trangThai as TrangThaiTaiKhoanEnum },
       orderBy: { NgayDangKy: 'desc' },
     });
+    return list.map(item => this.mapToFrontend(item));
   }
 
   // ===== CẬP NHẬT THÔNG TIN CƠ BẢN =====
@@ -104,6 +124,9 @@ export class KhachHangService {
     const data: any = { ...dto };
     if (dto.NgaySinh) {
       data.NgaySinh = new Date(dto.NgaySinh as any);
+    }
+    if (dto.GioiTinh) {
+      data.GioiTinh = (dto.GioiTinh as any) === 'Nữ' ? 'Nu' : dto.GioiTinh;
     }
     const res = await this.prisma.kHACH_HANG.update({
       where: { MaKhachHang: id },
@@ -129,7 +152,7 @@ export class KhachHangService {
       DuLieuThayDoi: changes,
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== KHÓA TÀI KHOẢN =====
@@ -147,7 +170,7 @@ export class KhachHangService {
         DON_HANG: {
           MaKhachHang: id,
         },
-        TrangThaiVe: 'ConHieuLuc',
+        TrangThaiVe: 'Ch__kh_i_h_nh',
       },
     });
 
@@ -161,6 +184,7 @@ export class KhachHangService {
       where: { MaKhachHang: id },
       data: {
         TrangThaiTaiKhoan: 'DaKhoa',
+        LyDoKhoa: dto.LyDoKhoa,
       },
     });
 
@@ -177,7 +201,7 @@ export class KhachHangService {
       ],
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== MỞ KHÓA TÀI KHOẢN =====
@@ -192,6 +216,7 @@ export class KhachHangService {
       where: { MaKhachHang: id },
       data: {
         TrangThaiTaiKhoan: 'HoatDong',
+        LyDoKhoa: null,
       },
     });
 
@@ -207,7 +232,7 @@ export class KhachHangService {
       ],
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== LẤY LỊCH SỬ VÉ CỦA KHÁCH HÀNG =====
@@ -234,9 +259,13 @@ export class KhachHangService {
 
   // ===== LẤY NHẬT KÝ HOẠT ĐỘNG CỦA KHÁCH HÀNG =====
   async getNhatKyByKhachHang(id: string) {
-    return this.prisma.nHAT_KY_HE_THONG.findMany({
+    const list = await this.prisma.nHAT_KY_HE_THONG.findMany({
       where: { MaKhachHang: id },
       orderBy: { ThoiGian: 'desc' },
     });
+    return list.map(item => ({
+      ...item,
+      TrangThai: item.TrangThai === 'ThatBai' ? 'Thất bại' : 'Thành công',
+    }));
   }
 }

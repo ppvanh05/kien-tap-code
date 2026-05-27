@@ -1,5 +1,14 @@
-<div class="py-8 mt-4">
-    <div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="page-container">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản lý vé</span>
+      <span class="separator">/</span>
+      <span class="current">Đặt vé mới</span>
+    </div>
+    <h1>Tìm kiếm chuyến xe</h1>
+  </div>
+
+  <div class="card">
 
       <!-- Top Search Form Card (Synchronized with Trang Home) -->
       <section
@@ -30,7 +39,7 @@
         <div class="flex flex-col lg:flex-row gap-4 items-end w-full">
           <!-- Điểm đi -->
           <div class="flex-grow space-y-1.5 min-w-[200px]">
-            <label class="font-bold text-body-md text-secondary">Điểm đi</label>
+            <label class="font-bold text-body-md" style="color: var(--primary-color);">Điểm đi</label>
             <div
               class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
               <span class="material-symbols-outlined text-primary mr-2">radio_button_checked</span>
@@ -109,7 +118,7 @@
 
           <!-- Ngày về (Conditional) -->
           <div *ngIf="isRoundTrip" class="flex-grow space-y-1.5 relative min-w-[150px]">
-            <label class="font-bold text-body-md text-secondary">Ngày về</label>
+            <label class="font-bold text-body-md" style="color: var(--primary-color);">Ngày về</label>
             <div (click)="toggleReturnCalendar(); $event.stopPropagation()"
               class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
               <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
@@ -154,7 +163,7 @@
 
           <!-- Số vé -->
           <div class="flex-grow space-y-1.5 min-w-[150px]">
-            <label class="font-bold text-body-md text-secondary block whitespace-nowrap">Số vé</label>
+            <label class="font-bold text-body-md" style="color: var(--primary-color);">Số vé</label>
             <div
               class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
               <span class="material-symbols-outlined text-primary mr-2">confirmation_number</span>
@@ -173,7 +182,7 @@
 
         <!-- Recent Searches list -->
         <div class="mt-4 pt-4 border-t border-outline-variant/30 flex items-center gap-3">
-          <span class="text-body-sm font-bold text-secondary">Tìm kiếm gần đây:</span>
+          <span class="text-body-sm font-bold" style="color: var(--primary-color);">Tìm kiếm gần đây:</span>
           <div class="flex flex-wrap gap-2">
             <span *ngFor="let s of recentSearches" (click)="selectRecentSearch(s)"
               class="bg-surface-container text-on-surface-variant px-3.5 py-1 rounded-full text-label-md border border-outline-variant/30 cursor-pointer hover:bg-primary-light hover:text-primary transition-colors">
@@ -191,6 +200,26 @@
         </div>
       </section>
 
+      <!-- Trip Count Header -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="trip-count-header" style="display: flex; align-items: center; gap: 8px;">
+          <h2 style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">
+            {{ departure }} - {{ destination }}
+          </h2>
+          <span class="trip-count" style="
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #f0fdf4;
+            color: #16a34a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #bbf7d0;
+          ">
+            {{ filteredTrips.length }} chuyến
+          </span>
+        </div>
+      </div>
+
       <!-- Main Layout Columns -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
@@ -201,14 +230,16 @@
           <div *ngIf="activeTrip"
             class="bg-surface rounded-xl shadow-md border border-outline-variant/20 p-5 space-y-4 transition-all duration-300">
             <h3
-              class="font-bold text-title-lg text-secondary flex items-center gap-2 border-b border-outline-variant/30 pb-2">
-              <span class="material-symbols-outlined text-secondary">departure_board</span>
+              class="font-bold text-title-lg flex items-center gap-2 border-b border-outline-variant/30 pb-2"
+              style="color: var(--secondary-color);">
+              <span class="material-icons" style="color: var(--secondary-color);">departure_board</span>
               CHUYẾN ĐI CỦA BẠN
             </h3>
 
             <div class="flex items-start gap-3">
               <div
-                class="w-8 h-8 rounded-lg bg-secondary text-white font-bold flex items-center justify-center text-title-md shrink-0">
+                class="w-8 h-8 rounded-lg text-white font-bold flex items-center justify-center text-title-md shrink-0"
+                style="background-color: var(--secondary-color);">
                 1
               </div>
               <div class="space-y-1">
@@ -341,13 +372,7 @@
 
         <!-- Right Side: List of Trip Results -->
         <section class="lg:col-span-8 space-y-6">
-          <!-- Header -->
-          <div
-            class="flex flex-row justify-between items-center w-full gap-4 border-b border-outline-variant/20 pb-4 whitespace-nowrap">
-            <h2 class="text-title-md font-bold text-navy shrink-0">
-              {{ departure }} - {{ destination }} ({{ filteredTrips.length }} chuyến)
-            </h2>
-          </div>
+
 
           <!-- Empty result state -->
           <div *ngIf="filteredTrips.length === 0"
@@ -647,54 +672,54 @@
 
                       <!-- Node 1: Pickup point -->
                       <div class="relative flex items-start gap-4">
-                        <!-- Neutral grey dot -->
+                        <!-- Green circle dot -->
                         <div
-                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
+                          class="absolute left-[-20px] top-1.5 w-3 h-3 rounded-full bg-success border-2 border-white shadow-sm ring-1 ring-success">
                         </div>
                         <div class="space-y-0.5">
                           <p class="text-body-md font-bold text-navy">17:00</p>
-                          <p class="text-body-sm font-semibold text-on-surface">Văn phòng đón khách</p>
+                          <p class="text-body-sm font-bold text-success">Văn phòng đón khách</p>
                           <p class="text-label-md text-on-surface-variant">202 Lê Hồng Phong - P.4 - Q.5 - TP. Hồ Chí
                             Minh</p>
                         </div>
                       </div>
 
-                      <!-- Node 2: Start Station (Green dot) -->
+                      <!-- Node 2: Start Station (Grey dot) -->
                       <div class="relative flex items-start gap-4">
-                        <!-- Green circle dot -->
+                        <!-- Neutral grey dot -->
                         <div
-                          class="absolute left-[-20px] top-1.5 w-3 h-3 rounded-full bg-success border-2 border-white shadow-sm ring-1 ring-success">
+                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
                         </div>
                         <div class="space-y-0.5">
                           <p class="text-body-md font-bold text-navy">{{ trip.departureTime }}</p>
-                          <p class="text-body-sm font-bold text-success">{{ trip.startStation }}</p>
+                          <p class="text-body-sm font-semibold text-on-surface">{{ trip.startStation }}</p>
                           <p class="text-label-md text-on-surface-variant">Điểm khởi hành chính thức của chuyến đi</p>
                         </div>
                       </div>
 
-                      <!-- Node 3: Highway Pickup -->
+                      <!-- Node 3: Highway Pickup (Grey dot) -->
                       <div class="relative flex items-start gap-4">
-                        <!-- Green circle dot -->
+                        <!-- Neutral grey dot -->
                         <div
-                          class="absolute left-[-20px] top-1.5 w-3 h-3 rounded-full bg-success border-2 border-white shadow-sm ring-1 ring-success">
+                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
                         </div>
                         <div class="space-y-0.5">
                           <p class="text-body-md font-bold text-navy">18:15</p>
-                          <p class="text-body-sm font-bold text-success">Điểm đón Mai Chí Thọ</p>
+                          <p class="text-body-sm font-semibold text-on-surface">Điểm đón Mai Chí Thọ</p>
                           <p class="text-label-md text-on-surface-variant">Dọc tuyến đường Mai Chí Thọ, Quận 2, TP. Hồ
                             Chí Minh</p>
                         </div>
                       </div>
 
-                      <!-- Node 4: Intermediate Station -->
+                      <!-- Node 4: Intermediate Station (Grey dot) -->
                       <div class="relative flex items-start gap-4">
-                        <!-- Green circle dot -->
+                        <!-- Neutral grey dot -->
                         <div
-                          class="absolute left-[-20px] top-1.5 w-3 h-3 rounded-full bg-success border-2 border-white shadow-sm ring-1 ring-success">
+                          class="absolute left-[-19px] top-1.5 w-2.5 h-2.5 rounded-full bg-outline border-4 border-white shadow-sm ring-1 ring-outline">
                         </div>
                         <div class="space-y-0.5">
                           <p class="text-body-md font-bold text-navy">21:30</p>
-                          <p class="text-body-sm font-bold text-success">Trạm dừng chân dọc tuyến</p>
+                          <p class="text-body-sm font-semibold text-on-surface">Trạm dừng chân dọc tuyến</p>
                           <p class="text-label-md text-on-surface-variant">Điểm dừng nghỉ ngơi, ăn uống của hành khách
                           </p>
                         </div>
@@ -880,4 +905,4 @@
       </div>
 
     </div>
-</div>
+  </div>

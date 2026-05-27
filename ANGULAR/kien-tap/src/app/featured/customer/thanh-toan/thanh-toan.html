@@ -85,6 +85,10 @@
               <li>Quét mã ở trang này để tiến hành thanh toán vé.</li>
             </ol>
           </div>
+
+          <button (click)="simulateSuccess()" class="w-full mt-4 bg-secondary hover:bg-secondary-hover text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors text-title-sm">
+            Xác nhận đã chuyển khoản
+          </button>
         </div>
       </div>
 
@@ -235,7 +239,7 @@
       <button (click)="closeExpirationModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
         <span class="material-symbols-outlined text-2xl font-bold">close</span>
       </button>
-
+ 
       <div class="space-y-2">
         <h3 class="text-xl font-bold text-navy">
           Thời hạn thanh toán vé đã hết.
@@ -247,18 +251,92 @@
           TXP Bus chân thành cảm ơn
         </p>
       </div>
-
+ 
       <div class="border-t border-b border-outline-variant/10 py-3">
         <p class="text-body-sm text-outline font-semibold">
           Tự động chuyển về trang đặt vé sau {{ expirationRedirectTime.toString().padStart(2, '0') }}s
         </p>
       </div>
-
+ 
       <div class="flex justify-center">
         <button (click)="closeExpirationModal()" class="px-8 py-2.5 bg-secondary text-white font-bold rounded-full hover:bg-secondary-hover shadow-[0px_4px_12px_rgba(243,112,33,0.2)] transition-all">
           Chuyển ngay
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Success Payment Full Screen -->
+  <div *ngIf="showSuccessModal" class="fixed inset-0 z-[110] bg-surface flex flex-col items-center justify-center p-4 overflow-y-auto">
+    <div class="max-w-2xl w-full bg-white rounded-3xl p-8 md:p-12 shadow-2xl text-center border border-outline-variant/10 relative mt-auto mb-auto">
+      
+      <!-- Premium Animated Success Icon -->
+      <div class="relative w-32 h-32 mx-auto mb-6">
+        <div class="absolute inset-0 bg-success/10 rounded-full animate-ping"></div>
+        <div class="absolute inset-2 bg-success/20 rounded-full animate-pulse"></div>
+        <div class="absolute inset-4 bg-success rounded-full flex items-center justify-center shadow-lg shadow-success/30">
+          <span class="material-symbols-outlined text-white text-5xl font-bold">check</span>
+        </div>
+      </div>
+
+      <h2 class="text-headline-md font-extrabold text-navy mb-2">Thanh toán thành công!</h2>
+      <p class="text-body-md text-on-surface-variant mb-8">
+        Cảm ơn quý khách đã sử dụng dịch vụ của TXP Bus. Chúc quý khách một chuyến đi vui vẻ.
+      </p>
+
+      <!-- Order Info Box -->
+      <div class="bg-surface-container-low rounded-2xl p-6 text-left space-y-4 mb-10 border border-outline-variant/20">
+        <div class="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+          <span class="text-body-md text-on-surface-variant">Mã đơn hàng</span>
+          <span class="text-title-md font-bold text-navy">TXP{{ bookingData.tripId }}98{{ bookingData.selectedSeats.length }}</span>
+        </div>
+        
+        <div class="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+          <span class="text-body-md text-on-surface-variant">Tổng tiền</span>
+          <span class="text-title-lg font-black text-secondary">{{ formatPrice(bookingData.totalPrice) }}</span>
+        </div>
+
+        <div class="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+          <span class="text-body-md text-on-surface-variant">Thời gian khởi hành</span>
+          <span class="text-body-md font-bold text-navy">{{ bookingData.departureTime }} - {{ getSelectedDate() }}</span>
+        </div>
+
+        <div class="flex flex-col gap-2 pt-1">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-success mt-0.5 text-title-md">my_location</span>
+            <div>
+              <p class="text-body-md font-bold text-navy">{{ bookingData.pickup?.name }}</p>
+              <p class="text-label-sm text-on-surface-variant">{{ bookingData.pickup?.address }}</p>
+            </div>
+          </div>
+          <div class="ml-[11px] w-0.5 h-4 bg-outline-variant/50"></div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-secondary mt-0.5 text-title-md">location_on</span>
+            <div>
+              <p class="text-body-md font-bold text-navy">{{ bookingData.dropoff?.name }}</p>
+              <p class="text-label-sm text-on-surface-variant">{{ bookingData.dropoff?.address }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button (click)="viewTicketDetails()" 
+          class="flex-1 bg-secondary text-white py-3.5 rounded-xl font-bold shadow-lg shadow-secondary/20 hover:bg-secondary-hover hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined">receipt_long</span>
+          Xem chi tiết vé
+        </button>
+        <button (click)="closeSuccessModal()" 
+          class="flex-1 bg-surface-container text-navy py-3.5 rounded-xl font-bold hover:bg-outline-variant/30 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined">home</span>
+          Về trang chủ
+        </button>
+      </div>
+
+      <p class="text-label-sm text-on-surface-variant mt-8 font-medium">
+        Tự động chuyển về trang chủ sau <span class="text-secondary font-bold">{{ successRedirectTime }}s</span>
+      </p>
     </div>
   </div>
 </div>

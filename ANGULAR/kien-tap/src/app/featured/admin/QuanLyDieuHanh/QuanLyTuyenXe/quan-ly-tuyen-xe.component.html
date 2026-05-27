@@ -130,36 +130,51 @@
 
       <div class="modal-body">
         <div class="form-row">
-          <div class="form-group">
+          <div class="form-group" [class.is-invalid]="errors.startPoint && !currentRoute.startPoint">
             <label>Điểm đầu <span class="required">*</span></label>
             <input type="text" [(ngModel)]="currentRoute.startPoint" placeholder="Bến xe...">
+            <div class="error-text" *ngIf="errors.startPoint && !currentRoute.startPoint">
+              Hãy điền thông tin Điểm đầu!
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" [class.is-invalid]="errors.startProvince && !currentRoute.startProvince">
             <label>Thuộc tỉnh / thành phố <span class="required">*</span></label>
             <app-custom-select [(value)]="currentRoute.startProvince" [options]="provinceOptions"
               placeholder="Chọn tỉnh/ TP"></app-custom-select>
+            <div class="error-text" *ngIf="errors.startProvince && !currentRoute.startProvince">
+              Hãy chọn Tỉnh/Thành phố!
+            </div>
           </div>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
+          <div class="form-group" [class.is-invalid]="errors.endPoint && !currentRoute.endPoint">
             <label>Điểm cuối <span class="required">*</span></label>
             <input type="text" [(ngModel)]="currentRoute.endPoint" placeholder="Bến xe...">
+            <div class="error-text" *ngIf="errors.endPoint && !currentRoute.endPoint">
+              Hãy điền thông tin Điểm cuối!
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" [class.is-invalid]="errors.endProvince && !currentRoute.endProvince">
             <label>Thuộc tỉnh / thành phố <span class="required">*</span></label>
             <app-custom-select [(value)]="currentRoute.endProvince" [options]="provinceOptions"
               placeholder="Chọn tỉnh/ TP"></app-custom-select>
+            <div class="error-text" *ngIf="errors.endProvince && !currentRoute.endProvince">
+              Hãy chọn Tỉnh/Thành phố!
+            </div>
           </div>
         </div>
 
         <!-- Additional Fields Requested -->
         <div class="form-row">
-          <div class="form-group">
+          <div class="form-group" [class.is-invalid]="errors.distance && (!currentRoute.distance || currentRoute.distance <= 0)">
             <label>Khoảng cách (km) <span class="required">*</span></label>
             <input type="number" [(ngModel)]="currentRoute.distance" placeholder="Nhập khoảng cách...">
+            <div class="error-text" *ngIf="errors.distance && (!currentRoute.distance || currentRoute.distance <= 0)">
+              Hãy điền khoảng cách hợp lệ (> 0)!
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" [class.is-invalid]="errors.estimatedTime">
             <label>Thời gian di chuyển dự kiến <span class="required">*</span></label>
             <div class="time-input-group">
               <div class="time-field">
@@ -170,6 +185,9 @@
                 <input type="number" [(ngModel)]="currentRoute.estimatedMinutes" min="0" max="59">
                 <span>phút</span>
               </div>
+            </div>
+            <div class="error-text" *ngIf="errors.estimatedTime">
+              Hãy nhập thời gian di chuyển hợp lệ (> 0)!
             </div>
           </div>
         </div>

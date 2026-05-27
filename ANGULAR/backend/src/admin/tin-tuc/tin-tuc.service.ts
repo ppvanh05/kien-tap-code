@@ -10,48 +10,67 @@ export class TinTucService {
     private nhatKyService: NhatKyHeThongService,
   ) { }
 
+  private mapToFrontend(tinTuc: any) {
+    if (!tinTuc) return null;
+    return {
+      ...tinTuc,
+      LoaiTinTuc: tinTuc.LoaiTinTuc === 'TinTucChung' ? 'TinTuc' : tinTuc.LoaiTinTuc,
+    };
+  }
+
+  private mapToBackend(loai: string): LoaiTinTucEnum {
+    if (loai === 'TinTuc') return 'TinTucChung';
+    return loai as LoaiTinTucEnum;
+  }
+
   // ===== LẤY TẤT CẢ TIN TỨC =====
   async getAll() {
-    return this.prisma.tIN_TUC.findMany({
+    const list = await this.prisma.tIN_TUC.findMany({
       orderBy: { NgayDang: 'desc' },
     });
+    return list.map(item => this.mapToFrontend(item));
   }
 
   // ===== LẤY THEO ID =====
   async getById(id: string) {
-    return this.prisma.tIN_TUC.findUnique({
+    const item = await this.prisma.tIN_TUC.findUnique({
       where: { MaTinTuc: id },
     });
+    return this.mapToFrontend(item);
   }
 
   // ===== LẤY THEO TRẠNG THÁI =====
   async getByTrangThai(trangThai: string) {
-    return this.prisma.tIN_TUC.findMany({
+    const list = await this.prisma.tIN_TUC.findMany({
       where: { TrangThai: trangThai as TrangThaiTinTucEnum },
       orderBy: { NgayDang: 'desc' },
     });
+    return list.map(item => this.mapToFrontend(item));
   }
 
   // ===== LẤY THEO LOẠI TIN TỨC =====
   async getByLoai(loaiTinTuc: string) {
-    return this.prisma.tIN_TUC.findMany({
-      where: { LoaiTinTuc: loaiTinTuc as LoaiTinTucEnum },
+    const dbLoai = this.mapToBackend(loaiTinTuc);
+    const list = await this.prisma.tIN_TUC.findMany({
+      where: { LoaiTinTuc: dbLoai },
       orderBy: { NgayDang: 'desc' },
     });
+    return list.map(item => this.mapToFrontend(item));
   }
 
   // ===== TẠO MỚI =====
   async create(dto: Prisma.TIN_TUCUncheckedCreateInput) {
+    const dbLoai = dto.LoaiTinTuc ? this.mapToBackend(dto.LoaiTinTuc as string) : null;
     const res = await this.prisma.tIN_TUC.create({
       data: {
         MaTinTuc: dto.MaTinTuc,
         TieuDe: dto.TieuDe,
         AnhBia: dto.AnhBia ?? null,
-        LoaiTinTuc: dto.LoaiTinTuc,
+        LoaiTinTuc: dbLoai,
         MoTaNgan: dto.MoTaNgan ?? null,
         NoiDungChiTiet: dto.NoiDungChiTiet ?? null,
         NgayDang: dto.NgayDang ? new Date(dto.NgayDang as any) : null,
-        TrangThai: dto.TrangThai,
+        TrangThai: dto.TrangThai as TrangThaiTinTucEnum,
         MaQuanTriVien: dto.MaQuanTriVien ?? null,
       },
     });
@@ -68,13 +87,16 @@ export class TinTucService {
       ],
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== CẬP NHẬT =====
   async update(id: string, dto: Prisma.TIN_TUCUncheckedUpdateInput) {
     const original = await this.getById(id);
     const data: any = { ...dto };
+    if (dto.LoaiTinTuc) {
+      data.LoaiTinTuc = this.mapToBackend(dto.LoaiTinTuc as string);
+    }
     if (dto.NgayDang) {
       data.NgayDang = new Date(dto.NgayDang as any);
     }
@@ -105,7 +127,7 @@ export class TinTucService {
       DuLieuThayDoi: changes,
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== CẬP NHẬT TRẠNG THÁI =====
@@ -133,7 +155,7 @@ export class TinTucService {
       ],
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 
   // ===== XÓA =====
@@ -153,7 +175,7 @@ export class TinTucService {
       ],
     });
 
-    return res;
+    return this.mapToFrontend(res);
   }
 }
 

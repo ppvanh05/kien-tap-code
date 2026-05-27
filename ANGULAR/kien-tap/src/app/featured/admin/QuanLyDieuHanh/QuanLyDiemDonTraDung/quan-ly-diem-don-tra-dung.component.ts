@@ -12,7 +12,7 @@ import { DiemDonTraService, DiemDonTra } from '../diem-don-tra.service';
   styleUrls: ['./quan-ly-diem-don-tra-dung.component.css']
 })
 export class QuanLyDiemDonTraDungComponent implements OnInit {
-  constructor(private cdr: ChangeDetectorRef, private diemDonTraService: DiemDonTraService) {}
+  constructor(private cdr: ChangeDetectorRef, private diemDonTraService: DiemDonTraService) { }
 
   activeTab: 'don-tra' | 'dung' | 'locked' = 'don-tra';
   searchQueries: { [key in 'don-tra' | 'dung' | 'locked']: string } = {
@@ -82,19 +82,23 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
   isUploadingImage = false;
 
   citiesList = [
-    'An Giang', 'Bà Rịa – Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh', 'Bến Tre', 'Bình Định', 
-    'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau', 'Cần Thơ', 'Cao Bằng', 'Đà Nẵng', 'Đắk Lắk', 
-    'Đắk Nông', 'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội', 
-    'Hà Tĩnh', 'Hải Dương', 'Hải Phòng', 'Hậu Giang', 'TP. Hồ Chí Minh', 'Hòa Bình', 'Hưng Yên', 
-    'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 
-    'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 
-    'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 
-    'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên – Huế', 'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 
+    'An Giang', 'Bà Rịa – Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh', 'Bến Tre', 'Bình Định',
+    'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau', 'Cần Thơ', 'Cao Bằng', 'Đà Nẵng', 'Đắk Lắk',
+    'Đắk Nông', 'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội',
+    'Hà Tĩnh', 'Hải Dương', 'Hải Phòng', 'Hậu Giang', 'TP. Hồ Chí Minh', 'Hòa Bình', 'Hưng Yên',
+    'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An',
+    'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam',
+    'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình',
+    'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên – Huế', 'Tiền Giang', 'Trà Vinh', 'Tuyên Quang',
     'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
   ];
 
   ngOnInit() {
     this.filterPoints();
+
+    this.diemDonTraService.pointsUpdated$.subscribe(() => {
+      this.filterPoints();
+    });
   }
 
   setTab(tab: 'don-tra' | 'dung' | 'locked') {
@@ -122,7 +126,7 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
 
       const matchesCity = currentCity === 'all' || p.city === currentCity;
       const matchesSearch = !currentQuery ||
-                           p.name.toLowerCase().includes(currentQuery.toLowerCase());
+        p.name.toLowerCase().includes(currentQuery.toLowerCase());
       return matchesTab && matchesCity && matchesSearch;
     });
   }
@@ -144,8 +148,11 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
     this.filterPoints();
   }
 
+  errors: { name?: boolean; city?: boolean; address?: boolean } = {};
+
   openAddModal() {
     this.isEditMode = false;
+    this.errors = {};
     this.currentPoint = {
       status: 'active',
       type: this.activeTab === 'dung' ? 'dung' : 'don-tra',
@@ -159,6 +166,7 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
 
   openEditModal(point: DiemDonTra) {
     this.isEditMode = true;
+    this.errors = {};
     this.currentPoint = { ...point };
     this.isUploadingImage = false;
     this.isModalOpen = true;
@@ -166,6 +174,7 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
 
   closeModal() {
     this.isModalOpen = false;
+    this.errors = {};
   }
 
   mousedownTarget: HTMLElement | null = null;
@@ -196,20 +205,13 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
 
   savePoint() {
     // Validation
-    if (!this.currentPoint.name) {
-      this.showAlert('Hãy điền thông tin Tên điểm đón trả!');
-      return;
-    }
-    if (!this.currentPoint.type) {
-      this.showAlert('Hãy chọn loại địa điểm!');
-      return;
-    }
-    if (!this.currentPoint.city) {
-      this.showAlert('Hãy chọn Tỉnh / thành phố!');
-      return;
-    }
-    if (!this.currentPoint.address) {
-      this.showAlert('Hãy điền thông tin Địa chỉ!');
+    this.errors = {
+      name: !this.currentPoint.name,
+      city: !this.currentPoint.city,
+      address: !this.currentPoint.address
+    };
+
+    if (Object.values(this.errors).some(Boolean)) {
       return;
     }
 
@@ -232,7 +234,8 @@ export class QuanLyDiemDonTraDungComponent implements OnInit {
   }
 
   deletePoint() {
-    if (confirm('Bạn có chắc chắn muốn xóa điểm đón trả này không?')) {
+    const typeLabel = this.currentPoint.type === 'dung' ? 'điểm dừng chân' : 'điểm đón trả';
+    if (confirm(`Bạn có chắc chắn muốn xóa ${typeLabel} này không?`)) {
       this.diemDonTraService.deletePoint(this.currentPoint.id!);
       this.filterPoints();
       this.closeModal();

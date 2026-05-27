@@ -14,9 +14,9 @@ export class AuthService {
   constructor() {
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedUserName = localStorage.getItem('currentUserName');
-      if (storedUserName) {
+      if (storedUserName && storedUserName !== 'Guest') {
         this._userName.next(storedUserName);
-        this._isLoggedIn.next(true); // Nếu có tên người dùng, coi như đã đăng nhập
+        this._isLoggedIn.next(true); // Nếu có tên người dùng (không phải Guest), coi như đã đăng nhập
       }
     }
   }
@@ -36,7 +36,7 @@ export class AuthService {
   logout() {
     this._userName.next('Guest');
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('currentUserName', 'Guest'); // Xóa tên người dùng khỏi localStorage
+      localStorage.removeItem('currentUserName'); // Xóa tên người dùng khỏi localStorage
     }
     this._isLoggedIn.next(false);
   }

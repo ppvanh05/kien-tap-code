@@ -79,7 +79,7 @@ export class DieuHanhService implements OnModuleInit {
         DiemDen: data.endPoint,
         KhoangCach: data.distance ? parseFloat(data.distance) : 0,
         ThoiGianDiChuyenDuKien: thoiGianDuKien,
-        TrangThai: data.status || 'active',
+        TrangThaiTuyenXe: (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangHoatDong',
         MaNVDieuPhoi: this.defaultCoordinatorId,
       },
     });
@@ -91,7 +91,7 @@ export class DieuHanhService implements OnModuleInit {
     if (data.startPoint !== undefined) updateData.DiemKhoiHanh = data.startPoint;
     if (data.endPoint !== undefined) updateData.DiemDen = data.endPoint;
     if (data.distance !== undefined) updateData.KhoangCach = parseFloat(data.distance);
-    if (data.status !== undefined) updateData.TrangThai = data.status;
+    if (data.status !== undefined) updateData.TrangThaiTuyenXe = (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangHoatDong';
 
     if (data.estimatedHours !== undefined || data.estimatedMinutes !== undefined) {
       const h = data.estimatedHours !== undefined ? data.estimatedHours : 0;
@@ -141,11 +141,11 @@ export class DieuHanhService implements OnModuleInit {
         SoTang: data.floors ? parseInt(data.floors) : 1,
         SoDay: data.rows ? parseInt(data.rows) : 2,
         SoGhe: data.seats ? parseInt(data.seats) : 22,
-        TienIch: data.amenities ? data.amenities.join(', ') : '',
-        HanDangKiem: data.registrationExpiry ? new Date(data.registrationExpiry) : new Date(),
-        HanBaoHiem: data.insuranceExpiry ? new Date(data.insuranceExpiry) : new Date(),
+        TienIch: data.amenities ? this.formatTienIch(data.amenities) : '{}',
+        HanDangKiem: data.registrationExpiry ? this.parseDateString(data.registrationExpiry) : new Date(),
+        HanBaoHiem: data.insuranceExpiry ? this.parseDateString(data.insuranceExpiry) : new Date(),
         AnhXe: data.vehicleImage || null,
-        TrangThai: data.status || 'active',
+        TrangThaiPhuongTien: (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangHoatDong',
         MaNVDieuPhoi: this.defaultCoordinatorId,
       },
     });
@@ -159,11 +159,11 @@ export class DieuHanhService implements OnModuleInit {
     if (data.floors !== undefined) updateData.SoTang = parseInt(data.floors);
     if (data.rows !== undefined) updateData.SoDay = parseInt(data.rows);
     if (data.seats !== undefined) updateData.SoGhe = parseInt(data.seats);
-    if (data.amenities !== undefined) updateData.TienIch = data.amenities.join(', ');
-    if (data.registrationExpiry !== undefined) updateData.HanDangKiem = new Date(data.registrationExpiry);
-    if (data.insuranceExpiry !== undefined) updateData.HanBaoHiem = new Date(data.insuranceExpiry);
+    if (data.amenities !== undefined) updateData.TienIch = this.formatTienIch(data.amenities);
+    if (data.registrationExpiry !== undefined) updateData.HanDangKiem = this.parseDateString(data.registrationExpiry);
+    if (data.insuranceExpiry !== undefined) updateData.HanBaoHiem = this.parseDateString(data.insuranceExpiry);
     if (data.vehicleImage !== undefined) updateData.AnhXe = data.vehicleImage;
-    if (data.status !== undefined) updateData.TrangThai = data.status;
+    if (data.status !== undefined) updateData.TrangThaiPhuongTien = (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangHoatDong';
 
     return this.prisma.pHUONG_TIEN.update({
       where: { MaXe: id },
@@ -199,34 +199,34 @@ export class DieuHanhService implements OnModuleInit {
     return this.prisma.tAI_XE_PHU_XE.create({
       data: {
         MaTaiXePhuXe: id,
-        LoaiNhanVien: data.role || 'driver',
+        LoaiNhanVien: (data.role === 'driver' || data.role === 'TaiXe') ? 'TaiXe' : 'PhuXe',
         HoTen: data.name,
-        NgaySinh: data.dob ? new Date(data.dob) : null,
+        NgaySinh: data.dob ? this.parseDateString(data.dob) : null,
         SoDienThoai: data.phone,
         CCCD: data.cccdNumber || null,
         LoaiBangLai: data.licenseClass || null,
-        ThoiHanBangLai: data.licenseExpiry ? new Date(data.licenseExpiry) : null,
+        ThoiHanBangLai: data.licenseExpiry ? this.parseDateString(data.licenseExpiry) : null,
         AnhBangLai: data.licenseFront || null,
         AnhChanDung: data.avatar || null,
         AnhCCCD: data.cccdFront || null,
-        TrangThaiLamViec: data.status || 'active',
+        TrangThaiLamViec: (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangLamViec',
       },
     });
   }
 
   async updateStaffMember(id: string, data: any) {
     const updateData: any = {};
-    if (data.role !== undefined) updateData.LoaiNhanVien = data.role;
+    if (data.role !== undefined) updateData.LoaiNhanVien = (data.role === 'driver' || data.role === 'TaiXe') ? 'TaiXe' : 'PhuXe';
     if (data.name !== undefined) updateData.HoTen = data.name;
-    if (data.dob !== undefined) updateData.NgaySinh = data.dob ? new Date(data.dob) : null;
+    if (data.dob !== undefined) updateData.NgaySinh = data.dob ? this.parseDateString(data.dob) : null;
     if (data.phone !== undefined) updateData.SoDienThoai = data.phone;
     if (data.cccdNumber !== undefined) updateData.CCCD = data.cccdNumber;
     if (data.licenseClass !== undefined) updateData.LoaiBangLai = data.licenseClass;
-    if (data.licenseExpiry !== undefined) updateData.ThoiHanBangLai = data.licenseExpiry ? new Date(data.licenseExpiry) : null;
+    if (data.licenseExpiry !== undefined) updateData.ThoiHanBangLai = data.licenseExpiry ? this.parseDateString(data.licenseExpiry) : null;
     if (data.licenseFront !== undefined) updateData.AnhBangLai = data.licenseFront;
     if (data.avatar !== undefined) updateData.AnhChanDung = data.avatar;
     if (data.cccdFront !== undefined) updateData.AnhCCCD = data.cccdFront;
-    if (data.status !== undefined) updateData.TrangThaiLamViec = data.status;
+    if (data.status !== undefined) updateData.TrangThaiLamViec = (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangLamViec';
 
     return this.prisma.tAI_XE_PHU_XE.update({
       where: { MaTaiXePhuXe: id },
@@ -271,7 +271,7 @@ export class DieuHanhService implements OnModuleInit {
             DiemKhoiHanh: 'Điểm khởi hành',
             DiemDen: 'Điểm đến',
             ThoiGianDiChuyenDuKien: new Date(),
-            TrangThai: 'active',
+            TrangThaiTuyenXe: 'DangHoatDong',
             MaNVDieuPhoi: this.defaultCoordinatorId,
           }
         });
@@ -291,10 +291,10 @@ export class DieuHanhService implements OnModuleInit {
         DiaChi: data.address,
         LinkGoogleMap: data.mapLink || null,
         AnhDiem: data.image || null,
-        LoaiDiem: data.type || 'don-tra',
+        LoaiDiem: data.type === 'dung' ? 'DiemDung' : 'DiemDonTra',
         ThoiGianCoMatTruoc: 15,
         GioCanCoMat: gioCoMat,
-        TrangThai: data.status || 'active',
+        TrangThaiDiem: (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangHoatDong',
         MaNVDieuPhoi: this.defaultCoordinatorId,
       },
     });
@@ -310,8 +310,8 @@ export class DieuHanhService implements OnModuleInit {
     if (data.address !== undefined) updateData.DiaChi = data.address;
     if (data.mapLink !== undefined) updateData.LinkGoogleMap = data.mapLink;
     if (data.image !== undefined) updateData.AnhDiem = data.image;
-    if (data.type !== undefined) updateData.LoaiDiem = data.type;
-    if (data.status !== undefined) updateData.TrangThai = data.status;
+    if (data.type !== undefined) updateData.LoaiDiem = data.type === 'dung' ? 'DiemDung' : 'DiemDonTra';
+    if (data.status !== undefined) updateData.TrangThaiDiem = (data.status === 'locked' || data.status === 'DaKhoa') ? 'DaKhoa' : 'DangHoatDong';
 
     return this.prisma.dIEM_DON_TRA_DUNG.update({
       where: { MaDiem: id },
@@ -391,7 +391,7 @@ export class DieuHanhService implements OnModuleInit {
         GioGoiYCoMat: checkinTime,
         GioDenDuKien: arrTime,
         GiaVeCoBan: data.basePrice || 200000,
-        TrangThai: data.status || 'scheduled',
+        TrangThaiLichTrinh: data.status || 'ChoKhoiHanh',
         MaTuyenXe: routeId,
         MaXe: vehicleId,
         MaNVDieuPhoi: this.defaultCoordinatorId,
@@ -400,7 +400,7 @@ export class DieuHanhService implements OnModuleInit {
 
     if (data.driverName) {
       const driver = await this.prisma.tAI_XE_PHU_XE.findFirst({
-        where: { HoTen: data.driverName, LoaiNhanVien: 'driver' },
+        where: { HoTen: data.driverName, LoaiNhanVien: 'TaiXe' },
       });
       if (driver) {
         await this.prisma.pHAN_CONG_CHUYEN.create({
@@ -416,7 +416,7 @@ export class DieuHanhService implements OnModuleInit {
 
     if (data.assistantName) {
       const assistant = await this.prisma.tAI_XE_PHU_XE.findFirst({
-        where: { HoTen: data.assistantName, LoaiNhanVien: 'assistant' },
+        where: { HoTen: data.assistantName, LoaiNhanVien: 'PhuXe' },
       });
       if (assistant) {
         await this.prisma.pHAN_CONG_CHUYEN.create({
@@ -435,7 +435,7 @@ export class DieuHanhService implements OnModuleInit {
 
   async updateSchedule(id: string, data: any) {
     const updateData: any = {};
-    if (data.status !== undefined) updateData.TrangThai = data.status;
+    if (data.status !== undefined) updateData.TrangThaiLichTrinh = data.status;
     if (data.basePrice !== undefined) updateData.GiaVeCoBan = data.basePrice;
 
     if (data.departureDate !== undefined) {
@@ -473,7 +473,7 @@ export class DieuHanhService implements OnModuleInit {
       });
       if (data.driverName) {
         const driver = await this.prisma.tAI_XE_PHU_XE.findFirst({
-          where: { HoTen: data.driverName, LoaiNhanVien: 'driver' },
+          where: { HoTen: data.driverName, LoaiNhanVien: 'TaiXe' },
         });
         if (driver) {
           await this.prisma.pHAN_CONG_CHUYEN.create({
@@ -494,7 +494,7 @@ export class DieuHanhService implements OnModuleInit {
       });
       if (data.assistantName) {
         const assistant = await this.prisma.tAI_XE_PHU_XE.findFirst({
-          where: { HoTen: data.assistantName, LoaiNhanVien: 'assistant' },
+          where: { HoTen: data.assistantName, LoaiNhanVien: 'PhuXe' },
         });
         if (assistant) {
           await this.prisma.pHAN_CONG_CHUYEN.create({
@@ -534,5 +534,24 @@ export class DieuHanhService implements OnModuleInit {
     const d = new Date();
     d.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
     return d;
+  }
+
+  private formatTienIch(amenities: string[]): string {
+    if (!amenities || !Array.isArray(amenities)) return '{}';
+    const AMENITY_MAP: { [key: string]: string } = {
+      tivi: 'Tivi',
+      usb: 'Ổ sạc, USB',
+      wifi: 'Wifi',
+      water: 'Nước, khăn ướt',
+      gps: 'GPS',
+      ac: 'Điều hòa',
+    };
+    const mapped = amenities
+      .map(a => AMENITY_MAP[a] || a)
+      .map(item => {
+        const escaped = item.replace(/"/g, '\\"');
+        return `"${escaped}"`;
+      });
+    return `{${mapped.join(',')}}`;
   }
 }

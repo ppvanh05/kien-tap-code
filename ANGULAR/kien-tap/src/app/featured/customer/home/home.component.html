@@ -38,42 +38,66 @@
                 <!-- Search Inputs Flex Row -->
                 <div class="flex flex-col lg:flex-row gap-4 items-end w-full">
                     <!-- Điểm đi -->
-                    <div class="flex-grow space-y-1.5 min-w-[200px]">
+                    <div class="flex-grow space-y-1.5 min-w-[200px] relative">
                         <label class="font-bold text-body-md text-secondary">Điểm đi</label>
                         <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
                             <span class="material-symbols-outlined text-primary mr-2">radio_button_checked</span>
-                            <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer" [(ngModel)]="departure">
-                                <option *ngFor="let loc of departureOptions" [value]="loc">{{ loc }}</option>
-                            </select>
+                            <input type="text" [(ngModel)]="departureSearch" 
+                                (focus)="onDepartureFocus()" (blur)="onDepartureBlur()"
+                                placeholder="Nhập điểm đi"
+                                class="bg-transparent border-none focus:ring-transparent focus:ring-0 focus:outline-none outline-none w-full text-on-surface text-body-lg cursor-pointer font-medium">
+                            <span class="material-symbols-outlined text-on-surface-variant select-none pointer-events-none">arrow_drop_down</span>
+                        </div>
+
+                        <!-- Dropdown list -->
+                        <div *ngIf="showDepartureDropdown" 
+                            class="absolute left-0 right-0 mt-1 bg-white border border-outline-variant/50 rounded-lg shadow-lg z-30 max-h-48 overflow-y-auto divide-y divide-outline-variant/20">
+                            <div *ngFor="let loc of filteredDepartures" 
+                                (mousedown)="selectDeparture(loc)"
+                                class="p-3 hover:bg-primary-light cursor-pointer transition-colors text-body-md font-bold text-navy">
+                                {{ loc }}
+                            </div>
                         </div>
                     </div>
 
                     <!-- Switch Button -->
                     <div class="flex justify-center pb-2">
                         <button (click)="swapLocations()"
-                            class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary-light hover:border-primary transition-colors bg-surface active:scale-95 shadow-sm">
+                            class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary-light hover:border-primary transition-colors bg-surface active:scale-95 shadow-sm focus:outline-none outline-none focus:ring-transparent">
                             <span class="material-symbols-outlined">sync_alt</span>
                         </button>
                     </div>
 
                     <!-- Điểm đến -->
-                    <div class="flex-grow space-y-1.5 min-w-[200px]">
+                    <div class="flex-grow space-y-1.5 min-w-[200px] relative">
                         <label class="font-bold text-body-md text-secondary">Điểm đến</label>
                         <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
                             <span class="material-symbols-outlined text-primary mr-2">location_on</span>
-                            <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer" [(ngModel)]="destination">
-                                <option *ngFor="let loc of destinationOptions" [value]="loc">{{ loc }}</option>
-                            </select>
+                            <input type="text" [(ngModel)]="destinationSearch" 
+                                (focus)="onDestinationFocus()" (blur)="onDestinationBlur()"
+                                placeholder="Nhập điểm đến"
+                                class="bg-transparent border-none focus:ring-transparent focus:ring-0 focus:outline-none outline-none w-full text-on-surface text-body-lg cursor-pointer font-medium">
+                            <span class="material-symbols-outlined text-on-surface-variant select-none pointer-events-none">arrow_drop_down</span>
+                        </div>
+
+                        <!-- Dropdown list -->
+                        <div *ngIf="showDestinationDropdown" 
+                            class="absolute left-0 right-0 mt-1 bg-white border border-outline-variant/50 rounded-lg shadow-lg z-30 max-h-48 overflow-y-auto divide-y divide-outline-variant/20">
+                            <div *ngFor="let loc of filteredDestinations" 
+                                (mousedown)="selectDestination(loc)"
+                                class="p-3 hover:bg-primary-light cursor-pointer transition-colors text-body-md font-bold text-navy">
+                                {{ loc }}
+                            </div>
                         </div>
                     </div>
 
                     <!-- Ngày đi -->
-                    <div class="flex-grow space-y-1.5 relative min-w-[150px]">
+                    <div class="flex-grow space-y-1.5 relative min-w-[150px] departure-calendar-container">
                         <label class="font-bold text-body-md text-secondary">Ngày đi</label>
                         <div (click)="toggleDepartureCalendar(); $event.stopPropagation()"
                             class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
                             <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
-                            <input readonly class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                            <input readonly class="bg-transparent border-none focus:ring-transparent focus:ring-0 focus:outline-none outline-none w-full text-on-surface text-body-lg cursor-pointer font-medium"
                                 [(ngModel)]="departureDate">
                         </div>
 
@@ -82,11 +106,11 @@
                             class="absolute z-50 top-full left-0 mt-2 bg-white rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.15)] border border-outline-variant/30 p-4 w-72 select-none"
                             (click)="$event.stopPropagation()">
                             <div class="flex justify-between items-center mb-3">
-                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_left</span>
                                 </button>
                                 <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
-                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_right</span>
                                 </button>
                             </div>
@@ -101,7 +125,9 @@
                                 <div *ngFor="let d of calendarDays" (click)="selectDepartureDate(d.dateStr)"
                                     [class]="d.dateStr === departureDate
                                         ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
-                                        : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
+                                        : isPastDate(d.dateStr)
+                                            ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg opacity-30 cursor-not-allowed relative grayscale'
+                                            : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
                                     <span class="text-[8px] text-on-surface-variant font-normal absolute top-0.5 leading-none">{{ d.label }}</span>
                                     <span class="text-body-sm font-semibold absolute bottom-1 leading-none" [class.text-red-500]="d.highlighted">{{ d.day }}</span>
                                 </div>
@@ -110,12 +136,12 @@
                     </div>
 
                     <!-- Ngày về (Conditional) -->
-                    <div *ngIf="isRoundTrip" class="flex-grow space-y-1.5 relative min-w-[150px]">
+                    <div *ngIf="isRoundTrip" class="flex-grow space-y-1.5 relative min-w-[150px] return-calendar-container">
                         <label class="font-bold text-body-md text-secondary">Ngày về</label>
                         <div (click)="toggleReturnCalendar(); $event.stopPropagation()"
                             class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
                             <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
-                            <input readonly class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                            <input readonly class="bg-transparent border-none focus:ring-transparent focus:ring-0 focus:outline-none outline-none w-full text-on-surface text-body-lg cursor-pointer font-medium"
                                 [placeholder]="'Thêm ngày về'" [(ngModel)]="returnDate">
                         </div>
 
@@ -124,11 +150,11 @@
                             class="absolute z-50 top-full left-0 mt-2 bg-white rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.15)] border border-outline-variant/30 p-4 w-72 select-none"
                             (click)="$event.stopPropagation()">
                             <div class="flex justify-between items-center mb-3">
-                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_left</span>
                                 </button>
                                 <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
-                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_right</span>
                                 </button>
                             </div>
@@ -143,7 +169,9 @@
                                 <div *ngFor="let d of calendarDays" (click)="selectReturnDate(d.dateStr)"
                                     [class]="d.dateStr === returnDate
                                         ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
-                                        : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
+                                        : isPastDate(d.dateStr)
+                                            ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg opacity-30 cursor-not-allowed relative grayscale'
+                                            : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
                                     <span class="text-[8px] text-on-surface-variant font-normal absolute top-0.5 leading-none">{{ d.label }}</span>
                                     <span class="text-body-sm font-semibold absolute bottom-1 leading-none" [class.text-red-500]="d.highlighted">{{ d.day }}</span>
                                 </div>
@@ -156,7 +184,7 @@
                         <label class="font-bold text-body-md text-secondary block whitespace-nowrap">Số vé</label>
                         <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
                             <span class="material-symbols-outlined text-primary mr-2">confirmation_number</span>
-                            <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg font-medium cursor-pointer" [(ngModel)]="passengerCount">
+                            <select class="bg-transparent border-none focus:ring-transparent focus:ring-0 focus:outline-none w-full text-on-surface text-body-lg font-medium cursor-pointer outline-none" [(ngModel)]="passengerCount">
                                 <option [value]="1">1 vé</option>
                                 <option [value]="2">2 vé</option>
                                 <option [value]="3">3 vé</option>

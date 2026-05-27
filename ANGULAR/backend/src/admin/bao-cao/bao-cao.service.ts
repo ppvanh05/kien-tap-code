@@ -18,6 +18,13 @@ export class BaoCaoService {
 
     if (tripCount > 0) {
       // Truy vấn DB thực tế
+      let mappedStatus: any = undefined;
+      if (filters.status && filters.status !== 'Tất cả') {
+        mappedStatus = (filters.status === 'active' || filters.status === 'DangChay') ? 'DangChay' :
+                       (filters.status === 'scheduled' || filters.status === 'ChoKhoiHanh') ? 'ChoKhoiHanh' :
+                       (filters.status === 'locked' || filters.status === 'DaKhoa') ? 'DaKhoa' : 'HoanThanh';
+      }
+
       const trips = await this.prisma.lICH_TRINH.findMany({
         where: {
           NgayKhoiHanh: {
@@ -26,7 +33,7 @@ export class BaoCaoService {
           },
           TUYEN_XE: filters.route && filters.route !== 'Tất cả' ? { TenTuyenXe: filters.route } : undefined,
           PHUONG_TIEN: filters.licensePlate && filters.licensePlate !== 'Tất cả' ? { BienSoXe: filters.licensePlate } : undefined,
-          TrangThai: filters.status && filters.status !== 'Tất cả' ? filters.status : undefined,
+          TrangThaiLichTrinh: mappedStatus,
         },
         include: {
           TUYEN_XE: true,
@@ -94,7 +101,7 @@ export class BaoCaoService {
           doanhThuVe: ticketRevenue,
           chiPhiVanHanh,
           loiNhuan,
-          trangThai: t.TrangThai,
+          trangThai: t.TrangThaiLichTrinh,
           taiXeChinh,
           phuXe,
           diemDanhGiaTrungBinh: avgRating,
@@ -378,10 +385,19 @@ export class BaoCaoService {
     const staffCount = await this.prisma.tAI_XE_PHU_XE.count();
 
     if (staffCount > 0) {
+      let loaiNVFilter: any = undefined;
+      if (filters.role && filters.role !== 'Tất cả') {
+        loaiNVFilter = (filters.role === 'driver' || filters.role === 'Tài xế' || filters.role === 'TaiXe') ? 'TaiXe' : 'PhuXe';
+      }
+      let trangThaiLamViecFilter: any = undefined;
+      if (filters.status && filters.status !== 'Tất cả') {
+        trangThaiLamViecFilter = (filters.status === 'locked' || filters.status === 'DaKhoa') ? 'DaKhoa' : 'DangLamViec';
+      }
+
       const staffList = await this.prisma.tAI_XE_PHU_XE.findMany({
         where: {
-          LoaiNhanVien: filters.role && filters.role !== 'Tất cả' ? filters.role : undefined,
-          TrangThaiLamViec: filters.status && filters.status !== 'Tất cả' ? filters.status : undefined,
+          LoaiNhanVien: loaiNVFilter,
+          TrangThaiLamViec: trangThaiLamViecFilter,
         },
       });
 
@@ -394,12 +410,12 @@ export class BaoCaoService {
         return {
           maNhanSu: s.MaTaiXePhuXe,
           hoTen: s.HoTen || 'N/A',
-          vaiTro: s.LoaiNhanVien === 'driver' || s.LoaiNhanVien === 'Tài xế' ? 'Tài xế' : 'Phụ xe',
+          vaiTro: s.LoaiNhanVien === 'TaiXe' ? 'Tài xế' : 'Phụ xe',
           sdt: s.SoDienThoai || 'N/A',
           cccd: s.CCCD || 'N/A',
           loaiBangLai: s.LoaiBangLai || 'Không có',
           thoiHanBangLai,
-          trangThaiLamViec: s.TrangThaiLamViec === 'active' || s.TrangThaiLamViec === 'Đang hoạt động' ? 'Đang hoạt động' : 'Đã khóa',
+          trangThaiLamViec: s.TrangThaiLamViec === 'DangLamViec' ? 'Đang hoạt động' : 'Đã khóa',
         };
       });
 
@@ -451,10 +467,15 @@ export class BaoCaoService {
     const routeCount = await this.prisma.tUYEN_XE.count();
 
     if (routeCount > 0) {
+      let trangThaiTuyenFilter: any = undefined;
+      if (filters.status && filters.status !== 'Tất cả') {
+        trangThaiTuyenFilter = (filters.status === 'locked' || filters.status === 'DaKhoa' || filters.status === 'Ngừng hoạt động') ? 'DaKhoa' : 'DangHoatDong';
+      }
+
       const routes = await this.prisma.tUYEN_XE.findMany({
         where: {
           TenTuyenXe: filters.route && filters.route !== 'Tất cả' ? filters.route : undefined,
-          TrangThai: filters.status && filters.status !== 'Tất cả' ? filters.status : undefined,
+          TrangThaiTuyenXe: trangThaiTuyenFilter,
         },
         include: {
           LICH_TRINH: {
@@ -509,7 +530,7 @@ export class BaoCaoService {
           loiNhuanTuyen,
           doanhThuTrungBinhChuyen,
           loiNhuanTrungBinhChuyen,
-          trangThai: r.TrangThai === 'active' || r.TrangThai === 'Đang hoạt động' ? 'Đang hoạt động' : 'Ngừng hoạt động',
+          trangThai: r.TrangThaiTuyenXe === 'DangHoatDong' ? 'Đang hoạt động' : 'Ngừng hoạt động',
         };
       });
     }

@@ -111,12 +111,15 @@
             ></app-custom-select>
           </div>
 
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group" style="grid-column: span 2;" [class.is-invalid]="errors.name && !currentDriver.name">
             <label>Họ và tên <span class="required">*</span></label>
             <input type="text" [(ngModel)]="currentDriver.name" placeholder="Nhập Họ và tên">
+            <div class="error-text" *ngIf="errors.name && !currentDriver.name">
+              Hãy điền thông tin Họ và tên!
+            </div>
           </div>
           
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group" style="grid-column: span 2;" [class.is-invalid]="errors.dob && !currentDriver.dob">
             <label>Ngày sinh <span class="required">*</span></label>
             <div class="date-input-container" (click)="$event.stopPropagation()">
               <input type="text" [(ngModel)]="currentDriver.dob" readonly (click)="toggleDatePicker('dob')" placeholder="Select date">
@@ -150,26 +153,32 @@
                 </div>
               </div>
             </div>
+            <div class="error-text" *ngIf="errors.dob && !currentDriver.dob">
+              Hãy điền thông tin Ngày sinh!
+            </div>
           </div>
 
-          <div class="form-group" style="grid-column: span 3;">
+          <div class="form-group" style="grid-column: span 3;" [class.is-invalid]="errors.phone">
             <label>Số điện thoại <span class="required">*</span></label>
             <input type="text" [(ngModel)]="currentDriver.phone" placeholder="Nhập Số điện thoại" maxlength="10" (input)="onPhoneInput($event)" (blur)="onPhoneBlur()">
-            <span *ngIf="getPhoneErrorMessage()" style="color: #e53e3e; font-size: 12px; margin-top: 4px; display: block;">{{ getPhoneErrorMessage() }}</span>
+            <div class="error-text" *ngIf="errors.phone">{{ errors.phone }}</div>
           </div>
 
-          <div class="form-group" style="grid-column: span 3;">
+          <div class="form-group" style="grid-column: span 3;" [class.is-invalid]="errors.cccdNumber">
             <label>Số CCCD/CMND <span class="required">*</span></label>
             <input type="text" [(ngModel)]="currentDriver.cccdNumber" placeholder="Nhập số CCCD/CMND" maxlength="12" (input)="onCccdInput($event)" (blur)="onCccdBlur()">
-            <span *ngIf="getCccdErrorMessage()" style="color: #e53e3e; font-size: 12px; margin-top: 4px; display: block;">{{ getCccdErrorMessage() }}</span>
+            <div class="error-text" *ngIf="errors.cccdNumber">{{ errors.cccdNumber }}</div>
           </div>
           
-          <div class="form-group" style="grid-column: span 3;">
+          <div class="form-group" style="grid-column: span 3;" [class.is-invalid]="errors.licenseClass && currentDriver.role === 'driver' && !currentDriver.licenseClass">
             <label>Hạng bằng lái <span class="required" *ngIf="currentDriver.role === 'driver'">*</span></label>
             <input type="text" [(ngModel)]="currentDriver.licenseClass" placeholder="VD: A1, B2, C...">
+            <div class="error-text" *ngIf="errors.licenseClass && currentDriver.role === 'driver' && !currentDriver.licenseClass">
+              Hãy điền thông tin Hạng bằng lái!
+            </div>
           </div>
 
-          <div class="form-group" style="grid-column: span 3;">
+          <div class="form-group" style="grid-column: span 3;" [class.is-invalid]="errors.licenseExpiry && currentDriver.role === 'driver' && !currentDriver.licenseExpiry">
             <label>Hạn bằng lái <span class="required" *ngIf="currentDriver.role === 'driver'">*</span></label>
             <div class="date-input-container" (click)="$event.stopPropagation()">
               <input type="text" [(ngModel)]="currentDriver.licenseExpiry" readonly (click)="toggleDatePicker('license')" placeholder="Select date">
@@ -202,6 +211,9 @@
                   <div class="year-item" *ngFor="let y of yearsList" (click)="selectYear(y)">{{ y }}</div>
                 </div>
               </div>
+            </div>
+            <div class="error-text" *ngIf="errors.licenseExpiry && currentDriver.role === 'driver' && !currentDriver.licenseExpiry">
+              Hãy điền thông tin Hạn bằng lái!
             </div>
           </div>
         </div>

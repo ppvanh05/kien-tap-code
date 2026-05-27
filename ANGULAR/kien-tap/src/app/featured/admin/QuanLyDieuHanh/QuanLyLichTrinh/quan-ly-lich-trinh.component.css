@@ -52,8 +52,20 @@
   margin-right: 10px;
 }
 
-.status-dot.active {
-  background-color: #009ba1;
+.status-dot.DangChay {
+  background-color: #319795;
+}
+
+.status-dot.ChoKhoiHanh {
+  background-color: #2b6cb0;
+}
+
+.status-dot.HoanThanh {
+  background-color: #38a169;
+}
+
+.status-dot.DaKhoa {
+  background-color: #c53030;
 }
 
 /* Tabs Styling */
@@ -326,19 +338,25 @@ td.text-center {
   width: fit-content;
 }
 
-.status-badge.active {
+.status-badge.DangChay {
   background-color: #e6fffa;
   color: #319795;
   border: 1px solid #b2f5ea;
 }
 
-.status-badge.scheduled {
+.status-badge.ChoKhoiHanh {
   background-color: #ebf8ff;
   color: #2b6cb0;
   border: 1px solid #bee3f8;
 }
 
-.status-badge.locked {
+.status-badge.HoanThanh {
+  background-color: #f0fff4;
+  color: #38a169;
+  border: 1px solid #c6f6d5;
+}
+
+.status-badge.DaKhoa {
   background-color: #fff5f5;
   color: #c53030;
   border: 1px solid #fed7d7;
@@ -2271,3 +2289,57 @@ input:checked+.slider:before {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+.steering-wheel-row {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 140px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 12px;
+  padding-left: 17px;
+}
+
+.steering-wheel-svg {
+  color: #2c3e50;
+  opacity: 0.85;
+}
+
+.btn-lock {
+  background-color: #fffaf0;
+  color: #f37021;
+  border: 1px solid #fbd38d;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-lock:hover {
+  background-color: #feebc8;
+  border-color: #f6ad55;
+}
+
+.btn-delete {
+  background-color: #fff5f5;
+  color: #e53e3e;
+  border: 1px solid #feb2b2;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #fff0f0;
+  border-color: #fc8181;
+}

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 interface Seat {
   name: string;
@@ -40,9 +41,9 @@ export class ThongTinDonHang implements OnInit {
   selectedRoomGuests: { [seatName: string]: number } = {};
 
   // Customer Form Fields
-  customerName: string = 'Nghi Trần Ngọc Bảo';
-  customerPhone: string = '0981939379';
-  customerEmail: string = 'nghitnb23406@st.uel.edu.vn';
+  customerName: string = '';
+  customerPhone: string = '';
+  customerEmail: string = '';
   agreeTerms: boolean = false;
 
   // Pickup/Dropoff dropdown states
@@ -68,7 +69,7 @@ export class ThongTinDonHang implements OnInit {
     { time: '05:00', name: 'Bến xe Vũng Tàu', address: '192 Nam Kỳ Khởi Nghĩa, P.Thắng Tam, TP.Vũng Tàu' }
   ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private toastService: ToastService) { }
 
   ngOnInit() {
     if (typeof window !== 'undefined') {
@@ -186,8 +187,28 @@ export class ThongTinDonHang implements OnInit {
     return (price || 0).toLocaleString('vi-VN') + 'đ';
   }
 
+  encodeUri(val: string): string {
+    return encodeURIComponent(val || '');
+  }
+
   getSelectedDate(): string {
     return this.selectedDate;
+  }
+
+  getDropoffDate(): string {
+    const parts = this.selectedDate.split('/');
+    if (parts.length !== 3) return this.selectedDate;
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const date = new Date(year, month, day);
+    date.setDate(date.getDate() + 1);
+    
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    
+    return `${dd}/${mm}/${yyyy}`;
   }
 
   getDayOfWeek(): string {
@@ -326,27 +347,27 @@ export class ThongTinDonHang implements OnInit {
 
   payBooking() {
     if (this.bookingData.selectedSeats.length === 0) {
-      alert('Vui lòng chọn ít nhất 1 ghế.');
+      this.toastService.show('Vui lòng chọn ít nhất 1 ghế.', 'warning');
       return;
     }
     if (!this.customerName.trim()) {
-      alert('Vui lòng nhập Họ và tên.');
+      this.toastService.show('Vui lòng nhập Họ và tên.', 'warning');
       return;
     }
     if (!this.customerPhone.trim()) {
-      alert('Vui lòng nhập Số điện thoại.');
+      this.toastService.show('Vui lòng nhập Số điện thoại.', 'warning');
       return;
     }
     if (!this.agreeTerms) {
-      alert('Quý khách vui lòng đồng ý với điều khoản đặt vé.');
+      this.toastService.show('Quý khách vui lòng đồng ý với điều khoản đặt vé.', 'warning');
       return;
     }
     if (!this.selectedPickup) {
-      alert('Vui lòng chọn Điểm đón.');
+      this.toastService.show('Vui lòng chọn Điểm đón.', 'warning');
       return;
     }
     if (!this.selectedDropoff) {
-      alert('Vui lòng chọn Điểm trả.');
+      this.toastService.show('Vui lòng chọn Điểm trả.', 'warning');
       return;
     }
 

@@ -15,6 +15,10 @@
   animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
 @keyframes scaleUp {
   from {
     transform: scale(0.95);
@@ -56,4 +60,24 @@
   vertical-align: middle;
   align-items: center;
   justify-content: center;
+}
+
+/* Adjusted form size for review form */
+.review-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Adjusted button styles for disabled state */
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Adjusted QR code display */
+.ticket-info img {
+  max-width: 100px;
+  height: auto;
+  margin-top: 10px;
 }

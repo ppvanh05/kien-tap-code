@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 export interface DiemDonTra {
   id: string | number;
@@ -19,6 +20,7 @@ export interface DiemDonTra {
 export class DiemDonTraService {
   private apiUrl = 'http://localhost:3000/dieu-hanh/diem-don-tra-dung';
   private points: DiemDonTra[] = [];
+  public pointsUpdated$ = new Subject<void>();
 
   constructor(private http: HttpClient) {
     this.refreshPoints();
@@ -37,10 +39,11 @@ export class DiemDonTraService {
             phone: '',
             mapLink: p.LinkGoogleMap || '',
             image: p.AnhDiem || null,
-            status: p.TrangThai || 'active',
-            type: p.LoaiDiem || 'don-tra'
+            status: p.TrangThaiDiem === 'DaKhoa' ? 'locked' : 'active',
+            type: p.LoaiDiem === 'DiemDonTra' ? 'don-tra' : 'dung'
           });
         });
+        this.pointsUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi tải danh sách điểm đón/trả/dừng:', err)
     });
@@ -57,6 +60,9 @@ export class DiemDonTraService {
     }
 
     this.http.put(`${this.apiUrl}/${point.id}`, point).subscribe({
+      next: () => {
+        this.pointsUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi cập nhật điểm đón/trả/dừng:', err)
     });
   }
@@ -69,6 +75,7 @@ export class DiemDonTraService {
     this.http.post<any>(this.apiUrl, point).subscribe({
       next: (res) => {
         newPoint.id = res.MaDiem;
+        this.pointsUpdated$.next();
       },
       error: (err) => console.error('Lỗi khi thêm điểm đón/trả/dừng:', err)
     });
@@ -83,6 +90,9 @@ export class DiemDonTraService {
     }
 
     this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.pointsUpdated$.next();
+      },
       error: (err) => console.error('Lỗi khi xóa điểm đón/trả/dừng:', err)
     });
   }

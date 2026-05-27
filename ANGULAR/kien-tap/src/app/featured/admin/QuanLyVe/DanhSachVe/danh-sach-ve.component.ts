@@ -35,6 +35,11 @@ interface Ticket {
   styleUrls: ['./danh-sach-ve.component.css']
 })
 export class DanhSachVeComponent implements OnInit {
+  // Alert modal
+  showAlertModal: boolean = false;
+  alertMessage: string = '';
+  alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
+
   // Biến lưu trữ giá trị đang nhập ở bộ lọc
   filters = {
     searchTerm: '',
@@ -303,8 +308,19 @@ export class DanhSachVeComponent implements OnInit {
   }
 
   // Các thao tác trong modal chi tiết
+  showAlert(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlertModal = true;
+  }
+
+  closeAlert() {
+    this.showAlertModal = false;
+    this.alertMessage = '';
+  }
+
   onCollectMoney() {
-    alert('Đang thực hiện thu tiền cho vé ' + this.selectedTicket?.id);
+    this.showAlert('Đang thực hiện thu tiền cho vé ' + this.selectedTicket?.id, 'info');
     if (this.selectedTicket) {
       this.selectedTicket.paymentStatus = 'Đã thanh toán';
       this.selectedTicket.ticketStatus = 'Chờ khởi hành';
@@ -317,7 +333,7 @@ export class DanhSachVeComponent implements OnInit {
         this.selectedTicket.paymentStatus = 'Đã hoàn tiền';
         this.selectedTicket.ticketStatus = 'Đã hủy';
       }
-      alert('Đã cập nhật trạng thái: Đã hoàn tiền.');
+      this.showAlert('Đã cập nhật trạng thái: Đã hoàn tiền.', 'success');
     }
   }
 
@@ -336,14 +352,14 @@ export class DanhSachVeComponent implements OnInit {
 
   confirmCancelWithOtp() {
     if (this.otpValue.length === 6) {
-      alert('Xác thực thành công! Hệ thống không thể hoàn tiền tự động. Vé ' + this.selectedTicket?.id + ' đã được chuyển sang trạng thái "Chờ hoàn tiền" để nhân viên xử lý thủ công.');
+      this.showAlert('Xác thực thành công! Hệ thống không thể hoàn tiền tự động. Vé ' + this.selectedTicket?.id + ' đã được chuyển sang trạng thái "Chờ hoàn tiền" để nhân viên xử lý thủ công.', 'success');
       if (this.selectedTicket) {
         this.selectedTicket.paymentStatus = 'Chờ hoàn tiền';
         this.selectedTicket.ticketStatus = 'Đã hủy';
       }
       this.closeOtpModal();
     } else {
-      alert('Vui lòng nhập đúng mã OTP 6 chữ số.');
+      this.showAlert('Vui lòng nhập đúng mã OTP 6 chữ số.', 'warning');
     }
   }
 
@@ -424,7 +440,7 @@ export class DanhSachVeComponent implements OnInit {
   }
 
   exportPDF() {
-    alert('Đang khởi tạo tệp PDF cho vé ' + this.selectedTicket?.id);
+    this.showAlert('Đang khởi tạo tệp PDF cho vé ' + this.selectedTicket?.id, 'info');
   }
 
   printTicket() {

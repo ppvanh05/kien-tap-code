@@ -75,6 +75,11 @@ export class QuanLyTuyenXeComponent implements OnInit {
   ngOnInit() {
     this.routes = this.tuyenXeService.getRoutes();
     this.filterRoutes();
+
+    this.tuyenXeService.routesUpdated$.subscribe(() => {
+      this.routes = this.tuyenXeService.getRoutes();
+      this.filterRoutes();
+    });
   }
 
   setTab(tab: 'all' | 'active' | 'locked') {
@@ -125,8 +130,18 @@ export class QuanLyTuyenXeComponent implements OnInit {
     this.filterRoutes();
   }
 
+  errors: {
+    startPoint?: boolean;
+    startProvince?: boolean;
+    endPoint?: boolean;
+    endProvince?: boolean;
+    distance?: boolean;
+    estimatedTime?: boolean;
+  } = {};
+
   openAddModal() {
     this.isEditMode = false;
+    this.errors = {};
     this.currentRoute = {
       status: 'active',
       startProvince: '',
@@ -141,12 +156,14 @@ export class QuanLyTuyenXeComponent implements OnInit {
 
   openEditModal(route: Route) {
     this.isEditMode = true;
+    this.errors = {};
     this.currentRoute = { ...route };
     this.isModalOpen = true;
   }
 
   closeModal() {
     this.isModalOpen = false;
+    this.errors = {};
   }
 
   onOverlayClick(event: MouseEvent) {
@@ -166,33 +183,21 @@ export class QuanLyTuyenXeComponent implements OnInit {
 
   saveRoute() {
     // Validation
-    if (!this.currentRoute.startPoint) {
-      this.showAlert('Hãy điền thông tin Điểm đầu!');
-      return;
-    }
-    if (!this.currentRoute.startProvince) {
-      this.showAlert('Hãy chọn Tỉnh/Thành phố cho Điểm đầu!');
-      return;
-    }
-    if (!this.currentRoute.endPoint) {
-      this.showAlert('Hãy điền thông tin Điểm cuối!');
-      return;
-    }
-    if (!this.currentRoute.endProvince) {
-      this.showAlert('Hãy chọn Tỉnh/Thành phố cho Điểm cuối!');
-      return;
-    }
-    if (!this.currentRoute.distance || this.currentRoute.distance <= 0) {
-      this.showAlert('Hãy điền thông tin Khoảng cách và phải lớn hơn 0!');
-      return;
-    }
-    if ((this.currentRoute.estimatedHours === undefined || this.currentRoute.estimatedHours === null) && 
-        (this.currentRoute.estimatedMinutes === undefined || this.currentRoute.estimatedMinutes === null)) {
-      this.showAlert('Hãy điền thông tin Thời gian di chuyển dự kiến!');
-      return;
-    }
-    if (this.currentRoute.estimatedHours === 0 && this.currentRoute.estimatedMinutes === 0) {
-      this.showAlert('Thời gian di chuyển dự kiến phải lớn hơn 0!');
+    const isEstimatedTimeInvalid = 
+      ((this.currentRoute.estimatedHours === undefined || this.currentRoute.estimatedHours === null) && 
+       (this.currentRoute.estimatedMinutes === undefined || this.currentRoute.estimatedMinutes === null)) ||
+      (this.currentRoute.estimatedHours === 0 && this.currentRoute.estimatedMinutes === 0);
+
+    this.errors = {
+      startPoint: !this.currentRoute.startPoint,
+      startProvince: !this.currentRoute.startProvince,
+      endPoint: !this.currentRoute.endPoint,
+      endProvince: !this.currentRoute.endProvince,
+      distance: !this.currentRoute.distance || this.currentRoute.distance <= 0,
+      estimatedTime: isEstimatedTimeInvalid
+    };
+
+    if (Object.values(this.errors).some(Boolean)) {
       return;
     }
 

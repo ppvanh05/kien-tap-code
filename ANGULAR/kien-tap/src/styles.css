@@ -50,3 +50,19 @@ body {
     .font-body-lg { @apply text-body-lg; }
     .font-body-md { @apply text-body-md; }
 }
+
+/* Real-time validation warning styles */
+.is-invalid input,
+.is-invalid select,
+.is-invalid .select-trigger {
+  border-color: #e53e3e !important;
+}
+.is-invalid .select-trigger.open {
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+}
+.error-text {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: left;
+}

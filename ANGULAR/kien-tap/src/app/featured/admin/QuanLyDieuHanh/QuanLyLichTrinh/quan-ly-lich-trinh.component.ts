@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TuyenXeService } from '../tuyen-xe.service';
@@ -26,7 +26,7 @@ interface Schedule {
   assistantName: string;
   departureDate: string;
   departureTime: string;
-  status: 'active' | 'locked' | 'scheduled';
+  status: 'DangChay' | 'ChoKhoiHanh' | 'DaKhoa' | 'HoanThanh' | '';
   createdAt: Date;
 
   // New Fields Requested
@@ -62,9 +62,17 @@ interface Schedule {
   styleUrls: ['./quan-ly-lich-trinh.component.css']
 })
 export class QuanLyLichTrinhComponent implements OnInit {
-  activeTab: 'all' | 'active' | 'locked' = 'all';
+  activeTab: 'all' | 'DangChay' | 'ChoKhoiHanh' | 'HoanThanh' | 'DaKhoa' = 'all';
   selectedRoute: string = '';
   mousedownTarget: HTMLElement | null = null;
+
+  get statusFormOptions() {
+    return [
+      { value: 'ChoKhoiHanh', label: 'Chờ khởi hành' },
+      { value: 'DangChay', label: 'Đang chạy' },
+      { value: 'HoanThanh', label: 'Hoàn thành' }
+    ];
+  }
 
   get routeFilterOptions() {
     return this.routesList.map(r => ({
@@ -178,14 +186,15 @@ export class QuanLyLichTrinhComponent implements OnInit {
     return map;
   }
 
-  get vehiclesList(): { name: string, plate: string, seats: number, status: 'active' | 'locked', floors?: number, rows?: number }[] {
+  get vehiclesList(): { name: string, plate: string, seats: number, status: 'active' | 'locked', floors?: number, rows?: number, type: string }[] {
     return this.phuongTienService.getVehicles().map(v => ({
       name: v.name,
       plate: v.licensePlate,
       seats: v.seats,
       status: v.status,
       floors: v.floors,
-      rows: v.rows
+      rows: v.rows,
+      type: v.type
     }));
   }
 
@@ -223,7 +232,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       assistantName: 'Phạm Thành Đạt',
       departureDate: '20/05/2026',
       departureTime: '08:30',
-      status: 'active',
+      status: 'DangChay',
       createdAt: new Date('2026-05-10'),
       autoRun: false,
       allowSeatSelection: true,
@@ -252,7 +261,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       assistantName: 'Võ Minh Khang',
       departureDate: '21/05/2026',
       departureTime: '13:00',
-      status: 'active',
+      status: 'DangChay',
       createdAt: new Date('2026-05-11'),
       autoRun: true,
       allowSeatSelection: true,
@@ -281,7 +290,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       assistantName: 'Nguyễn Quốc Huy',
       departureDate: '22/05/2026',
       departureTime: '19:45',
-      status: 'active',
+      status: 'DangChay',
       createdAt: new Date('2026-05-12'),
       autoRun: false,
       allowSeatSelection: true,
@@ -310,7 +319,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       assistantName: 'Phạm Thành Đạt',
       departureDate: '20/05/2026',
       departureTime: '06:00',
-      status: 'active',
+      status: 'DangChay',
       createdAt: new Date('2026-05-13'),
       autoRun: false,
       allowSeatSelection: true,
@@ -339,7 +348,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       assistantName: 'Võ Minh Khang',
       departureDate: '23/05/2026',
       departureTime: '10:15',
-      status: 'scheduled',
+      status: 'ChoKhoiHanh',
       createdAt: new Date('2026-05-14'),
       autoRun: true,
       allowSeatSelection: true,
@@ -368,7 +377,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       assistantName: 'Nguyễn Quốc Huy',
       departureDate: '24/05/2026',
       departureTime: '15:30',
-      status: 'locked',
+      status: 'DaKhoa',
       createdAt: new Date('2026-05-15'),
       autoRun: false,
       allowSeatSelection: true,
@@ -425,7 +434,8 @@ export class QuanLyLichTrinhComponent implements OnInit {
     private taiXeService: TaiXeService,
     private phuongTienService: PhuongTienService,
     private diemDonTraService: DiemDonTraService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -452,7 +462,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
             assistantName: s.PHAN_CONG_CHUYEN?.find((pc: any) => pc.VaiTro === 'Phụ xe')?.TAI_XE_PHU_XE?.HoTen || '',
             departureDate: this.formatDate(depDate),
             departureTime: `${depTime.getHours().toString().padStart(2, '0')}:${depTime.getMinutes().toString().padStart(2, '0')}`,
-            status: s.TrangThai === 'active' || s.TrangThai === 'scheduled' ? 'active' : 'locked',
+            status: s.TrangThaiLichTrinh || 'ChoKhoiHanh',
             createdAt: depDate,
             autoRun: false,
             allowSeatSelection: true,
@@ -473,6 +483,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
           };
         });
         this.filterSchedules();
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Lỗi khi tải lịch trình:', err)
     });
@@ -487,19 +498,15 @@ export class QuanLyLichTrinhComponent implements OnInit {
     this.showHoldUnitDropdown = false;
   }
 
-  setTab(tab: 'all' | 'active' | 'locked') {
+  setTab(tab: 'all' | 'DangChay' | 'ChoKhoiHanh' | 'HoanThanh' | 'DaKhoa') {
     this.activeTab = tab;
     this.filterSchedules();
   }
 
   filterSchedules() {
     let result = this.schedules.filter(s => {
-      const matchesTab = this.activeTab === 'all' ||
-        (this.activeTab === 'active' && (s.status === 'active' || s.status === 'scheduled')) ||
-        (this.activeTab === 'locked' && s.status === 'locked');
-
+      const matchesTab = this.activeTab === 'all' || s.status === this.activeTab;
       const matchesRoute = !this.selectedRoute || s.routeName === this.selectedRoute;
-
       return matchesTab && matchesRoute;
     });
 
@@ -515,8 +522,9 @@ export class QuanLyLichTrinhComponent implements OnInit {
   openAddModal() {
     this.isEditMode = false;
     this.activeModalTab = 'setup';
+    this.errors = {};
     this.currentSchedule = {
-      status: 'active',
+      status: '',
       routeName: '',
       vehiclePlate: '',
       vehicleName: '',
@@ -557,6 +565,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
   openEditModal(schedule: Schedule) {
     this.isEditMode = true;
     this.activeModalTab = 'setup';
+    this.errors = {};
     this.currentSchedule = {
       ...schedule,
       selectedSeats: schedule.selectedSeats ? [...schedule.selectedSeats] : [],
@@ -692,9 +701,24 @@ export class QuanLyLichTrinhComponent implements OnInit {
     return foundGroup ? foundGroup.color : '';
   }
 
+  getCurrentVehicleFloors(): any[] {
+    return this.floorLayouts;
+  }
+
+  errors: {
+    routeName?: boolean;
+    vehiclePlate?: boolean;
+    driverName?: boolean;
+    departureDate?: boolean;
+    departureTime?: boolean;
+    basePrice?: boolean;
+    status?: boolean;
+  } = {};
+
   closeModal() {
     this.isModalOpen = false;
     this.isDatePickerOpen = false;
+    this.errors = {};
   }
 
   onOverlayMouseDown(event: MouseEvent) {
@@ -726,8 +750,13 @@ export class QuanLyLichTrinhComponent implements OnInit {
   }
 
   isLimousine22(): boolean {
-    return this.currentSchedule.vehicleName === 'Limousine 22 phòng' ||
-      (this.currentSchedule.vehicleName?.startsWith('Limousine 22 phòng') ?? false);
+    const plate = this.currentSchedule.vehiclePlate;
+    const name = this.currentSchedule.vehicleName;
+    const veh = this.vehiclesList.find(v => (plate && v.plate === plate) || (name && v.name === name));
+    if (veh) {
+      return veh.seats === 22 || veh.type === 'Limousine 22 phòng' || veh.type?.includes('22');
+    }
+    return name === 'Limousine 22 phòng' || (name?.includes('22') ?? false);
   }
 
   onVehicleSelect() {
@@ -946,28 +975,23 @@ export class QuanLyLichTrinhComponent implements OnInit {
   }
 
   saveSchedule() {
-    if (!this.currentSchedule.routeName) {
-      this.showAlert('Hãy chọn Tuyến đường!');
-      return;
-    }
-    if (!this.currentSchedule.vehiclePlate) {
-      this.showAlert('Hãy chọn Tên xe!');
-      return;
-    }
-    if (!this.currentSchedule.driverName) {
-      this.showAlert('Hãy chọn Tài xế!');
-      return;
-    }
-    if (!this.currentSchedule.departureDate) {
-      this.showAlert('Hãy chọn Ngày khởi hành!');
-      return;
-    }
-    if (!this.currentSchedule.departureTime) {
-      this.showAlert('Hãy nhập Giờ khởi hành!');
-      return;
-    }
-    if (this.currentSchedule.basePrice === undefined || this.currentSchedule.basePrice === null) {
-      this.showAlert('Hãy nhập Giá vé chung!');
+    this.errors = {
+      routeName: !this.currentSchedule.routeName,
+      vehiclePlate: !this.currentSchedule.vehiclePlate,
+      driverName: !this.currentSchedule.driverName,
+      status: !this.currentSchedule.status,
+      departureDate: !this.currentSchedule.departureDate,
+      departureTime: !this.currentSchedule.departureTime,
+      basePrice: this.currentSchedule.basePrice === undefined || this.currentSchedule.basePrice === null || isNaN(Number(this.currentSchedule.basePrice))
+    };
+
+    if (Object.values(this.errors).some(Boolean)) {
+      // Automatically switch to the tab that has the validation error
+      if (this.errors.routeName || this.errors.vehiclePlate || this.errors.driverName || this.errors.status) {
+        this.activeModalTab = 'setup';
+      } else {
+        this.activeModalTab = 'time';
+      }
       return;
     }
 
@@ -987,7 +1011,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
         id: tempId
       } as Schedule;
       this.schedules.unshift(newSchedule);
-      
+
       this.http.post<any>('http://localhost:3000/dieu-hanh/lich-trinh', this.currentSchedule).subscribe({
         next: (res) => {
           newSchedule.id = res.MaLichTrinh;
@@ -1001,10 +1025,10 @@ export class QuanLyLichTrinhComponent implements OnInit {
   }
 
   toggleStatus() {
-    if (this.currentSchedule.status === 'active' || this.currentSchedule.status === 'scheduled') {
-      this.currentSchedule.status = 'locked';
+    if (this.currentSchedule.status === 'DangChay' || this.currentSchedule.status === 'ChoKhoiHanh') {
+      this.currentSchedule.status = 'DaKhoa';
     } else {
-      this.currentSchedule.status = 'active';
+      this.currentSchedule.status = 'DangChay';
     }
   }
 
