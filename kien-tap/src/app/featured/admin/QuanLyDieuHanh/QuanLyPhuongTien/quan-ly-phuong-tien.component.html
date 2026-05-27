@@ -1,0 +1,403 @@
+<div class="vehicle-management">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span>Quản lý điều hành</span> / <span class="active">Quản lý phương tiện</span>
+  </div>
+
+  <!-- Main Card -->
+  <div class="content-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'all'" (click)="setTab('all')">Tất cả</button>
+      <button [class.active]="activeTab === 'active'" (click)="setTab('active')">Đang hoạt động</button>
+      <button [class.active]="activeTab === 'locked'" (click)="setTab('locked')">Đã khóa</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-bar">
+      <!-- Nút thêm xe mới ở hàng trên riêng biệt -->
+      <div class="action-row-top">
+        <button class="btn-add-vehicle-admin" (click)="openAddModal()">
+          <span class="material-icons">add</span>
+          Thêm xe mới
+        </button>
+      </div>
+
+      <!-- Hàng dưới chứa Bộ lọc & các nút Tìm kiếm, Xóa bộ lọc -->
+      <div class="action-row-bottom">
+        <div class="filter-group-new">
+          <div class="filter-item">
+            <label>Lọc theo:</label>
+            <div class="select-wrapper">
+              <input type="text" [(ngModel)]="searchVehicleName" placeholder="Tên xe" class="filter-input">
+              <input type="text" [(ngModel)]="searchLicensePlate" placeholder="Biển số" class="filter-input">
+
+              <div style="width: 220px; display: inline-block;">
+                <app-custom-select
+                  [(value)]="selectedType"
+                  [options]="typeFilterOptions"
+                  placeholder="Loại xe"
+                  (valueChange)="filterVehicles()"
+                ></app-custom-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="buttons-group">
+          <button class="btn-search" (click)="filterVehicles()">
+            <span class="material-icons">search</span>
+            Tìm kiếm
+          </button>
+          <button class="btn-clear" (click)="clearFilters()">
+            <span class="material-icons">filter_alt_off</span>
+            Xóa bộ lọc
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 80px;">STT</th>
+            <th style="width: 260px;">Tên xe</th>
+            <th style="width: 140px;">Biển số</th>
+            <th style="width: 180px;">Loại xe</th>
+            <th class="text-center" style="width: 100px;">Số chỗ</th>
+            <th class="text-center" style="width: 160px;">Hạn đăng kiểm</th>
+            <th class="text-center" style="width: 180px;">Tiện ích xe</th>
+            <th class="text-center" style="width: 120px;">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vehicle of filteredVehicles; let i = index">
+            <td class="text-center" style="font-weight: 500; color: #718096;">{{ i + 1 }}</td>
+            <td>
+              <span class="status-dot" [class.active]="vehicle.status === 'active'"></span>
+              {{vehicle.name}}
+            </td>
+            <td>{{vehicle.licensePlate}}</td>
+            <td>{{vehicle.type}}</td>
+            <td class="text-center">{{vehicle.seats}}</td>
+            <td class="text-center">{{vehicle.registrationExpiry}}</td>
+            <td class="text-center">
+              <div class="amenities-icons">
+                <span *ngFor="let a of vehicle.amenities" class="material-icons sm-icon">{{ getAmenityIcon(a) }}</span>
+              </div>
+            </td>
+            <td class="text-center">
+              <button class="btn-edit-icon" (click)="openEditModal(vehicle)">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="page-controls">
+        <button class="btn-page-arrow"><span class="material-icons">chevron_left</span></button>
+        <button class="btn-page-num active">1</button>
+        <button class="btn-page-arrow"><span class="material-icons">chevron_right</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="onOverlayClick($event)">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? 'Chỉnh sửa thông tin phương tiện' : 'Tạo phương tiện mới' }}</h2>
+        <button class="modal-close-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Tên xe <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentVehicle.name" placeholder="Nhập Tên xe">
+          </div>
+          <div class="form-group">
+            <label>Biển số xe <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentVehicle.licensePlate" placeholder="Nhập biển số xe">
+          </div>
+          <div class="form-group">
+            <label>Hạn đăng kiểm <span class="required">*</span></label>
+            <div class="date-input-container" (click)="$event.stopPropagation()">
+              <input type="text" [(ngModel)]="currentVehicle.registrationExpiry" readonly
+                (click)="toggleDatePicker('reg')" placeholder="dd/mm/yyyy">
+              <span class="material-icons date-icon-inside">calendar_today</span>
+
+              <!-- Custom Calendar Popup -->
+              <div class="calendar-popup" *ngIf="isRegPickerOpen">
+                <div class="calendar-header">
+                  <button (click)="prev()"><span class="material-icons">chevron_left</span></button>
+                  <div class="month-year-labels">
+                    <span *ngIf="pickerViewMode === 'day'" class="month-label" (click)="setPickerView('month')">{{
+                      months[viewDate.getMonth()] }}</span>
+                    <span *ngIf="pickerViewMode === 'day' || pickerViewMode === 'month'" class="year-label"
+                      (click)="setPickerView('year')">{{ viewDate.getFullYear() }}</span>
+                    <span *ngIf="pickerViewMode === 'year'" class="year-label">{{ yearRangeStart }} - {{ yearRangeStart
+                      + 11 }}</span>
+                  </div>
+                  <button (click)="next()"><span class="material-icons">chevron_right</span></button>
+                </div>
+
+                <!-- Day View -->
+                <div class="calendar-grid" *ngIf="pickerViewMode === 'day'">
+                  <div class="weekday" *ngFor="let day of weekDays">{{day}}</div>
+                  <div class="day" *ngFor="let day of calendarDays" [class.empty]="!day"
+                    (click)="selectDate(day, 'reg')">
+                    {{day}}
+                  </div>
+                </div>
+
+                <!-- Month View -->
+                <div class="month-grid" *ngIf="pickerViewMode === 'month'">
+                  <div class="month-item" *ngFor="let m of months; let i = index" (click)="selectMonth(i)">
+                    {{ m }}
+                  </div>
+                </div>
+
+                <!-- Year View -->
+                <div class="year-grid" *ngIf="pickerViewMode === 'year'">
+                  <div class="year-item" *ngFor="let y of yearsList" (click)="selectYear(y)">
+                    {{ y }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Hạn bảo hiểm xe <span class="required">*</span></label>
+            <div class="date-input-container" (click)="$event.stopPropagation()">
+              <input type="text" [(ngModel)]="currentVehicle.insuranceExpiry" readonly (click)="toggleDatePicker('ins')"
+                placeholder="dd/mm/yyyy">
+              <span class="material-icons date-icon-inside">calendar_today</span>
+
+              <!-- Custom Calendar Popup -->
+              <div class="calendar-popup" *ngIf="isInsPickerOpen">
+                <div class="calendar-header">
+                  <button (click)="prev()"><span class="material-icons">chevron_left</span></button>
+                  <div class="month-year-labels">
+                    <span *ngIf="pickerViewMode === 'day'" class="month-label" (click)="setPickerView('month')">{{
+                      months[viewDate.getMonth()] }}</span>
+                    <span *ngIf="pickerViewMode === 'day' || pickerViewMode === 'month'" class="year-label"
+                      (click)="setPickerView('year')">{{ viewDate.getFullYear() }}</span>
+                    <span *ngIf="pickerViewMode === 'year'" class="year-label">{{ yearRangeStart }} - {{ yearRangeStart
+                      + 11 }}</span>
+                  </div>
+                  <button (click)="next()"><span class="material-icons">chevron_right</span></button>
+                </div>
+
+                <!-- Day View -->
+                <div class="calendar-grid" *ngIf="pickerViewMode === 'day'">
+                  <div class="weekday" *ngFor="let day of weekDays">{{day}}</div>
+                  <div class="day" *ngFor="let day of calendarDays" [class.empty]="!day"
+                    (click)="selectDate(day, 'ins')">
+                    {{day}}
+                  </div>
+                </div>
+
+                <!-- Month View -->
+                <div class="month-grid" *ngIf="pickerViewMode === 'month'">
+                  <div class="month-item" *ngFor="let m of months; let i = index" (click)="selectMonth(i)">
+                    {{ m }}
+                  </div>
+                </div>
+
+                <!-- Year View -->
+                <div class="year-grid" *ngIf="pickerViewMode === 'year'">
+                  <div class="year-item" *ngFor="let y of yearsList" (click)="selectYear(y)">
+                    {{ y }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Loại xe <span class="required">*</span></label>
+            <app-custom-select [(value)]="currentVehicle.type" [options]="typeFormOptions" placeholder="Chọn loại xe"
+              (valueChange)="onVehicleTypeChange()"></app-custom-select>
+          </div>
+          <div class="form-group">
+            <label>Số tầng <span class="required">*</span></label>
+            <input type="number" [(ngModel)]="currentVehicle.floors" (ngModelChange)="onLayoutChange()"
+              placeholder="Nhập số tầng" min="1" max="3" readonly>
+          </div>
+          <div class="form-group">
+            <label>Số dãy <span class="required">*</span></label>
+            <input type="number" [(ngModel)]="currentVehicle.rows" (ngModelChange)="onLayoutChange()"
+              placeholder="Nhập số dãy" min="1" max="5" readonly>
+          </div>
+          <div class="form-group">
+            <label>Số ghế <span class="required">*</span></label>
+            <input type="number" [(ngModel)]="currentVehicle.seats" (ngModelChange)="onLayoutChange()"
+              placeholder="Nhập số ghế" min="1" max="100" readonly>
+          </div>
+        </div>
+
+        <div class="seat-diagram-section" *ngIf="currentVehicle.type && floorLayouts && floorLayouts.length > 0">
+          <div class="section-title-new">SƠ ĐỒ GHẾ</div>
+          <div class="seat-diagram-wrapper">
+            <div class="floor-container" *ngFor="let floor of floorLayouts; let fIdx = index">
+              <div class="floor-header" [class.limousine-header]="currentVehicle.type === 'Limousine 22 phòng'">{{
+                floor.floorName }}</div>
+              <div class="bus-layout limousine-style">
+                <div class="column-labels" *ngIf="currentVehicle.type === 'Limousine 22 phòng'">
+                  <span class="label-text">Dãy Trái</span>
+                  <span class="label-text">Dãy Phải</span>
+                </div>
+
+                <div class="dynamic-seat-grid">
+                  <div class="seat-layout-row" *ngFor="let row of floor.rows" [class.back-row]="row.isBackRow">
+                    <ng-container *ngIf="!row.isBackRow">
+                      <div class="seat-room-limousine readonly" *ngFor="let seat of row.seats" 
+                        [class.selected]="isSeatSelected(seat)">
+                        {{ seat }}
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Amenities -->
+        <div class="amenities-wrapper">
+          <label class="section-label">Tiện ích xe <span class="required">*</span></label>
+          <div class="amenities-3x3">
+            <label *ngFor="let a of amenitiesList" class="amenity-item-box">
+              <input type="checkbox" [checked]="hasAmenity(a.id)" (change)="toggleAmenity(a.id)">
+              <div class="amenity-content">
+                <span class="checkbox-ui"></span>
+                <span class="material-icons amenity-icon-ui">{{ a.icon }}</span>
+                <span class="amenity-text-ui">{{ a.label }}</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Documents & Photos -->
+        <div class="docs-grid-container">
+          <div class="doc-upload-item">
+            <label>Giấy đăng kiểm xe <span class="required">*</span></label>
+            <div class="upload-dashed-box" (click)="regUpload.click()">
+              <input type="file" #regUpload hidden (change)="onImageUpload($event, 'registrationImage')">
+
+              <!-- Placeholder State -->
+              <div *ngIf="!currentVehicle.registrationImage && !isUploadingReg" class="upload-centered">
+                <span class="material-icons">file_upload</span>
+                <span class="upload-text">Tải ảnh lên</span>
+              </div>
+
+              <!-- Loading State -->
+              <div *ngIf="isUploadingReg" class="upload-loading">
+                <span class="material-icons rotating">sync</span>
+                <span class="upload-text">Đang tải lên...</span>
+              </div>
+
+              <!-- Preview State -->
+              <img *ngIf="currentVehicle.registrationImage && !isUploadingReg" [src]="currentVehicle.registrationImage"
+                class="img-full">
+            </div>
+            <button *ngIf="currentVehicle.registrationImage" class="btn-delete-photo"
+              (click)="removeImage('registrationImage')">Xóa ảnh</button>
+          </div>
+
+          <div class="doc-upload-item">
+            <label>Bảo hiểm xe <span class="required">*</span></label>
+            <div class="upload-dashed-box" (click)="insUpload.click()">
+              <input type="file" #insUpload hidden (change)="onImageUpload($event, 'insuranceImage')">
+
+              <!-- Placeholder -->
+              <div *ngIf="!currentVehicle.insuranceImage && !isUploadingIns" class="upload-centered">
+                <span class="material-icons">file_upload</span>
+                <span class="upload-text">Tải ảnh lên</span>
+              </div>
+
+              <!-- Loading -->
+              <div *ngIf="isUploadingIns" class="upload-loading">
+                <span class="material-icons rotating">sync</span>
+                <span class="upload-text">Đang tải lên...</span>
+              </div>
+
+              <!-- Preview -->
+              <img *ngIf="currentVehicle.insuranceImage && !isUploadingIns" [src]="currentVehicle.insuranceImage"
+                class="img-full">
+            </div>
+            <button *ngIf="currentVehicle.insuranceImage" class="btn-delete-photo"
+              (click)="removeImage('insuranceImage')">Xóa ảnh</button>
+          </div>
+        </div>
+
+        <div class="docs-grid-container mt-4">
+          <div class="doc-upload-item full-width-doc">
+            <label>Ảnh xe <span class="required">*</span></label>
+            <div class="upload-dashed-box small-height" (click)="vehUpload.click()">
+              <input type="file" #vehUpload hidden (change)="onImageUpload($event, 'vehicleImage')">
+
+              <!-- Placeholder -->
+              <div *ngIf="!currentVehicle.vehicleImage && !isUploadingVeh" class="upload-centered">
+                <span class="material-icons">file_upload</span>
+                <span class="upload-text">Tải ảnh lên</span>
+              </div>
+
+              <!-- Loading -->
+              <div *ngIf="isUploadingVeh" class="upload-loading">
+                <span class="material-icons rotating">sync</span>
+                <span class="upload-text">Đang tải lên...</span>
+              </div>
+
+              <!-- Preview -->
+              <img *ngIf="currentVehicle.vehicleImage && !isUploadingVeh" [src]="currentVehicle.vehicleImage"
+                class="img-full">
+            </div>
+            <button *ngIf="currentVehicle.vehicleImage" class="btn-delete-photo"
+              (click)="removeImage('vehicleImage')">Xóa ảnh</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="footer-left">
+          <button *ngIf="isEditMode" class="btn-lock" (click)="toggleStatus()">
+            <span class="material-icons">lock</span>
+            {{ currentVehicle.status === 'active' ? 'Khóa phương tiện' : 'Mở khóa' }}
+          </button>
+          <button *ngIf="isEditMode" class="btn-delete" (click)="deleteVehicle()">
+            <span class="material-icons">delete</span>
+            Xóa phương tiện
+          </button>
+        </div>
+        <div class="footer-right">
+          <button class="btn-cancel" (click)="closeModal()">Hủy</button>
+          <button class="btn-save" (click)="saveVehicle()">Lưu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal-overlay" *ngIf="isAlertOpen" (click)="closeAlert()" style="z-index: 3000;">
+      <div class="modal-content"
+        style="max-width: 400px; text-align: center; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;"
+        (click)="$event.stopPropagation()">
+        <div style="margin-bottom: 20px;">
+          <span class="material-icons" style="font-size: 56px; color: var(--secondary-color);">error_outline</span>
+          <h3 style="margin-top: 15px; color: var(--text-dark); font-size: 18px; font-weight: 600;">Thông báo</h3>
+          <p style="color: var(--text-grey); font-size: 14px; margin-top: 8px;">{{ alertMessage }}</p>
+        </div>
+        <button class="btn-save" (click)="closeAlert()" style="width: 100%; padding: 12px; font-size: 15px;">Đã
+          hiểu</button>
+      </div>
+    </div>
+  </div>

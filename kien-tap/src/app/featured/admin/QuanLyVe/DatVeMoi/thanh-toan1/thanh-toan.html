@@ -1,0 +1,278 @@
+<!-- Banner Header - Matching thong-tin-don-hang style -->
+<div class="page-header mb-8">
+  <div class="breadcrumb">
+    <span class="parent">Quản lý vé</span>
+    <span class="separator">/</span>
+    <span class="current">Đặt vé mới</span>
+  </div>
+  <h1>Đặt vé mới</h1>
+</div>
+<div class="relative bg-gradient-to-r from-primary to-primary-hover py-8 text-white text-center shadow-md mt-4">
+  <button (click)="goBack()"
+    class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-lg transition-all text-body-sm">
+    Quay lại
+  </button>
+  <h1 class="text-2xl sm:text-3xl font-bold tracking-wide uppercase">
+    {{ bookingData.startStation }} - {{ bookingData.endStation }}
+  </h1>
+  <p class="text-body-md opacity-90 mt-1 font-semibold">
+    {{ bookingData.departureTime }} - {{ getDayOfWeek() }}, {{ getSelectedDate() }}
+  </p>
+</div>
+
+<main class="max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- LEFT COLUMN: CHỌN PHƯƠNG THỨC THANH TOÁN (col-span-4) -->
+    <div class="lg:col-span-5 bg-surface rounded-xl border border-outline-variant/15 p-5 shadow-sm space-y-4">
+      <h2 class="font-bold text-title-lg text-navy border-b border-outline-variant/30 pb-3 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary font-bold">payment</span>
+        Chọn phương thức thanh toán
+      </h2>
+
+      <div class="space-y-3">
+        <div *ngFor="let method of paymentMethods" (click)="selectedPayment = method.id"
+          class="flex items-start gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer hover:border-primary/50 bg-white"
+          [class.border-primary]="selectedPayment === method.id"
+          [class.border-outline-variant/20]="selectedPayment !== method.id">
+
+          <!-- Radio Selector -->
+          <span class="w-5 h-5 rounded-full border flex items-center justify-center mt-1 flex-shrink-0"
+            [class.border-primary]="selectedPayment === method.id"
+            [class.border-outline-variant]="selectedPayment !== method.id">
+            <span *ngIf="selectedPayment === method.id" class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          </span>
+
+          <!-- Content -->
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-2.5">
+              <img [src]="method.icon" [alt]="method.name"
+                class="w-8 h-8 object-contain rounded-md bg-surface border border-outline-variant/10 p-0.5">
+              <span class="text-body-md font-bold text-navy">{{ method.name }}</span>
+            </div>
+            <p *ngIf="method.badge" class="text-secondary text-label-xs font-normal leading-relaxed pl-1">
+              {{ method.badge }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER COLUMN: QR CODE & INSTRUCTIONS (col-span-4) -->
+    <div class="lg:col-span-4 flex flex-col items-center space-y-4">
+      <div class="text-center space-y-1">
+        <p class="text-body-sm font-bold text-on-surface-variant uppercase tracking-wider">Tổng thanh toán</p>
+        <p class="text-4xl font-extrabold text-secondary">{{ formatPrice(bookingData.totalPrice) }}</p>
+      </div>
+
+      <div class="w-full bg-white rounded-2xl border border-outline-variant/20 p-6 shadow-md text-center space-y-6">
+        <div class="space-y-1.5">
+          <p class="text-body-sm font-semibold text-on-surface-variant">Thời gian giữ chỗ còn lại</p>
+          <p class="text-2xl font-black text-secondary tracking-widest">{{ formattedTimeLeft }}</p>
+        </div>
+
+        <!-- Dynamic visual QR Code -->
+        <div
+          class="relative bg-white p-3 rounded-xl border border-outline-variant/30 w-52 h-52 mx-auto flex items-center justify-center shadow-inner">
+          <img [src]="getPaymentQR()" alt="QR Code" class="w-full h-full object-contain">
+
+          <!-- Brand Logo overlay at center -->
+          <div
+            class="absolute inset-0 m-auto w-12 h-12 bg-white rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center p-1">
+            <img [src]="getPaymentLogo()" class="w-full h-full object-contain">
+          </div>
+        </div>
+
+        <div class="space-y-4 text-left w-full">
+          <h3 class="font-bold text-title-sm text-navy uppercase border-b border-outline-variant/20 pb-2">
+            Hướng dẫn thanh toán
+          </h3>
+          <ol class="list-decimal list-inside space-y-2 text-body-sm text-on-surface-variant font-normal">
+            <li>Mở ứng dụng ngân hàng hoặc ví điện tử tương ứng trên điện thoại di động.</li>
+            <li>Chọn chức năng <span class="text-secondary font-bold">Quét mã QR</span>.</li>
+            <li>Quét mã ở trang này để tiến hành thanh toán vé.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: SUMMARIES (col-span-3) -->
+    <div class="lg:col-span-3 space-y-6">
+
+      <!-- CARD 1: THÔNG TIN HÀNH KHÁCH -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-5 shadow-sm space-y-3">
+        <h2 class="font-bold text-title-md text-navy border-b border-outline-variant/20 pb-2">
+          Thông tin hành khách
+        </h2>
+        <div class="space-y-2 text-body-sm font-semibold text-on-surface-variant">
+          <div class="flex flex-col">
+            <span class="text-label-sm text-outline">Họ và tên</span>
+            <span class="text-navy font-bold">{{ bookingData.customerName }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-label-sm text-outline">Số điện thoại</span>
+            <span class="text-navy font-bold">{{ bookingData.customerPhone }}</span>
+          </div>
+          <div class="flex flex-col" *ngIf="bookingData.customerEmail">
+            <span class="text-label-sm text-outline">Email</span>
+            <span class="text-navy font-bold">{{ bookingData.customerEmail }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: THÔNG TIN CHUYẾN ĐI -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-5 shadow-sm space-y-3">
+        <div class="border-b border-outline-variant/20 pb-2">
+          <h2 class="font-bold text-title-md text-navy">
+            Thông tin chuyến đi
+          </h2>
+        </div>
+
+        <div class="space-y-3.5 text-body-sm font-semibold text-on-surface-variant leading-normal">
+          <div class="flex justify-between">
+            <span class="text-outline">Tuyến xe</span>
+            <span class="text-navy font-bold text-right">{{ bookingData.startStation }} - {{ bookingData.endStation
+              }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Thời gian xuất bến</span>
+            <span class="text-success font-bold text-right">{{ bookingData.departureTime }} 22/05/2026</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Số lượng ghế</span>
+            <span class="text-navy font-bold text-right">{{ bookingData.selectedSeats.length }} Ghế</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Số ghế</span>
+            <span class="text-success font-bold text-right">{{ bookingData.selectedSeats.join(', ') }}</span>
+          </div>
+
+          <div class="border-t border-outline-variant/20 pt-2 space-y-2">
+            <div class="flex flex-col">
+              <span class="text-label-sm text-outline">Điểm lên xe</span>
+              <span class="text-navy font-bold">{{ bookingData.pickup?.name }}</span>
+              <span class="text-label-xs text-on-surface-variant font-medium">{{ bookingData.pickup?.address }}</span>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-label-sm text-outline">Thời gian tới điểm lên xe</span>
+              <span class="text-secondary font-bold">Trước {{ bookingData.pickup?.time }} 22/05/2026</span>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-label-sm text-outline">Điểm trả khách</span>
+              <span class="text-navy font-bold">{{ bookingData.dropoff?.name }}</span>
+              <span class="text-label-xs text-on-surface-variant font-medium">{{ bookingData.dropoff?.address }}</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between pt-2 border-t border-outline-variant/20 font-bold text-body-md">
+            <span class="text-navy">Tổng tiền lượt đi</span>
+            <span class="text-secondary text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: CHI TIẾT GIÁ -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-5 shadow-sm space-y-3">
+        <div class="border-b border-outline-variant/20 pb-2">
+          <h2 class="font-bold text-title-md text-navy">
+            Chi tiết giá
+          </h2>
+        </div>
+
+        <div class="space-y-2 text-body-sm font-semibold text-on-surface-variant">
+          <div class="flex justify-between">
+            <span class="text-outline">Giá vé lượt đi</span>
+            <span class="text-navy font-bold text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Phí thanh toán</span>
+            <span class="text-navy font-bold text-right">0đ</span>
+          </div>
+
+          <div class="flex justify-between pt-2 border-t border-outline-variant/20 font-bold text-body-md">
+            <span class="text-navy">Tổng tiền</span>
+            <span class="text-secondary text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- Warning Cancel Modal (Hình 1) -->
+<div *ngIf="showCancelModal"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4 shadow-xl border border-outline-variant/30 space-y-6">
+    <div class="flex items-start gap-4">
+      <!-- Orange Warning Icon -->
+      <div class="flex-shrink-0 w-10 h-10 rounded-full border-2 border-secondary flex items-center justify-center">
+        <span class="text-secondary font-black text-2xl leading-none">!</span>
+      </div>
+      <!-- Warning Text -->
+      <div class="flex-1">
+        <p class="text-body-md text-on-surface font-semibold leading-relaxed text-left">
+          Bạn có chắc chắn muốn hủy vé này? Thao tác này sẽ hủy vé đang đặt, bạn không được thanh toán sau khi thực hiện
+          thao tác này.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3">
+      <button (click)="cancelCancel()"
+        class="px-5 py-2 border border-gray-300 rounded bg-white text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+        Huỷ
+      </button>
+      <button (click)="confirmCancel()"
+        class="px-5 py-2 border border-danger rounded bg-white text-danger hover:bg-danger/10 transition-colors font-medium">
+        Xác nhận
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Expiration Modal (Hình 2) -->
+<div *ngIf="showExpirationModal"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div
+    class="bg-white rounded-xl p-8 max-w-lg w-full mx-4 shadow-xl border border-outline-variant/30 relative text-center space-y-6">
+    <!-- Close icon (X) on top-right -->
+    <button (click)="closeExpirationModal()"
+      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+      <span class="material-symbols-outlined text-2xl font-bold">close</span>
+    </button>
+
+    <div class="space-y-2">
+      <h3 class="text-xl font-bold text-navy">
+        Thời hạn thanh toán vé đã hết.
+      </h3>
+      <p class="text-body-md text-on-surface-variant font-medium">
+        Xin quý khách vui lòng đặt lại vé khác.
+      </p>
+      <p class="text-body-md text-on-surface-variant font-medium">
+        TXP Bus chân thành cảm ơn
+      </p>
+    </div>
+
+    <div class="border-t border-b border-outline-variant/10 py-3">
+      <p class="text-body-sm text-outline font-semibold">
+        Tự động chuyển về trang đặt vé sau {{ expirationRedirectTime.toString().padStart(2, '0') }}s
+      </p>
+    </div>
+
+    <div class="flex justify-center">
+      <button (click)="closeExpirationModal()"
+        class="px-8 py-2.5 bg-secondary text-white font-bold rounded-full hover:bg-secondary-hover shadow-[0px_4px_12px_rgba(243,112,33,0.2)] transition-all">
+        Chuyển ngay
+      </button>
+    </div>
+  </div>
+</div>

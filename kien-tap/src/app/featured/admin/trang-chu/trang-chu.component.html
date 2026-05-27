@@ -1,0 +1,94 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Tổng quan</h1>
+    <p>Chào mừng trở lại! Đây là tình hình kinh doanh hiện tại.</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="kpi-grid">
+    <div *ngFor="let stat of stats" class="kpi-card" [ngClass]="stat.theme">
+      <div class="kpi-icon-container">
+        <span class="material-icons">{{ stat.icon }}</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">{{ stat.title }}</span>
+        <span class="kpi-value">
+          <ng-container *ngIf="stat.isCurrency; else noCurrency">
+            {{ stat.value | number:'1.0-0' }}đ
+          </ng-container>
+          <ng-template #noCurrency>
+            {{ stat.value }}
+          </ng-template>
+        </span>
+        <span class="stat-trend" [class.up]="stat.trendType === 'up'" [class.down]="stat.trendType === 'down'">
+          {{ stat.trend }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Recent Bookings Table -->
+    <div class="card table-card">
+      <div class="card-header">
+        <h2>Đặt vé gần đây</h2>
+        <button class="view-all" routerLink="/admin/quan-ly-ve/danh-sach-ve">
+          Xem tất cả
+          <span class="material-icons" style="font-size: 16px;">arrow_forward</span>
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>MÃ VÉ</th>
+              <th>KHÁCH HÀNG</th>
+              <th>TUYẾN</th>
+              <th style="text-align: center;">GHẾ</th>
+              <th style="text-align: center;">GIỜ</th>
+              <th style="text-align: right;">GIÁ VÉ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of bookings">
+              <td class="id-col">{{ booking.id }}</td>
+              <td style="font-weight: 600;">{{ booking.customer }}</td>
+              <td class="route-col">{{ booking.route }}</td>
+              <td style="text-align: center;">
+                <div class="seats-container">
+                  <span *ngFor="let s of getSeatsList(booking.seat)" class="seat-badge" [ngClass]="getSeatColorClass(s)">
+                    {{ s }}
+                  </span>
+                </div>
+              </td>
+              <td style="text-align: center; font-weight: 600; color: #475569;">{{ booking.time }}</td>
+              <td class="price-col">{{ booking.price | number:'1.0-0' }}đ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Popular Routes -->
+    <div class="card routes-card">
+      <div class="card-header">
+        <h2>Tuyến đường phổ biến</h2>
+      </div>
+      <div class="routes-list">
+        <div *ngFor="let route of popularRoutes" class="route-item">
+          <div class="route-info">
+            <span class="route-name">{{ route.name }}</span>
+            <span class="route-count">
+              <span class="material-icons" style="font-size: 13px; color: #64748b; vertical-align: middle; margin-right: 3px;">local_activity</span>
+              {{ route.bookings }} vé đã bán
+            </span>
+          </div>
+          <div class="route-trend" [class.up]="route.trendType === 'up'" [class.down]="route.trendType === 'down'">
+            <span class="material-icons" style="font-size: 14px;">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
+            {{ route.trend }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

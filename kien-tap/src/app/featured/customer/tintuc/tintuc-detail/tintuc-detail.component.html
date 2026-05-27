@@ -1,0 +1,165 @@
+<div class="bg-[#F8F9FA] min-h-screen font-body">
+    <app-header></app-header>
+
+    <main class="pt-28 pb-12 max-w-container-max mx-auto px-margin-desktop">
+        <!-- Breadcrumb & Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-2 text-body-sm text-outline mb-6">
+                <a routerLink="/home" class="hover:text-primary transition-colors">Trang chủ</a>
+                <span class="material-symbols-outlined text-xs">chevron_right</span>
+                <a routerLink="/tin-tuc" class="hover:text-primary transition-colors">Tin tức</a>
+                <span class="material-symbols-outlined text-xs">chevron_right</span>
+                <span class="text-on-surface-variant font-medium">Chi tiết tin tức</span>
+            </div>
+            
+            <span class="bg-primary/10 text-primary text-[11px] font-bold px-3 py-1.5 rounded-md uppercase tracking-wider mb-4 inline-block">
+                {{ newsDetail.category }}
+            </span>
+            <h1 class="text-headline-md md:text-headline-lg font-bold text-navy leading-tight mb-6 max-w-4xl">
+                {{ newsDetail.title }}
+            </h1>
+            
+            <div class="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-outline-variant/30">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-on-surface-variant text-body-sm">
+                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                        {{ newsDetail.date }}
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <span class="text-body-sm text-outline font-medium">Chia sẻ:</span>
+                    <div class="flex items-center gap-4">
+                        <button class="text-on-surface-variant hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-xl">share</span>
+                        </button>
+                        <button class="text-on-surface-variant hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-xl">workspace_premium</span>
+                        </button>
+                        <button class="text-on-surface-variant hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-xl">link</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <!-- Left: Main Content -->
+            <div class="lg:col-span-8">
+                <!-- Summary Box -->
+                <div class="bg-white rounded-2xl p-8 border-l-4 border-primary shadow-sm mb-10">
+                    <p class="text-on-surface text-title-md font-bold leading-relaxed italic">
+                        {{ newsDetail.summary }}
+                    </p>
+                </div>
+
+                <!-- Article Content -->
+                <div class="prose prose-lg max-w-none text-on-surface-variant space-y-6">
+                    <p class="text-body-md leading-relaxed">
+                        Với tôn chỉ hoạt động mang tính kim chỉ nam <span class="font-bold text-navy">“Vạn dặm bình an”</span>, Công ty TNHH Vận tải Tân Xuân Phúc luôn đặt sự an toàn, thoải mái và trải nghiệm của hành khách lên vị trí hàng đầu. Nhằm đáp ứng nhu cầu di chuyển ngày càng cao của bà con miền Trung, đặc biệt là xu hướng lựa chọn các dòng xe chất lượng cao cho những chặng hành trình dài vào Nam lập nghiệp, Ban giám đốc nhà xe đã quyết định đầu tư lớn. Tháng 5/2026, Tân Xuân Phúc chính thức đưa vào vận hành dàn siêu phẩm xe giường phòng cao cấp <span class="font-bold text-primary">THACO Mobihome 22 Phòng Premium</span>.
+                    </p>
+
+                    <p class="text-body-md leading-relaxed">
+                        Đây là dòng xe dòng xe dẫn đầu về công nghệ và sự sang trọng trong phân khúc xe khách giường nằm hiện nay, được mệnh danh là những <span class="font-bold text-navy">"chuyên cơ mặt đất"</span> di động. Khác biệt hoàn toàn với các dòng xe giường nằm truyền thống trước đây, THACO Mobihome 22 Phòng Premium mang đến một định nghĩa hoàn toàn mới về dịch vụ vận tải hành khách đường bộ.
+                    </p>
+
+                    <div class="my-10">
+                        <div class="rounded-2xl overflow-hidden shadow-lg border border-outline-variant/20 mb-3">
+                            <img [src]="newsDetail.image" alt="Xe Limousine Tân Xuân Phúc" class="w-full h-auto">
+                        </div>
+                        <p class="text-center text-body-sm italic text-outline">Ban lãnh đạo TXP tại buổi lễ vinh danh Giải thưởng Vận tải 2026.</p>
+                    </div>
+
+                    <h3 class="text-title-lg font-bold text-navy mt-10 mb-6">Những tiện ích vượt trội chỉ có trên xe phòng VIP Tân Xuân Phúc:</h3>
+                    
+                    <ul class="space-y-6 list-none p-0">
+                        <li class="flex gap-4">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0"></div>
+                            <p class="text-body-md leading-relaxed">
+                                <span class="font-bold text-navy">Không gian riêng tư tuyệt đối:</span> Xe được thiết kế tinh tế với 22 phòng riêng biệt, mỗi phòng đều có rèm che kín đáo, tách biệt hoàn toàn với lối đi chung. Hành khách có thể thoải mái nghỉ ngơi, làm việc hoặc giải trí trong không gian độc lập của riêng mình mà không sợ bị làm phiền.
+                            </p>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0"></div>
+                            <p class="text-body-md leading-relaxed">
+                                <span class="font-bold text-navy">Giường hạng thương gia tích hợp massage:</span> Hệ thống giường nằm được bọc da cao cấp, êm ái, có kích thước rộng rãi phù hợp cho cả hành khách trong và ngoài nước. Đặc biệt, giường có cơ chế điều chỉnh gập ngả linh hoạt bằng điện, tích hợp chức năng massage nhiều chế độ giúp lưu thông khí huyết, xóa tan cảm giác mệt mỏi trên suốt chặng đường dài hàng trăm kilomet.
+                            </p>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0"></div>
+                            <p class="text-body-md leading-relaxed">
+                                <span class="font-bold text-navy">Hệ thống giải trí cá nhân hiện đại:</span> Mỗi phòng được trang bị một màn hình LCD sắc nét, tai nghe nghe nhạc riêng, hệ thống Wifi tốc độ cao phủ sóng toàn xe. Bên cạnh đó là cổng sạc nhanh đa năng cho điện thoại, máy tính bảng và hệ thống đèn đọc sách thông minh.
+                            </p>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0"></div>
+                            <p class="text-body-md leading-relaxed">
+                                <span class="font-bold text-navy">Hệ thống điều hòa và lọc không khí:</span> Xe sử dụng hệ thống điều hòa khí hậu độc lập cho từng phòng, tích hợp màng lọc nano kháng khuẩn, giúp không gian bên trong xe luôn thông thoáng, dễ chịu, giảm thiểu tối đa cảm giác say xe cho hành khách.
+                            </p>
+                        </li>
+                    </ul>
+
+                    <p class="text-body-md leading-relaxed mt-10">
+                        Phát biểu tại buổi lễ tiếp nhận dàn xe mới, <span class="font-bold text-navy">ông Trần Minh Toại – Giám đốc Công ty TNHH Vận tải Tân Xuân Phúc</span> chia sẻ: “Việc đưa dàn xe THACO Mobihome 22 Phòng Premium vào hoạt động không chỉ là bước tiến về mặt quy mô của Tân Xuân Phúc, mà còn là lời cam kết mạnh mẽ của chúng tôi về việc không ngừng nâng cao chất lượng dịch vụ. Chúng tôi muốn mỗi chuyến đi của bà con từ quê hương Bình Định, Phú Yên vào miền Nam không còn là một hành trình mệt mỏi, mà là một trải nghiệm nghỉ ngơi thư giãn thực sự sau những ngày làm việc vất vả.”
+                    </p>
+
+                    <p class="text-body-md leading-relaxed">
+                        Sự xuất hiện của dàn xe màu cam trắng hiện đại của Tân Xuân Phúc hứa hẹn sẽ mang đến cho quý hành khách những hành trình trọn vẹn, an toàn và đẳng cấp nhất. Vé của dòng xe VIP hiện đã chính thức mở bán trên toàn hệ thống phòng vé của công ty.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Sidebar -->
+            <div class="lg:col-span-4 space-y-8">
+
+                <!-- Latest News List -->
+                <div class="bg-[#F0F4F8] rounded-2xl p-8 shadow-sm">
+                    <h4 class="font-bold text-title-lg text-navy mb-8 border-b border-outline-variant/30 pb-4">Tin tức khác</h4>
+                    <div class="space-y-8">
+                        <div *ngFor="let news of otherNews; let i = index" class="flex gap-4 group cursor-pointer">
+                            <span class="text-headline-sm font-bold text-primary/20 group-hover:text-primary transition-colors leading-none">
+                                {{ (i + 1).toString().padStart(2, '0') }}
+                            </span>
+                            <div>
+                                <h5 class="text-body-md font-bold text-navy line-clamp-2 mb-2 group-hover:text-primary transition-colors leading-snug">
+                                    {{ news.title }}
+                                </h5>
+                                <span class="text-[11px] text-outline uppercase tracking-wider">{{ news.date }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Posts -->
+        <div class="mt-24 pt-16 border-t border-outline-variant/30">
+            <div class="flex items-center justify-between mb-10">
+                <h2 class="text-headline-sm font-bold text-navy uppercase tracking-tight">Bài viết liên quan</h2>
+                <a routerLink="/tin-tuc" class="flex items-center gap-2 text-primary font-bold text-body-sm hover:gap-3 transition-all">
+                    Xem tất cả
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                <div *ngFor="let news of relatedNews" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-outline-variant/20 group cursor-pointer hover:shadow-lg transition-all duration-300">
+                    <div class="h-48 overflow-hidden">
+                        <img [src]="news.image" [alt]="news.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-primary text-[10px] font-bold uppercase tracking-widest mb-2 block">{{ news.category }}</span>
+                        <h4 class="text-title-md font-bold text-navy group-hover:text-primary transition-colors line-clamp-2 mb-3 leading-snug">
+                            {{ news.title }}
+                        </h4>
+                        <p class="text-on-surface-variant text-body-sm line-clamp-2 mb-4 leading-relaxed">
+                            {{ news.summary }}
+                        </p>
+                        <span class="text-[11px] text-outline uppercase tracking-wider">{{ news.date }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <app-footer></app-footer>
+</div>

@@ -1,1 +1,68 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* Custom Base Styles */
+body {
+    margin: 0;
+    font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
+    @apply bg-background text-on-surface;
+}
+
+@layer components {
+    /* BUTTONS */
+    .btn-primary { @apply bg-primary text-on-primary hover:bg-primary-hover transition-colors px-4 py-2 rounded-md; }
+    .btn-secondary { @apply bg-secondary text-on-secondary hover:bg-secondary-hover transition-colors px-4 py-2 rounded-md; }
+    .btn-outline { @apply border border-primary text-primary hover:bg-primary-light transition-colors px-4 py-2 rounded-md; }
+    .btn-danger { @apply bg-danger text-white hover:bg-danger/90 transition-colors px-4 py-2 rounded-md; }
+    .btn-disabled { @apply bg-outline-variant text-on-surface-disabled cursor-not-allowed px-4 py-2 rounded-md; }
+
+    /* TEXT */
+    .heading-page { @apply text-headline-lg text-navy; }
+    .heading-section { @apply text-headline-md text-navy; }
+    .heading-card { @apply text-title-lg text-on-surface; }
+    .text-body { @apply text-body-md text-on-surface; }
+    .text-subtext { @apply text-body-md text-on-surface-variant; }
+    .text-caption { @apply text-label-md text-on-surface-variant; }
+
+    /* STATUS BADGE */
+    .badge-confirmed { @apply bg-info-light text-info-text px-2 py-1 rounded-sm text-label-sm; }
+    .badge-completed { @apply bg-success-light text-success-text px-2 py-1 rounded-sm text-label-sm; }
+    .badge-cancelled { @apply bg-danger-light text-danger-text px-2 py-1 rounded-sm text-label-sm; }
+    .badge-pending { @apply bg-warning-light text-warning-text px-2 py-1 rounded-sm text-label-sm; }
+    .badge-expired { @apply bg-surface-container text-on-surface-variant px-2 py-1 rounded-sm text-label-sm; }
+
+    /* CARD */
+    .card-custom { @apply bg-surface rounded-lg shadow-card p-6; }
+
+    /* INPUT */
+    .input-custom { @apply border border-outline-variant rounded-sm px-3 py-2 outline-none transition-all; }
+    .input-custom:focus { @apply border-primary ring-1 ring-primary/20; }
+    .input-error { @apply border-danger ring-1 ring-danger/20; }
+}
+
+@layer utilities {
+    /* Các font utility nếu cần dùng trực tiếp */
+    .font-display-lg { @apply text-display-lg; }
+    .font-headline-lg { @apply text-headline-lg; }
+    .font-headline-md { @apply text-headline-md; }
+    .font-title-lg { @apply text-title-lg; }
+    .font-label-md { @apply text-label-md; }
+    .font-body-lg { @apply text-body-lg; }
+    .font-body-md { @apply text-body-md; }
+}
+
+/* Real-time validation warning styles */
+.is-invalid input,
+.is-invalid select,
+.is-invalid .select-trigger {
+  border-color: #e53e3e !important;
+}
+.is-invalid .select-trigger.open {
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+}
+.error-text {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: left;
+}

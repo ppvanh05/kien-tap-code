@@ -1,0 +1,185 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo nhân sự lái phụ xe</span>
+    </div>
+    <h1>Báo cáo tài xế & phụ xe</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid" *ngIf="isReportViewed">
+    <div class="kpi-card purple">
+      <div class="kpi-icon-container">
+        <span class="material-icons">badge</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng nhân sự vận hành</span>
+        <span class="kpi-value">{{ stats.totalCrew }} nhân viên</span>
+      </div>
+    </div>
+
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">airline_seat_recline_normal</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng số lái xe</span>
+        <span class="kpi-value">{{ stats.totalDrivers }} tài xế</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" [ngClass]="stats.expiringLicenses > 0 ? 'red-card' : 'teal'" [style.border-left]="stats.expiringLicenses > 0 ? '5px solid #dc2626' : '5px solid #16a34a'">
+      <div class="kpi-icon-container">
+        <span class="material-icons">report_problem</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Bằng lái sắp/đã hết hạn (30 ngày)</span>
+        <span class="kpi-value" [style.color]="stats.expiringLicenses > 0 ? '#b91c1c' : '#15803d'">
+          {{ stats.expiringLicenses }} nhân sự
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc hoạt động nhân sự
+    </h3>
+
+    <div class="search-grid">
+      <!-- Tìm kiếm -->
+      <div class="form-group">
+        <label>Tìm kiếm nhân sự</label>
+        <input type="text" placeholder="Tìm theo mã, họ tên, số điện thoại, CCCD..." [(ngModel)]="filters.searchTerm">
+      </div>
+
+      <!-- Vai trò -->
+      <div class="form-group">
+        <label>Vai trò công tác</label>
+        <select [(ngModel)]="filters.role">
+          <option value="Tất cả">Tất cả vai trò</option>
+          <option *ngFor="let role of rolesList" [value]="role">{{ role }}</option>
+        </select>
+      </div>
+
+      <!-- Trạng thái -->
+      <div class="form-group">
+        <label>Trạng thái làm việc</label>
+        <select [(ngModel)]="filters.status">
+          <option value="Tất cả">Tất cả trạng thái</option>
+          <option value="Hoạt động">Đang hoạt động</option>
+          <option value="Đã khóa">Đã khóa</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <!-- Unviewed State Placeholder -->
+    <div class="empty-state" *ngIf="!isReportViewed">
+      <span class="material-icons empty-icon">analytics</span>
+      <h3>Chưa tải báo cáo</h3>
+      <p>Vui lòng chọn các tiêu chí lọc và nhấn <strong>"Xem báo cáo"</strong> để hiển thị dữ liệu chi tiết.</p>
+    </div>
+
+    <ng-container *ngIf="isReportViewed">
+      <div class="table-card-header">
+        <h2>
+          Danh sách chi tiết nhân sự vận hành chuyến
+          <span class="count">Tổng cộng {{ filteredCrew.length }} nhân sự</span>
+        </h2>
+      </div>
+
+      <div class="table-responsive" *ngIf="filteredCrew.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Mã nhân sự</th>
+              <th>Họ và tên</th>
+              <th>Số điện thoại / CCCD</th>
+              <th>Vai trò</th>
+              <th>Bằng lái & Thời hạn</th>
+              <th style="text-align: center;">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredCrew">
+              <td class="id-col">{{ item.maNhanSu }}</td>
+              <td class="name-col">{{ item.hoTen }}</td>
+              <td>
+                <div style="font-weight: 500; color: #1e293b;">{{ item.sdt }}</div>
+                <div style="font-size: 12px; color: #64748b;">CCCD: {{ item.cccd }}</div>
+              </td>
+              <td>
+                <span class="role-pill" [ngClass]="{
+                  'role-driver-1': item.vaiTro === 'Tài xế',
+                  'role-helper': item.vaiTro === 'Phụ xe'
+                }">
+                  {{ item.vaiTro }}
+                </span>
+              </td>
+              <td>
+                <div *ngIf="item.vaiTro === 'Tài xế'">
+                  <div style="font-weight: 600; color: #1e293b;">Hạng: {{ item.loaiBangLai }}</div>
+                  
+                  <!-- Normal Expiry -->
+                  <div *ngIf="!isLicenseExpiringSoon(item.thoiHanBangLai) && !isLicenseExpired(item.thoiHanBangLai)" style="font-size: 12px; color: #64748b;">
+                    Hạn: {{ item.thoiHanBangLai }}
+                  </div>
+                  
+                  <!-- Expiring Soon Warning -->
+                  <div *ngIf="isLicenseExpiringSoon(item.thoiHanBangLai)" style="font-size: 12px; color: #ea580c; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; background-color: #ffedd5; padding: 2px 6px; border-radius: 4px; border: 1px solid #fed7aa; margin-top: 2px;">
+                    <span class="material-icons" style="font-size: 14px;">warning</span>
+                    Sắp hết hạn: {{ item.thoiHanBangLai }}
+                  </div>
+
+                  <!-- Expired Alert (Red) -->
+                  <div *ngIf="isLicenseExpired(item.thoiHanBangLai)" style="font-size: 12px; color: #dc2626; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; background-color: #fee2e2; padding: 2px 6px; border-radius: 4px; border: 1px solid #fecaca; margin-top: 2px;">
+                    <span class="material-icons" style="font-size: 14px;">error</span>
+                    ĐÃ HẾT HẠN: {{ item.thoiHanBangLai }}
+                  </div>
+                </div>
+                <div *ngIf="item.vaiTro !== 'Tài xế'" style="color: #94a3b8; font-style: italic; font-size: 12.5px;">
+                  Không yêu cầu bằng lái
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <span class="status-pill" [ngClass]="item.trangThaiLamViec === 'Đang hoạt động' ? 'status-active' : 'status-locked'">
+                  {{ item.trangThaiLamViec }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- No Data State -->
+      <div class="no-data-container" *ngIf="filteredCrew.length === 0">
+        <span class="material-icons">inbox</span>
+        <p>Không tìm thấy dữ liệu công tác nhân sự nào khớp với bộ lọc.</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

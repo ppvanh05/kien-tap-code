@@ -1,0 +1,522 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản lý vé</span>
+      <span class="separator">/</span>
+      <span class="current">Đặt vé mới</span>
+    </div>
+    <h1>Thanh toán</h1>
+  </div>
+
+  <div class="card">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- LEFT COLUMN: CHỌN PHƯƠNG THỨC THANH TOÁN (col-span-4) -->
+    <div class="lg:col-span-5 space-y-4">
+      <h2 class="font-bold text-title-lg text-navy border-b border-outline-variant/30 pb-3 flex items-center gap-2">
+        <span class="material-icons text-primary font-bold">payment</span>
+        Chọn phương thức thanh toán
+      </h2>
+
+      <div class="space-y-3">
+        <div *ngFor="let method of paymentMethods" (click)="selectedPayment = method.id"
+          class="flex items-start gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer hover:border-primary/50 bg-white"
+          [class.border-primary]="selectedPayment === method.id"
+          [class.border-outline-variant/20]="selectedPayment !== method.id">
+
+          <!-- Radio Selector -->
+          <span class="w-5 h-5 rounded-full border flex items-center justify-center mt-1 flex-shrink-0"
+            [class.border-primary]="selectedPayment === method.id"
+            [class.border-outline-variant]="selectedPayment !== method.id">
+            <span *ngIf="selectedPayment === method.id" class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          </span>
+
+          <!-- Content -->
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-2.5">
+              <img [src]="method.icon" [alt]="method.name"
+                class="w-8 h-8 object-contain rounded-md bg-surface border border-outline-variant/10 p-0.5">
+              <span class="text-body-md font-bold text-navy">{{ method.name }}</span>
+            </div>
+            <p *ngIf="method.badge" class="text-secondary text-label-xs font-normal leading-relaxed pl-1">
+              {{ method.badge }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER COLUMN: QR CODE & INSTRUCTIONS (col-span-4) -->
+    <div class="lg:col-span-4 flex flex-col items-center space-y-4">
+      <div class="text-center space-y-1">
+        <p class="text-body-sm font-bold text-on-surface-variant uppercase tracking-wider">Tổng thanh toán</p>
+        <p class="text-4xl font-extrabold text-secondary">{{ formatPrice(bookingData.totalPrice) }}</p>
+      </div>
+
+      <div class="w-full bg-white rounded-2xl border border-outline-variant/20 p-6 shadow-md text-center space-y-6">
+        <!-- Phần dành cho Tiền mặt -->
+        <div *ngIf="selectedPayment === 'cash'">
+          <div class="space-y-4 text-left w-full">
+            <h3 class="font-bold text-title-sm text-navy uppercase border-b border-outline-variant/20 pb-2">
+              Thanh toán tiền mặt
+            </h3>
+            <p class="text-body-sm text-on-surface-variant font-normal">
+              Nhân viên xác nhận nhận tiền mặt từ khách hàng với số tiền: <strong class="text-secondary">{{ formatPrice(bookingData.totalPrice) }}</strong>
+            </p>
+            <button (click)="confirmCashPayment()"
+              class="w-full px-8 py-3.5 bg-success text-white font-bold rounded-xl shadow-lg hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 text-body-lg"
+              style="background-color: #16a34a;">
+              <span class="material-icons">check_circle</span>
+              XÁC NHẬN NHẬN TIỀN
+            </button>
+          </div>
+        </div>
+
+        <!-- Phần dành cho các phương thức khác (QR code) -->
+        <div *ngIf="selectedPayment !== 'cash'">
+          <div class="space-y-1.5">
+            <p class="text-body-sm font-semibold text-on-surface-variant">Thời gian giữ chỗ còn lại</p>
+            <p class="text-2xl font-black text-secondary tracking-widest">{{ formattedTimeLeft }}</p>
+          </div>
+
+          <!-- Dynamic visual QR Code -->
+          <div
+            class="relative bg-white p-3 rounded-xl border border-outline-variant/30 w-52 h-52 mx-auto flex items-center justify-center shadow-inner">
+            <img [src]="getPaymentQR()" alt="QR Code" class="w-full h-full object-contain">
+
+            <!-- Brand Logo overlay at center -->
+            <div
+              class="absolute inset-0 m-auto w-12 h-12 bg-white rounded-lg shadow-md border border-outline-variant/30 flex items-center justify-center p-1">
+              <img [src]="getPaymentLogo()" class="w-full h-full object-contain">
+            </div>
+          </div>
+
+          <div class="space-y-4 text-left w-full">
+            <h3 class="font-bold text-title-sm text-navy uppercase border-b border-outline-variant/20 pb-2">
+              Hướng dẫn thanh toán
+            </h3>
+            <ol class="list-decimal list-inside space-y-2 text-body-sm text-on-surface-variant font-normal">
+              <li>Mở ứng dụng ngân hàng hoặc ví điện tử tương ứng trên điện thoại di động.</li>
+              <li>Chọn chức năng <span class="text-secondary font-bold">Quét mã QR</span>.</li>
+              <li>Quét mã ở trang này để tiến hành thanh toán vé.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: SUMMARIES (col-span-3) -->
+    <div class="lg:col-span-3 space-y-6">
+
+      <!-- CARD 1: THÔNG TIN HÀNH KHÁCH -->
+      <div class="space-y-3">
+        <h2 class="font-bold text-title-md text-navy border-b border-outline-variant/20 pb-2">
+          Thông tin hành khách
+        </h2>
+        <div class="space-y-2 text-body-sm font-semibold text-on-surface-variant">
+          <div class="flex flex-col">
+            <span class="text-label-sm text-outline">Họ và tên</span>
+            <span class="text-navy font-bold">{{ bookingData.customerName }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-label-sm text-outline">Số điện thoại</span>
+            <span class="text-navy font-bold">{{ bookingData.customerPhone }}</span>
+          </div>
+          <div class="flex flex-col" *ngIf="bookingData.customerEmail">
+            <span class="text-label-sm text-outline">Email</span>
+            <span class="text-navy font-bold">{{ bookingData.customerEmail }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: THÔNG TIN CHUYẾN ĐI -->
+      <div class="space-y-3">
+        <div class="border-b border-outline-variant/20 pb-2">
+          <h2 class="font-bold text-title-md text-navy">
+            Thông tin chuyến đi
+          </h2>
+        </div>
+
+        <div class="space-y-3.5 text-body-sm font-semibold text-on-surface-variant leading-normal">
+          <div class="flex justify-between">
+            <span class="text-outline">Tuyến xe</span>
+            <span class="text-navy font-bold text-right">{{ bookingData.startStation }} - {{ bookingData.endStation
+              }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Thời gian xuất bến</span>
+            <span class="text-success font-bold text-right">{{ bookingData.departureTime }} 22/05/2026</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Số lượng ghế</span>
+            <span class="text-navy font-bold text-right">{{ bookingData.selectedSeats.length }} Ghế</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Số ghế</span>
+            <span class="text-success font-bold text-right">{{ bookingData.selectedSeats.join(', ') }}</span>
+          </div>
+
+          <div class="border-t border-outline-variant/20 pt-2 space-y-2">
+            <div class="flex flex-col">
+              <span class="text-label-sm text-outline">Điểm lên xe</span>
+              <span class="text-navy font-bold">{{ bookingData.pickup?.name }}</span>
+              <span class="text-label-xs text-on-surface-variant font-medium">{{ bookingData.pickup?.address }}</span>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-label-sm text-outline">Thời gian tới điểm lên xe</span>
+              <span class="text-secondary font-bold">Trước {{ bookingData.pickup?.time }} 22/05/2026</span>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-label-sm text-outline">Điểm trả khách</span>
+              <span class="text-navy font-bold">{{ bookingData.dropoff?.name }}</span>
+              <span class="text-label-xs text-on-surface-variant font-medium">{{ bookingData.dropoff?.address }}</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between pt-2 border-t border-outline-variant/20 font-bold text-body-md">
+            <span class="text-navy">Tổng tiền lượt đi</span>
+            <span class="text-secondary text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: CHI TIẾT GIÁ -->
+      <div class="space-y-3">
+        <div class="border-b border-outline-variant/20 pb-2">
+          <h2 class="font-bold text-title-md text-navy">
+            Chi tiết giá
+          </h2>
+        </div>
+
+        <div class="space-y-2 text-body-sm font-semibold text-on-surface-variant">
+          <div class="flex justify-between">
+            <span class="text-outline">Giá vé lượt đi</span>
+            <span class="text-navy font-bold text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-outline">Phí thanh toán</span>
+            <span class="text-navy font-bold text-right">0đ</span>
+          </div>
+
+          <div class="flex justify-between pt-2 border-t border-outline-variant/20 font-bold text-body-md">
+            <span class="text-navy">Tổng tiền</span>
+            <span class="text-secondary text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- Warning Cancel Modal (Hình 1) -->
+<div *ngIf="showCancelModal"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4 shadow-xl border border-outline-variant/30 space-y-6">
+    <div class="flex items-start gap-4">
+      <!-- Orange Warning Icon -->
+      <div class="flex-shrink-0 w-10 h-10 rounded-full border-2 border-secondary flex items-center justify-center">
+        <span class="text-secondary font-black text-2xl leading-none">!</span>
+      </div>
+      <!-- Warning Text -->
+      <div class="flex-1">
+        <p class="text-body-md text-on-surface font-semibold leading-relaxed text-left">
+          Bạn có chắc chắn muốn hủy vé này? Thao tác này sẽ hủy vé đang đặt, bạn không được thanh toán sau khi thực hiện
+          thao tác này.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3">
+      <button (click)="cancelCancel()"
+        class="px-5 py-2 border border-gray-300 rounded bg-white text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+        Huỷ
+      </button>
+      <button (click)="confirmCancel()"
+        class="px-5 py-2 border border-danger rounded bg-white text-danger hover:bg-danger/10 transition-colors font-medium">
+        Xác nhận
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Expiration Modal (Hình 2) -->
+<div *ngIf="showExpirationModal"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div
+    class="bg-white rounded-xl p-8 max-w-lg w-full mx-4 shadow-xl border border-outline-variant/30 relative text-center space-y-6">
+    <!-- Close icon (X) on top-right -->
+    <button (click)="closeExpirationModal()"
+      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+      <span class="material-symbols-outlined text-2xl font-bold">close</span>
+    </button>
+
+    <div class="space-y-2">
+      <h3 class="text-xl font-bold text-navy">
+        Thời hạn thanh toán vé đã hết.
+      </h3>
+      <p class="text-body-md text-on-surface-variant font-medium">
+        Xin quý khách vui lòng đặt lại vé khác.
+      </p>
+      <p class="text-body-md text-on-surface-variant font-medium">
+        TXP Bus chân thành cảm ơn
+      </p>
+    </div>
+
+    <div class="border-t border-b border-outline-variant/10 py-3">
+      <p class="text-body-sm text-outline font-semibold">
+        Tự động chuyển về trang đặt vé sau {{ expirationRedirectTime.toString().padStart(2, '0') }}s
+      </p>
+    </div>
+
+    <div class="flex justify-center">
+      <button (click)="closeExpirationModal()"
+        class="px-8 py-2.5 bg-secondary text-white font-bold rounded-full hover:bg-secondary-hover shadow-[0px_4px_12px_rgba(243,112,33,0.2)] transition-all">
+        Chuyển ngay
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal - Hiển thị vé -->
+<div *ngIf="showSuccessModal && successOrder"
+  class="fixed inset-0 z-[200] flex items-center justify-center bg-navy/60 backdrop-blur-xs p-4 overflow-y-auto">
+  <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl border border-outline-variant/10 animate-scale-up max-h-[90vh] overflow-y-auto">
+    <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center sticky top-0 bg-white z-10">
+      <h3 class="font-bold text-primary text-title-lg uppercase tracking-wider">ĐẶT VÉ THÀNH CÔNG</h3>
+      <span class="material-icons text-outline-variant hover:text-navy cursor-pointer select-none text-2xl"
+        (click)="closeSuccessModal()">close</span>
+    </div>
+
+    <div class="p-6 space-y-8">
+      <!-- Thông tin đơn hàng -->
+      <section class="bg-surface-container-low rounded-xl border border-outline-variant/10 p-6 space-y-6">
+        <h4 class="font-bold text-navy text-title-md tracking-wider">THÔNG TIN MUA VÉ</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-3">
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Mã đặt vé</span>
+              <span class="font-bold text-primary">{{ successOrder.maDonHang }}</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Họ tên khách hàng</span>
+              <span class="font-bold text-navy">{{ successOrder.hoTenKhachHang }}</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Số điện thoại</span>
+              <span class="font-bold text-navy">{{ successOrder.soDienThoai }}</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2"
+              *ngIf="successOrder.email">
+              <span class="text-body-sm text-on-surface-variant">Email</span>
+              <span class="font-bold text-navy">{{ successOrder.email }}</span>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Tuyến xe</span>
+              <span class="font-bold text-navy">{{ successOrder.tenTuyen }}</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Giờ khởi hành</span>
+              <span class="font-bold text-primary">{{ successOrder.gioKhoiHanh }} - {{ successOrder.departureDate
+                }}</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Tổng giá vé</span>
+              <span class="font-bold text-secondary text-lg">{{ (successOrder.tongGiaVe ||
+                0).toLocaleString('vi-VN') }}đ</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Phương thức thanh toán</span>
+              <span class="font-semibold text-navy">{{ successOrder.phuongThucThanhToan }}</span>
+            </div>
+            <div class="flex justify-between border-b border-dashed border-outline-variant/20 pb-2">
+              <span class="text-body-sm text-on-surface-variant">Trạng thái đơn hàng</span>
+              <span
+                class="px-3 py-1 rounded-full font-bold text-label-sm bg-success-light text-success-text">{{ successOrder.trangThaiDonHang }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Thông tin vé chi tiết -->
+      <section class="space-y-6">
+        <h4 class="font-bold text-navy text-title-md tracking-wider">THÔNG TIN VÉ CHI TIẾT</h4>
+        <div *ngIf="successOrder.tickets.length > 1"
+          class="flex items-center gap-3 bg-info-light border border-info/20 text-info-text p-4 rounded-xl">
+          <span class="material-icons text-info">info</span>
+          <span class="font-semibold text-body-sm">Đơn hàng của bạn gồm {{ successOrder.tickets.length }} vé. Dưới
+            đây là thông tin chi tiết từng vé:</span>
+        </div>
+
+        <div class="space-y-6">
+          <div *ngFor="let ticket of successOrder.tickets; let idx = index"
+            class="bg-surface-container-low rounded-xl border border-outline-variant/10 overflow-hidden flex flex-col">
+            <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center bg-white">
+              <div class="flex items-center gap-2 text-body-sm font-bold text-navy">
+                <span class="material-icons text-outline">directions_bus</span>
+                Chuyến xe đi: {{ successOrder.tenTuyen }}
+              </div>
+              <div class="bg-outline-variant/30 text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-bold">
+                Vé {{ idx + 1 }} / {{ successOrder.tickets.length }}
+              </div>
+            </div>
+
+            <div class="p-6 flex flex-col md:flex-row gap-8">
+              <div class="flex-grow space-y-6">
+                <div class="text-headline-sm font-bold text-primary">{{ successOrder.tenTuyen }}</div>
+                <div class="relative pl-6 border-l-2 border-dotted border-outline-variant/60 space-y-6 ml-2">
+                  <div class="relative">
+                    <span
+                      class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white border-[4px] border-secondary"></span>
+                    <div class="space-y-1">
+                      <div class="text-body-lg font-bold text-navy leading-none">{{ successOrder.gioKhoiHanh }}</div>
+                      <div class="text-label-sm text-outline-variant uppercase font-bold tracking-wider">ĐIỂM ĐÓN</div>
+                      <p class="text-body-md text-on-surface-variant font-medium">{{ successOrder.diemDon }}</p>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <span
+                      class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white border-[4px] border-primary"></span>
+                    <div class="space-y-1">
+                      <div class="text-body-lg font-bold text-navy leading-none">--:--</div>
+                      <div class="text-label-sm text-outline-variant uppercase font-bold tracking-wider">ĐIỂM TRẢ</div>
+                      <p class="text-body-md text-on-surface-variant font-medium">{{ successOrder.diemTra }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-4 rounded-xl border border-outline-variant/10 text-center">
+                  <div class="flex flex-col gap-1">
+                    <span class="text-label-sm text-outline uppercase tracking-wider">Số ghế</span>
+                    <span class="font-bold text-primary text-body-md">{{ ticket.soGhe }}</span>
+                  </div>
+                  <div class="flex flex-col gap-1 border-l border-outline-variant/20">
+                    <span class="text-label-sm text-outline uppercase tracking-wider">Mã vé</span>
+                    <span class="font-bold text-navy text-body-md">{{ ticket.maVe }}</span>
+                  </div>
+                  <div class="flex flex-col gap-1 border-l border-outline-variant/20">
+                    <span class="text-label-sm text-outline uppercase tracking-wider">Biển số xe</span>
+                    <span class="font-bold text-navy text-body-md">{{ successOrder.bienSoXe }}</span>
+                  </div>
+                  <div class="flex flex-col gap-1 border-l border-outline-variant/20">
+                    <span class="text-label-sm text-outline uppercase tracking-wider">Trạng thái</span>
+                    <span class="font-bold text-success text-body-md">Đã thanh toán</span>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="w-full md:w-[220px] flex-shrink-0 flex flex-col items-center justify-center border-t-2 md:border-t-0 md:border-l-2 border-dashed border-outline-variant/30 pt-6 md:pt-0 md:pl-8">
+                <div
+                  class="bg-white border border-outline-variant/10 p-4 rounded-xl flex flex-col items-center gap-3 w-full shadow-xs">
+                  <div class="relative w-[130px] h-[130px] bg-white border border-outline-variant/10 p-2 rounded-xl">
+                    <div class="absolute top-2 left-2 w-7 h-7 border-4 border-navy rounded">
+                      <div class="w-2.5 h-2.5 bg-navy m-0.5 rounded-sm"></div>
+                    </div>
+                    <div class="absolute top-2 right-2 w-7 h-7 border-4 border-navy rounded">
+                      <div class="w-2.5 h-2.5 bg-navy m-0.5 rounded-sm"></div>
+                    </div>
+                    <div class="absolute bottom-2 left-2 w-7 h-7 border-4 border-navy rounded">
+                      <div class="w-2.5 h-2.5 bg-navy m-0.5 rounded-sm"></div>
+                    </div>
+                    <div
+                      class="absolute bottom-2 right-2 top-[38px] left-[38px] bg-[radial-gradient(#0B2A4A_25%,transparent_25%)] bg-[length:6px_6px]">
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-label-sm text-outline font-semibold uppercase tracking-wider mb-0.5">Mã tra cứu hóa đơn</p>
+                    <p class="font-bold text-navy text-body-md font-mono">{{ ticket.maVe }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="flex justify-end pt-6 border-t border-outline-variant/10">
+        <button (click)="closeSuccessModal()"
+          class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover shadow-lg transition-all flex items-center gap-2">
+          <span class="material-icons">check_circle</span>
+          ĐÓNG
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alert Modal - Thông báo trung tâm -->
+<div *ngIf="showAlertModal"
+  class="fixed inset-0 z-[250] flex items-center justify-center bg-navy/60 backdrop-blur-xs p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-xl border border-outline-variant/10 animate-scale-up">
+    <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
+      <h3 class="font-bold text-primary text-title-md uppercase tracking-wider flex items-center gap-2">
+        <span class="material-icons" [ngClass]="{
+          'text-success': alertType === 'success',
+          'text-danger': alertType === 'error',
+          'text-warning': alertType === 'warning'
+        }">
+          {{ alertType === 'success' ? 'check_circle' : alertType === 'error' ? 'error' : 'warning' }}
+        </span>
+        {{ alertType === 'success' ? 'THÀNH CÔNG' : alertType === 'error' ? 'LỖI' : 'CẢNH BÁO' }}
+      </h3>
+      <span class="material-icons text-outline-variant hover:text-navy cursor-pointer select-none text-2xl"
+        (click)="closeAlert()">close</span>
+    </div>
+
+    <div class="p-6">
+      <p class="text-body-md text-on-surface font-semibold leading-relaxed text-center">
+        {{ alertMessage }}
+      </p>
+    </div>
+
+    <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-center">
+      <button (click)="closeAlert()"
+        class="px-8 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover shadow-md transition-all">
+        ĐÓNG
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal - Xác nhận -->
+<div *ngIf="showConfirmModal"
+  class="fixed inset-0 z-[260] flex items-center justify-center bg-navy/60 backdrop-blur-xs p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-xl border border-outline-variant/10 animate-scale-up">
+    <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
+      <h3 class="font-bold text-primary text-title-md uppercase tracking-wider flex items-center gap-2">
+        <span class="material-icons text-warning">warning</span>
+        XÁC NHẬN
+      </h3>
+      <span class="material-icons text-outline-variant hover:text-navy cursor-pointer select-none text-2xl"
+        (click)="closeConfirm()">close</span>
+    </div>
+
+    <div class="p-6">
+      <p class="text-body-md text-on-surface font-semibold leading-relaxed text-center">
+        {{ confirmMessage }}
+      </p>
+    </div>
+
+    <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-end gap-3">
+      <button (click)="closeConfirm()"
+        class="px-6 py-2.5 border border-outline-variant text-navy font-bold rounded-xl hover:bg-surface transition-all">
+        HUỶ
+      </button>
+      <button (click)="confirmCallback && confirmCallback(); closeConfirm();"
+        class="px-6 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover shadow-md transition-all">
+        XÁC NHẬN
+      </button>
+    </div>
+  </div>
+</div>

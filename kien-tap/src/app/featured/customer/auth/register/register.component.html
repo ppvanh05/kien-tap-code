@@ -1,0 +1,125 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
+  <!-- Dynamic Dropdown Toast Alert -->
+  <div *ngIf="showToast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-3 px-6 py-3.5 bg-success text-white rounded-2xl shadow-lg border border-white/20" style="animation: slideDown 0.3s ease-out">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span class="font-bold text-body-md text-nowrap">{{ toastMessage }}</span>
+  </div>
+
+  <div class="w-full max-w-md bg-surface rounded-2xl shadow-modal overflow-hidden">
+    <div class="px-6 py-5 border-b border-outline-variant/30 text-center relative">
+      <h2 class="text-headline-sm font-bold text-primary">Đăng ký</h2>
+      <button (click)="closeModal()" class="absolute top-5 right-5 text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="px-6 py-6 space-y-6">
+      <ng-container [ngSwitch]="step">
+
+        <div *ngSwitchCase="'phone'" class="space-y-5">
+          <div class="space-y-3">
+            <label class="sr-only">Số điện thoại</label>
+            <div class="flex items-center rounded-2xl border border-outline-variant/50 bg-surface px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+              <span class="material-symbols-outlined text-primary mr-3">phone</span>
+              <input
+                type="text"
+                [(ngModel)]="phoneNumber"
+                placeholder="Nhập số điện thoại"
+                class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none"
+              />
+            </div>
+          </div>
+          <button (click)="continueFromPhone()" class="w-full rounded-xl bg-primary text-on-primary py-3 text-title-md font-bold hover:opacity-95 transition-all">
+            Tiếp tục
+          </button>
+
+          <p class="text-body-sm text-on-surface-variant text-center">
+            Bạn đã có tài khoản?
+            <a href="#" (click)="openLogin($event)" class="text-secondary font-bold hover:underline">Đăng nhập</a>
+          </p>
+          <p *ngIf="otpError" class="text-sm text-danger font-semibold text-center">{{ otpError }}</p>
+        </div>
+
+        <div *ngSwitchCase="'otp'" class="space-y-5">
+          <p class="text-body-md text-on-surface-variant text-center">Mã xác thực đã được gửi về số <span class="font-bold text-navy">{{ phoneNumber }}</span>.</p>
+          
+          <div class="relative flex justify-center items-center py-2">
+            <input
+              type="text"
+              maxlength="6"
+              pattern="[0-9]*"
+              inputmode="numeric"
+              [(ngModel)]="otpDigitsString"
+              (ngModelChange)="onOtpChange($event)"
+              style="position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; opacity: 0 !important; background: transparent !important; border: none !important; outline: none !important; color: transparent !important; caret-color: transparent !important; cursor: pointer !important; z-index: 10 !important;"
+              autofocus
+            />
+            <div class="grid grid-cols-6 gap-2 w-full max-w-xs mx-auto">
+              <div *ngFor="let index of [0,1,2,3,4,5]"
+                [class]="'w-11 h-14 rounded-2xl border-2 flex items-center justify-center text-body-lg font-bold text-navy transition-all bg-surface ' + 
+                  (otpDigitsString.length === index ? 'border-primary shadow-md ring-2 ring-primary/10 scale-105' : 
+                   otpDigitsString.length > index ? 'border-primary/50' : 'border-outline-variant/50')">
+                {{ otpDigitsString[index] || '' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-body-sm text-on-surface-variant">
+            <span>Thời gian còn lại: <span class="font-semibold text-navy">{{ formatCountdown(otpCountdown) }}</span></span>
+            <button type="button" (click)="resendOtp()" class="text-primary font-bold hover:underline">Gửi lại mã</button>
+          </div>
+          <p *ngIf="showDebugOtp" class="text-body-sm text-on-surface-variant text-center">Mã dùng thử: <span class="font-bold text-navy">{{ generatedOtp }}</span></p>
+          <button (click)="verifyOtp()" class="w-full rounded-xl bg-primary text-on-primary py-3 text-title-md font-bold hover:opacity-95 transition-all">
+            Tiếp tục
+          </button>
+          <p *ngIf="otpError" class="text-sm text-danger font-semibold text-center">{{ otpError }}</p>
+        </div>
+
+        <div *ngSwitchCase="'profile'" class="space-y-5">
+          <p class="text-body-md text-on-surface-variant">Nhập thông tin cơ bản để hoàn tất đăng ký.</p>
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="text-label-sm font-bold text-on-surface-variant">Họ tên <span class="text-danger">*</span></label>
+              <input type="text" [(ngModel)]="fullName" placeholder="Nhập họ tên"
+                class="w-full rounded-xl border border-outline-variant/50 bg-surface px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-primary/10 transition-all" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-label-sm font-bold text-on-surface-variant">Số điện thoại <span class="text-danger">*</span></label>
+              <input type="text" [value]="phoneNumber" disabled
+                class="w-full rounded-xl border border-outline-variant/50 bg-surface-container-low px-4 py-3 text-body-md text-on-surface-disabled transition-all" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-label-sm font-bold text-on-surface-variant">Email</label>
+              <input type="email" [(ngModel)]="email" placeholder="Nhập email (không bắt buộc)"
+                class="w-full rounded-xl border border-outline-variant/50 bg-surface px-4 py-3 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-primary/10 transition-all" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-label-sm font-bold text-on-surface-variant">Mật khẩu <span class="text-danger">*</span></label>
+              <div class="relative">
+                <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="Tạo mật khẩu" autocomplete="new-password"
+                  class="w-full rounded-xl border border-outline-variant/50 bg-surface px-4 py-3 pr-12 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-primary/10 transition-all" />
+                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary" (click)="toggleShowPassword()">
+                  <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="text-label-sm font-bold text-on-surface-variant">Nhập lại mật khẩu <span class="text-danger">*</span></label>
+              <div class="relative">
+                <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password"
+                  class="w-full rounded-xl border border-outline-variant/50 bg-surface px-4 py-3 pr-12 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-primary/10 transition-all" />
+                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary" (click)="toggleShowConfirmPassword()">
+                  <span class="material-symbols-outlined">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button (click)="submitProfile()" class="w-full rounded-xl bg-primary text-on-primary py-3 text-title-md font-bold hover:opacity-95 transition-all">
+            Hoàn tất
+          </button>
+          <p *ngIf="registrationError" class="text-sm text-danger font-semibold text-center mt-2">{{ registrationError }}</p>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

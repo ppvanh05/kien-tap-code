@@ -1,0 +1,459 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Quản lý vé</span>
+      <span class="separator">/</span>
+      <span class="current">Đặt vé mới</span>
+    </div>
+    <h1>Thông tin đơn hàng</h1>
+  </div>
+
+  <div class="card">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- LEFT COLUMN (70% width) -->
+    <div class="lg:col-span-8 space-y-6">
+
+      <!-- CARD 1: CHỌN GHẾ -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-6 shadow-sm space-y-6">
+        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+          <h2 class="font-bold text-title-lg text-navy">
+            Chọn ghế
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <!-- CHÚ THÍCH (Legend) - Left aligned, matching tim-kiem-chuyen-xe -->
+          <div
+            class="md:col-span-4 space-y-4 bg-surface-container-low rounded-xl p-4 border border-outline-variant/20 shadow-xs">
+            <h4 class="font-bold text-title-md text-navy border-b border-outline-variant/30 pb-2">Chú thích</h4>
+            <div class="space-y-3 font-semibold text-body-sm text-on-surface-variant">
+              <div class="flex items-center gap-3">
+                <span
+                  class="w-6 h-6 rounded bg-surface-container-lowest border border-outline-variant inline-block shadow-sm"></span>
+                <span class="text-on-surface-disabled">Đã bán</span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded bg-white border-2 border-primary inline-block shadow-sm"></span>
+                <span>Còn trống</span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded bg-secondary border-2 border-secondary inline-block shadow-sm"></span>
+                <span>Đang chọn</span>
+              </div>
+
+              <div
+                class="pt-3 border-t border-outline-variant/20 space-y-1 text-label-md font-bold text-navy leading-normal">
+                <p>Phòng đơn (1 khách người lớn): {{ formatPrice(bookingData.price) }}</p>
+                <p>Phòng đôi (2 khách người lớn hoặc 1 người lớn + 1 trẻ em trên 6 tuổi): {{
+                  formatPrice(bookingData.price + 200000) }}.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE SEAT DECKS GRID - Right side, matching tim-kiem-chuyen-xe layout -->
+          <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            <!-- TẦNG DƯỚI -->
+            <div class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-5 shadow-inner">
+              <p class="text-center font-bold text-navy text-body-md mb-4 uppercase tracking-wider">
+                Tầng dưới
+              </p>
+              <div class="space-y-4">
+                <!-- Steering wheel row -->
+                <div class="flex justify-between items-center px-6">
+                  <div class="w-12 h-12 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-navy" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="12" r="2.5" />
+                      <path d="M12 2v7.5M2 12h7.5M14.5 12h7.5M12 14.5v7.5" />
+                    </svg>
+                  </div>
+                  <div class="w-16 h-11"></div>
+                </div>
+
+                <!-- Columns Header -->
+                <div class="flex justify-between text-center px-6 text-label-sm font-bold text-on-surface-variant">
+                  <span>Dãy Trái</span>
+                  <span>Dãy Phải</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-y-3 gap-x-8 px-4 justify-items-center">
+                  <ng-container *ngFor="let seat of seats">
+                    <button *ngIf="seat.deck === 'lower'" (click)="toggleSeat(seat)" [disabled]="seat.status === 'sold'"
+                      [class]="seat.status === 'sold'
+                          ? 'w-16 h-11 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface-disabled cursor-not-allowed flex items-center justify-center shadow-sm text-lg font-bold'
+                          : seat.status === 'selected'
+                          ? 'w-16 h-11 rounded-lg bg-secondary border-secondary border-2 text-white flex items-center justify-center shadow-md scale-105 transition-all text-lg font-bold'
+                          : 'w-16 h-11 rounded-lg bg-white border-2 border-primary text-primary flex items-center justify-center shadow-sm transition-all active:scale-95 hover:bg-primary-light text-lg font-bold'">
+                      {{ seat.name }}
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <!-- TẦNG TRÊN -->
+            <div class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-5 shadow-inner">
+              <p class="text-center font-bold text-navy text-body-md mb-4 uppercase tracking-wider">
+                Tầng trên
+              </p>
+              <div class="space-y-4">
+                <div class="h-12 flex items-center justify-center"></div>
+
+                <!-- Columns Header -->
+                <div class="flex justify-between text-center px-6 text-label-sm font-bold text-on-surface-variant">
+                  <span>Dãy Trái</span>
+                  <span>Dãy Phải</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-y-3 gap-x-8 px-4 justify-items-center">
+                  <ng-container *ngFor="let seat of seats">
+                    <button *ngIf="seat.deck === 'upper'" (click)="toggleSeat(seat)" [disabled]="seat.status === 'sold'"
+                      [class]="seat.status === 'sold'
+                          ? 'w-16 h-11 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface-disabled cursor-not-allowed flex items-center justify-center shadow-sm text-lg font-bold'
+                          : seat.status === 'selected'
+                          ? 'w-16 h-11 rounded-lg bg-secondary border-secondary border-2 text-white flex items-center justify-center shadow-md scale-105 transition-all text-lg font-bold'
+                          : 'w-16 h-11 rounded-lg bg-white border-2 border-primary text-primary flex items-center justify-center shadow-sm transition-all active:scale-95 hover:bg-primary-light text-lg font-bold'">
+                      {{ seat.name }}
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Dynamic configuration fields for each selected seat -->
+        <div *ngIf="bookingData.selectedSeats.length > 0"
+          class="pt-6 border-t border-outline-variant/20 max-w-xl mx-auto space-y-4">
+          <p class="font-bold text-navy text-body-md">Cấu hình hành khách cho ghế:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div *ngFor="let seatName of bookingData.selectedSeats"
+              class="flex items-center justify-between p-3 bg-surface-container rounded-lg border border-outline-variant/25">
+              <span class="font-bold text-navy text-body-md">Ghế {{ seatName }}</span>
+              <select [(ngModel)]="selectedRoomGuests[seatName]" (change)="recalculatePrice()"
+                class="bg-white border border-outline-variant rounded-md text-body-sm font-bold py-1 px-2 focus:ring-primary focus:border-primary cursor-pointer">
+                <option [value]="1">Phòng đơn ({{ formatPrice(bookingData.price) }})</option>
+                <option [value]="2">Phòng đôi ({{ formatPrice(bookingData.price + 200000) }})</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: THÔNG TIN KHÁCH HÀNG -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-6 shadow-sm space-y-6">
+        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+          <h2 class="font-bold text-title-lg text-navy">
+            Thông tin khách hàng
+          </h2>
+          <a routerLink="/gioi-thieu/chinh-sach"
+            class="text-secondary text-body-sm font-bold tracking-wider hover:underline uppercase">
+            ĐIỀU KHOẢN & LƯU Ý
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <!-- Form Fields (Left side of Card 2) -->
+          <div class="md:col-span-6 space-y-4">
+            <div>
+              <label class="block text-body-sm font-bold text-navy mb-1.5">Họ tên người đi <span
+                  class="text-danger">*</span></label>
+              <input type="text" [(ngModel)]="customerName" placeholder="Nhập họ và tên"
+                class="w-full bg-white border border-outline-variant rounded-lg px-3 py-2 text-body-md font-medium focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+            </div>
+
+            <div>
+              <label class="block text-body-sm font-bold text-navy mb-1.5">Số điện thoại <span
+                  class="text-danger">*</span></label>
+              <input type="text" [(ngModel)]="customerPhone" placeholder="Nhập số điện thoại"
+                class="w-full bg-white border border-outline-variant rounded-lg px-3 py-2 text-body-md font-medium focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+            </div>
+
+            <div>
+              <label class="block text-body-sm font-bold text-navy mb-1.5">Email</label>
+              <input type="email" [(ngModel)]="customerEmail" placeholder="Nhập email"
+                class="w-full bg-white border border-outline-variant rounded-lg px-3 py-2 text-body-md font-medium focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+            </div>
+
+            <div class="flex items-start gap-2.5 pt-3">
+              <input type="checkbox" id="terms-chk" [(ngModel)]="agreeTerms"
+                class="mt-1 w-4.5 h-4.5 rounded border-outline-variant text-primary focus:ring-primary cursor-pointer">
+              <label for="terms-chk"
+                class="text-body-sm font-semibold text-on-surface-variant cursor-pointer select-none">
+                Chấp nhận điều khoản & chính sách bảo mật thông tin của TXP Bus
+              </label>
+            </div>
+          </div>
+
+          <!-- Vietnamese guidelines content (Right side of Card 2) -->
+          <div
+            class="md:col-span-6 bg-surface-container-low rounded-xl p-4 border border-outline-variant/20 text-body-sm leading-relaxed space-y-3 text-justify">
+            <p class="font-bold text-danger">Quý khách vui lòng Đăng ký/Đăng nhập tài khoản để nhận chương trình khuyến
+              mãi.</p>
+            <p class="text-on-surface-variant">(*) Quý khách vui lòng có mặt tại bến xuất phát của xe trước ít nhất 30
+              phút giờ xe khởi hành, mang theo vé điện tử được gửi từ hệ thống TXP Bus. Vui lòng liên hệ Trung tâm tổng
+              đài <span class="font-bold text-primary">1900989867</span> để được hỗ trợ.</p>
+            <p class="text-on-surface-variant">(*) Nếu quý khách có nhu cầu trung chuyển, vui lòng liên hệ Tổng đài
+              trung chuyển <span class="font-bold text-primary">1900989867</span> trước khi đặt vé. Chúng tôi không
+              đón/trung chuyển tại những điểm xe trung chuyển không thể tới được.</p>
+            <p class="text-on-surface-variant">(*) Nếu quý khách có nhu cầu di chuyển chặng đường ngắn hơn so với hành
+              trình, vui lòng gọi Tổng đài <span class="font-bold text-primary">1900989867</span> để được hưởng chính
+              sách giá vé tốt nhất.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: THÔNG TIN ĐÓN TRẢ -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-6 shadow-sm space-y-6">
+        <div class="flex items-center gap-2 border-b border-outline-variant/30 pb-3">
+          <h2 class="font-bold text-title-lg text-navy">
+            Thông tin đón trả
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <!-- pickup stop -->
+          <div class="space-y-4 relative">
+            <h3 class="font-bold text-title-md text-navy">ĐIỂM ĐÓN</h3>
+
+            <!-- Searchable Dropdown Combo Box -->
+            <div class="relative">
+              <div
+                class="relative flex items-center border border-outline-variant rounded-lg bg-white overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+                <input type="text" [(ngModel)]="pickupSearch" (focus)="onPickupFocus()" (blur)="onPickupBlur()"
+                  placeholder="Nhập tên bến xe, văn phòng"
+                  class="w-full px-3 py-2 text-body-md font-bold outline-none bg-transparent">
+                <span
+                  class="material-symbols-outlined text-on-surface-variant mr-3 select-none pointer-events-none">arrow_drop_down</span>
+              </div>
+
+              <!-- Suggestions Panel -->
+              <div *ngIf="showPickupDropdown"
+                class="absolute left-0 right-0 mt-1 bg-white border border-outline-variant/50 rounded-lg shadow-lg z-30 max-h-72 overflow-y-auto divide-y divide-outline-variant/20">
+
+                <div *ngFor="let opt of filteredPickups" (mousedown)="selectPickup(opt)"
+                  class="p-3 hover:bg-primary-light cursor-pointer transition-colors space-y-1">
+
+                  <!-- Suggestion label warning -->
+                  <div *ngIf="opt.isSuggestion"
+                    class="text-warning text-label-sm font-bold uppercase tracking-wider mb-1">
+                    {{ opt.suggestionLabel }}
+                  </div>
+
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <!-- Radio Icon Circle -->
+                      <span class="w-4 h-4 rounded-full border flex items-center justify-center"
+                        [class.border-primary]="selectedPickup?.name === opt.name"
+                        [class.border-outline-variant]="selectedPickup?.name !== opt.name">
+                        <span *ngIf="selectedPickup?.name === opt.name" class="w-2 h-2 rounded-full bg-primary"></span>
+                      </span>
+
+                      <span class="text-body-md font-bold text-navy">{{ opt.time }} - {{ opt.name }}</span>
+                    </div>
+                    <a href="javascript:void(0)" class="text-secondary text-label-md font-bold hover:underline">Xem vị
+                      trí</a>
+                  </div>
+                  <p class="text-label-md text-on-surface-variant pl-6">{{ opt.address }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes under pickup -->
+            <p *ngIf="selectedPickup" class="text-body-sm text-on-surface-variant leading-relaxed">
+              Quý khách vui lòng có mặt tại điểm đón <span class="font-bold text-navy">{{ selectedPickup.name }}</span>
+              trước <span class="font-bold text-secondary">{{ getPickupArrivalTime() }} ngày {{ getSelectedDate()
+                }}</span>.
+            </p>
+          </div>
+
+          <!-- dropoff stop -->
+          <div class="space-y-4 relative">
+            <h3 class="font-bold text-title-md text-navy">ĐIỂM TRẢ</h3>
+
+            <!-- Searchable Dropdown Combo Box -->
+            <div class="relative">
+              <div
+                class="relative flex items-center border border-outline-variant rounded-lg bg-white overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+                <input type="text" [(ngModel)]="dropoffSearch" (focus)="onDropoffFocus()" (blur)="onDropoffBlur()"
+                  placeholder="Nhập tên bến xe, văn phòng"
+                  class="w-full px-3 py-2 text-body-md font-bold outline-none bg-transparent">
+                <span
+                  class="material-symbols-outlined text-on-surface-variant mr-3 select-none pointer-events-none">arrow_drop_down</span>
+              </div>
+
+              <!-- Suggestions Panel -->
+              <div *ngIf="showDropoffDropdown"
+                class="absolute left-0 right-0 mt-1 bg-white border border-outline-variant/50 rounded-lg shadow-lg z-30 max-h-72 overflow-y-auto divide-y divide-outline-variant/20">
+
+                <div *ngFor="let opt of filteredDropoffs" (mousedown)="selectDropoff(opt)"
+                  class="p-3 hover:bg-primary-light cursor-pointer transition-colors space-y-1">
+
+                  <div *ngIf="opt.isSuggestion"
+                    class="text-warning text-label-sm font-bold uppercase tracking-wider mb-1">
+                    {{ opt.suggestionLabel }}
+                  </div>
+
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="w-4 h-4 rounded-full border flex items-center justify-center"
+                        [class.border-primary]="selectedDropoff?.name === opt.name"
+                        [class.border-outline-variant]="selectedDropoff?.name !== opt.name">
+                        <span *ngIf="selectedDropoff?.name === opt.name" class="w-2 h-2 rounded-full bg-primary"></span>
+                      </span>
+
+                      <span class="text-body-md font-bold text-navy">{{ opt.time }} - {{ opt.name }}</span>
+                    </div>
+                    <a href="javascript:void(0)" class="text-secondary text-label-md font-bold hover:underline">Xem vị
+                      trí</a>
+                  </div>
+                  <p class="text-label-md text-on-surface-variant pl-6">{{ opt.address }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes under dropoff -->
+            <p *ngIf="selectedDropoff" class="text-body-sm text-on-surface-variant leading-relaxed">
+              Quý khách sẽ được trả tại <span class="font-bold text-navy">{{ selectedDropoff.name }}</span> vào khoảng
+              <span class="font-bold text-secondary">{{ selectedDropoff.time }} ngày {{ getSelectedDate() }}</span>.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LEFT COLUMN FOOTER BAR -->
+      <div
+        class="bg-surface rounded-xl border border-outline-variant/20 p-5 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+          <span class="text-body-sm font-bold text-on-surface-variant tracking-wider uppercase">TỔNG TIỀN</span>
+          <span class="text-2xl font-bold text-secondary">{{ formatPrice(bookingData.totalPrice) }}</span>
+        </div>
+
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <button (click)="cancelBooking()"
+            class="flex-1 sm:flex-none px-6 py-2.5 bg-white border border-outline-variant text-on-surface-variant font-bold rounded-lg hover:bg-surface-container-low transition-all">
+            Hủy
+          </button>
+          <button (click)="payBooking()"
+            class="flex-1 sm:flex-none px-8 py-2.5 bg-secondary text-white font-bold rounded-lg hover:bg-secondary-hover shadow-[0px_4px_12px_rgba(243,112,33,0.2)] transition-all">
+            Thanh toán
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN (30% width) -->
+    <div class="lg:col-span-4 space-y-6">
+
+      <!-- CARD 1: THÔNG TIN CHUYẾN ĐI -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-5 shadow-sm space-y-4">
+        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+          <h2 class="font-bold text-title-lg text-navy">
+            Thông tin chuyến đi
+          </h2>
+        </div>
+
+        <div class="space-y-3 font-semibold text-body-md">
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">Tuyến xe</span>
+            <span class="text-navy text-right">{{ bookingData.startStation }} - {{ bookingData.endStation }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">Thời gian xuất bến</span>
+            <span class="text-primary text-right font-bold">{{ bookingData.departureTime }} {{ getSelectedDate()
+              }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">Số lượng ghế</span>
+            <span class="text-navy text-right">{{ bookingData.selectedSeats.length }} Ghế</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">Số ghế</span>
+            <span class="text-primary text-right font-bold">{{ bookingData.selectedSeats.join(', ') || 'Chưa chọn'
+              }}</span>
+          </div>
+
+          <div class="flex justify-between pt-2 border-t border-outline-variant/20 font-bold">
+            <span class="text-navy">Tổng tiền lượt đi</span>
+            <span class="text-secondary text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: CHI TIẾT GIÁ -->
+      <div class="bg-surface rounded-xl border border-outline-variant/15 p-5 shadow-sm space-y-4">
+        <div class="flex items-center gap-2 border-b border-outline-variant/30 pb-2">
+          <h2 class="font-bold text-title-lg text-navy">
+            Chi tiết giá
+          </h2>
+        </div>
+
+        <div class="space-y-3 font-semibold text-body-md">
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">Giá vé lượt đi</span>
+            <span class="text-navy text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">Phí thanh toán</span>
+            <span class="text-navy text-right">0đ</span>
+          </div>
+
+          <div class="flex justify-between pt-2 border-t border-outline-variant/20 font-bold">
+            <span class="text-navy">Tổng tiền</span>
+            <span class="text-secondary text-right">{{ formatPrice(bookingData.totalPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- Alert Modal - Thông báo trung tâm -->
+<div *ngIf="showAlertModal"
+  class="fixed inset-0 z-[250] flex items-center justify-center bg-navy/60 backdrop-blur-xs p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-xl border border-outline-variant/10 animate-scale-up">
+    <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center">
+      <h3 class="font-bold text-primary text-title-md uppercase tracking-wider flex items-center gap-2">
+        <span class="material-icons" [ngClass]="{
+          'text-success': alertType === 'success',
+          'text-danger': alertType === 'error',
+          'text-warning': alertType === 'warning'
+        }">
+          {{ alertType === 'success' ? 'check_circle' : alertType === 'error' ? 'error' : 'warning' }}
+        </span>
+        {{ alertType === 'success' ? 'THÀNH CÔNG' : alertType === 'error' ? 'LỖI' : 'CẢNH BÁO' }}
+      </h3>
+      <span class="material-icons text-outline-variant hover:text-navy cursor-pointer select-none text-2xl"
+        (click)="closeAlert()">close</span>
+    </div>
+
+    <div class="p-6">
+      <p class="text-body-md text-on-surface font-semibold leading-relaxed text-center">
+        {{ alertMessage }}
+      </p>
+    </div>
+
+    <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant/10 flex justify-center">
+      <button (click)="closeAlert()"
+        class="px-8 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover shadow-md transition-all">
+        ĐÓNG
+      </button>
+    </div>
+  </div>
+</div>

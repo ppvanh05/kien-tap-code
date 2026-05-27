@@ -1,0 +1,563 @@
+<div class="schedule-management">
+  <div class="breadcrumb">
+    <span>Quản lý điều hành</span> / <span class="active">Quản lý lịch trình</span>
+  </div>
+
+  <div class="content-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'all'" (click)="setTab('all')">Tất cả</button>
+      <button [class.active]="activeTab === 'active'" (click)="setTab('active')">Đang hoạt động</button>
+      <button [class.active]="activeTab === 'locked'" (click)="setTab('locked')">Đã khóa</button>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="filters-row">
+        <div class="filter-select">
+          <app-custom-select [(value)]="selectedRoute" [options]="routeFilterOptions" placeholder="Lọc theo tuyến xe"
+            (valueChange)="filterSchedules()"></app-custom-select>
+        </div>
+
+        <button class="btn-clear" (click)="clearFilters()">
+          <span class="material-icons">clear_all</span>
+          Xóa lọc
+        </button>
+
+        <button class="btn-add-schedule-admin" (click)="openAddModal()">
+          <span class="material-icons">add</span>
+          Thêm lịch trình mới
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table>
+        <colgroup>
+          <col style="width: 60px;">
+          <col style="width: 35%;">
+          <col style="width: 120px;">
+          <col style="width: 25%;">
+          <col style="width: 180px;">
+          <col style="width: 120px;">
+          <col style="width: 100px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="text-center">STT</th>
+            <th>Tuyến đường</th>
+            <th>Phương tiện</th>
+            <th>Tài xế & Phụ xe</th>
+            <th>Thời gian khởi hành</th>
+            <th class="text-center">Trạng thái</th>
+            <th class="text-center">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of filteredSchedules; let i = index">
+            <td class="text-center" style="font-weight: 500; color: #718096;">{{ i + 1 }}</td>
+            <td class="font-bold">
+              <span class="status-dot" [class.active]="s.status === 'active' || s.status === 'scheduled'"></span>
+              {{ s.routeName }}
+            </td>
+            <td>
+              <span class="plate-badge">{{ s.vehiclePlate }}</span>
+            </td>
+            <td>
+              <div class="staff-info">
+                <div><span class="staff-role">Tài xế:</span> {{ s.driverName }}</div>
+                <div *ngIf="s.assistantName"><span class="staff-role">Phụ xe:</span> {{ s.assistantName }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="time-info">
+                <div class="date-val"><span class="material-icons sm-icon-grey">calendar_today</span> {{ s.departureDate
+                  }}</div>
+                <div class="time-val"><span class="material-icons sm-icon-grey">schedule</span> {{ s.departureTime }}
+                </div>
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="status-badge" [class]="s.status" style="display: inline-block; margin: 0 auto;">
+                {{ s.status === 'active' ? 'Đang chạy' : s.status === 'scheduled' ? 'Sắp chạy' : 'Đã khóa' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <button class="btn-icon" (click)="openEditModal(s)">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredSchedules.length === 0">
+            <td colspan="7" class="empty-row-text">Không tìm thấy lịch trình nào khớp với bộ lọc.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Refined -->
+    <div class="pagination">
+      <span class="pagination-info">Hiển thị {{ filteredSchedules.length }} lịch trình</span>
+      <div class="page-controls">
+        <button class="btn-page-arrow">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <button class="btn-page-num active">1</button>
+        <button class="btn-page-arrow">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (mousedown)="onOverlayMouseDown($event)"
+    (mouseup)="onOverlayMouseUp($event, 'main')">
+    <div class="modal-content large-modal" (mousedown)="$event.stopPropagation()" (mouseup)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Chi tiết thông tin lịch chạy</h2>
+        <button class="modal-close-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <!-- Horizontal Modal Sub-Tabs -->
+      <div class="modal-tabs">
+        <button type="button" class="modal-tab-btn" [class.active]="activeModalTab === 'setup'"
+          (click)="setModalTab('setup')">
+          Thiết lập tuyến, xe
+        </button>
+        <button type="button" class="modal-tab-btn" [class.active]="activeModalTab === 'time'"
+          (click)="setModalTab('time')">
+          Thiết lập thời gian, điểm đón trả
+        </button>
+      </div>
+
+      <div class="modal-body scrollable-modal-body">
+
+        <!-- Tab 1: Thiết lập tuyến, xe -->
+        <div *ngIf="activeModalTab === 'setup'" class="tab-fade-in">
+          <div class="form-grid">
+            <!-- Tuyến đường -->
+            <div class="form-group span-all">
+              <label>Tuyến <span class="required">*</span></label>
+              <app-custom-select [(value)]="currentSchedule.routeName" [options]="routeFormOptions"
+                placeholder="Chọn tuyến đường" (valueChange)="onRouteSelect()"></app-custom-select>
+            </div>
+
+            <!-- Tài xế -->
+            <div class="form-group">
+              <label>Tài xế <span class="required">*</span></label>
+              <app-custom-select [(value)]="currentSchedule.driverName" [options]="driverFormOptions"
+                placeholder="Chọn tài xế"></app-custom-select>
+            </div>
+
+            <!-- Phụ xe -->
+            <div class="form-group">
+              <label>Phụ xe</label>
+              <app-custom-select [(value)]="currentSchedule.assistantName" [options]="assistantFormOptions"
+                placeholder="Chọn phụ xe (Không bắt buộc)"></app-custom-select>
+            </div>
+
+            <!-- Tên xe -->
+            <div class="form-group span-all">
+              <label>Tên xe <span class="required">*</span></label>
+              <app-custom-select [(value)]="currentSchedule.vehicleName" [options]="vehicleNameFormOptions"
+                placeholder="Chọn tên xe" (valueChange)="onVehicleNameSelect()"></app-custom-select>
+            </div>
+
+            <!-- Biển số xe -->
+            <div class="form-group">
+              <label>Biển số xe <span class="required">*</span></label>
+              <app-custom-select [(value)]="currentSchedule.vehiclePlate" [options]="vehiclePlateFormOptions"
+                placeholder="Chọn biển số xe" (valueChange)="onVehiclePlateSelect()"></app-custom-select>
+            </div>
+
+            <!-- Số chỗ -->
+            <div class="form-group">
+              <label>Số chỗ <span class="required">*</span></label>
+              <input type="text" [value]="currentSchedule.vehicleSeats || ''" disabled class="disabled-input"
+                placeholder="Tự động điền">
+            </div>
+          </div>
+
+          <!-- Seat Diagram Interactive Selection -->
+          <div class="seat-diagram-section"
+            *ngIf="currentSchedule.vehiclePlate && floorLayouts && floorLayouts.length > 0">
+            <div class="section-title-new">Sơ đồ ghế</div>
+            <div class="seat-diagram-wrapper">
+              <div class="floor-container" *ngFor="let floor of floorLayouts; let fIdx = index">
+                <div class="floor-header" [class.limousine-header]="isLimousine22()">{{ floor.floorName }}</div>
+                <div class="bus-layout" [class.limousine-style]="isLimousine22()">
+
+                  <!-- Column labels only for Limousine style -->
+                  <div class="column-labels" *ngIf="isLimousine22()">
+                    <span class="label-text">Dãy Trái</span>
+                    <span class="label-text">Dãy Phải</span>
+                  </div>
+
+                  <div class="dynamic-seat-grid">
+                    <div class="seat-layout-row" *ngFor="let row of floor.rows" [class.back-row]="row.isBackRow">
+
+                      <ng-container *ngIf="!row.isBackRow">
+                        <div [class]="isLimousine22() ? (activeSeatGroupIndex !== null ? 'seat-room-limousine' : 'seat-room-limousine readonly') : (activeSeatGroupIndex !== null ? 'seat-room' : 'seat-room readonly')"
+                          *ngFor="let seat of row.seats" [class.selected]="isSeatInAnyGroup(seat)"
+                          [style.--group-color]="getSeatGroupColor(seat)"
+                          (click)="activeSeatGroupIndex !== null && toggleSeatInActiveGroup(seat)">
+                          {{ seat }}
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="row.isBackRow">
+                        <div [class]="isLimousine22() ? (activeSeatGroupIndex !== null ? 'seat-room-limousine' : 'seat-room-limousine readonly') : (activeSeatGroupIndex !== null ? 'seat-room' : 'seat-room readonly')"
+                          *ngFor="let seat of row.seats" [class.selected]="isSeatInAnyGroup(seat)"
+                          [style.--group-color]="getSeatGroupColor(seat)"
+                          (click)="activeSeatGroupIndex !== null && toggleSeatInActiveGroup(seat)">
+                          {{ seat }}
+                        </div>
+                      </ng-container>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Base Price Section -->
+          <div class="base-price-section" *ngIf="currentSchedule.vehiclePlate && floorLayouts && floorLayouts.length > 0">
+            <div class="base-price-header-row">
+              <div class="header-left">
+                <div class="section-title">Giá vé chung (Mặc định) <span class="required">*</span></div>
+                <div class="section-subtext">Áp dụng cho tất cả các ghế không nằm trong nhóm giá riêng biệt</div>
+              </div>
+              <div class="header-right">
+                <div class="input-with-addon">
+                  <input type="number" min="0" [(ngModel)]="currentSchedule.basePrice" placeholder="VD: 300000"
+                    class="base-price-input">
+                  <span class="unit-addon">VND</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seat Groups Section (Dành cho việc chia nhóm ghế) -->
+          <div class="seat-groups-section"
+            *ngIf="currentSchedule.vehiclePlate && floorLayouts && floorLayouts.length > 0">
+            <div class="section-header-row">
+              <div class="section-title">Nhóm ghế & Giá vé riêng</div>
+              <div class="section-actions-wrapper">
+                <button type="button" class="btn-outline-primary" (click)="addSeatGroup()">
+                  <span class="material-icons">add_circle_outline</span> Thêm nhóm ghế
+                </button>
+                <button type="button" class="btn-outline-danger"
+                  *ngIf="currentSchedule.seatGroups && currentSchedule.seatGroups.length > 0"
+                  [disabled]="activeSeatGroupIndex === null" (click)="removeActiveSeatGroup()">
+                  <span class="material-icons">delete_outline</span> Xóa nhóm
+                </button>
+              </div>
+            </div>
+
+            <!-- List of Seat Groups -->
+            <div class="seat-groups-list" *ngIf="currentSchedule.seatGroups && currentSchedule.seatGroups.length > 0">
+
+              <!-- Table Header Row -->
+              <div class="seat-groups-header-row">
+                <div class="header-col col-color">MÀU</div>
+                <div class="header-col col-name">TÊN NHÓM GHẾ</div>
+                <div class="header-col col-seats">DANH SÁCH GHẾ</div>
+                <div class="header-col col-price">GIÁ VÉ *</div>
+              </div>
+
+              <!-- Seat Group Items -->
+              <div class="seat-group-row" *ngFor="let group of currentSchedule.seatGroups; let gIdx = index"
+                [class.active-assignment]="activeSeatGroupIndex === gIdx" (click)="setActiveGroup(gIdx)">
+
+                <!-- Cột 1: Màu sắc -->
+                <div class="group-color-column" (click)="$event.stopPropagation()">
+                  <div class="color-picker-trigger" (click)="toggleColorMenu(gIdx, $event)" title="Chọn màu sắc">
+                    <div class="color-select-dot" [style.background-color]="group.color"></div>
+                    <span class="color-arrow"></span>
+                  </div>
+                  <!-- Color options dropdown -->
+                  <div class="color-options-dropdown" *ngIf="openedColorMenuIndex === gIdx">
+                    <span class="color-option-dot" *ngFor="let color of presetColors" [style.background-color]="color"
+                      (click)="selectGroupColor(gIdx, color)"></span>
+                  </div>
+                </div>
+
+                <!-- Cột 2: Nhóm ghế -->
+                <div class="group-name-column">
+                  <input type="text" [(ngModel)]="group.name" [placeholder]="'Nhóm ghế ' + (gIdx + 1)"
+                    class="group-name-input">
+                </div>
+
+                <!-- Cột 3: Danh sách ghế -->
+                <div class="group-seats-column">
+                  <input type="text" [ngModel]="group.seats.join(', ')"
+                    (ngModelChange)="onSeatsStringChange(gIdx, $event)" placeholder="Ví dụ: A1, A2, B3"
+                    class="group-seats-text-input" [class.active-focused]="activeSeatGroupIndex === gIdx"
+                    (focus)="setActiveGroup(gIdx)">
+                  <div class="seats-input-note-new">Có thể chọn trực tiếp tại sơ đồ ghế!</div>
+                </div>
+
+                <!-- Cột 4: Giá vé -->
+                <div class="group-price-column" (click)="$event.stopPropagation()">
+                  <div class="input-with-addon small">
+                    <input type="number" min="0" [(ngModel)]="group.price" placeholder="VD: 300000"
+                      class="group-price-input">
+                    <span class="unit-addon">VND</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Hint text when no groups exist -->
+            <div class="no-groups-hint" *ngIf="!currentSchedule.seatGroups || currentSchedule.seatGroups.length === 0">
+              Nhấp vào "Thêm nhóm ghế" để bắt đầu chia phân khu ghế.
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Thiết lập thời gian, điểm đón trả -->
+        <div *ngIf="activeModalTab === 'time'" class="tab-fade-in">
+          <div class="form-grid">
+            <!-- Ngày khởi hành -->
+            <div class="form-group">
+              <label>Ngày khởi hành <span class="required">*</span></label>
+              <div class="date-input-container" (click)="$event.stopPropagation()">
+                <input type="text" [(ngModel)]="currentSchedule.departureDate" placeholder="dd/mm/yyyy"
+                  (ngModelChange)="calculateArrivalTime()" (click)="toggleDatePicker()">
+                <span class="material-icons date-icon-inside" (click)="toggleDatePicker()">calendar_today</span>
+
+                <!-- Date Picker Popup -->
+                <div class="calendar-popup" *ngIf="isDatePickerOpen">
+                  <div class="calendar-header">
+                    <button type="button" (click)="prev()">
+                      <span class="material-icons">chevron_left</span>
+                    </button>
+                    <div class="month-year-labels">
+                      <span class="month-label" (click)="setPickerView('month')">
+                        {{ months[viewDate.getMonth()] }}
+                      </span>
+                      <span class="year-label" (click)="setPickerView('year')">
+                        {{ viewDate.getFullYear() }}
+                      </span>
+                    </div>
+                    <button type="button" (click)="next()">
+                      <span class="material-icons">chevron_right</span>
+                    </button>
+                  </div>
+
+                  <!-- Day View -->
+                  <div class="calendar-days-wrapper" *ngIf="pickerViewMode === 'day'">
+                    <div class="calendar-grid">
+                      <div class="weekday" *ngFor="let day of weekDays">{{ day }}</div>
+                      <div class="day" *ngFor="let day of calendarDays" [class.empty]="!day" (click)="selectDate(day)">
+                        {{ day }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Month View -->
+                  <div class="month-grid" *ngIf="pickerViewMode === 'month'">
+                    <div class="month-item" *ngFor="let m of months; let i = index" (click)="selectMonth(i)">
+                      {{ m }}
+                    </div>
+                  </div>
+
+                  <!-- Year View -->
+                  <div class="year-grid" *ngIf="pickerViewMode === 'year'">
+                    <div class="year-item" *ngFor="let y of yearsList" (click)="selectYear(y)">
+                      {{ y }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Giờ khởi hành -->
+            <div class="form-group">
+              <label>Giờ khởi hành <span class="required">*</span></label>
+              <div class="time-split-inputs">
+                <div class="time-input-wrapper">
+                  <input type="number" min="0" max="23" step="1" [(ngModel)]="departureHour"
+                    (ngModelChange)="updateDepartureTime()" class="time-number-input" placeholder="08">
+                  <span class="time-unit">giờ</span>
+                </div>
+                <span class="time-colon">:</span>
+                <div class="time-input-wrapper">
+                  <input type="number" min="0" max="59" step="1" [(ngModel)]="departureMinute"
+                    (ngModelChange)="updateDepartureTime()" class="time-number-input" placeholder="00">
+                  <span class="time-unit">phút</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lộ trình timeline: Giờ đi -> Tổng thời gian -> Giờ tới -->
+            <div class="form-group span-all">
+              <div class="trip-timeline-container">
+                <!-- Departure Node -->
+                <div class="timeline-card departure-node">
+                  <div class="node-label">Giờ khởi hành</div>
+                  <div class="node-time">{{ currentSchedule.departureTime || '00:00' }}</div>
+                  <div class="node-date">ngày {{ currentSchedule.departureDate || 'Chưa chọn' }}</div>
+                </div>
+
+                <!-- Timeline Line Indicator -->
+                <div class="timeline-arrow-wrapper">
+                  <span class="duration-badge">{{ currentSchedule.totalTime || '0h 0p' }}</span>
+                  <div class="timeline-line">
+                    <span class="timeline-dot"></span>
+                    <span class="timeline-arrow"></span>
+                  </div>
+                  <span class="timeline-helper-text">Tổng thời gian đi</span>
+                </div>
+
+                <!-- Arrival Node -->
+                <div class="timeline-card arrival-node">
+                  <div class="node-label">Giờ tới</div>
+                  <div class="node-time">{{ currentSchedule.arrivalTime || '00:00' }}</div>
+                  <div class="node-date">ngày {{ currentSchedule.arrivalDate || currentSchedule.departureDate || 'Chưa
+                    tính' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Buffers and Advance Times Row -->
+          <div class="buffers-grid">
+            <!-- Mở chuyến trước -->
+            <div class="buffer-item">
+              <label class="buffer-label">Mở chuyến trước <span class="required">*</span></label>
+              <div class="buffer-input-wrapper">
+                <input type="number" [(ngModel)]="currentSchedule.openValue" class="buffer-input">
+                <div class="custom-buffer-dropdown">
+                  <div class="dropdown-trigger" (click)="toggleOpenUnitDropdown($event)">
+                    <span>{{ getUnitLabel(currentSchedule.openUnit) }}</span>
+                    <span class="dropdown-arrow-icon"></span>
+                  </div>
+                  <div class="dropdown-options-menu" *ngIf="showOpenUnitDropdown">
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.openUnit === 'minute'"
+                      (click)="selectOpenUnit('minute')">Phút</div>
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.openUnit === 'hour'"
+                      (click)="selectOpenUnit('hour')">Giờ</div>
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.openUnit === 'day'"
+                      (click)="selectOpenUnit('day')">Ngày</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Đóng chuyến trước -->
+            <div class="buffer-item">
+              <label class="buffer-label">Đóng chuyến trước <span class="required">*</span></label>
+              <div class="buffer-input-wrapper">
+                <input type="number" [(ngModel)]="currentSchedule.closeValue" class="buffer-input">
+                <div class="custom-buffer-dropdown">
+                  <div class="dropdown-trigger" (click)="toggleCloseUnitDropdown($event)">
+                    <span>{{ getUnitLabel(currentSchedule.closeUnit) }}</span>
+                    <span class="dropdown-arrow-icon"></span>
+                  </div>
+                  <div class="dropdown-options-menu" *ngIf="showCloseUnitDropdown">
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.closeUnit === 'minute'"
+                      (click)="selectCloseUnit('minute')">Phút</div>
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.closeUnit === 'hour'"
+                      (click)="selectCloseUnit('hour')">Giờ</div>
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.closeUnit === 'day'"
+                      (click)="selectCloseUnit('day')">Ngày</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thời gian giữ chỗ -->
+            <div class="buffer-item">
+              <label class="buffer-label">Thời gian giữ chỗ <span class="required">*</span></label>
+              <div class="buffer-input-wrapper">
+                <input type="number" [(ngModel)]="currentSchedule.holdValue" class="buffer-input">
+                <div class="custom-buffer-dropdown">
+                  <div class="dropdown-trigger" (click)="toggleHoldUnitDropdown($event)">
+                    <span>{{ getUnitLabel(currentSchedule.holdUnit) }}</span>
+                    <span class="dropdown-arrow-icon"></span>
+                  </div>
+                  <div class="dropdown-options-menu" *ngIf="showHoldUnitDropdown">
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.holdUnit === 'minute'"
+                      (click)="selectHoldUnit('minute')">Phút</div>
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.holdUnit === 'hour'"
+                      (click)="selectHoldUnit('hour')">Giờ</div>
+                    <div class="dropdown-option-item" [class.active-opt]="currentSchedule.holdUnit === 'day'"
+                      (click)="selectHoldUnit('day')">Ngày</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transit/Pickup/Dropoff Points Selection -->
+          <div class="transit-section">
+            <!-- Điểm đón trả -->
+            <div class="transit-group">
+              <label>Điểm đón trả <span class="required">*</span></label>
+              <div class="transit-inputs" style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                  <app-custom-select [(value)]="currentSchedule.pickupPoint" [options]="pickupPointOptions"
+                    placeholder="Chọn điểm đón trả"></app-custom-select>
+                </div>
+                <div style="flex: 1;">
+                  <input type="text" [value]="getPointAddress(currentSchedule.pickupPoint)" readonly
+                    placeholder="Địa chỉ tự động điền" class="disabled-input"
+                    style="width: 100%; height: 40px; box-sizing: border-box; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Điểm dừng -->
+            <div class="transit-group mt-3">
+              <label>Điểm dừng <span class="required">*</span></label>
+              <div class="transit-inputs" style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                  <app-custom-select [(value)]="currentSchedule.dropoffPoint" [options]="dropoffPointOptions"
+                    placeholder="Chọn điểm dừng"></app-custom-select>
+                </div>
+                <div style="flex: 1;">
+                  <input type="text" [value]="getPointAddress(currentSchedule.dropoffPoint)" readonly
+                    placeholder="Địa chỉ tự động điền" class="disabled-input"
+                    style="width: 100%; height: 40px; box-sizing: border-box; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <div class="footer-left"></div>
+        <div class="footer-right">
+          <button class="btn-cancel" (click)="closeModal()">Hủy</button>
+          <button *ngIf="activeModalTab === 'setup'" class="btn-save" (click)="setModalTab('time')">Tiếp tục</button>
+          <button *ngIf="activeModalTab === 'time'" class="btn-save" (click)="saveSchedule()">Lưu thông tin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Alert Alert -->
+  <div class="modal-overlay custom-alert-overlay" *ngIf="isAlertOpen" style="z-index: 9999;">
+    <div class="alert-dialog-card">
+      <div class="alert-dialog-header">
+        <span class="material-icons alert-warn-icon">warning</span>
+        <h3>Thông báo hệ thống</h3>
+      </div>
+      <div class="alert-dialog-body">
+        <p>{{ alertMessage }}</p>
+      </div>
+      <div class="alert-dialog-footer">
+        <button class="alert-confirm-btn" (click)="closeAlert()">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>

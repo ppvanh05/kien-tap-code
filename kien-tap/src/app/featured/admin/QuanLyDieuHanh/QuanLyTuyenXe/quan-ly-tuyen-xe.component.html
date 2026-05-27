@@ -1,0 +1,211 @@
+<div class="route-management">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span>Quản lý điều hành</span> / <span class="active">Quản lý tuyến xe</span>
+  </div>
+
+  <!-- Main Card -->
+  <div class="content-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'all'" (click)="setTab('all')">Tất cả</button>
+      <button [class.active]="activeTab === 'active'" (click)="setTab('active')">Đang hoạt động</button>
+      <button [class.active]="activeTab === 'locked'" (click)="setTab('locked')">Đã khóa</button>
+    </div>
+
+    <!-- Actions & Filters -->
+    <div class="action-bar">
+      <!-- Nút thêm tuyến xe ở hàng trên riêng biệt -->
+      <div class="action-row-top">
+        <button class="btn-add" (click)="openAddModal()">
+          <span class="material-icons">add</span>
+          Thêm tuyến xe
+        </button>
+      </div>
+
+      <!-- Hàng dưới chứa Bộ lọc & các nút Tìm kiếm, Xóa điều kiện -->
+      <div class="action-row-bottom">
+        <div class="filter-group-new">
+          <div class="filter-item">
+            <label>Lọc theo:</label>
+            <div class="select-wrapper">
+              <!-- Custom Dropdown cho Điểm Đầu -->
+              <div class="custom-select">
+                <div class="select-trigger" [class.active]="activeDropdown === 'start'"
+                  (click)="toggleDropdown('start', $event)">
+                  <span>{{ searchStartPoint || 'Điểm đầu' }}</span>
+                  <span class="material-icons select-arrow">arrow_drop_down</span>
+                </div>
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'start'">
+                  <div class="dropdown-item" [class.selected]="searchStartPoint === ''"
+                    (click)="selectPoint('start', '')">
+                    Điểm đầu
+                  </div>
+                  <div class="dropdown-item" *ngFor="let p of provinces" [class.selected]="searchStartPoint === p"
+                    (click)="selectPoint('start', p)">
+                    {{ p }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom Dropdown cho Điểm Cuối -->
+              <div class="custom-select">
+                <div class="select-trigger" [class.active]="activeDropdown === 'end'"
+                  (click)="toggleDropdown('end', $event)">
+                  <span>{{ searchEndPoint || 'Điểm cuối' }}</span>
+                  <span class="material-icons select-arrow">arrow_drop_down</span>
+                </div>
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'end'">
+                  <div class="dropdown-item" [class.selected]="searchEndPoint === ''" (click)="selectPoint('end', '')">
+                    Điểm cuối
+                  </div>
+                  <div class="dropdown-item" *ngFor="let p of provinces" [class.selected]="searchEndPoint === p"
+                    (click)="selectPoint('end', p)">
+                    {{ p }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="buttons-group">
+          <button class="btn-search" (click)="filterRoutes()">
+            <span class="material-icons">search</span>
+            Tìm kiếm
+          </button>
+          <button class="btn-clear" (click)='clearFilters()'>
+            <span class="material-icons">filter_alt_off</span>
+            Xóa điều kiện
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 60px;">STT</th>
+            <th style="width: 25%;">Tuyến</th>
+            <th style="width: 20%;">Điểm đầu</th>
+            <th style="width: 20%;">Điểm cuối</th>
+            <th class="text-center" style="width: 15%;">Khoảng cách</th>
+            <th class="text-center" style="width: 15%;">Thời gian</th>
+            <th class="text-center" style="width: 100px;">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let route of filteredRoutes; let i = index">
+            <td class="text-center" style="font-weight: 500; color: #718096;">{{i + 1}}</td>
+            <td>
+              <span class="status-dot" [class.active]="route.status === 'active'"></span>
+              {{route.name}}
+            </td>
+            <td>{{route.startProvince}}</td>
+            <td>{{route.endProvince}}</td>
+            <td class="text-center">{{route.distance}} km</td>
+            <td class="text-center">{{route.estimatedHours}}h {{route.estimatedMinutes}}p</td>
+            <td class="text-center">
+              <button class="btn-icon" (click)="openEditModal(route)">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="onOverlayClick($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? 'Chi tiết tuyến' : 'Thêm tuyến xe' }}</h2>
+        <button class="close-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Điểm đầu <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentRoute.startPoint" placeholder="Bến xe...">
+          </div>
+          <div class="form-group">
+            <label>Thuộc tỉnh / thành phố <span class="required">*</span></label>
+            <app-custom-select [(value)]="currentRoute.startProvince" [options]="provinceOptions"
+              placeholder="Chọn tỉnh/ TP"></app-custom-select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Điểm cuối <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="currentRoute.endPoint" placeholder="Bến xe...">
+          </div>
+          <div class="form-group">
+            <label>Thuộc tỉnh / thành phố <span class="required">*</span></label>
+            <app-custom-select [(value)]="currentRoute.endProvince" [options]="provinceOptions"
+              placeholder="Chọn tỉnh/ TP"></app-custom-select>
+          </div>
+        </div>
+
+        <!-- Additional Fields Requested -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Khoảng cách (km) <span class="required">*</span></label>
+            <input type="number" [(ngModel)]="currentRoute.distance" placeholder="Nhập khoảng cách...">
+          </div>
+          <div class="form-group">
+            <label>Thời gian di chuyển dự kiến <span class="required">*</span></label>
+            <div class="time-input-group">
+              <div class="time-field">
+                <input type="number" [(ngModel)]="currentRoute.estimatedHours" min="0">
+                <span>giờ</span>
+              </div>
+              <div class="time-field">
+                <input type="number" [(ngModel)]="currentRoute.estimatedMinutes" min="0" max="59">
+                <span>phút</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="footer-left">
+          <button *ngIf="isEditMode" class="btn-lock" (click)="toggleStatus()">
+            <span class="material-icons">lock</span>
+            {{ currentRoute.status === 'active' ? 'Khóa tuyến' : 'Mở khóa' }}
+          </button>
+          <button *ngIf="isEditMode" class="btn-delete" (click)="deleteRoute()">
+            <span class="material-icons">delete</span>
+            Xóa tuyến
+          </button>
+        </div>
+        <div class="footer-right">
+          <button class="btn-cancel" (click)="closeModal()">Hủy</button>
+          <button class="btn-save" (click)="saveRoute()">Lưu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal-overlay" *ngIf="isAlertOpen" (click)="closeAlert()" style="z-index: 3000;">
+      <div class="modal-content"
+        style="max-width: 400px; text-align: center; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;"
+        (click)="$event.stopPropagation()">
+        <div style="margin-bottom: 20px;">
+          <span class="material-icons" style="font-size: 56px; color: var(--secondary-color);">error_outline</span>
+          <h3 style="margin-top: 15px; color: var(--text-dark); font-size: 18px; font-weight: 600;">Thông báo</h3>
+          <p style="color: var(--text-grey); font-size: 14px; margin-top: 8px;">{{ alertMessage }}</p>
+        </div>
+        <button class="btn-save" (click)="closeAlert()" style="width: 100%; padding: 12px; font-size: 15px;">Đã
+          hiểu</button>
+      </div>
+    </div>
+  </div>
+</div>

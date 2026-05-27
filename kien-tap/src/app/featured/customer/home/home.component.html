@@ -1,0 +1,401 @@
+<div class="bg-background font-body-md text-on-surface">
+    <app-header></app-header>
+
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="relative h-[400px] overflow-hidden">
+            <div class="absolute inset-0 bg-cover bg-center"
+                style="background-image: url('/asset/images/customer/banner.jpg');">
+                <div class="absolute inset-0 hero-gradient"></div>
+            </div>
+            <div class="relative h-full max-w-container-max mx-auto px-margin-desktop flex flex-col justify-center">
+            </div>
+        </section>
+
+        <!-- Search Filter Component -->
+        <section class="max-w-container-max mx-auto px-margin-desktop -mt-16 relative z-25">
+            <div class="bg-surface rounded-xl shadow-[0px_8px_30px_rgba(11,42,74,0.12)] p-6 border border-outline-variant/10">
+                <!-- Toggle & Help Link -->
+                <div class="flex justify-between items-center mb-6 border-b border-outline-variant pb-3">
+                    <div class="flex items-center gap-6">
+                        <button (click)="isRoundTrip = false"
+                            [class]="!isRoundTrip ? 'flex items-center gap-2 font-bold text-body-md text-primary border-b-2 border-primary pb-3 -mb-[14px]' : 'flex items-center gap-2 font-bold text-body-md text-on-surface-variant hover:text-primary transition-colors pb-3 -mb-[14px]'">
+                            <span class="material-symbols-outlined text-body-md" [style.font-variation-settings]="!isRoundTrip ? '' : 'FILL 0'">
+                                {{ !isRoundTrip ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                            </span>
+                            Một chiều
+                        </button>
+                        <button (click)="isRoundTrip = true"
+                            [class]="isRoundTrip ? 'flex items-center gap-2 font-bold text-body-md text-primary border-b-2 border-primary pb-3 -mb-[14px]' : 'flex items-center gap-2 font-bold text-body-md text-on-surface-variant hover:text-primary transition-colors pb-3 -mb-[14px]'">
+                            <span class="material-symbols-outlined text-body-md" [style.font-variation-settings]="isRoundTrip ? '' : 'FILL 0'">
+                                {{ isRoundTrip ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                            </span>
+                            Khứ hồi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Inputs Flex Row -->
+                <div class="flex flex-col lg:flex-row gap-4 items-end w-full">
+                    <!-- Điểm đi -->
+                    <div class="flex-grow space-y-1.5 min-w-[200px]">
+                        <label class="font-bold text-body-md text-secondary">Điểm đi</label>
+                        <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
+                            <span class="material-symbols-outlined text-primary mr-2">radio_button_checked</span>
+                            <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer" [(ngModel)]="departure">
+                                <option *ngFor="let loc of departureOptions" [value]="loc">{{ loc }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Switch Button -->
+                    <div class="flex justify-center pb-2">
+                        <button (click)="swapLocations()"
+                            class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary-light hover:border-primary transition-colors bg-surface active:scale-95 shadow-sm">
+                            <span class="material-symbols-outlined">sync_alt</span>
+                        </button>
+                    </div>
+
+                    <!-- Điểm đến -->
+                    <div class="flex-grow space-y-1.5 min-w-[200px]">
+                        <label class="font-bold text-body-md text-secondary">Điểm đến</label>
+                        <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
+                            <span class="material-symbols-outlined text-primary mr-2">location_on</span>
+                            <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer" [(ngModel)]="destination">
+                                <option *ngFor="let loc of destinationOptions" [value]="loc">{{ loc }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Ngày đi -->
+                    <div class="flex-grow space-y-1.5 relative min-w-[150px]">
+                        <label class="font-bold text-body-md text-secondary">Ngày đi</label>
+                        <div (click)="toggleDepartureCalendar(); $event.stopPropagation()"
+                            class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
+                            <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
+                            <input readonly class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                                [(ngModel)]="departureDate">
+                        </div>
+
+                        <!-- Calendar Popover (Departure) -->
+                        <div *ngIf="showDepartureCalendar"
+                            class="absolute z-50 top-full left-0 mt-2 bg-white rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.15)] border border-outline-variant/30 p-4 w-72 select-none"
+                            (click)="$event.stopPropagation()">
+                            <div class="flex justify-between items-center mb-3">
+                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-title-md">chevron_left</span>
+                                </button>
+                                <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
+                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-title-md">chevron_right</span>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center font-bold text-body-xs text-on-surface-variant mb-2">
+                                <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                            </div>
+                            <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center">
+                                <div class="w-8 h-8"></div>
+                                <div class="w-8 h-8"></div>
+                                <div class="w-8 h-8"></div>
+                                <div class="w-8 h-8"></div>
+                                <div *ngFor="let d of calendarDays" (click)="selectDepartureDate(d.dateStr)"
+                                    [class]="d.dateStr === departureDate
+                                        ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
+                                        : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
+                                    <span class="text-[8px] text-on-surface-variant font-normal absolute top-0.5 leading-none">{{ d.label }}</span>
+                                    <span class="text-body-sm font-semibold absolute bottom-1 leading-none" [class.text-red-500]="d.highlighted">{{ d.day }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ngày về (Conditional) -->
+                    <div *ngIf="isRoundTrip" class="flex-grow space-y-1.5 relative min-w-[150px]">
+                        <label class="font-bold text-body-md text-secondary">Ngày về</label>
+                        <div (click)="toggleReturnCalendar(); $event.stopPropagation()"
+                            class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
+                            <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
+                            <input readonly class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                                [placeholder]="'Thêm ngày về'" [(ngModel)]="returnDate">
+                        </div>
+
+                        <!-- Calendar Popover (Return) -->
+                        <div *ngIf="showReturnCalendar"
+                            class="absolute z-50 top-full left-0 mt-2 bg-white rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.15)] border border-outline-variant/30 p-4 w-72 select-none"
+                            (click)="$event.stopPropagation()">
+                            <div class="flex justify-between items-center mb-3">
+                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-title-md">chevron_left</span>
+                                </button>
+                                <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
+                                <button class="text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-title-md">chevron_right</span>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center font-bold text-body-xs text-on-surface-variant mb-2">
+                                <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                            </div>
+                            <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center">
+                                <div class="w-8 h-8"></div>
+                                <div class="w-8 h-8"></div>
+                                <div class="w-8 h-8"></div>
+                                <div class="w-8 h-8"></div>
+                                <div *ngFor="let d of calendarDays" (click)="selectReturnDate(d.dateStr)"
+                                    [class]="d.dateStr === returnDate
+                                        ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
+                                        : 'w-8 h-8 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container cursor-pointer relative'">
+                                    <span class="text-[8px] text-on-surface-variant font-normal absolute top-0.5 leading-none">{{ d.label }}</span>
+                                    <span class="text-body-sm font-semibold absolute bottom-1 leading-none" [class.text-red-500]="d.highlighted">{{ d.day }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Số vé -->
+                    <div class="flex-grow space-y-1.5 min-w-[150px]">
+                        <label class="font-bold text-body-md text-secondary block whitespace-nowrap">Số vé</label>
+                        <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all">
+                            <span class="material-symbols-outlined text-primary mr-2">confirmation_number</span>
+                            <select class="bg-transparent border-none focus:ring-0 w-full text-on-surface text-body-lg font-medium cursor-pointer" [(ngModel)]="passengerCount">
+                                <option [value]="1">1 vé</option>
+                                <option [value]="2">2 vé</option>
+                                <option [value]="3">3 vé</option>
+                                <option [value]="4">4 vé</option>
+                                <option [value]="5">5 vé</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Searches -->
+                <div class="mt-4 flex items-center gap-3 border-t border-outline-variant/30 pt-4">
+                    <span class="text-body-sm font-bold text-secondary">Tìm kiếm gần đây:</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span *ngFor="let s of recentSearches" (click)="selectRecentSearch(s)"
+                            class="bg-surface-container text-on-surface-variant px-3.5 py-1 rounded-full text-label-md border border-outline-variant/30 cursor-pointer hover:bg-primary-light hover:text-primary transition-colors">
+                            {{ s.from }} → {{ s.to }} <span class="opacity-60 ml-1 text-label-sm">{{ s.date }}</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Centered Search Button below recent searches -->
+                <div class="mt-5 flex justify-center w-full">
+                    <button (click)="searchTrip()"
+                        class="px-16 py-3.5 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-secondary-hover hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2 max-w-xs w-full text-body-lg">
+                        TÌM KIẾM
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="py-6 max-w-container-max mx-auto px-margin-desktop">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                <div
+                    class="text-center space-y-4 p-8 bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined text-primary text-4xl">king_bed</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-secondary value-card-title">Tiện nghi cao cấp</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Hệ thống xe Limousine đời mới nhất với
+                        ghế massage, wifi tốc độ cao, và cổng sạc riêng biệt.</p>
+                </div>
+                <div
+                    class="text-center space-y-4 p-8 bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined text-primary text-4xl">schedule</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-secondary value-card-title">Nhanh chóng &amp; Đúng giờ</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Tối ưu hóa hành trình, cam kết khởi
+                        hành và đến nơi đúng khung giờ đã thông báo cho quý khách.</p>
+                </div>
+                <div
+                    class="text-center space-y-4 p-8 bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined text-primary text-4xl">verified_user</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-secondary value-card-title">An tâm tuyệt đối</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Đội ngũ lái xe kinh nghiệm, nhiệt tình
+                        và được đào tạo bài bản về an toàn giao thông đường dài.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Routes Section -->
+        <section class="py-12 bg-surface-container-low">
+            <div class="max-w-container-max mx-auto px-margin-desktop">
+                <h2 class="font-headline-lg text-headline-lg text-secondary text-center mb-12">Tuyến xe phổ biến</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                    <div *ngFor="let route of popularRoutes"
+                        class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10 group">
+                        <div class="h-48 overflow-hidden">
+                            <img alt="{{ route.from }} - {{ route.to }}"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                src="/asset/images/customer/{{ route.image }}">
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-bold text-title-lg text-secondary mb-2">{{ route.from }} → {{ route.to }}
+                            </h4>
+                            <p class="font-body-md text-on-surface-variant mb-6 text-body-sm">Từ <span
+                                    class="text-secondary font-bold text-title-md">{{ route.price }}</span></p>
+                            <button (click)="selectPopularRoute(route)"
+                                class="w-full bg-secondary text-on-primary font-bold py-3 rounded-xl hover:bg-secondary-hover transition-all shadow-sm">Đặt
+                                vé ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Proof & Testimonials -->
+        <section class="bg-surface-container-low py-12">
+            <div class="max-w-container-max mx-auto px-margin-desktop">
+                <div class="flex flex-col md:flex-row gap-gutter">
+                    <!-- Bus Gallery -->
+                    <div class="md:w-1/2 rounded-xl overflow-hidden shadow-lg h-[450px]">
+                        <img class="w-full h-full object-cover" data-alt="Limousine interior"
+                            src="/asset/images/customer/nhaxe1.png">
+                    </div>
+                    <!-- Testimonials -->
+                    <div class="md:w-1/2 flex flex-col justify-center space-y-6">
+                        <h2 class="font-headline-lg text-headline-lg text-secondary">Khách hàng nói gì về Tân Xuân Phúc?
+                        </h2>
+                        <div class="space-y-3">
+                            <!-- Testimonial Card -->
+                            <div
+                                class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/20">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden">
+                                        <img alt="Customer avatar" class="w-full h-full object-cover"
+                                            src="/asset/images/customer/user.png">
+                                    </div>
+                                    <div>
+                                        <h4 class="font-title-lg text-title-lg text-secondary">Nguyễn Văn Nam</h4>
+                                        <div class="flex text-urgent-orange">
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="font-body-md text-on-surface-variant italic text-lg leading-relaxed">
+                                    "Dịch vụ tuyệt vời! Xe rất sạch sẽ, đúng giờ và lái xe rất cẩn thận. Tôi thường
+                                    xuyên
+                                    đi công tác tuyến Sài Gòn - Đà Lạt và TXP luôn là lựa chọn hàng đầu của tôi."
+                                </p>
+                            </div>
+                            <!-- Testimonial Card -->
+                            <div
+                                class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/20">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden">
+                                        <img alt="Customer avatar" class="w-full h-full object-cover"
+                                            src="/asset/images/customer/user.png">
+                                    </div>
+                                    <div>
+                                        <h4 class="font-title-lg text-title-lg text-secondary">Lê Thị Mai</h4>
+                                        <div class="flex text-urgent-orange">
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="material-symbols-outlined"
+                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="font-body-md text-body-md text-on-surface-variant italic">"Rất ấn tượng với sự
+                                    chu đáo của nhân viên phòng vé và lái xe. Xe limousine ngồi cực kỳ thoải mái, không
+                                    hề cảm thấy mệt mỏi sau chuyến đi dài."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Summary -->
+        <section class="py-12 max-w-container-max mx-auto px-margin-desktop">
+            <div class="flex justify-between items-end mb-10">
+                <h2 class="font-headline-lg text-headline-lg text-secondary">TIN TỨC MỚI</h2>
+                <a class="font-title-lg text-title-lg text-primary hover:underline" routerLink="/tin-tuc">Xem tất cả
+                    &gt;</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                <!-- News Card -->
+                <div
+                    class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10">
+                    <div class="h-48 overflow-hidden">
+                        <img alt="News 1"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="/asset/images/customer/tintuc4.png">
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">15/12/2024</span>
+                        <h4
+                            class="font-headline-md text-headline-md text-secondary group-hover:text-primary transition-colors">
+                            Khai trương tuyến mới Sài Gòn - Cần Thơ</h4>
+                        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">TXP chính thức mở rộng
+                            mạng lưới vận chuyển với dàn limousine VIP phục vụ hành khách đi miền Tây...</p>
+                        <button routerLink="/tin-tuc"
+                            class="font-title-lg text-title-lg text-primary flex items-center gap-1 group-hover:gap-2 transition-all">Chi
+                            tiết <span class="material-symbols-outlined">chevron_right</span></button>
+                    </div>
+                </div>
+                <!-- News Card -->
+                <div
+                    class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10">
+                    <div class="h-48 overflow-hidden">
+                        <img alt="News 2"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="/asset/images/customer/tintuc3.png">
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">10/12/2024</span>
+                        <h4
+                            class="font-headline-md text-headline-md text-secondary group-hover:text-primary transition-colors">
+                            Ưu đãi 20% đặt vé sớm dịp Tết Ất Tỵ</h4>
+                        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Chương trình khuyến
+                            mãi lớn nhất năm dành cho khách hàng đặt vé về quê ăn Tết sớm thông qua app TXP...</p>
+                        <button routerLink="/tin-tuc"
+                            class="font-title-lg text-title-lg text-primary flex items-center gap-1 group-hover:gap-2 transition-all">Chi
+                            tiết <span class="material-symbols-outlined">chevron_right</span></button>
+                    </div>
+                </div>
+                <!-- News Card -->
+                <div
+                    class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10">
+                    <div class="h-48 overflow-hidden">
+                        <img alt="News 3"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="/asset/images/customer/tintuc7.png">
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">05/12/2024</span>
+                        <h4
+                            class="font-headline-md text-headline-md text-secondary group-hover:text-primary transition-colors">
+                            TXP đạt giải thưởng Dịch Vụ Vận Tải 2024</h4>
+                        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Tân Xuân Phúc vinh dự
+                            được bình chọn là đơn vị vận tải hành khách được yêu thích nhất năm tại TP.HCM...</p>
+                        <button routerLink="/tin-tuc"
+                            class="font-title-lg text-title-lg text-primary flex items-center gap-1 group-hover:gap-2 transition-all">Chi
+                            tiết <span class="material-symbols-outlined">chevron_right</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <app-footer></app-footer>
+</div>

@@ -1,0 +1,905 @@
+<div class="page-container">
+  <!-- Custom Premium Alert Notification Overlay -->
+  <div class="custom-alert-overlay" *ngIf="notification.show" (click)="closeNotification()">
+    <div class="custom-alert-card" (click)="$event.stopPropagation()">
+      <div class="custom-alert-body">
+        <div class="custom-alert-icon-wrapper" [class]="notification.type">
+          <span class="material-icons" *ngIf="notification.type === 'success'">check</span>
+          <span class="material-icons" *ngIf="notification.type === 'warning'">priority_high</span>
+          <span class="material-icons" *ngIf="notification.type === 'error'">close</span>
+        </div>
+        <div class="custom-alert-content">
+          <h4 class="custom-alert-title">{{ notification.title }}</h4>
+          <p class="custom-alert-message" [innerHTML]="notification.message"></p>
+        </div>
+      </div>
+      <div class="custom-alert-footer">
+        <button class="btn-alert-ok" [class]="notification.type" (click)="closeNotification()">
+          Đồng ý
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Bảng điều hành</span>
+      <span class="separator">/</span>
+      <span class="current">Quản lý tin tức</span>
+    </div>
+    <div class="header-main">
+      <div>
+        <h1>Quản lý bài viết & tin tức</h1>
+        <p class="subtitle">Đăng tải thông báo, cập nhật chặng đường, chèn hình ảnh và lên lịch xuất bản tự động chuẩn phong cách mạng xã hội</p>
+      </div>
+      <button class="btn-add-new" (click)="openAddModal()">
+        <span class="material-icons">add</span>
+        Đăng bài viết mới
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter & Table Main View Container -->
+  <div class="main-card-layout">
+    <!-- Filter Tabs Row -->
+    <div class="tabs-row">
+      <div class="tabs-group">
+        <button class="tab-btn" [class.active]="activeTab === 'all'" (click)="setTab('all')">
+          Tất cả bài viết
+          <span class="badge-count">{{ newsList.length }}</span>
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'published'" (click)="setTab('published')">
+          Đang hiển thị
+          <span class="badge-count active-count">{{ getCountByStatus('DaDang') }}</span>
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'scheduled'" (click)="setTab('scheduled')">
+          Lịch hẹn đăng
+          <span class="badge-count scheduled-count">{{ getCountByStatus('HenGio') }}</span>
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'draft'" (click)="setTab('draft')">
+          Bản nháp
+          <span class="badge-count draft-count">{{ getCountByStatus('BanNhap') }}</span>
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'hidden'" (click)="setTab('hidden')">
+          Đã ẩn
+          <span class="badge-count hidden-count">{{ getCountByStatus('NgungHienThi') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="controls-row">
+      <div class="search-box">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="search()" 
+          placeholder="Tìm kiếm tin tức nhanh theo tiêu đề hoặc nội dung..." 
+          class="form-control-search" />
+      </div>
+
+      <div class="filter-sort">
+        <span class="filter-label">Sắp xếp:</span>
+        <select class="form-select-sort" [(ngModel)]="sortOrder" (change)="onSortOrderChange()">
+          <option value="newest">Mới nhất tạo trước</option>
+          <option value="oldest">Cũ nhất tạo trước</option>
+          <option value="alphabetical">Tên tiêu đề A - Z</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-responsive">
+      <table class="premium-table">
+        <thead>
+          <tr>
+            <th style="width: 90px;" class="text-center">Ảnh bìa</th>
+            <th style="width: auto; min-width: 200px;">Tiêu đề</th>
+            <th style="width: 120px;" class="text-center">Loại tin tức</th>
+            <th style="width: 130px;">Người đăng</th>
+            <th style="width: 140px;">Lên lịch / Ngày đăng</th>
+            <th style="width: 120px;" class="text-center">Trạng thái</th>
+            <th style="width: 110px;" class="text-center">Chức năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let news of displayNews">
+            <td>
+              <div class="cover-image-preview-cell">
+                <img [src]="news.anhBia" alt="Cover" class="table-cover-img" />
+              </div>
+            </td>
+            <td>
+              <div class="title-details-cell">
+                <div class="code-and-badge-row">
+                  <span class="news-code">{{ news.maTinTuc }}</span>
+                </div>
+                <h4 class="news-title-text">{{ news.tieuDe }}</h4>
+              </div>
+            </td>
+            <td>
+              <span [ngClass]="['loai-badge', getLoaiTinTucColor(news.loaiTinTuc)]">
+                {{ getLoaiTinTucLabel(news.loaiTinTuc) }}
+              </span>
+            </td>
+            <td>
+              <span class="author-label">{{ news.nguoiDang }}</span>
+            </td>
+            <td>
+              <span class="date-label" *ngIf="news.trangThai !== 'HenGio'">
+                {{ news.ngayDang ? (news.ngayDang | date:'dd-MM-yyyy') : '---' }}
+              </span>
+              <span class="scheduled-date-label" *ngIf="news.trangThai === 'HenGio'">
+                <span class="material-icons">alarm</span>
+                {{ news.ngayGioHenGio }}
+              </span>
+            </td>
+            <td>
+              <span class="status-pill" [class]="news.trangThai">
+                <span class="material-icons status-dot-icon">fiber_manual_record</span>
+                {{ getTrangThaiLabel(news.trangThai) }}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="table-actions">
+                <button class="btn-action-edit" (click)="openEditModal(news)" title="Chỉnh sửa bài viết">
+                  <span class="material-icons">edit</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="displayNews.length === 0">
+            <td colspan="7" class="empty-state-row">
+              <div class="empty-state-container">
+                <span class="material-icons">article_off</span>
+                <p>Không tìm thấy bài viết tin tức nào khớp với điều kiện lọc!</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination-container" *ngIf="filteredNews.length > 0">
+      <div class="pagination-info">
+        Hiển thị từ <strong>{{ Math.min((currentPage - 1) * pageSize + 1, filteredNews.length) }}</strong> 
+        đến <strong>{{ Math.min(currentPage * pageSize, filteredNews.length) }}</strong> 
+        trong tổng số <strong>{{ filteredNews.length }}</strong> bài viết.
+      </div>
+
+      <div class="pagination-actions">
+        <div class="page-size-selector">
+          <span>Dòng hiển thị:</span>
+          <select [ngModel]="pageSize" (change)="changePageSize($event)" class="form-control-page-size">
+            <option [value]="5">5 dòng / trang</option>
+            <option [value]="10">10 dòng / trang</option>
+            <option [value]="20">20 dòng / trang</option>
+          </select>
+        </div>
+
+        <div class="page-numbers">
+          <button class="btn-page-nav" [disabled]="currentPage === 1" (click)="prevPage()">
+            <span class="material-icons">chevron_left</span>
+          </button>
+          
+          <button 
+            *ngFor="let page of getPaginationPages()" 
+            class="btn-page-number" 
+            [class.active]="currentPage === page" 
+            (click)="goToPage(page)">
+            {{ page }}
+          </button>
+
+          <button class="btn-page-nav" [disabled]="currentPage === totalPages" (click)="nextPage()">
+            <span class="material-icons">chevron_right</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP LỚN XEM CHI TIẾT BÀI VIẾT (LARGE MODAL VIEW) -->
+  <div class="modal-overlay large-view-overlay" *ngIf="showPreviewModal && previewNews" (click)="closePreviewModal()">
+    <div class="modal-content-large" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-left">
+          <span class="drawer-code">{{ previewNews.maTinTuc }}</span>
+          <h3>Thông tin chi tiết & Xem trước hiển thị</h3>
+        </div>
+        <div class="modal-header-actions">
+          <button class="btn-edit-directly" (click)="editFromPreview(previewNews)">
+            <span class="material-icons">edit</span>
+            Chỉnh sửa
+          </button>
+          <button class="btn-close" (click)="closePreviewModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drawer Tabs -->
+      <div class="drawer-tabs">
+        <button 
+          class="drawer-tab-btn" 
+          [class.active]="previewTabActive === 'preview'" 
+          (click)="previewTabActive = 'preview'">
+          <span class="material-icons">preview</span>
+          Giao diện bài viết hiển thị công khai
+        </button>
+        <button 
+          class="drawer-tab-btn" 
+          [class.active]="previewTabActive === 'logs'" 
+          (click)="previewTabActive = 'logs'">
+          <span class="material-icons">history</span>
+          Nhật ký thao tác nghiệp vụ
+        </button>
+      </div>
+
+      <!-- Drawer Body container -->
+      <div class="drawer-body">
+        
+        <!-- Tab 1: Live Web Preview inside Modal -->
+        <div class="preview-mode-pane" *ngIf="previewTabActive === 'preview'">
+          <div class="preview-article-header">
+            <h1 class="preview-title-large">{{ previewNews.tieuDe }}</h1>
+            
+            <div class="preview-meta-row">
+              <div class="meta-item">
+                <span class="material-icons">person</span>
+                <span>Tác giả: <strong>{{ previewNews.nguoiDang }}</strong></span>
+              </div>
+              <div class="meta-item" *ngIf="previewNews.trangThai === 'HenGio'">
+                <span class="material-icons text-warning">alarm</span>
+                <span class="text-warning">Lên lịch đăng lúc: <strong>{{ previewNews.ngayGioHenGio }}</strong></span>
+              </div>
+              <div class="meta-item" *ngIf="previewNews.trangThai !== 'HenGio'">
+                <span class="material-icons">calendar_today</span>
+                <span>Ngày xuất bản: <strong>{{ previewNews.ngayDang ? (previewNews.ngayDang | date:'dd-MM-yyyy') : 'Chưa xuất bản' }}</strong></span>
+              </div>
+              <div class="meta-item">
+                <span class="material-icons">edit_calendar</span>
+                <span>Cập nhật lần cuối: {{ previewNews.ngayCapNhat | date:'dd-MM-yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="preview-summary-box">
+              <span class="summary-title">Tóm tắt nội dung giới thiệu:</span>
+              <p class="summary-text">{{ previewNews.moTaNgan }}</p>
+            </div>
+          </div>
+
+          <div class="preview-banner-wide" *ngIf="previewNews.anhBia" style="margin: 20px 0;">
+            <img [src]="previewNews.anhBia" alt="Banner" class="banner-wide-img" />
+            <span class="preview-status-badge" [class]="previewNews.trangThai">
+              {{ getTrangThaiLabel(previewNews.trangThai) }}
+            </span>
+          </div>
+
+          <!-- HTML output viewer -->
+          <div class="preview-article-body-rendered" [innerHTML]="getSafeHtml(previewNews.noiDungChiTiet)"></div>
+        </div>
+
+        <!-- Tab 2: Activity logs timeline inside Modal -->
+        <div class="logs-mode-pane" *ngIf="previewTabActive === 'logs'">
+          <div class="timeline-logs">
+            <div class="timeline-item" *ngFor="let log of getLogsForNews(previewNews.maTinTuc)">
+              <div class="timeline-badge" [class.blue]="log.loaiThaoTac.includes('Cập nhật')" 
+                                           [class.green]="log.loaiThaoTac.includes('Đăng') || log.loaiThaoTac.includes('Lên lịch')" 
+                                           [class.orange]="log.loaiThaoTac.includes('Tạo')" 
+                                           [class.red]="log.loaiThaoTac.includes('Ẩn')">
+                <span class="material-icons" *ngIf="log.loaiThaoTac.includes('Cập nhật')">edit</span>
+                <span class="material-icons" *ngIf="log.loaiThaoTac.includes('Đăng') || log.loaiThaoTac.includes('Lên lịch')">publish</span>
+                <span class="material-icons" *ngIf="log.loaiThaoTac.includes('Tạo')">article</span>
+                <span class="material-icons" *ngIf="log.loaiThaoTac.includes('Ẩn')">block</span>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-header">
+                  <span class="log-operation">{{ log.loaiThaoTac }}</span>
+                  <span class="log-time">{{ log.thoiGian }}</span>
+                </div>
+                <p class="log-desc">{{ log.noiDungChiTiet }}</p>
+                <div class="timeline-footer">
+                  <span>Thực hiện: <strong>{{ log.nguoiThaoTac }}</strong></span>
+                  <span>IP: {{ log.diaChiIP }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="empty-timeline" *ngIf="getLogsForNews(previewNews.maTinTuc).length === 0">
+              <span class="material-icons">query_builder</span>
+              <p>Chưa ghi nhận hoạt động nào của quản trị viên đối với bài viết này.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closePreviewModal()">Đóng cửa sổ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLE MANAGEMENT FORM DIALOG MODAL (ADD & EDIT) -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content-wide" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-left">
+          <span class="material-icons modal-header-icon">{{ isEditing ? 'edit_note' : 'post_add' }}</span>
+          <h3>{{ isEditing ? 'Cập nhật nội dung bài viết tin tức' : 'Đăng tải tin tức & sự kiện mới' }}</h3>
+        </div>
+
+        <!-- Real-time Live Web Preview Toggle Switch Button -->
+        <div class="header-preview-toggle">
+          <span class="toggle-text">Hiển thị khung xem trước:</span>
+          <label class="switch-toggle toggle-sm">
+            <input type="checkbox" [(ngModel)]="showLivePreview" />
+            <span class="slider-round"></span>
+          </label>
+        </div>
+
+        <button class="btn-close" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 2-column layout: Left = form scroll | Right = preview sticky -->
+        <div class="form-split-grid" [class.preview-hidden]="!showLivePreview">
+          
+          <!-- COLUMN 1: Form content (scrollable independently) -->
+          <div class="form-write-column">
+            
+            <h4 class="form-section-title" style="margin-bottom: 16px;">Thông tin cơ bản tin tức</h4>
+            
+            <div class="metadata-inputs-grid">
+              <!-- Mã bài viết & Trạng thái phát hành -->
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label>Mã bài viết</label>
+                  <input type="text" [value]="formModel.maTinTuc" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                  <label class="required-field">Trạng thái phát hành</label>
+                  <select class="form-control" [(ngModel)]="formModel.trangThai" [disabled]="formModel.henGioDang">
+                    <option value="BanNhap">Bản nháp (Ẩn)</option>
+                    <option value="DaDang">Đăng công khai ngay</option>
+                    <option *ngIf="isEditing" value="NgungHienThi">Ngừng hiển thị</option>
+                    <option value="HenGio" *ngIf="formModel.henGioDang">Lên lịch hẹn đăng</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Loại tin tức -->
+              <div class="form-group">
+                <label class="required-field">Loại tin tức</label>
+                <div class="loai-select-group">
+                  <button
+                    type="button"
+                    *ngFor="let loai of loaiTinTucList"
+                    [ngClass]="['loai-chip-btn', getLoaiTinTucColor(loai.value), formModel.loaiTinTuc === loai.value ? 'active' : '']"
+                    (click)="formModel.loaiTinTuc = loai.value">
+                    {{ loai.label }}
+                  </button>
+                </div>
+              </div>
+
+
+              <!-- FACEBOOK STYLE SCHEDULE PUBLISHING -->
+              <div class="facebook-scheduler-card">
+                <div class="scheduler-header">
+                  <div class="scheduler-title-info">
+                    <span class="material-icons timer-icon">alarm</span>
+                    <div>
+                      <span class="scheduler-main-label">Hẹn giờ xuất bản</span>
+                    </div>
+                  </div>
+                  <label class="switch-toggle">
+                    <input type="checkbox" [(ngModel)]="formModel.henGioDang" />
+                    <span class="slider-round"></span>
+                  </label>
+                </div>
+
+                <!-- Scheduled Fields Inputs Grid -->
+                <div class="scheduler-inputs-container" *ngIf="formModel.henGioDang">
+                  <div class="form-row-2col">
+                    <div class="form-group">
+                      <label class="required-field">Ngày đăng</label>
+                      <input 
+                        type="date" 
+                        [(ngModel)]="formModel.ngayHenGio" 
+                        [class.has-error]="formErrors['ngayHenGio']"
+                        class="form-control" />
+                    </div>
+                    <div class="form-group">
+                      <label class="required-field">Giờ đăng</label>
+                      <input 
+                        type="time" 
+                        [(ngModel)]="formModel.gioHenGio" 
+                        [class.has-error]="formErrors['ngayHenGio']"
+                        class="form-control" />
+                    </div>
+                  </div>
+                  <span class="error-msg text-center-block" *ngIf="formErrors['ngayHenGio']">{{ formErrors['ngayHenGio'] }}</span>
+                  <p class="scheduler-help-text">
+                    <span class="material-icons info-small">info</span>
+                    Bài viết tự động đổi sang Đang hiển thị đúng thời gian trên.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tiêu đề bài viết -->
+              <div class="form-group">
+                <label class="required-field">Tiêu đề bài viết</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="formModel.tieuDe" 
+                  [class.has-error]="formErrors['tieuDe']"
+                  placeholder="Ví dụ: Khai trương tuyến mới..." 
+                  class="form-control" />
+                <span class="error-msg" *ngIf="formErrors['tieuDe']">{{ formErrors['tieuDe'] }}</span>
+              </div>
+
+              <!-- Mô tả ngắn trang chủ -->
+              <div class="form-group">
+                <div class="label-header-row">
+                  <label class="required-field">Mô tả ngắn trang chủ</label>
+                  <span class="char-counter" [class.danger-text]="formModel.moTaNgan?.length > 200">
+                    {{ formModel.moTaNgan?.length || 0 }} / 200 ký tự
+                  </span>
+                </div>
+                <textarea 
+                  rows="2" 
+                  [(ngModel)]="formModel.moTaNgan" 
+                  [class.has-error]="formErrors['moTaNgan']"
+                  placeholder="Tóm tắt giới thiệu bài viết..." 
+                  class="form-control-textarea"
+                  style="height: 60px; min-height: 60px; resize: vertical;"></textarea>
+                <span class="error-msg" *ngIf="formErrors['moTaNgan']">{{ formErrors['moTaNgan'] }}</span>
+              </div>
+
+              <!-- Ảnh bìa bài viết -->
+              <div class="form-group">
+                <label class="required-field">Ảnh bìa bài viết</label>
+                <div class="cover-image-input-row">
+                  <input 
+                    type="text" 
+                    [(ngModel)]="formModel.anhBia" 
+                    [class.has-error]="formErrors['anhBia']"
+                    placeholder="Dán URL ảnh hoặc tải tệp..." 
+                    class="form-control inline-link-input" />
+                  
+                  <button type="button" class="btn-local-upload" (click)="triggerLocalCoverUpload()" title="Tải ảnh từ máy tính">
+                    <span class="material-icons">cloud_upload</span>
+                    Tải từ máy
+                  </button>
+                </div>
+                <span class="error-msg" *ngIf="formErrors['anhBia']">{{ formErrors['anhBia'] }}</span>
+
+                <!-- Mock Upload Progress Bar for Cover Image -->
+                <div class="progress-bar-container" *ngIf="isUploadingCover">
+                  <div class="progress-info">
+                    <span class="progress-label">Đang tải: {{ uploadedCoverFile }}</span>
+                    <span class="progress-pct">{{ uploadCoverProgress }}%</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill" [style.width.%]="uploadCoverProgress"></div>
+                  </div>
+                </div>
+
+                <!-- Cover suggestions presets inline -->
+                <div class="cover-suggestions-wrapper" style="margin-top: 8px;">
+                  <label class="preset-label-title">Chọn nhanh ảnh gợi ý:</label>
+                  <div class="preset-grid" style="grid-template-columns: repeat(6, 1fr); gap: 6px;">
+                    <div 
+                      *ngFor="let preset of presetImages" 
+                      class="preset-card" 
+                      [class.preset-active]="formModel.anhBia === preset.url" 
+                      (click)="selectPresetImage(preset.url)"
+                      style="height: 48px;">
+                      <img [src]="preset.url" [alt]="preset.label" class="preset-img" />
+                      <span class="preset-title" style="font-size: 0.55rem; padding: 2px;">{{ preset.label }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Separator spacing -->
+            <div style="height: 12px; border-bottom: 2px solid #f1f5f9; margin-bottom: 8px; margin-top: 8px;"></div>
+
+            <!-- Rich Editor panel -->
+            <div class="form-editor-panel-unified">
+              <h4 class="form-section-title" style="margin-bottom: 12px;">Soạn thảo nội dung chi tiết</h4>
+              
+              <div class="editor-wrapper" [class.has-error]="formErrors['noiDungChiTiet']">
+                <!-- Toolbar organized in 3 rows exactly matching the Policy screen layout -->
+                <div class="editor-toolbar" style="display: flex; flex-direction: column; gap: 0; padding: 0; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px 8px 0 0; border-bottom: none; overflow: hidden;">
+                  <!-- Row 1: Core formatting & alignment button group -->
+                  <div class="editor-toolbar-row row-1" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 10px 12px; border-bottom: 1px solid #e2e8f0; width: 100%; box-sizing: border-box;">
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('bold')" title="Chữ đậm">
+                      <span class="material-icons" style="font-size: 1.15rem; font-weight: bold;">format_bold</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('italic')" title="Chữ nghiêng">
+                      <span class="material-icons" style="font-size: 1.15rem; font-weight: bold;">format_italic</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('underline')" title="Gạch chân">
+                      <span class="material-icons" style="font-size: 1.15rem; font-weight: bold;">format_underlined</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('strikeThrough')" title="Gạch ngang">
+                      <span class="material-icons" style="font-size: 1.15rem; font-weight: bold;">format_strikethrough</span>
+                    </button>
+                    
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('formatBlock', 'blockquote')" title="Trích dẫn" style="font-weight: bold; font-size: 1.25rem; font-family: 'Georgia', serif; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;">
+                      ”
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="insertCodeBlock()" title="Khối mã nguồn" style="font-weight: bold; font-family: monospace; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;">
+                      &lt;&gt;
+                    </button>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('formatBlock', 'h1')" title="Tiêu đề 1" style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;">
+                      <span style="background-color: #334155; color: white; border-radius: 4px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">1</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('formatBlock', 'h2')" title="Tiêu đề 2" style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;">
+                      <span style="background-color: #334155; color: white; border-radius: 4px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">2</span>
+                    </button>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('insertUnorderedList')" title="Danh sách không thứ tự">
+                      <span class="material-icons" style="font-size: 1.15rem;">format_list_bulleted</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('insertOrderedList')" title="Danh sách có thứ tự">
+                      <span class="material-icons" style="font-size: 1.15rem;">format_list_numbered</span>
+                    </button>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('subscript')" title="Chỉ số dưới" style="display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; width: 28px; height: 28px;">
+                      X<sub>2</sub>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('superscript')" title="Chỉ số trên" style="display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; width: 28px; height: 28px;">
+                      X<sup>2</sup>
+                    </button>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('justifyLeft')" title="Canh trái">
+                      <span class="material-icons" style="font-size: 1.15rem;">format_align_left</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('justifyCenter')" title="Canh giữa">
+                      <span class="material-icons" style="font-size: 1.15rem;">format_align_center</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('justifyRight')" title="Canh phải">
+                      <span class="material-icons" style="font-size: 1.15rem;">format_align_right</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('justifyFull')" title="Canh đều">
+                      <span class="material-icons" style="font-size: 1.15rem;">format_align_justify</span>
+                    </button>
+                  </div>
+
+                  <!-- Row 2: Unified dropdown selectors (Font Family, Font Size) & media insertion buttons -->
+                  <div class="editor-toolbar-row row-2" style="display: flex; align-items: center; gap: 4px; padding: 8px 12px; width: 100%; box-sizing: border-box;">
+                    <!-- Font Family Select -->
+                    <select class="toolbar-select font-select" (change)="changeFont($event)" [(ngModel)]="selectedFont" style="width: 150px; font-size: 0.8rem; font-weight: 600; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: white; outline: none; cursor: pointer;">
+                      <option *ngFor="let font of fonts" [value]="font">{{ font === 'Inter' ? 'Inter (Mặc định)' : font }}</option>
+                    </select>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 4px;"></div>
+
+                    <!-- Font Size / Paragraph Type Select -->
+                    <select class="toolbar-select size-select" (change)="changeFontSize($event)" [(ngModel)]="selectedFontSize" style="width: 185px; font-size: 0.8rem; font-weight: 600; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: white; outline: none; cursor: pointer;">
+                      <option *ngFor="let size of fontSizes" [value]="size.value">{{ size.value === '3' ? 'Đoạn văn (Bình thường)' : size.label }}</option>
+                    </select>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn" (click)="insertLink()" (mousedown)="$event.preventDefault()" title="Chèn liên kết">
+                      <span class="material-icons" style="font-size: 1.15rem;">link</span>
+                    </button>
+                    <button type="button" class="toolbar-btn" (click)="triggerImageUpload()" title="Chèn ảnh từ máy">
+                      <span class="material-icons" style="font-size: 1.15rem;">image</span>
+                    </button>
+                    <input type="file" #imageInput style="display: none" accept="image/*" (change)="onImageSelected($event)" />
+                    <button type="button" class="toolbar-btn" (click)="formatDoc('insertHTML', '<table border=1 style=\'border-collapse:collapse;width:100%\'><tr><td>Cột 1</td><td>Cột 2</td></tr><tr><td>Dữ liệu 1</td><td>Dữ liệu 2</td></tr></table>')" title="Chèn bảng mẫu">
+                      <span class="material-icons" style="font-size: 1.15rem;">table_view</span>
+                    </button>
+
+                    <div class="divider" style="width: 1px; height: 18px; background-color: #cbd5e1; margin: 0 6px;"></div>
+
+                    <button type="button" class="toolbar-btn text-danger-btn" (click)="openConfirm('clear', null)" title="Xóa toàn bộ nội dung" style="color: #ef4444; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
+                      <span class="material-icons" style="font-size: 1.15rem; color: #ef4444;">format_clear</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Image Context Toolbar -->
+                <div class="image-context-bar" *ngIf="selectedImage" (click)="$event.stopPropagation()">
+                  <span class="context-label">
+                    <span class="material-icons">image</span> Định dạng ảnh:
+                  </span>
+                  
+                  <div class="context-group">
+                    <button type="button" class="context-btn" [class.active]="isImgAlign('left')" (click)="alignImage('left')" title="Căn trái">
+                      <span class="material-icons">format_align_left</span>
+                    </button>
+                    <button type="button" class="context-btn" [class.active]="isImgAlign('center')" (click)="alignImage('center')" title="Căn giữa">
+                      <span class="material-icons">format_align_center</span>
+                    </button>
+                    <button type="button" class="context-btn" [class.active]="isImgAlign('right')" (click)="alignImage('right')" title="Căn phải">
+                      <span class="material-icons">format_align_right</span>
+                    </button>
+                  </div>
+                  
+                  <div class="divider"></div>
+                  
+                  <span class="context-label">Kích thước:</span>
+                  <div class="slider-wrapper">
+                    <input type="range" min="10" max="100" [value]="getImageWidth()" (input)="changeImageWidth($event)" class="width-slider" />
+                    <span class="width-val">{{ getImageWidth() }}%</span>
+                  </div>
+                  
+                  <div class="divider"></div>
+                  
+                  <button type="button" class="context-btn delete-btn" (click)="deleteSelectedImage()" title="Xóa hình ảnh">
+                    <span class="material-icons">delete</span>
+                    Xóa ảnh
+                  </button>
+                  
+                  <button type="button" class="context-btn close-btn" (click)="clearImageSelection()" title="Đóng">
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+
+                <!-- Editor Editable Canvas -->
+                <div 
+                  #editor 
+                  contenteditable="true" 
+                  class="editor-canvas" 
+                  (input)="onEditorChange()"
+                  (blur)="onEditorChange()"
+                  (scroll)="updateResizeOverlay()"
+                  (click)="onEditorClick($event)"
+                  placeholder="Nhập nội dung bài viết chi tiết tại đây. Sử dụng thanh công cụ chuyên nghiệp phía trên để định dạng chữ, chèn hình ảnh từ máy tính hoặc kẻ bảng biểu...">
+                </div>
+
+                <!-- Image Resize Overlay with 4 Corner Handles -->
+                <div 
+                  class="image-resize-overlay" 
+                  *ngIf="selectedImage" 
+                  [ngStyle]="{
+                    'top.px': resizeBox.top,
+                    'left.px': resizeBox.left,
+                    'width.px': resizeBox.width,
+                    'height.px': resizeBox.height
+                  }">
+                  <div class="resize-handle tl" (mousedown)="startResize($event, 'tl')"></div>
+                  <div class="resize-handle tr" (mousedown)="startResize($event, 'tr')"></div>
+                  <div class="resize-handle bl" (mousedown)="startResize($event, 'bl')"></div>
+                  <div class="resize-handle br" (mousedown)="startResize($event, 'br')"></div>
+                </div>
+              </div>
+              <span class="error-msg" *ngIf="formErrors['noiDungChiTiet']">{{ formErrors['noiDungChiTiet'] }}</span>
+            </div>
+
+          </div>
+
+          <!-- COLUMN 2: Preview column (sticky, scrolls independently) -->
+          <div class="form-preview-column" *ngIf="showLivePreview">
+            <div class="editor-live-preview-box">
+              <div class="preview-box-header">
+                <span class="material-icons preview-indicator-icon">visibility</span>
+                <span>Giao diện hiển thị trên Website:</span>
+              </div>
+              
+              <div class="preview-live-web-container">
+                <!-- Meta Header block -->
+                <div class="preview-live-header">
+                  <h2 class="preview-live-title">{{ formModel.tieuDe || 'Tiêu đề bài viết của bạn sẽ hiển thị tại đây...' }}</h2>
+                  
+                  <div class="preview-live-meta">
+                    <span class="meta-item-badge">
+                      <span class="material-icons">person</span>
+                      Nguyễn Hoài Nam (Admin)
+                    </span>
+                    <span class="meta-item-badge">
+                      <span class="material-icons">calendar_today</span>
+                      {{ formModel.henGioDang ? (formModel.ngayHenGio ? (formModel.ngayHenGio | date:'dd-MM-yyyy') : 'Hẹn giờ đăng') : (formModel.ngayDang ? (formModel.ngayDang | date:'dd-MM-yyyy') : (todayDate | date:'dd-MM-yyyy')) }}
+                    </span>
+                  </div>
+
+                  <!-- Short description as a warning-style callout box -->
+                  <div class="preview-live-summary" *ngIf="formModel.moTaNgan">
+                    <span class="summary-badge">TÓM TẮT ĐOẠN ĐẦU</span>
+                    <p class="summary-paragraph">{{ formModel.moTaNgan }}</p>
+                  </div>
+                </div>
+
+                <!-- Cover Image Banner -->
+                <div class="preview-live-banner" *ngIf="formModel.anhBia">
+                  <img [src]="formModel.anhBia" alt="Cover banner" class="preview-live-banner-img" />
+                </div>
+
+                <!-- Renders the actual Rich text HTML output underneath -->
+                <div class="preview-live-body-rendered" [innerHTML]="getSafeHtml(formModel.noiDungChiTiet)"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer action controls -->
+      <div class="modal-footer">
+        <div class="modal-footer-left" *ngIf="isEditing && selectedNews">
+          <!-- Quick status action buttons inside edit modal -->
+          <button 
+            *ngIf="selectedNews.trangThai === 'BanNhap' || selectedNews.trangThai === 'NgungHienThi'" 
+            class="btn-footer-publish" 
+            (click)="openConfirm('publish', selectedNews)"
+            type="button">
+            <span class="material-icons">public</span>
+            Đăng bài
+          </button>
+          <button 
+            *ngIf="selectedNews.trangThai === 'DaDang'" 
+            class="btn-footer-hide" 
+            (click)="openConfirm('hide', selectedNews)"
+            type="button">
+            <span class="material-icons">visibility_off</span>
+            Ẩn bài
+          </button>
+        </div>
+        <div class="modal-footer-right">
+          <button class="btn-cancel" (click)="closeModal()">Hủy bỏ</button>
+          <button class="btn-save-confirm" (click)="saveNews()">
+            <span class="material-icons">save</span>
+            Lưu bài viết
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INLINE IMAGE INSERTION AND FILE UPLOAD DIALOG (POPUP CON) -->
+  <div class="modal-overlay image-upload-overlay" *ngIf="showInsertImageModal" (click)="closeInsertImageModal()">
+    <div class="image-upload-card" (click)="$event.stopPropagation()">
+      <div class="upload-card-header">
+        <span class="material-icons header-icon">add_photo_alternate</span>
+        <h4>Chèn hình ảnh vào bài viết</h4>
+        <button class="btn-close-sub" (click)="closeInsertImageModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      
+      <div class="upload-card-body">
+        <!-- Tab: Link URL -->
+        <div class="upload-group">
+          <label>Nhập URL liên kết ảnh ngoài:</label>
+          <input 
+            type="text" 
+            [(ngModel)]="inlineImageUrl" 
+            placeholder="https://example.com/image.jpg" 
+            class="form-control" />
+        </div>
+
+        <div class="upload-divider-row">
+          <span class="divider-line"></span>
+          <span class="divider-text">Hoặc tải lên từ thiết bị</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <!-- Tab: Upload from Local Machine -->
+        <div class="upload-group text-center">
+          <button type="button" class="btn-inline-upload-computer" (click)="triggerLocalInlineUpload()">
+            <span class="material-icons">cloud_upload</span>
+            Chọn tệp ảnh từ máy tính
+          </button>
+          
+          <div class="selected-file-label" *ngIf="uploadedInlineFile">
+            <span class="material-icons">insert_drive_file</span>
+            <span>{{ uploadedInlineFile }}</span>
+          </div>
+
+          <!-- Progress loading -->
+          <div class="progress-bar-container inline-progress" *ngIf="isUploadingInline">
+            <div class="progress-info">
+              <span class="progress-label">Đang tải: {{ uploadInlineProgress }}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="uploadInlineProgress"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview selected image -->
+        <div class="image-preview-panel" *ngIf="inlineImageUrl">
+          <label class="preview-label">Xem trước ảnh trước khi chèn:</label>
+          <div class="preview-frame">
+            <img [src]="inlineImageUrl" alt="Preview inline image" />
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-card-footer">
+        <button class="btn-cancel-sub" (click)="closeInsertImageModal()">Hủy bỏ</button>
+        <button class="btn-insert-sub" (click)="insertImageToContent()" [disabled]="!inlineImageUrl">
+          <span class="material-icons">add</span>
+          Chèn vào nội dung
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMIUM STATUS CHANGE CONFIRM MODAL OVERLAY -->
+  <div class="modal-overlay lock-modal-overlay" *ngIf="showConfirmModal" (click)="closeConfirm()">
+    <div class="modal-content confirm-alert-card" (click)="$event.stopPropagation()">
+      <div class="confirm-alert-body">
+        <div class="confirm-alert-icon-wrapper" [class]="confirmType">
+          <span class="material-icons" *ngIf="confirmType === 'hide'">visibility_off</span>
+          <span class="material-icons" *ngIf="confirmType === 'publish'">public</span>
+          <span class="material-icons" *ngIf="confirmType === 'clear'">delete_sweep</span>
+        </div>
+        
+        <div class="confirm-alert-content-text">
+          <h3 *ngIf="confirmType === 'hide'">Xác nhận ẩn bài viết tin tức?</h3>
+          <h3 *ngIf="confirmType === 'publish'">Xác nhận xuất bản bài viết?</h3>
+          <h3 *ngIf="confirmType === 'clear'">Xác nhận dọn dẹp nội dung?</h3>
+          
+          <p *ngIf="confirmType === 'hide'">
+            Hành động này sẽ cập nhật trạng thái bài viết của quý khách thành <strong>"Ngừng hiển thị"</strong>. Bài viết sẽ bị ẩn hoàn toàn khỏi Website bán vé công khai nhưng vẫn được lưu trữ trong cơ sở dữ liệu để phục vụ kiểm soát nội bộ.
+          </p>
+          <p *ngIf="confirmType === 'publish'">
+            Hệ thống sẽ tiến hành xuất bản công khai bài viết <strong>"{{ targetNews?.tieuDe }}"</strong> lên trang chủ và ứng dụng di động cho toàn bộ khách hàng đọc ngay lập tức.
+          </p>
+          <p *ngIf="confirmType === 'clear'">
+            Hệ thống sẽ xóa sạch toàn bộ nội dung, hình ảnh và định dạng hiện tại trong khung soạn thảo. Hành động này không thể hoàn tác, bạn có chắc chắn muốn thực hiện?
+          </p>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeConfirm()">Hủy thao tác</button>
+        <button class="btn-confirm-action" [class]="confirmType" (click)="executeConfirm()">
+          Xác nhận thực hiện
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link Input Sub-Modal -->
+  <div class="sub-modal-overlay" *ngIf="showLinkModal" (click)="closeLinkModal()">
+    <div class="sub-modal-content" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="sub-modal-header">
+        <h4>Chèn liên kết (Link)</h4>
+        <button class="btn-sub-close" (click)="closeLinkModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="sub-modal-body">
+        <div class="form-group">
+          <label>Văn bản hiển thị</label>
+          <input type="text" [(ngModel)]="linkForm.text" class="form-control" placeholder="Nhập chữ hiển thị" />
+        </div>
+        <div class="form-group">
+          <label>Địa chỉ liên kết (URL)</label>
+          <input type="text" [(ngModel)]="linkForm.url" class="form-control" placeholder="https://example.com" />
+        </div>
+      </div>
+      <!-- Modal Footer -->
+      <div class="sub-modal-footer">
+        <button class="btn-sub-cancel" (click)="closeLinkModal()">Hủy</button>
+        <button class="btn-sub-save" (click)="confirmInsertLink()">Áp dụng</button>
+      </div>
+    </div>
+  </div>
+</div>

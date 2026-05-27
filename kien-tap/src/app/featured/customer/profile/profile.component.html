@@ -1,0 +1,415 @@
+<div class="bg-[#F8F9FA] min-h-screen font-body">
+    <app-header></app-header>
+
+    <main class="pt-28 pb-20 max-w-container-max mx-auto px-margin-desktop">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Sidebar -->
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 overflow-hidden p-4">
+                    <div class="space-y-2">
+                        <button (click)="activeTab = 'profile'"
+                            [class.bg-secondary-light]="activeTab === 'profile'"
+                            [class.text-secondary]="activeTab === 'profile'"
+                            class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-surface-container-low group">
+                            <span class="material-symbols-outlined text-2xl" [class.text-secondary]="activeTab === 'profile'">person</span>
+                            <span class="font-bold text-body-md">Thông tin tài khoản</span>
+                        </button>
+                        
+                        <button (click)="activeTab = 'history'"
+                            [class.bg-secondary-light]="activeTab === 'history'"
+                            [class.text-secondary]="activeTab === 'history'"
+                            class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-surface-container-low group text-on-surface-variant">
+                            <span class="material-symbols-outlined text-2xl" [class.text-secondary]="activeTab === 'history'">history</span>
+                            <span class="font-bold text-body-md">Lịch sử mua vé</span>
+                        </button>
+
+                        <button (click)="activeTab = 'password'"
+                            [class.bg-secondary-light]="activeTab === 'password'"
+                            [class.text-secondary]="activeTab === 'password'"
+                            class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-surface-container-low group text-on-surface-variant">
+                            <span class="material-symbols-outlined text-2xl" [class.text-secondary]="activeTab === 'password'">lock_reset</span>
+                            <span class="font-bold text-body-md">Đặt lại mật khẩu</span>
+                        </button>
+
+                        <div class="pt-4 mt-4 border-t border-outline-variant/10">
+                            <button class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-error/5 group text-error">
+                                <span class="material-symbols-outlined text-2xl">logout</span>
+                                <span class="font-bold text-body-md">Đăng xuất</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-9">
+                <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 p-8 md:p-10 min-h-[600px]">
+                    <!-- Top Profile Header (Only for Profile Tab) -->
+                    <div class="mb-8" *ngIf="activeTab === 'profile'">
+                        <h2 class="text-headline-sm font-bold text-navy mb-1">Thông tin tài khoản</h2>
+                        <p class="text-on-surface-variant text-body-sm">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+                        <!-- Left: Avatar (Only for Profile Tab) -->
+                        <div *ngIf="activeTab === 'profile'" class="md:col-span-4 flex flex-col items-center border-r border-outline-variant/10 pr-10">
+                            <div class="relative group cursor-pointer mb-6">
+                                <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/10 shadow-inner">
+                                    <img [src]="user.avatar" alt="Avatar" class="w-full h-full object-cover">
+                                </div>
+                                <div class="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+                                </div>
+                            </div>
+                            <button class="px-6 py-2 border border-outline-variant/50 rounded-xl font-bold text-body-sm hover:bg-surface-container-low transition-all mb-4">Chọn ảnh</button>
+                            <div class="text-center space-y-1">
+                                <p class="text-[11px] text-outline">Dung lượng file tối đa 1 MB</p>
+                                <p class="text-[11px] text-outline">Định dạng: .JPEG, .PNG</p>
+                            </div>
+                        </div>
+
+                        <!-- Right: Info Form / Content Tabs (Takes full 12 columns when left panel is hidden) -->
+                        <div [class]="activeTab === 'profile' ? 'md:col-span-8' : 'md:col-span-12'">
+                            <!-- TAB: Thông tin tài khoản -->
+                            <div *ngIf="activeTab === 'profile'">
+                                <!-- View Mode -->
+                                <div *ngIf="!isEditing" class="space-y-8">
+                                    <div class="grid grid-cols-2 gap-8">
+                                        <div class="space-y-1">
+                                            <p class="text-label-sm text-outline uppercase tracking-wider">Họ và tên</p>
+                                            <p class="font-bold text-navy text-body-md">{{ user.fullName }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p class="text-label-sm text-outline uppercase tracking-wider">Số điện thoại</p>
+                                            <p class="font-bold text-navy text-body-md">{{ user.phone }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p class="text-label-sm text-outline uppercase tracking-wider">Giới tính</p>
+                                            <p class="font-bold text-navy text-body-md">{{ user.gender }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p class="text-label-sm text-outline uppercase tracking-wider">Email</p>
+                                            <p class="font-bold text-navy text-body-md">{{ user.email }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p class="text-label-sm text-outline uppercase tracking-wider">Ngày sinh</p>
+                                            <p class="font-bold text-navy text-body-md">{{ user.dob | date:'dd/MM/yyyy' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-label-sm text-outline uppercase tracking-wider">Địa chỉ</p>
+                                        <p class="font-bold text-navy text-body-md">{{ user.address }}</p>
+                                    </div>
+                                    <div class="pt-6">
+                                        <button (click)="startEdit()" class="bg-secondary text-white px-10 py-3 rounded-xl shadow-lg shadow-secondary/20 font-bold hover:bg-secondary-hover transition-all">Chỉnh sửa hồ sơ</button>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Mode -->
+                                <div *ngIf="isEditing" class="space-y-6">
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div class="space-y-2">
+                                            <label class="text-label-sm text-on-surface-variant font-bold">Họ và tên</label>
+                                            <input type="text" [(ngModel)]="editUser.fullName" class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-label-sm text-on-surface-variant font-bold">Số điện thoại (Không thể thay đổi)</label>
+                                            <input type="text" [value]="editUser.phone" disabled class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/10 rounded-xl text-body-md text-outline cursor-not-allowed">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-label-sm text-on-surface-variant font-bold">Giới tính</label>
+                                            <select [(ngModel)]="editUser.gender" class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all">
+                                                <option value="Nam">Nam</option>
+                                                <option value="Nữ">Nữ</option>
+                                                <option value="Khác">Khác</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-label-sm text-on-surface-variant font-bold">Email (Đã xác thực)</label>
+                                            <input type="email" [(ngModel)]="editUser.email" class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-label-sm text-on-surface-variant font-bold">Ngày sinh</label>
+                                            <input type="date" [(ngModel)]="editUser.dob" class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-label-sm text-on-surface-variant font-bold">Địa chỉ</label>
+                                        <textarea [(ngModel)]="editUser.address" rows="2" class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="flex gap-4 pt-6">
+                                        <button (click)="saveProfile()" class="bg-secondary text-white px-10 py-3 rounded-xl font-bold hover:bg-secondary-hover transition-all shadow-lg shadow-secondary/20">Cập nhật</button>
+                                        <button (click)="cancelEdit()" class="bg-surface-container-high text-on-surface-variant px-10 py-3 rounded-xl font-bold hover:bg-outline-variant/20 transition-all">Hủy bỏ</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB: Lịch sử mua vé -->
+                            <div *ngIf="activeTab === 'history'" class="space-y-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <div>
+                                        <h2 class="text-title-lg font-bold text-navy">Lịch sử mua vé</h2>
+                                        <p class="text-on-surface-variant text-body-sm">Theo dõi và quản lý lịch sử đặt vé của bạn</p>
+                                    </div>
+                                    <button (click)="goToBooking()" class="bg-secondary text-white font-bold px-6 py-2.5 rounded-full hover:bg-secondary-hover transition-all text-body-sm flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
+                                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                        Đặt vé
+                                    </button>
+                                </div>
+
+                                <!-- Filter Inputs Bar -->
+                                <div class="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end mb-6">
+                                    <div class="space-y-1.5">
+                                        <label class="text-label-sm font-bold text-navy uppercase tracking-wider">Mã vé</label>
+                                        <input 
+                                            type="text" 
+                                            [(ngModel)]="filterMaDonHang" 
+                                            placeholder="Nhập Mã vé" 
+                                            class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium"
+                                        />
+                                    </div>
+
+                                    <div class="space-y-1.5">
+                                        <label class="text-label-sm font-bold text-navy uppercase tracking-wider">Thời gian</label>
+                                        <input 
+                                            type="date" 
+                                            [(ngModel)]="filterThoiGianDat" 
+                                            class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium"
+                                        />
+                                    </div>
+
+                                    <div class="space-y-1.5">
+                                        <label class="text-label-sm font-bold text-navy uppercase tracking-wider">Tuyến đường</label>
+                                        <input 
+                                            type="text" 
+                                            [(ngModel)]="filterTenTuyenXe" 
+                                            placeholder="Nhập tuyến đường" 
+                                            class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium"
+                                        />
+                                    </div>
+
+                                    <div class="space-y-1.5">
+                                        <label class="text-label-sm font-bold text-navy uppercase tracking-wider">Trạng thái</label>
+                                        <select 
+                                            [(ngModel)]="filterTrangThai" 
+                                            class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium outline-none cursor-pointer">
+                                            <option value="">Tất cả trạng thái</option>
+                                            <option value="Thành công">Thành công</option>
+                                            <option value="Giao dịch đang xử lý">Giao dịch đang xử lý</option>
+                                            <option value="Hết hạn">Hết hạn</option>
+                                            <option value="Hủy">Đã hủy</option>
+                                            <option value="unknown">Trạng thái khác</option>
+                                        </select>
+                                    </div>
+
+                                    <button 
+                                        (click)="searchHistory()" 
+                                        class="w-full bg-primary text-white font-bold py-2.5 px-4 rounded-xl text-body-sm hover:bg-primary-hover transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] shadow-xs">
+                                        <span class="material-symbols-outlined text-[18px]">search</span>
+                                        Tìm
+                                    </button>
+                                </div>
+
+                                <!-- Data Table -->
+                                <div class="bg-white rounded-2xl border border-outline-variant/10 overflow-hidden shadow-xs">
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-left text-body-sm">
+                                            <thead>
+                                                <tr class="bg-surface-container-low border-b border-outline-variant/15 text-navy font-bold">
+                                                    <th class="px-4 py-3.5">Mã vé</th>
+                                                    <th class="px-4 py-3.5 text-center">Số vé</th>
+                                                    <th class="px-4 py-3.5">Tuyến đường</th>
+                                                    <th class="px-4 py-3.5 text-center">Ngày đi</th>
+                                                    <th class="px-4 py-3.5 text-right">Số tiền</th>
+                                                    <th class="px-4 py-3.5 text-center">Thanh toán</th>
+                                                    <th class="px-4 py-3.5 text-center">Trạng thái</th>
+                                                    <th class="px-4 py-3.5 text-center">Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-outline-variant/10 font-medium text-on-surface">
+                                                <tr *ngIf="filteredHistoryOrders.length === 0">
+                                                    <td colspan="8" class="text-center py-10 text-on-surface-variant font-semibold">
+                                                        Không tìm thấy lịch sử giao dịch phù hợp.
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr *ngFor="let order of filteredHistoryOrders" class="hover:bg-surface-container-lowest/50 transition-colors">
+                                                    <td class="px-4 py-4 font-bold text-navy font-mono">{{ order.maDonHang }}</td>
+                                                    <td class="px-4 py-4 text-center">{{ order.soLuongVeDaDat }}</td>
+                                                    <td class="px-4 py-4 font-bold text-primary">{{ order.tenTuyenXe }}</td>
+                                                    <td class="px-4 py-4 text-center text-navy font-semibold whitespace-nowrap">
+                                                        {{ order.gioKhoiHanh }} {{ order.ngayKhoiHanh }}
+                                                    </td>
+                                                    <td class="px-4 py-4 text-right font-bold text-secondary">
+                                                        {{ order.tongGiaVe | number:'1.0-0' }}đ
+                                                    </td>
+                                                    <td class="px-4 py-4 text-center">
+                                                        <span class="text-label-sm font-semibold text-outline-variant px-2 py-0.5 bg-surface-container-low rounded border border-outline-variant/10">
+                                                            {{ order.phuongThucThanhToan === 'unknown' ? '--' : order.phuongThucThanhToan }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-4 py-4 text-center whitespace-nowrap">
+                                                        <span 
+                                                            class="px-2.5 py-0.5 rounded-full text-label-sm font-bold shadow-xs border border-transparent"
+                                                            [class.bg-success-light]="order.trangThaiDonHang === 'Thành công'"
+                                                            [class.text-success-text]="order.trangThaiDonHang === 'Thành công'"
+                                                            [class.bg-danger-light]="order.trangThaiDonHang === 'Đã hủy' || order.trangThaiDonHang === 'Hủy'"
+                                                            [class.text-danger-text]="order.trangThaiDonHang === 'Đã hủy' || order.trangThaiDonHang === 'Hủy'"
+                                                            [class.bg-warning-light]="order.trangThaiDonHang === 'Giao dịch đang xử lý'"
+                                                            [class.text-warning-text]="order.trangThaiDonHang === 'Giao dịch đang xử lý'"
+                                                            [class.bg-outline-variant/10]="order.trangThaiDonHang === 'Hết hạn'"
+                                                            [class.text-outline-variant]="order.trangThaiDonHang === 'Hết hạn'">
+                                                            {{ order.trangThaiDonHang }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-4 py-4 text-center">
+                                                        <button 
+                                                            (click)="viewTicketDetail(order)"
+                                                            class="bg-primary-light text-primary hover:bg-primary hover:text-white px-3.5 py-1.5 rounded-full font-bold text-label-sm transition-all shadow-xs">
+                                                            Chi tiết
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB: Đặt lại mật khẩu -->
+                            <div *ngIf="activeTab === 'password'" class="max-w-xl mx-auto py-10">
+                                <div class="text-center mb-10">
+                                    <h2 class="text-title-lg font-bold text-navy mb-2">Đặt lại mật khẩu</h2>
+                                    <p class="text-on-surface-variant text-body-sm">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu với người khác</p>
+                                </div>
+
+                                <div class="space-y-6">
+                                    <div class="space-y-2">
+                                        <label class="text-label-sm text-on-surface-variant font-bold">Mật khẩu hiện tại</label>
+                                        <div class="relative">
+                                            <input [type]="showCurrentPwd ? 'text' : 'password'" [(ngModel)]="passwords.current" placeholder="Nhập mật khẩu hiện tại" 
+                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12">
+                                            <button (click)="showCurrentPwd = !showCurrentPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors">
+                                                <span class="material-symbols-outlined text-xl">{{ showCurrentPwd ? 'visibility' : 'visibility_off' }}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="text-label-sm text-on-surface-variant font-bold">Mật khẩu mới</label>
+                                        <div class="relative">
+                                            <input [type]="showNewPwd ? 'text' : 'password'" [(ngModel)]="passwords.new" placeholder="Nhập mật khẩu mới" 
+                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12">
+                                            <button (click)="showNewPwd = !showNewPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors">
+                                                <span class="material-symbols-outlined text-xl">{{ showNewPwd ? 'visibility' : 'visibility_off' }}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="text-label-sm text-on-surface-variant font-bold">Xác nhận mật khẩu mới</label>
+                                        <div class="relative">
+                                            <input [type]="showConfirmPwd ? 'text' : 'password'" [(ngModel)]="passwords.confirm" placeholder="Xác nhận mật khẩu mới" 
+                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12">
+                                            <button (click)="showConfirmPwd = !showConfirmPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors">
+                                                <span class="material-symbols-outlined text-xl">{{ showConfirmPwd ? 'visibility' : 'visibility_off' }}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-6">
+                                        <button (click)="confirmChangePassword()" 
+                                            class="w-full bg-secondary text-white py-4 rounded-xl font-bold text-title-md shadow-lg shadow-secondary/20 hover:bg-secondary-hover transition-all">
+                                            Xác nhận đổi mật khẩu
+                                        </button>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <a href="#" class="text-secondary font-bold text-body-sm hover:underline">Quên mật khẩu?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- OTP Verification Modal -->
+    <div *ngIf="showOtpModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" (click)="closeOtpModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-3xl w-full max-w-md p-8 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div class="text-center mb-8">
+                <h3 class="text-headline-sm font-bold text-secondary mb-3">Xác thực OTP</h3>
+                <p class="text-on-surface-variant text-body-md leading-relaxed">
+                    Vui lòng nhập mã OTP gồm 6 chữ số đã được gửi về số điện thoại của bạn.
+                </p>
+            </div>
+
+            <!-- OTP Inputs -->
+            <div class="flex justify-between gap-2 mb-8">
+                <input *ngFor="let digit of otpInputs; let i = index" 
+                    type="text" maxlength="1" 
+                    [(ngModel)]="digit.value"
+                    (input)="onOtpInput($event, i)"
+                    class="w-12 h-14 md:w-14 md:h-16 text-center text-headline-sm font-bold border-2 border-outline-variant/30 rounded-xl focus:outline-none focus:border-secondary focus:bg-secondary-light/20 transition-all">
+            </div>
+
+            <div class="text-center mb-10">
+                <p class="text-on-surface-variant text-body-sm">
+                    Mã OTP có hiệu lực trong: <span class="text-secondary font-bold">{{ formatTime(otpTimer) }}</span>
+                </p>
+            </div>
+
+            <div class="flex gap-4">
+                <button (click)="closeOtpModal()" 
+                    class="flex-1 py-4 border-2 border-outline-variant/30 rounded-2xl font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">
+                    Hủy
+                </button>
+                <button (click)="verifyOtp()" 
+                    class="flex-1 py-4 bg-secondary text-white rounded-2xl font-bold shadow-lg shadow-secondary/20 hover:bg-secondary-hover transition-all">
+                    Xác nhận
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message Modal -->
+    <div *ngIf="showSuccessModal" class="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-3xl w-full max-w-md p-10 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
+            <!-- Animated Success Icon -->
+            <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce-slow">
+                <span class="material-symbols-outlined text-primary text-6xl">check_circle</span>
+            </div>
+
+            <h3 class="text-headline-sm font-bold text-navy mb-4">Đổi mật khẩu thành công!</h3>
+            
+            <p class="text-on-surface-variant text-body-md leading-relaxed mb-10 px-4">
+                Tài khoản của bạn đã được cập nhật mật khẩu mới. Hệ thống sẽ tự động quay về trang <span class="font-bold">Đăng nhập</span> sau <span class="text-primary font-bold">{{ redirectTimer }}</span> giây...
+            </p>
+
+            <!-- Countdown Ring (Simple CSS) -->
+            <div class="relative w-16 h-16 mx-auto mb-10 flex items-center justify-center">
+                <div class="absolute inset-0 border-4 border-primary/10 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
+                <span class="text-headline-sm font-bold text-primary">{{ redirectTimer }}</span>
+            </div>
+
+            <button (click)="goToLogin()" 
+                class="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-hover transition-all flex items-center justify-center gap-3">
+                <span class="material-symbols-outlined">login</span>
+                Đăng nhập ngay
+            </button>
+        </div>
+    </div>
+
+    <app-footer></app-footer>
+</div>

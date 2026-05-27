@@ -1,0 +1,123 @@
+<div class="bg-background min-h-screen">
+  <app-header></app-header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative h-[600px] flex items-center overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <img src="/asset/images/customer/gioithieu1.png" alt="Xe khách Tân Xuân Phúc" class="w-full h-full object-cover brightness-50">
+      </div>
+      <div class="relative z-10 max-w-container-max mx-auto px-margin-desktop w-full">
+        <div class="max-w-2xl text-white">
+          <h1 class="text-display-lg font-bold mb-4 animate-in fade-in slide-in-from-left duration-700">TÂN XUÂN PHÚC<br>VẠN DẶM BÌNH AN</h1>
+          <p class="text-body-lg mb-8 text-white/90 leading-relaxed opacity-0 animate-in fade-in slide-in-from-left duration-700 delay-200 fill-mode-forwards">
+            Sứ mệnh mang đến những hành trình an toàn, trọn vẹn và đầy ắp niềm vui cho mọi khách hàng. Chúng tôi không chỉ vận chuyển, chúng tôi kết nối yêu thương.
+          </p>
+          <div class="flex gap-4 opacity-0 animate-in fade-in slide-in-from-left duration-700 delay-300 fill-mode-forwards">
+            <button routerLink="/home" class="btn-secondary px-8 py-3 rounded-lg font-bold shadow-lg hover:scale-105 transition-transform">Đặt vé ngay</button>
+            <button (click)="scrollToIntroduction()" class="px-8 py-3 rounded-lg font-bold border border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all">Tìm hiểu thêm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section id="introduction" class="py-24 max-w-container-max mx-auto px-margin-desktop">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="space-y-8">
+          <div>
+            <span class="inline-block px-4 py-1 bg-primary/10 text-primary text-label-md font-bold rounded-full mb-4 uppercase tracking-wider">Câu chuyện của chúng tôi</span>
+            <h2 class="text-headline-lg font-bold text-navy leading-tight">Khởi nguồn từ tâm, vươn tầm bằng sự tử tế</h2>
+          </div>
+          <div class="space-y-4 text-on-surface-variant text-body-md leading-relaxed">
+            <p>Khởi đầu từ một đơn vị vận tải tư nhân với số lượng đầu xe giới hạn, Công ty TNHH Vận tải Tân Xuân Phúc (TXP) được thành lập từ sự thấu hiểu sâu sắc về nhu cầu di chuyển an toàn, tiện lợi và tiết kiệm của mỗi hành khách.</p>
+            <p>Chúng tôi hiểu rằng, đằng sau mỗi tấm vé không chỉ là một chuyến đi, mà là những cuộc hành trình trở về nhà đoàn tụ, những chuyến công tác quan trọng hay những kỳ nghỉ ý nghĩa bên người thân.</p>
+            <div class="pl-6 border-l-4 border-primary bg-primary-light/30 py-4 italic text-navy font-medium rounded-r-lg">
+              "Sứ mệnh của chúng tôi là thực thi triết lý 'Vạn Dặm Bình An'. Chúng tôi cam kết mang lại sự an tâm tuyệt đối cho khách hàng bằng sự tận tâm của đội ngũ lái xe và sự hiện đại của trang thiết bị."
+            </div>
+            <p>Suốt nhiều năm hoạt động, TXP đã không ngừng cải tiến quy trình, đầu tư vào công nghệ quản lý hiện đại để đảm bảo tính minh bạch và công bằng cho mọi hành khách.</p>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="rounded-2xl overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
+            <img src="/asset/images/customer/gioithieu2.png" alt="Không gian xe khách" class="w-full h-auto">
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-primary p-6 rounded-2xl shadow-xl text-white">
+            <div class="text-display-md font-bold">15+</div>
+            <div class="text-label-md font-medium opacity-80 uppercase tracking-widest">Năm kinh nghiệm</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Values Section -->
+    <section class="py-24 bg-surface-container">
+      <div class="max-w-container-max mx-auto px-margin-desktop">
+        <div class="text-center mb-16 space-y-4">
+          <h2 class="text-headline-lg font-bold text-navy uppercase">Giá Trị Cốt Lõi</h2>
+          <p class="text-on-surface-variant text-body-md max-w-2xl mx-auto">Chúng tôi xây dựng thương hiệu dựa trên những nền tảng vững chắc nhất.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 text-center group border border-outline-variant/10">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors">
+              <span class="material-symbols-outlined text-primary group-hover:text-white text-3xl">verified_user</span>
+            </div>
+            <h3 class="text-title-lg font-bold text-navy mb-4">An Toàn Là Trên Hết</h3>
+            <p class="text-body-sm text-on-surface-variant leading-relaxed">Đội ngũ tài xế được tuyển chọn khắt khe, tuân thủ nghiêm ngặt luật giao thông, nói không với phóng nhanh vượt ẩu.</p>
+          </div>
+          <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 text-center group border border-outline-variant/10">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors">
+              <span class="material-symbols-outlined text-primary group-hover:text-white text-3xl">volunteer_activism</span>
+            </div>
+            <h3 class="text-title-lg font-bold text-navy mb-4">Trách Nhiệm & Chu Đáo</h3>
+            <p class="text-body-sm text-on-surface-variant leading-relaxed">Phục vụ tận tâm, lịch sự, luôn sẵn sàng hỗ trợ hành khách trong mọi tình huống với tinh thần trách nhiệm cao nhất.</p>
+          </div>
+          <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 text-center group border border-outline-variant/10">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors">
+              <span class="material-symbols-outlined text-primary group-hover:text-white text-3xl">airport_shuttle</span>
+            </div>
+            <h3 class="text-title-lg font-bold text-navy mb-4">Hiện Đại & Tiện Nghi</h3>
+            <p class="text-body-sm text-on-surface-variant leading-relaxed">Hệ thống xe đời mới, sạch sẽ, đầy đủ tiện ích: wifi tốc độ cao, cổng sạc, nước uống và khăn lạnh miễn phí.</p>
+          </div>
+          <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 text-center group border border-outline-variant/10">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition-colors">
+              <span class="material-symbols-outlined text-primary group-hover:text-white text-3xl">balance</span>
+            </div>
+            <h3 class="text-title-lg font-bold text-navy mb-4">Công Bằng & Minh Bạch</h3>
+            <p class="text-body-sm text-on-surface-variant leading-relaxed">Đặt vé online minh bạch, cam kết giữ đúng chỗ, chạy đúng tuyến, đúng giờ và tuyệt đối không nhồi nhét khách.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="py-24 overflow-hidden">
+      <div class="max-w-container-max mx-auto px-margin-desktop">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4">
+              <img src="/asset/images/customer/gioithieu3.png" alt="Đội ngũ lái xe" class="rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500">
+              <img src="/asset/images/customer/gioithieu4.png" alt="Xe limousine" class="rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="pt-12 space-y-4">
+              <img src="/asset/images/customer/gioithieu5.png" alt="Văn phòng nhà xe" class="rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500">
+              <img src="/asset/images/customer/gioithieu6.png" alt="Hành trình" class="rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500">
+            </div>
+          </div>
+          <div class="space-y-8">
+            <div>
+              <span class="inline-block px-4 py-1 bg-secondary/10 text-secondary text-label-md font-bold rounded-full mb-4 uppercase tracking-wider">Tầm nhìn 2030</span>
+              <h2 class="text-headline-lg font-bold text-navy leading-tight">Trở thành biểu tượng của sự tin cậy trên mọi hành trình</h2>
+            </div>
+            <div class="text-on-surface-variant text-body-md leading-relaxed space-y-4">
+              <p>Tân Xuân Phúc hướng tới mục tiêu trở thành một trong những nhà xe tư nhân được yêu thích và tin tưởng nhất trên các tuyến đường trọng điểm mà chúng tôi khai thác.</p>
+              <p>Bằng việc kết hợp giữa chất lượng dịch vụ truyền thống chu đáo và hệ thống quản lý công nghệ hiện đại, TXP tự tin sẽ là người bạn đồng hành tin cậy của mọi hành khách trên mọi nẻo đường.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

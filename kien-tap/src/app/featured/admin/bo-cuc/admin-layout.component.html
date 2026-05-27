@@ -1,0 +1,74 @@
+<div class="admin-container" [class.collapsed]="isSidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <img *ngIf="!isSidebarCollapsed" src="/asset/images/admin/TXP_logo2.png" alt="TXP Logo" class="logo">
+        <img *ngIf="isSidebarCollapsed" src="/asset/images/admin/TXP_logo.png" alt="TXP Logo" class="logo-collapsed-in-sidebar">
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div *ngFor="let item of menuItems" class="menu-item-container" routerLinkActive="parent-active"
+        #rla="routerLinkActive">
+        <div class="menu-item" [routerLink]="item.route"
+          [class.active]="item.isOpen || (rla.isActive && !isAnyMenuOpen)" (click)="toggleSubmenu(item)"
+          [class.has-children]="item.children">
+          <span class="material-icons">{{ item.icon }}</span>
+          <span class="label">{{ item.label }}</span>
+          <span *ngIf="item.children" class="material-icons arrow" [class.open]="item.isOpen">
+            expand_more
+          </span>
+        </div>
+
+        <div *ngIf="item.children && item.isOpen" class="submenu">
+          <div *ngFor="let child of item.children" class="submenu-item" [routerLink]="child.route"
+            routerLinkActive="active">
+            <span class="material-icons">{{ child.icon }}</span>
+            <span class="label">{{ child.label }}</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar"></div>
+        <div class="details">
+          <span class="name">Nguyễn Văn A</span>
+          <span class="role">Quản trị viên</span>
+        </div>
+      </div>
+      <button class="logout-btn">
+        Đăng xuất
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-area">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" (click)="toggleSidebar()">
+          <span class="material-icons">menu</span>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <div class="notifications">
+          <span class="material-icons">notifications</span>
+          <span class="badge"></span>
+        </div>
+        <div class="date-display">
+          {{ formatDate(currentDate) }}
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
