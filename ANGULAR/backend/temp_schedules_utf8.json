@@ -1,0 +1,164 @@
+{
+    "value":  [
+                  {
+                      "MaLichTrinh":  "LT100003",
+                      "NgayKhoiHanh":  "2026-05-25T00:00:00.000Z",
+                      "GioKhoiHanh":  "1970-01-01T08:00:00.000Z",
+                      "GioGoiYCoMat":  "1970-01-01T07:45:00.000Z",
+                      "GioDenDuKien":  "1970-01-01T10:00:00.000Z",
+                      "GiaVeCoBan":  "150000",
+                      "TrangThaiLichTrinh":  "ChoKhoiHanh",
+                      "MaTuyenXe":  "TX100003",
+                      "MaXe":  "XE100001",
+                      "MaNVDieuPhoi":  "NVDP100001",
+                      "TUYEN_XE":  {
+                                       "MaTuyenXe":  "TX100003",
+                                       "TenTuyenXe":  "Hải Phòng - Quảng Ninh",
+                                       "DiemKhoiHanh":  "Hải Phòng",
+                                       "DiemDen":  "Quảng Ninh",
+                                       "KhoangCach":  75,
+                                       "ThoiGianDiChuyenDuKien":  "1970-01-01T02:00:00.000Z",
+                                       "TrangThaiTuyenXe":  "DangHoatDong",
+                                       "MaNVDieuPhoi":  "NVDP100001"
+                                   },
+                      "PHUONG_TIEN":  {
+                                          "MaXe":  "XE100001",
+                                          "TenXe":  "Limousine Ford Transit",
+                                          "BienSoXe":  "15B-012.34",
+                                          "LoaiXe":  "Limousine 9 chỗ",
+                                          "SoTang":  1,
+                                          "SoDay":  2,
+                                          "SoGhe":  9,
+                                          "TienIch":  "{Tivi,Nuoc+KhanUot,OSac+USB,GPS,Wifi,DieuHoa}",
+                                          "HanDangKiem":  "2028-12-31T00:00:00.000Z",
+                                          "HanBaoHiem":  "2028-12-31T00:00:00.000Z",
+                                          "AnhXe":  null,
+                                          "TrangThaiPhuongTien":  "DangHoatDong",
+                                          "MaNVDieuPhoi":  "NVDP100001"
+                                      },
+                      "PHAN_CONG_CHUYEN":  [
+
+                                           ]
+                  },
+                  {
+                      "MaLichTrinh":  "LT100002",
+                      "NgayKhoiHanh":  "2026-05-24T00:00:00.000Z",
+                      "GioKhoiHanh":  "1970-01-01T08:00:00.000Z",
+                      "GioGoiYCoMat":  "1970-01-01T07:45:00.000Z",
+                      "GioDenDuKien":  "1970-01-01T10:00:00.000Z",
+                      "GiaVeCoBan":  "250000",
+                      "TrangThaiLichTrinh":  "ChoKhoiHanh",
+                      "MaTuyenXe":  "TX100002",
+                      "MaXe":  "XE100003",
+                      "MaNVDieuPhoi":  "NVDP100001",
+                      "TUYEN_XE":  {
+                                       "MaTuyenXe":  "TX100002",
+                                       "TenTuyenXe":  "Hà Nội - Quảng Ninh",
+                                       "DiemKhoiHanh":  "Hà Nội",
+                                       "DiemDen":  "Quảng Ninh",
+                                       "KhoangCach":  180,
+                                       "ThoiGianDiChuyenDuKien":  "1970-01-01T02:00:00.000Z",
+                                       "TrangThaiTuyenXe":  "DangHoatDong",
+                                       "MaNVDieuPhoi":  "NVDP100001"
+                                   },
+                      "PHUONG_TIEN":  {
+                                          "MaXe":  "XE100003",
+                                          "TenXe":  "Thaco Mobihome",
+                                          "BienSoXe":  "14B-432.10",
+                                          "LoaiXe":  "Xe khách VIP",
+                                          "SoTang":  2,
+                                          "SoDay":  2,
+                                          "SoGhe":  34,
+                                          "TienIch":  "{Tivi,Nuoc+KhanUot,OSac+USB,GPS,Wifi,DieuHoa}",
+                                          "HanDangKiem":  "2028-12-31T00:00:00.000Z",
+                                          "HanBaoHiem":  "2028-12-31T00:00:00.000Z",
+                                          "AnhXe":  null,
+                                          "TrangThaiPhuongTien":  "DangHoatDong",
+                                          "MaNVDieuPhoi":  "NVDP100001"
+                                      },
+                      "PHAN_CONG_CHUYEN":  [
+
+                                           ]
+                  },
+                  {
+                      "MaLichTrinh":  "LT100001",
+                      "NgayKhoiHanh":  "2026-05-24T00:00:00.000Z",
+                      "GioKhoiHanh":  "1970-01-01T08:00:00.000Z",
+                      "GioGoiYCoMat":  "1970-01-01T07:45:00.000Z",
+                      "GioDenDuKien":  "1970-01-01T10:00:00.000Z",
+                      "GiaVeCoBan":  "200000",
+                      "TrangThaiLichTrinh":  "ChoKhoiHanh",
+                      "MaTuyenXe":  "TX100001",
+                      "MaXe":  "XE100002",
+                      "MaNVDieuPhoi":  "NVDP100001",
+                      "TUYEN_XE":  {
+                                       "MaTuyenXe":  "TX100001",
+                                       "TenTuyenXe":  "Hải Phòng - Hà Nội",
+                                       "DiemKhoiHanh":  "Hải Phòng",
+                                       "DiemDen":  "Hà Nội",
+                                       "KhoangCach":  120,
+                                       "ThoiGianDiChuyenDuKien":  "1970-01-01T02:00:00.000Z",
+                                       "TrangThaiTuyenXe":  "DangHoatDong",
+                                       "MaNVDieuPhoi":  "NVDP100001"
+                                   },
+                      "PHUONG_TIEN":  {
+                                          "MaXe":  "XE100002",
+                                          "TenXe":  "Hyundai Universe",
+                                          "BienSoXe":  "29B-567.89",
+                                          "LoaiXe":  "Limousine giường nằm VIP",
+                                          "SoTang":  2,
+                                          "SoDay":  2,
+                                          "SoGhe":  22,
+                                          "TienIch":  "{Tivi,Nuoc+KhanUot,OSac+USB,GPS,Wifi,DieuHoa}",
+                                          "HanDangKiem":  "2028-12-31T00:00:00.000Z",
+                                          "HanBaoHiem":  "2028-12-31T00:00:00.000Z",
+                                          "AnhXe":  null,
+                                          "TrangThaiPhuongTien":  "DangHoatDong",
+                                          "MaNVDieuPhoi":  "NVDP100001"
+                                      },
+                      "PHAN_CONG_CHUYEN":  [
+                                               {
+                                                   "MaPhanCong":  "PC100001",
+                                                   "MaLichTrinh":  "LT100001",
+                                                   "MaTaiXePhuXe":  "TXPX100001",
+                                                   "VaiTro":  "Tài xế chính",
+                                                   "TAI_XE_PHU_XE":  {
+                                                                         "MaTaiXePhuXe":  "TXPX100001",
+                                                                         "LoaiNhanVien":  "TaiXe",
+                                                                         "HoTen":  "Nguyễn Văn Nam",
+                                                                         "NgaySinh":  "1985-05-14T00:00:00.000Z",
+                                                                         "SoDienThoai":  "0912334455",
+                                                                         "CCCD":  "031099001234",
+                                                                         "LoaiBangLai":  "Hạng E",
+                                                                         "ThoiHanBangLai":  "2029-12-31T00:00:00.000Z",
+                                                                         "AnhBangLai":  null,
+                                                                         "AnhChanDung":  null,
+                                                                         "AnhCCCD":  null,
+                                                                         "TrangThaiLamViec":  "DangLamViec"
+                                                                     }
+                                               },
+                                               {
+                                                   "MaPhanCong":  "PC100002",
+                                                   "MaLichTrinh":  "LT100001",
+                                                   "MaTaiXePhuXe":  "TXPX100002",
+                                                   "VaiTro":  "Phụ xe",
+                                                   "TAI_XE_PHU_XE":  {
+                                                                         "MaTaiXePhuXe":  "TXPX100002",
+                                                                         "LoaiNhanVien":  "PhuXe",
+                                                                         "HoTen":  "Lê Thế Hùng",
+                                                                         "NgaySinh":  "1985-05-15T00:00:00.000Z",
+                                                                         "SoDienThoai":  "0988223344",
+                                                                         "CCCD":  "031098005678",
+                                                                         "LoaiBangLai":  "Không có",
+                                                                         "ThoiHanBangLai":  "2030-01-01T00:00:00.000Z",
+                                                                         "AnhBangLai":  null,
+                                                                         "AnhChanDung":  null,
+                                                                         "AnhCCCD":  null,
+                                                                         "TrangThaiLamViec":  "DangLamViec"
+                                                                     }
+                                               }
+                                           ]
+                  }
+              ],
+    "Count":  3
+}

@@ -1,0 +1,103 @@
+<div class="bg-[#F8F9FA] min-h-screen font-body">
+    <app-header></app-header>
+
+    <main class="pt-28 pb-20 max-w-container-max mx-auto px-margin-desktop">
+        <!-- Page Title Section -->
+        <div class="text-center mb-12 py-10 bg-white rounded-2xl shadow-sm border border-outline-variant/10">
+            <h1 class="text-headline-lg font-bold text-navy uppercase tracking-tight mb-3">Chính Sách & Quy Định</h1>
+            <p class="text-on-surface-variant text-body-md max-w-2xl mx-auto italic">Thông tin minh bạch giúp hành trình của bạn trọn vẹn và an tâm hơn.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Sidebar (Sticky) -->
+            <div class="lg:col-span-4 space-y-4 sticky top-28">
+                <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 overflow-hidden">
+                    <div class="p-4 border-b border-outline-variant/10 bg-surface-container-low">
+                        <p class="text-label-md font-bold text-secondary uppercase tracking-widest">Danh mục chính sách</p>
+                    </div>
+                    <div class="flex flex-col">
+                        <button *ngFor="let policy of policies" 
+                            (click)="setActiveTab(policy.id)"
+                            [class.bg-primary-light]="activeTab === policy.id"
+                            [class.text-primary]="activeTab === policy.id"
+                            [class.border-l-4]="activeTab === policy.id"
+                            [class.border-primary]="activeTab === policy.id"
+                            class="flex items-center gap-4 px-6 py-5 text-left transition-all hover:bg-surface-container-low group border-b border-outline-variant/5 last:border-0">
+                            <span class="material-symbols-outlined text-2xl" 
+                                [class.text-primary]="activeTab === policy.id"
+                                [class.text-on-surface-variant]="activeTab !== policy.id">
+                                {{ policy.icon }}
+                            </span>
+                            <span class="font-bold text-body-md leading-tight group-hover:text-primary transition-colors">
+                                {{ policy.category }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="lg:col-span-8">
+                <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 p-8 md:p-10 min-h-[600px]">
+                    <!-- Header with Search -->
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pb-6 border-b border-outline-variant/20">
+                        <div>
+                            <p class="text-primary font-bold text-label-md uppercase tracking-widest mb-1">{{ activePolicy.category }}</p>
+                            <h2 class="text-headline-md font-bold text-navy leading-tight">{{ activePolicy.title }}</h2>
+                        </div>
+                        <div class="relative w-full md:w-64">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl">search</span>
+                            <input type="text" [(ngModel)]="searchText" placeholder="Tìm nhanh..." 
+                                class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-sm focus:outline-none focus:border-primary focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Policy Details -->
+                    <div class="space-y-10">
+                        <div *ngFor="let text of activePolicy.content; let i = index" 
+                            class="flex gap-6 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                            [style.animation-delay]="i * 100 + 'ms'">
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-title-md shrink-0">
+                                    {{ i + 1 }}
+                                </div>
+                                <div *ngIf="i < activePolicy.content.length - 1" class="w-px h-full bg-outline-variant/30 my-2"></div>
+                            </div>
+                            <div class="pt-1">
+                                <p class="text-on-surface text-body-md leading-relaxed">
+                                    <span class="font-bold text-navy">{{ text.split(':')[0] }}:</span>
+                                    {{ text.split(':')[1] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Help Section -->
+                    <div class="mt-16 pt-10 border-t border-outline-variant/20">
+                        <div class="bg-surface-container-low rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div class="text-center md:text-left space-y-2">
+                                <h4 class="font-bold text-title-lg text-navy">Bạn vẫn còn thắc mắc về chính sách?</h4>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center justify-center md:justify-start gap-3 text-on-surface-variant text-body-sm">
+                                        <span class="material-symbols-outlined text-secondary text-sm">call</span>
+                                        Hotline: 1900 1234
+                                    </div>
+                                    <div class="flex items-center justify-center md:justify-start gap-3 text-on-surface-variant text-body-sm">
+                                        <span class="material-symbols-outlined text-secondary text-sm">mail</span>
+                                        Email: hotro@tanxuanphuc.vn
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-primary flex items-center gap-3 px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition-all">
+                                <span class="material-symbols-outlined">chat</span>
+                                Chat ngay với chúng tôi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <app-footer></app-footer>
+</div>

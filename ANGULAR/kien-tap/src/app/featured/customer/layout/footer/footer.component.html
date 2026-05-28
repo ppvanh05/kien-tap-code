@@ -1,0 +1,127 @@
+<!-- Footer -->
+<footer class="bg-primary text-on-primary">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter pt-8 pb-6 px-margin-desktop max-w-container-max mx-auto">
+        <!-- CỘT 1: THÔNG TIN CÔNG TY (Rộng hơn: 5/12) -->
+        <div class="md:col-span-5 space-y-6">
+            <div class="flex flex-col items-center text-center">
+                <img alt="TXP Logo" class="h-40 w-auto object-contain -mt-10" src="/asset/images/customer/logo_removebg.png">
+                <p class="font-bold text-headline-sm uppercase tracking-tight -mt-10">Công ty TNHH Tân Xuân Phúc</p>
+            </div>
+            
+            <div class="space-y-4 max-w-sm mx-auto">
+                <div class="flex items-start gap-3 text-body-md opacity-90">
+                    <span class="material-symbols-outlined text-secondary shrink-0">location_on</span>
+                    <span class="text-left">Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai</span>
+                </div>
+                <div class="flex items-center gap-3 text-body-md opacity-90">
+                    <span class="material-symbols-outlined text-secondary shrink-0">phone_iphone</span>
+                    <span>0982 541 160 - 0932 334 446</span>
+                </div>
+                <div class="flex items-center gap-3 text-body-md opacity-90">
+                    <span class="material-symbols-outlined text-secondary shrink-0">mail</span>
+                    <span>nhaxetanxuanphuc@gmail.com</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT 2: HỖ TRỢ -->
+        <div class="md:col-span-2 md:pl-4">
+            <h4 class="font-bold text-title-lg mb-8 relative after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-12 after:h-0.5 after:bg-secondary">
+                HỖ TRỢ
+            </h4>
+
+            <ul class="space-y-4">
+                <li>
+                    <a 
+                        class="text-body-md hover:text-secondary transition-colors"
+                        routerLink="/faqs"
+                    >
+                        Câu hỏi FAQs
+                    </a>
+                </li>
+
+                <li class="border-t border-white/10 pt-4">
+                    <a 
+                        class="text-body-md hover:text-secondary transition-colors"
+                        routerLink="/huong-dan-mua-ve"
+                    >
+                        Hướng dẫn mua vé
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CỘT 3: GIỚI THIỆU -->
+        <div class="md:col-span-2 md:pl-4">
+            <h4 class="font-bold text-title-lg mb-8 relative after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-12 after:h-0.5 after:bg-secondary">
+                GIỚI THIỆU
+            </h4>
+
+            <ul class="space-y-4">
+                <li>
+                    <a 
+                        class="text-body-md hover:text-secondary transition-colors"
+                        routerLink="/gioi-thieu/ve-chung-toi"
+                    >
+                        Về chúng tôi
+                    </a>
+                </li>
+
+                <li class="border-t border-white/10 pt-4">
+                    <a 
+                        class="text-body-md hover:text-secondary transition-colors"
+                        routerLink="/gioi-thieu/chinh-sach"
+                    >
+                        Điều khoản
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CỘT 4: HOTLINE & KẾT NỐI (3/12) -->
+        <div class="md:col-span-3 space-y-6">
+            <!-- Hotline -->
+            <div class="space-y-3">
+                <h4 class="font-bold text-title-lg">HOTLINE LIÊN HỆ</h4>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border border-secondary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-secondary">call</span>
+                    </div>
+                    <span class="text-headline-md text-secondary font-bold">1900 989 867</span>
+                </div>
+            </div>
+
+            <!-- Social -->
+            <div class="space-y-3">
+                <h4 class="font-bold text-title-lg">KẾT NỐI VỚI CHÚNG TÔI</h4>
+                <div class="flex gap-4">
+                    <a href="https://www.facebook.com/minhtoai.tran.58" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-facebook-f text-white text-xl"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-black flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-tiktok text-white text-xl"></i>
+                    </a>
+                    <button (click)="share($event)" class="w-10 h-10 rounded-full bg-[#4CAF50] flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">
+                        <span class="material-symbols-outlined text-white">share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div *ngIf="showCopyToast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-on-surface text-surface px-6 py-3 rounded-full shadow-lg z-[100] flex items-center gap-2 animate-bounce">
+                <span class="material-symbols-outlined text-success">check_circle</span>
+                <span>Đã sao chép liên kết vào bộ nhớ tạm!</span>
+            </div>
+
+            <!-- BCT Badge -->
+            <div>
+                <img src="/asset/images/customer/bocongthuong.png" alt="Đã thông báo Bộ Công Thương" class="h-16 w-auto">
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright Bar -->
+    <div class="bg-black/20 py-3 text-center border-t border-white/5">
+        <p class="text-body-sm opacity-80">© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234</p>
+    </div>
+</footer>

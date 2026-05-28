@@ -1,0 +1,221 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo tổng hợp theo tuyến</span>
+    </div>
+    <h1>Báo cáo tổng hợp theo tuyến</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid" *ngIf="isReportViewed">
+    <!-- Card 1: Tổng số tuyến đang lọc -->
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">directions_bus</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Số tuyến xe báo cáo</span>
+        <span class="kpi-value">{{ filteredSummaries.length }} tuyến</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Tổng vé đã đặt -->
+    <div class="kpi-card orange">
+      <div class="kpi-icon-container">
+        <span class="material-icons">local_activity</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng vé đã bán</span>
+        <span class="kpi-value">{{ totals.slVeDaBan }} vé</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Tổng doanh thu -->
+    <div class="kpi-card teal">
+      <div class="kpi-icon-container">
+        <span class="material-icons">account_balance_wallet</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng doanh thu vé</span>
+        <span class="kpi-value">{{ totals.tongDoanhThu | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Tổng chi phí vận hành -->
+    <div class="kpi-card red">
+      <div class="kpi-icon-container">
+        <span class="material-icons">money_off</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng chi phí vận hành</span>
+        <span class="kpi-value">{{ totals.tongChiPhiVanHanh | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+
+    <!-- Card 5: Tổng lợi nhuận tuyến -->
+    <div class="kpi-card purple">
+      <div class="kpi-icon-container">
+        <span class="material-icons">trending_up</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng lợi nhuận tuyến</span>
+        <span class="kpi-value">{{ totals.loiNhuanTuyen | number:'1.0-0' }}đ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc báo cáo tổng hợp
+    </h3>
+
+    <div class="search-grid">
+      <!-- Khoảng thời gian -->
+      <div class="form-group" style="grid-column: span 2;">
+        <label>Khoảng thời gian khởi hành (Từ ngày - Đến ngày)</label>
+        <div class="date-range-inputs">
+          <input type="date" [(ngModel)]="filters.fromDate">
+          <span class="date-range-separator">→</span>
+          <input type="date" [(ngModel)]="filters.toDate">
+        </div>
+      </div>
+
+      <!-- Tuyến xe -->
+      <div class="form-group">
+        <label>Tuyến xe</label>
+        <select [(ngModel)]="filters.route">
+          <option value="Tất cả">Tất cả các tuyến</option>
+          <option *ngFor="let route of routesList" [value]="route">{{ route }}</option>
+        </select>
+      </div>
+
+      <!-- Trạng thái tuyến xe -->
+      <div class="form-group">
+        <label>Trạng thái tuyến xe</label>
+        <select [(ngModel)]="filters.status">
+          <option value="Tất cả">Tất cả trạng thái</option>
+          <option value="Hoạt động">Đang hoạt động</option>
+          <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <!-- Unviewed State Placeholder -->
+    <div class="empty-state" *ngIf="!isReportViewed">
+      <span class="material-icons empty-icon">analytics</span>
+      <h3>Chưa tải báo cáo</h3>
+      <p>Vui lòng chọn khoảng thời gian, tuyến xe và các tiêu chí lọc khác, sau đó nhấn <strong>"Xem báo cáo"</strong> để hiển thị dữ liệu chi tiết.</p>
+    </div>
+
+    <ng-container *ngIf="isReportViewed">
+      <div class="table-card-header">
+        <h2>
+          Doanh số tổng hợp theo tuyến
+          <span class="count">Tổng cộng {{ filteredSummaries.length }} tuyến đang khai thác</span>
+        </h2>
+      </div>
+
+      <div class="table-responsive" *ngIf="filteredSummaries.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Mã tuyến</th>
+              <th>Tên tuyến xe</th>
+              <th>Cự ly & Thời gian dự kiến</th>
+              <th style="text-align: center;">Số chuyến đã chạy</th>
+              <th style="text-align: center;">Số lượng vé đã bán</th>
+              <th style="text-align: center;">Lấp đầy trung bình</th>
+              <th style="text-align: right;">Tổng doanh thu (VNĐ)</th>
+              <th style="text-align: right;">Tổng chi phí vận hành (VNĐ)</th>
+              <th style="text-align: right;">Lợi nhuận tuyến (VNĐ)</th>
+              <th style="text-align: right;">Doanh thu TB/chuyến (VNĐ)</th>
+              <th style="text-align: right;">Lợi nhuận TB/chuyến (VNĐ)</th>
+              <th style="text-align: center;">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredSummaries">
+              <td class="id-col">{{ item.maTuyen }}</td>
+              <td class="route-col" style="font-weight: 600;">{{ item.tuyen }}</td>
+              <td>{{ item.khoangCachThoiGian }}</td>
+              <td style="text-align: center; font-weight: 600;">{{ item.slChuyenChay }}</td>
+              <td class="qty-col" style="color: #0284c7; text-align: center; font-weight: 600;">{{ item.slVeDaBan }}</td>
+              <td style="text-align: center;">
+                <span class="occupancy-pill" [ngClass]="{
+                  'occupancy-high': item.tyLeLapDay >= 80,
+                  'occupancy-medium': item.tyLeLapDay >= 50 && item.tyLeLapDay < 80,
+                  'occupancy-low': item.tyLeLapDay < 50
+                }">
+                  {{ item.tyLeLapDay }}%
+                </span>
+              </td>
+              <td class="price-col" style="text-align: right; font-weight: 700;">{{ item.tongDoanhThu | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right;">{{ item.tongChiPhiVanHanh | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right; font-weight: 700; color: #0f766e;">{{ item.loiNhuanTuyen | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right;">{{ item.doanhThuTrungBinhChuyen | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right;">{{ item.loiNhuanTrungBinhChuyen | number:'1.0-0' }}đ</td>
+              <td style="text-align: center;">
+                <span class="status-pill" [ngClass]="item.trangThai === 'Đang hoạt động' ? 'status-active' : 'status-locked'">
+                  {{ item.trangThai }}
+                </span>
+              </td>
+            </tr>
+            <!-- Totals Row -->
+            <tr class="totals-row">
+              <td style="font-weight: 700; text-transform: uppercase;">Tổng cộng</td>
+              <td></td>
+              <td></td>
+              <td style="text-align: center; font-weight: 700; color: #1e293b;">{{ totals.slChuyenChay }}</td>
+              <td class="qty-col" style="text-align: center; font-weight: 700; color: #0284c7;">{{ totals.slVeDaBan }}</td>
+              <td style="text-align: center;">
+                <span class="occupancy-pill" [ngClass]="{
+                  'occupancy-high': totals.tyLeLapDayTrungBinh >= 80,
+                  'occupancy-medium': totals.tyLeLapDayTrungBinh >= 50 && totals.tyLeLapDayTrungBinh < 80,
+                  'occupancy-low': totals.tyLeLapDayTrungBinh < 50
+                }">
+                  {{ totals.tyLeLapDayTrungBinh }}%
+                </span>
+              </td>
+              <td class="price-col" style="text-align: right; font-weight: 700; color: #0f766e;">{{ totals.tongDoanhThu | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right; font-weight: 700;">{{ totals.tongChiPhiVanHanh | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right; font-weight: 700; color: #0f766e;">{{ totals.loiNhuanTuyen | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right; font-weight: 700;">{{ totals.doanhThuTrungBinhChuyen | number:'1.0-0' }}đ</td>
+              <td class="price-col" style="text-align: right; font-weight: 700; color: #0f766e;">{{ totals.loiNhuanTrungBinhChuyen | number:'1.0-0' }}đ</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- No Data State -->
+      <div class="no-data-container" *ngIf="filteredSummaries.length === 0">
+        <span class="material-icons">inbox</span>
+        <p>Không tìm thấy dữ liệu doanh thu tuyến nào khớp với bộ lọc.</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

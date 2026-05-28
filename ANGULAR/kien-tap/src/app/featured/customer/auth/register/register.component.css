@@ -1,0 +1,12 @@
+:host {
+  font-family: 'Be Vietnam Pro', Inter, sans-serif;
+}
+
+.otp-input {
+  text-align: center;
+  letter-spacing: 0.2em;
+}
+
+input:disabled {
+  opacity: 0.7;
+}

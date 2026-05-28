@@ -1,0 +1,294 @@
+<div class="page-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Cấu hình hệ thống</span>
+      <span class="separator">/</span>
+      <span class="current">Quản lý từ khóa hạn chế</span>
+    </div>
+    <h1>Quản lý từ khóa hạn chế</h1>
+  </div>
+
+  <!-- KPI Stats Grid (Colored Cards) -->
+  <div class="stats-grid">
+    <div class="stat-card stat-total">
+      <div class="stat-icon-wrapper">
+        <span class="material-icons">gavel</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Tổng số từ khóa</span>
+        <span class="stat-value">{{ stats.total }}</span>
+      </div>
+    </div>
+    <div class="stat-card stat-active">
+      <div class="stat-icon-wrapper">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Đang áp dụng</span>
+        <span class="stat-value">{{ stats.active }}</span>
+      </div>
+    </div>
+    <div class="stat-card stat-high">
+      <div class="stat-icon-wrapper">
+        <span class="material-icons">report_problem</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Mức độ: Nặng</span>
+        <span class="stat-value">{{ stats.high }}</span>
+      </div>
+    </div>
+    <div class="stat-card stat-medium">
+      <div class="stat-icon-wrapper">
+        <span class="material-icons">warning</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Mức độ: Trung bình</span>
+        <span class="stat-value">{{ stats.medium }}</span>
+      </div>
+    </div>
+    <div class="stat-card stat-low">
+      <div class="stat-icon-wrapper">
+        <span class="material-icons">info</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Mức độ: Nhẹ</span>
+        <span class="stat-value">{{ stats.low }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Card -->
+  <div class="card">
+    <!-- Filter Tabs -->
+    <div class="tabs-container">
+      <button class="tab-btn" [class.active]="activeTab === 'all'" (click)="setTab('all')">
+        Tất cả
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'active'" (click)="setTab('active')">
+        Đang áp dụng
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'inactive'" (click)="setTab('inactive')">
+        Ngưng áp dụng
+      </button>
+    </div>
+
+    <!-- Actions Row -->
+    <div class="actions-row">
+      <button class="btn-add-keyword" (click)="openAddModal()">
+        <span class="material-icons">add</span>
+        Thêm từ khóa mới
+      </button>
+    </div>
+
+    <!-- Search and Filters Bar -->
+    <div class="search-filter-bar">
+      <div class="search-input-wrapper">
+        <span class="material-icons search-icon">search</span>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="applyFilters()"
+          placeholder="Tìm kiếm theo từ khóa hoặc mã số..."
+          class="form-control-search" />
+        <span class="material-icons clear-icon" *ngIf="searchQuery" (click)="searchQuery = ''; applyFilters()">close</span>
+      </div>
+
+      <div class="select-wrapper">
+        <select class="form-select-type" [(ngModel)]="filterLevel" (change)="applyFilters()">
+          <option value="all">Tất cả mức độ</option>
+          <option value="Cao">Nặng</option>
+          <option value="TrungBinh">Trung bình</option>
+          <option value="Thap">Nhẹ</option>
+        </select>
+      </div>
+
+      <button class="btn-search-outline" (click)="applyFilters()">Tìm kiếm</button>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="filteredKeywords.length === 0">
+        <span class="material-icons empty-icon">search_off</span>
+        <p>Không tìm thấy từ khóa nào khớp với điều kiện tìm kiếm.</p>
+      </div>
+
+      <!-- Table -->
+      <table *ngIf="filteredKeywords.length > 0">
+        <thead>
+          <tr>
+            <th>MÃ TỪ KHÓA</th>
+            <th>NỘI DUNG TỪ KHÓA</th>
+            <th style="text-align: center;">MỨC ĐỘ VI PHẠM</th>
+            <th style="text-align: center;">TRẠNG THÁI</th>
+            <th>CẬP NHẬT CUỐI</th>
+            <th>NGƯỜI THỰC HIỆN</th>
+            <th class="text-center">CHỨC NĂNG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let kw of displayKeywords">
+            <td class="id-col">{{ kw.id }}</td>
+            <td class="keyword-text">{{ kw.keyword }}</td>
+            <td style="text-align: center;">
+              <span class="level-badge" [ngClass]="{
+                'high': kw.violationLevel === 'Cao',
+                'medium': kw.violationLevel === 'TrungBinh',
+                'low': kw.violationLevel === 'Thap'
+              }">
+                <span class="material-icons level-dot">fiber_manual_record</span>
+                {{
+                  kw.violationLevel === 'Cao' ? 'Nặng' :
+                  kw.violationLevel === 'TrungBinh' ? 'Trung bình' : 'Nhẹ'
+                }}
+              </span>
+            </td>
+            <td style="text-align: center;">
+              <span class="status-badge" [ngClass]="kw.status === 'DangApDung' ? 'active' : 'inactive'">
+                {{ kw.status === 'DangApDung' ? 'Đang áp dụng' : 'Ngưng áp dụng' }}
+              </span>
+            </td>
+            <td class="time-col">{{ kw.updatedAt }}</td>
+            <td class="user-col">
+              <span class="user-avatar-tag">{{ kw.updatedBy.substring(0, 1) }}</span>
+              {{ kw.updatedBy }}
+            </td>
+            <td class="text-center">
+              <button class="btn-edit" (click)="openEditModal(kw)" title="Chỉnh sửa từ khóa">
+                <span class="material-icons">edit_note</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredKeywords.length > 0">
+      <div class="table-header-info">
+        Hiển thị <strong>{{ (currentPage - 1) * pageSize + 1 }}</strong> -
+        <strong>{{ Math.min(currentPage * pageSize, filteredKeywords.length) }}</strong>
+        trong tổng số <strong>{{ filteredKeywords.length }}</strong> kết quả
+      </div>
+
+      <div class="pagination-controls">
+        <button class="btn-page" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+
+        <button
+          *ngFor="let p of getPageNumbers()"
+          class="btn-page"
+          [class.active]="currentPage === p"
+          (click)="setPage(p)">
+          {{ p }}
+        </button>
+
+        <button class="btn-page" [disabled]="currentPage === totalPages" (click)="setPage(currentPage + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="page-size-selector">
+        <select [ngModel]="pageSize" (change)="changePageSize($event)" class="form-control-page-size">
+          <option [value]="5">5 / trang</option>
+          <option [value]="10">10 / trang</option>
+          <option [value]="20">20 / trang</option>
+          <option [value]="50">50 / trang</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="title-left">
+        <h3>{{ isEditing ? 'Chỉnh sửa từ khóa hạn chế' : 'Thêm từ khóa hạn chế mới' }}</h3>
+        <span
+          *ngIf="isEditing"
+          class="status-badge"
+          [ngClass]="formModel.status === 'DangApDung' ? 'active' : 'inactive'">
+          <span class="material-icons">{{ formModel.status === 'DangApDung' ? 'check_circle' : 'cancel' }}</span>
+          {{ formModel.status === 'DangApDung' ? 'Đang áp dụng' : 'Ngưng áp dụng' }}
+        </span>
+      </div>
+      <button class="btn-close" (click)="closeModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="keyword-input" class="required-label">Nội dung từ khóa</label>
+        <input
+          id="keyword-input"
+          type="text"
+          placeholder="Ví dụ: lừa đảo, giả tạo, quảng cáo..."
+          [(ngModel)]="formModel.keyword"
+          class="form-control"
+          autofocus />
+        <p class="form-help">Hệ thống sẽ thực hiện kiểm tra không phân biệt chữ hoa, chữ thường.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="level-select">Mức độ vi phạm</label>
+        <select id="level-select" [(ngModel)]="formModel.violationLevel" class="form-control">
+          <option value="Thap">Nhẹ - Nhắc nhở vi phạm (không chặn)</option>
+          <option value="TrungBinh">Trung bình - Yêu cầu chỉnh sửa nội dung</option>
+          <option value="Cao">Nặng - Chặn gửi, bắt buộc nhập lại</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <!-- Lock/Unlock toggle on left (only in edit mode) -->
+      <button
+        *ngIf="isEditing"
+        class="btn-status-toggle"
+        [class.lock-mode]="formModel.status === 'DangApDung'"
+        [class.unlock-mode]="formModel.status === 'NgungApDung'"
+        (click)="toggleStatusInModal()">
+        <span class="material-icons">{{ formModel.status === 'DangApDung' ? 'lock' : 'lock_open' }}</span>
+        {{ formModel.status === 'DangApDung' ? 'Khóa từ khóa' : 'Mở khóa từ khóa' }}
+      </button>
+
+      <div class="footer-actions-right">
+        <button class="btn-modal-cancel" (click)="closeModal()">Hủy</button>
+        <button class="btn-modal-save" (click)="saveKeyword()">
+          <span class="material-icons">save</span>
+          Lưu thông tin
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Premium Alert Notification Overlay -->
+<div class="custom-alert-overlay" *ngIf="notification.show" (click)="closeToast()">
+  <div class="custom-alert-card" (click)="$event.stopPropagation()">
+    <div class="custom-alert-body">
+      <div class="custom-alert-icon-wrapper" [class]="notification.type">
+        <span class="material-icons" *ngIf="notification.type === 'success'">check</span>
+        <span class="material-icons" *ngIf="notification.type === 'warning'">priority_high</span>
+        <span class="material-icons" *ngIf="notification.type === 'error'">close</span>
+      </div>
+      <div class="custom-alert-content">
+        <h4 class="custom-alert-title">{{ notification.title }}</h4>
+        <p class="custom-alert-message" [innerHTML]="notification.message"></p>
+      </div>
+    </div>
+    <div class="custom-alert-footer">
+      <button class="btn-alert-ok" [class]="notification.type" (click)="closeToast()">
+        Đồng ý
+      </button>
+    </div>
+  </div>
+</div>

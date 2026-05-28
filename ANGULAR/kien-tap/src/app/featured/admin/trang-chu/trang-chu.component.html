@@ -1,31 +1,75 @@
 <div class="dashboard-container">
+  <!-- Header Greeting -->
   <div class="dashboard-header">
-    <h1>Tổng quan</h1>
-    <p>Chào mừng trở lại! Đây là tình hình kinh doanh hiện tại.</p>
+    <div class="greeting-block">
+      <h1>{{ greeting }}, {{ currentUser?.TenHienThi || 'Nhân viên' }}! 👋</h1>
+      <p class="role-badge">
+        <span class="material-icons" style="font-size:15px;vertical-align:middle;margin-right:4px;">verified_user</span>
+        {{ roleLabel }}
+      </p>
+    </div>
+    <div class="date-info">
+      <span class="material-icons">today</span>
+      <span>{{ todayLabel }}</span>
+    </div>
   </div>
 
-  <!-- Stats Cards -->
-  <div class="stats-grid">
-    <div *ngFor="let stat of stats" class="stat-card">
-      <div class="stat-content">
-        <span class="stat-title">{{ stat.title }}</span>
-        <span class="stat-value">{{ stat.value }}</span>
+  <!-- Quick Actions -->
+  <div class="quick-actions-section" *ngIf="quickActions.length > 0">
+    <h2 class="section-title">
+      <span class="material-icons">bolt</span>
+      Thao tác nhanh
+    </h2>
+    <div class="quick-actions-grid">
+      <a *ngFor="let action of quickActions" [routerLink]="action.route" class="quick-action-card" [ngClass]="'qa-' + action.color">
+        <div class="qa-icon">
+          <span class="material-icons">{{ action.icon }}</span>
+        </div>
+        <span class="qa-label">{{ action.label }}</span>
+        <span class="material-icons qa-arrow">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Stats -->
+  <div class="kpi-grid" *ngIf="stats.length > 0">
+    <div *ngFor="let stat of stats" class="kpi-card" [ngClass]="stat.theme">
+      <div class="kpi-icon-container">
+        <span class="material-icons">{{ stat.icon }}</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">{{ stat.title }}</span>
+        <span class="kpi-value">
+          <ng-container *ngIf="stat.isCurrency; else noCurrency">
+            {{ stat.value | number:'1.0-0' }}đ
+          </ng-container>
+          <ng-template #noCurrency>
+            {{ stat.value }}
+          </ng-template>
+        </span>
         <span class="stat-trend" [class.up]="stat.trendType === 'up'" [class.down]="stat.trendType === 'down'">
+          <span class="material-icons trend-icon">{{ stat.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
           {{ stat.trend }}
         </span>
-      </div>
-      <div class="stat-icon" [style.background-color]="stat.color">
-        <span class="material-icons">{{ stat.icon }}</span>
       </div>
     </div>
   </div>
 
   <div class="dashboard-grid">
-    <!-- Recent Bookings Table -->
-    <div class="card table-card">
+    <!-- Recent Bookings - show for ticket sellers and admins -->
+    <div class="card table-card" *ngIf="showTicketSection">
       <div class="card-header">
-        <h2>Đặt vé gần đây</h2>
-        <button class="view-all" routerLink="/admin/quan-ly-ve/danh-sach-ve">Xem tất cả</button>
+        <h2>
+          <span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:6px;color:#009ba1;">receipt_long</span>
+          Vé đặt gần đây
+        </h2>
+        <button class="view-all" routerLink="/admin/quan-ly-ve/danh-sach-ve">
+          Xem tất cả
+          <span class="material-icons" style="font-size: 16px;">arrow_forward</span>
+        </button>
+      </div>
+      <div *ngIf="dashboardLoadError" class="dashboard-error">
+        {{ dashboardLoadError }}
       </div>
       <div class="table-responsive">
         <table>
@@ -34,45 +78,186 @@
               <th>MÃ VÉ</th>
               <th>KHÁCH HÀNG</th>
               <th>TUYẾN</th>
-              <th>GHẾ</th>
-              <th>GIỜ</th>
-              <th>GIÁ</th>
+              <th style="text-align: center;">GHẾ</th>
+              <th style="text-align: center;">GIỜ</th>
+              <th style="text-align: right;">GIÁ VÉ</th>
+              <th style="text-align: center;">TRẠNG THÁI</th>
             </tr>
           </thead>
           <tbody>
+            <tr *ngIf="dashboardLoading">
+              <td colspan="7" class="empty-table">Đang tải dữ liệu vé...</td>
+            </tr>
+            <tr *ngIf="!dashboardLoading && bookings.length === 0">
+              <td colspan="7" class="empty-table">Chưa có vé để hiển thị.</td>
+            </tr>
             <tr *ngFor="let booking of bookings">
               <td class="id-col">{{ booking.id }}</td>
-              <td>
-                <div class="customer-info">
-                  <span>{{ booking.customer }}</span>
+              <td style="font-weight: 600;">{{ booking.customer }}</td>
+              <td class="route-col">{{ booking.route }}</td>
+              <td style="text-align: center;">
+                <div class="seats-container">
+                  <span *ngFor="let s of getSeatsList(booking.seat)" class="seat-badge" [ngClass]="getSeatColorClass(s)">{{ s }}</span>
                 </div>
               </td>
-              <td class="route-col">{{ booking.route }}</td>
-              <td>{{ booking.seat }}</td>
-              <td>{{ booking.time }}</td>
-              <td class="price-col">{{ booking.price }}</td>
+              <td style="text-align: center; font-weight: 600; color: #475569;">{{ booking.time }}</td>
+              <td class="price-col">{{ booking.price | number:'1.0-0' }}đ</td>
+              <td style="text-align: center;">
+                <span class="status-badge" [ngClass]="getStatusClass(booking.status)">{{ booking.status }}</span>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Popular Routes -->
-    <div class="card routes-card">
+    <!-- Ticket seller route summary -->
+    <div class="card routes-card" *ngIf="showTicketSection && !showRouteSection">
       <div class="card-header">
-        <h2>Tuyến đường phổ biến</h2>
+        <h2>
+          <span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:6px;color:#009ba1;">route</span>
+          Tuyến bán gần đây
+        </h2>
+        <button class="view-all" routerLink="/admin/quan-ly-ve/danh-sach-ve">
+          Xem vé
+          <span class="material-icons" style="font-size: 16px;">arrow_forward</span>
+        </button>
+      </div>
+      <div class="routes-list" *ngIf="popularRoutes.length > 0; else noRouteStats">
+        <div *ngFor="let route of popularRoutes" class="route-item">
+          <div class="route-info">
+            <span class="route-name">{{ route.name }}</span>
+            <span class="route-count">
+              <span class="material-icons" style="font-size: 13px; color: #64748b; vertical-align: middle; margin-right: 3px;">local_activity</span>
+              {{ route.bookings }} vé đã bán
+            </span>
+          </div>
+          <div class="route-trend up">
+            <span class="material-icons" style="font-size: 14px;">donut_large</span>
+            {{ route.trend }}
+          </div>
+        </div>
+      </div>
+      <ng-template #noRouteStats>
+        <div class="empty-mini">
+          <span class="material-icons">route</span>
+          <p>Chưa có dữ liệu tuyến từ vé.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Popular Routes - show for dispatch and admins -->
+    <div class="card routes-card" *ngIf="showRouteSection">
+      <div class="card-header">
+        <h2>
+          <span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:6px;color:#009ba1;">route</span>
+          Tuyến đường hoạt động
+        </h2>
+        <button class="view-all" routerLink="/admin/quan-ly-dieu-hanh/quan-ly-tuyen-xe">
+          Xem tất cả
+          <span class="material-icons" style="font-size: 16px;">arrow_forward</span>
+        </button>
       </div>
       <div class="routes-list">
         <div *ngFor="let route of popularRoutes" class="route-item">
           <div class="route-info">
             <span class="route-name">{{ route.name }}</span>
-            <span class="route-count">{{ route.bookings }} vé</span>
+            <span class="route-count">
+              <span class="material-icons" style="font-size: 13px; color: #64748b; vertical-align: middle; margin-right: 3px;">local_activity</span>
+              {{ route.bookings }} vé đã bán
+            </span>
           </div>
           <div class="route-trend" [class.up]="route.trendType === 'up'" [class.down]="route.trendType === 'down'">
-            <span class="material-icons">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
+            <span class="material-icons" style="font-size: 14px;">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
             {{ route.trend }}
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Finance summary - show for management and admins -->
+    <div class="card finance-card" *ngIf="showFinanceSection && !showTicketSection">
+      <div class="card-header">
+        <h2>
+          <span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:6px;color:#009ba1;">bar_chart</span>
+          Doanh thu theo tuyến
+        </h2>
+        <button class="view-all" routerLink="/admin/bao-cao/bao-cao-tong-hop-theo-tuyen">
+          Xuất báo cáo
+          <span class="material-icons" style="font-size: 16px;">download</span>
+        </button>
+      </div>
+      <div class="routes-list">
+        <div *ngFor="let route of popularRoutes" class="route-item">
+          <div class="route-info">
+            <span class="route-name">{{ route.name }}</span>
+            <span class="route-count">
+              <span class="material-icons" style="font-size: 13px; color: #64748b; vertical-align: middle; margin-right: 3px;">payments</span>
+              {{ route.bookings * 480000 | number:'1.0-0' }}đ doanh thu
+            </span>
+          </div>
+          <div class="route-trend" [class.up]="route.trendType === 'up'" [class.down]="route.trendType === 'down'">
+            <span class="material-icons" style="font-size: 14px;">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
+            {{ route.trend }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin workbench - show for system administration roles -->
+    <div class="card admin-card" *ngIf="showAdminSection">
+      <div class="card-header">
+        <h2>
+          <span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:6px;color:#009ba1;">admin_panel_settings</span>
+          Công việc quản trị
+        </h2>
+      </div>
+      <div class="admin-task-list">
+        <a *ngFor="let task of adminTasks" [routerLink]="task.route" class="admin-task-row" [ngClass]="'task-' + task.color">
+          <div class="admin-task-icon">
+            <span class="material-icons">{{ task.icon }}</span>
+          </div>
+          <div class="admin-task-copy">
+            <span class="admin-task-title">{{ task.title }}</span>
+            <span class="admin-task-description">{{ task.description }}</span>
+          </div>
+          <span class="material-icons admin-task-arrow">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Admin extra: route section when also showing tickets -->
+    <div class="card routes-card" *ngIf="showRouteSection && showTicketSection">
+      <div class="card-header">
+        <h2>
+          <span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:6px;color:#009ba1;">route</span>
+          Tuyến xe phổ biến
+        </h2>
+      </div>
+      <div class="routes-list">
+        <div *ngFor="let route of popularRoutes" class="route-item">
+          <div class="route-info">
+            <span class="route-name">{{ route.name }}</span>
+            <span class="route-count">
+              <span class="material-icons" style="font-size: 13px; color: #64748b; vertical-align: middle; margin-right: 3px;">local_activity</span>
+              {{ route.bookings }} vé đã bán
+            </span>
+          </div>
+          <div class="route-trend" [class.up]="route.trendType === 'up'" [class.down]="route.trendType === 'down'">
+            <span class="material-icons" style="font-size: 14px;">{{ route.trendType === 'up' ? 'trending_up' : 'trending_down' }}</span>
+            {{ route.trend }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card empty-card" *ngIf="showEmptyState">
+      <div class="empty-icon">
+        <span class="material-icons">lock_person</span>
+      </div>
+      <div>
+        <h2>Chưa có chức năng được phân quyền</h2>
+        <p>Tài khoản này chưa được gán nhóm quyền nghiệp vụ. Vui lòng kiểm tra lại phân quyền nhân viên.</p>
       </div>
     </div>
   </div>

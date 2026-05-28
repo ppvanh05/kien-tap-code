@@ -1,0 +1,163 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="parent">Báo cáo</span>
+      <span class="separator">/</span>
+      <span class="current">Báo cáo khách hàng</span>
+    </div>
+    <h1>Báo cáo khách hàng</h1>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid" *ngIf="isReportViewed">
+    <div class="kpi-card blue">
+      <div class="kpi-icon-container">
+        <span class="material-icons">groups</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng số khách hàng</span>
+        <span class="kpi-value">{{ stats.totalCustomers }} khách</span>
+      </div>
+    </div>
+
+    <div class="kpi-card teal">
+      <div class="kpi-icon-container">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Khách hàng đang hoạt động</span>
+        <span class="kpi-value">{{ stats.activeCustomers }} khách</span>
+      </div>
+    </div>
+
+    <div class="kpi-card orange">
+      <div class="kpi-icon-container">
+        <span class="material-icons">cancel</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Khách hàng đã khóa</span>
+        <span class="kpi-value">{{ stats.lockedCustomers }} khách</span>
+      </div>
+    </div>
+
+    <div class="kpi-card purple">
+      <div class="kpi-icon-container">
+        <span class="material-icons">payments</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Tổng số vé đã đặt</span>
+        <span class="kpi-value">{{ stats.totalVeDat }} vé</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="card search-card">
+    <h3 class="filters-title">
+      <span class="material-icons">filter_alt</span>
+      Bộ lọc thống kê khách hàng
+    </h3>
+
+    <div class="search-grid">
+      <!-- Tìm kiếm -->
+      <div class="form-group">
+        <label>Tìm kiếm khách hàng</label>
+        <input type="text" placeholder="Nhập mã, tên, SĐT, email..." [(ngModel)]="filters.searchTerm">
+      </div>
+
+      <!-- Trạng thái hoạt động -->
+      <div class="form-group">
+        <label>Trạng thái tài khoản</label>
+        <select [(ngModel)]="filters.status">
+          <option value="Tất cả">Tất cả</option>
+          <option value="Đang hoạt động">Đang hoạt động</option>
+          <option value="Đã khóa">Đã khóa</option>
+        </select>
+      </div>
+
+      <!-- Khoảng thời gian đăng ký -->
+      <div class="form-group">
+        <label>Thời gian đăng ký (Từ ngày - Đến ngày)</label>
+        <div class="date-range-inputs">
+          <input type="date" [(ngModel)]="filters.fromDate">
+          <span class="date-range-separator">→</span>
+          <input type="date" [(ngModel)]="filters.toDate">
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="search-actions">
+      <button class="btn-search" (click)="onViewReport()">
+        <span class="material-icons">assessment</span>
+        Xem báo cáo
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <span class="material-icons">refresh</span>
+        Làm mới bộ lọc
+      </button>
+      <button class="btn-excel" (click)="onExportExcel()">
+        <span class="material-icons">download</span>
+        Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Data Card -->
+  <div class="card table-card">
+    <!-- Unviewed State Placeholder -->
+    <div class="empty-state" *ngIf="!isReportViewed">
+      <span class="material-icons empty-icon">analytics</span>
+      <h3>Chưa tải báo cáo</h3>
+      <p>Vui lòng chọn các tiêu chí lọc khách hàng, sau đó nhấn <strong>"Xem báo cáo"</strong> để hiển thị dữ liệu chi tiết.</p>
+    </div>
+
+    <ng-container *ngIf="isReportViewed">
+      <div class="table-card-header">
+        <h2>
+          Thống kê chi tiết giao dịch khách hàng
+          <span class="count">Tổng cộng {{ filteredCustomers.length }} khách hàng</span>
+        </h2>
+      </div>
+
+      <div class="table-responsive" *ngIf="filteredCustomers.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Mã khách hàng</th>
+              <th>Họ tên khách hàng</th>
+              <th>Số điện thoại</th>
+              <th>Email</th>
+              <th>Ngày đăng ký</th>
+              <th style="text-align: center;">Tổng số vé đã đặt</th>
+              <th>Trạng thái tài khoản</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredCustomers">
+              <td class="code-col">{{ item.maKhachHang }}</td>
+              <td class="name-col">{{ item.tenKhachHang }}</td>
+              <td style="font-weight: 500;">{{ item.sdt }}</td>
+              <td>{{ item.email }}</td>
+              <td>{{ item.ngayDangKy }}</td>
+              <td class="qty-col">{{ item.tongVeDat }}</td>
+              <td>
+                <span class="status-badge" [class.active]="item.trangThai === 'Đang hoạt động'"
+                  [class.locked]="item.trangThai === 'Đã khóa'">
+                  {{ item.trangThai }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- No Data State -->
+      <div class="no-data-container" *ngIf="filteredCustomers.length === 0">
+        <span class="material-icons">inbox</span>
+        <p>Không tìm thấy dữ liệu giao dịch khách hàng nào khớp với bộ lọc.</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

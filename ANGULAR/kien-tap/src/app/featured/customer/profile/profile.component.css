@@ -1,0 +1,33 @@
+/* Styles for ProfileComponent */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.5);
+}
+
+.bg-secondary-light {
+    background-color: rgba(234, 114, 0, 0.1); /* Màu cam nhạt dựa trên màu secondary */
+}
+
+/* Modal Animations */
+.animate-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* OTP Input Focus */
+input:focus {
+    box-shadow: 0 0 0 4px rgba(234, 114, 0, 0.1);
+}
+
+.animate-bounce-slow {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
