@@ -55,9 +55,10 @@ export class TimKiemChuyenXeService {
       const upperNames = ['1B', '2B', '3B', '4B', '5B', '6B', '7B', '8B', '9B', '10B'];
 
       // Helper to batch create GHE templates first
+      const upsertPromises = [];
       for (const name of lowerNames) {
         const gheId = `${vehicleId}_GHE_${name}`;
-        await this.prisma.gHE.upsert({
+        upsertPromises.push(this.prisma.gHE.upsert({
           where: { MaGhe: gheId },
           update: {},
           create: {
@@ -67,13 +68,13 @@ export class TimKiemChuyenXeService {
             TangGhe: 1,
             DayGhe: 'A',
           },
-        });
+        }));
         defaultSeats.push({ MaGhe: gheId });
       }
 
       for (const name of upperNames) {
         const gheId = `${vehicleId}_GHE_${name}`;
-        await this.prisma.gHE.upsert({
+        upsertPromises.push(this.prisma.gHE.upsert({
           where: { MaGhe: gheId },
           update: {},
           create: {
@@ -83,52 +84,47 @@ export class TimKiemChuyenXeService {
             TangGhe: 2,
             DayGhe: 'B',
           },
-        });
+        }));
         defaultSeats.push({ MaGhe: gheId });
       }
+      
+      await Promise.all(upsertPromises);
 
-      // Now create GHE_CHUYEN_XE entries
-      const created = [];
-      for (const ghe of defaultSeats) {
-        const gheChuyenId = `${scheduleId}_${ghe.MaGhe}`;
-        const record = await this.prisma.gHE_CHUYEN_XE.create({
-          data: {
-            MaGheChuyen: gheChuyenId,
-            NhomGhe: 'Limousine',
-            GiaVe: basePrice,
-            TrangThaiGhe: TrangThaiGhe.C_n_Tr_ng,
-            ThoiGianCapNhatTrangThai: new Date(),
-            MaLichTrinh: scheduleId,
-            MaGhe: ghe.MaGhe,
-          },
-        });
-        created.push(record);
-      }
-      return created;
+      // Now create GHE_CHUYEN_XE entries using createMany
+      const dataToCreate = defaultSeats.map(ghe => ({
+        MaGheChuyen: `${scheduleId}_${ghe.MaGhe}`,
+        NhomGhe: 'Limousine',
+        GiaVe: basePrice,
+        TrangThaiGhe: TrangThaiGhe.Trong,
+        ThoiGianCapNhatTrangThai: new Date(),
+        MaLichTrinh: scheduleId,
+        MaGhe: ghe.MaGhe,
+      }));
+      await this.prisma.gHE_CHUYEN_XE.createMany({ data: dataToCreate });
+      
+      // Fetch and return the created records
+      return this.prisma.gHE_CHUYEN_XE.findMany({ where: { MaLichTrinh: scheduleId } });
     }
 
-    // Auto-create from existing vehicle GHE templates
-    const created = [];
-    for (const seat of seats) {
-      const gheChuyenId = `${scheduleId}_${seat.MaGhe}`;
-      const record = await this.prisma.gHE_CHUYEN_XE.create({
-        data: {
-          MaGheChuyen: gheChuyenId,
-          NhomGhe: 'Limousine',
-          GiaVe: basePrice,
-          TrangThaiGhe: TrangThaiGhe.C_n_Tr_ng,
-          ThoiGianCapNhatTrangThai: new Date(),
-          MaLichTrinh: scheduleId,
-          MaGhe: seat.MaGhe,
-        },
-      });
-      created.push(record);
-    }
-    return created;
+    // Auto-create from existing vehicle GHE templates using createMany
+    const dataToCreate = seats.map(seat => ({
+      MaGheChuyen: `${scheduleId}_${seat.MaGhe}`,
+      NhomGhe: 'Limousine',
+      GiaVe: basePrice,
+      TrangThaiGhe: TrangThaiGhe.Trong,
+      ThoiGianCapNhatTrangThai: new Date(),
+      MaLichTrinh: scheduleId,
+      MaGhe: seat.MaGhe,
+    }));
+    await this.prisma.gHE_CHUYEN_XE.createMany({ data: dataToCreate });
+
+    return this.prisma.gHE_CHUYEN_XE.findMany({ where: { MaLichTrinh: scheduleId } });
   }
 
   // ===== SEARCH TRIPS =====
   async searchTrips(dto: { departure?: string; destination?: string; date?: string }) {
+    console.log('[DEBUG] searchTrips started:', dto);
+    const startTime = Date.now();
     const searchDate = this.parseSearchDate(dto.date);
     const where: any = {
       TrangThaiLichTrinh: {
@@ -142,103 +138,98 @@ export class TimKiemChuyenXeService {
       const endOfDay = new Date(searchDate);
       endOfDay.setHours(23, 59, 59, 999);
       where.NgayKhoiHanh = {
-        gte: startOfDay,
-        lte: endOfDay,
+        gte: new Date(new Date(searchDate).setHours(0,0,0,0)),
+        lte: new Date(new Date(searchDate).setHours(23,59,59,999)),
       };
     }
 
     const departure = dto.departure?.trim();
     const destination = dto.destination?.trim();
 
-    // Find schedules matching date and route (insensitive search)
+    // Find schedules matching date and route (insensitive search) with all relations included
     const schedules = await this.prisma.lICH_TRINH.findMany({
       where: {
-        NgayKhoiHanh: {
-          gte: startOfDay,
-          lte: endOfDay,
-        },
+        ...where,
+        NgayKhoiHanh: searchDate ? {
+          gte: new Date(new Date(searchDate).setHours(0,0,0,0)),
+          lte: new Date(new Date(searchDate).setHours(23,59,59,999)),
+        } : undefined,
         TrangThaiLichTrinh: {
           notIn: [TrangThaiLichTrinh.DaKhoa],
         },
-        TUYEN_XE: {
-          DiemKhoiHanh: { contains: dto.departure, mode: 'insensitive' },
-          DiemDen: { contains: dto.destination, mode: 'insensitive' },
-        },
       },
-      where,
       include: {
         TUYEN_XE: true,
         PHUONG_TIEN: true,
+        GHE_CHUYEN_XE: true,
+        LICH_TRINH_DIEM_DUNG: {
+          include: { DIEM_DON_TRA_DUNG: true },
+          orderBy: { ThuTuDung: 'asc' }
+        }
       },
     });
+
     const filteredSchedules = schedules.filter(schedule =>
       this.matchLocation(schedule.TUYEN_XE?.DiemKhoiHanh, departure) &&
       this.matchLocation(schedule.TUYEN_XE?.DiemDen, destination),
     );
 
-    const results = [];
-
-    for (const schedule of filteredSchedules) {
+    const promises = filteredSchedules.map(async schedule => {
       // Auto initialize seats if empty
-      const seats = await this.checkAndInitializeSeats(
-        schedule.MaLichTrinh,
-        schedule.MaXe,
-        schedule.GiaVeCoBan.toNumber(),
-      );
+      let seats = schedule.GHE_CHUYEN_XE;
+      if (!seats || seats.length === 0) {
+        seats = await this.checkAndInitializeSeats(
+          schedule.MaLichTrinh,
+          schedule.MaXe,
+          schedule.GiaVeCoBan.toNumber(),
+        );
+      }
 
       // Count available seats
-      const availableSeats = seats.filter(s => s.TrangThaiGhe === TrangThaiGhe.C_n_Tr_ng).length;
-
-      // Fetch stops
-      const stops = await this.prisma.lICH_TRINH_DIEM_DUNG.findMany({
-        where: { MaLichTrinh: schedule.MaLichTrinh },
-        include: {
-          DIEM_DON_TRA_DUNG: true,
-        },
-        orderBy: {
-          ThuTuDung: 'asc',
-        },
-      });
+      const availableSeats = seats.filter(s => s.TrangThaiGhe === TrangThaiGhe.Trong).length;
 
       // Only return trips that still have available seats
-      if (availableSeats > 0) {
-        results.push({
-          MaLichTrinh: schedule.MaLichTrinh,
-          NgayKhoiHanh: schedule.NgayKhoiHanh,
-          GioKhoiHanh: schedule.GioKhoiHanh,
-          GioGoiYCoMat: schedule.GioGoiYCoMat,
-          GioDenDuKien: schedule.GioDenDuKien,
-          GiaVeCoBan: schedule.GiaVeCoBan,
-          TrangThai: schedule.TrangThaiLichTrinh,
-          availableSeats,
-          tuyenXe: schedule.TUYEN_XE,
-          phuongTien: schedule.PHUONG_TIEN,
-          gheChuyenXe: seats.map(s => ({
-            MaGheChuyen: s.MaGheChuyen,
-            NhomGhe: s.NhomGhe,
-            GiaVe: s.GiaVe,
-            TrangThaiGhe: s.TrangThaiGhe,
-            ThoiGianCapNhatTrangThai: s.ThoiGianCapNhatTrangThai,
-          })),
-          diemDungLichTrinh: stops.map(stop => ({
-            MaLichTrinhDiemDung: stop.MaLichTrinhDiemDung,
-            ThuTuDung: stop.ThuTuDung,
-            GioDenDuKien: stop.GioDenDuKien,
-            GhiChu: stop.GhiChu,
-            MaDiem: stop.DIEM_DON_TRA_DUNG?.MaDiem,
-            TenDiem: stop.DIEM_DON_TRA_DUNG?.TenDiem,
-            DiaChi: stop.DIEM_DON_TRA_DUNG?.DiaChi,
-            ThanhPho: stop.DIEM_DON_TRA_DUNG?.ThanhPho,
-            Tinh: stop.DIEM_DON_TRA_DUNG?.Tinh,
-            LoaiDiem: stop.DIEM_DON_TRA_DUNG?.LoaiDiem,
-            ThoiGianCoMatTruoc: stop.DIEM_DON_TRA_DUNG?.ThoiGianCoMatTruoc,
-            GioCanCoMat: stop.DIEM_DON_TRA_DUNG?.GioCanCoMat,
-          })),
-        });
-      }
-    }
+      if (availableSeats === 0) return null;
 
-    return results;
+      return {
+        MaLichTrinh: schedule.MaLichTrinh,
+        NgayKhoiHanh: schedule.NgayKhoiHanh,
+        GioKhoiHanh: schedule.GioKhoiHanh,
+        GioGoiYCoMat: schedule.GioGoiYCoMat,
+        GioDenDuKien: schedule.GioDenDuKien,
+        GiaVeCoBan: schedule.GiaVeCoBan,
+        TrangThai: schedule.TrangThaiLichTrinh,
+        availableSeats,
+        tuyenXe: schedule.TUYEN_XE,
+        phuongTien: schedule.PHUONG_TIEN,
+        gheChuyenXe: seats.map(s => ({
+          MaGheChuyen: s.MaGheChuyen,
+          NhomGhe: s.NhomGhe,
+          GiaVe: s.GiaVe,
+          TrangThaiGhe: s.TrangThaiGhe,
+          ThoiGianCapNhatTrangThai: s.ThoiGianCapNhatTrangThai,
+        })),
+        diemDungLichTrinh: schedule.LICH_TRINH_DIEM_DUNG.map(stop => ({
+          MaLichTrinhDiemDung: stop.MaLichTrinhDiemDung,
+          ThuTuDung: stop.ThuTuDung,
+          GioDenDuKien: stop.GioDenDuKien,
+          GhiChu: stop.GhiChu,
+          MaDiem: stop.DIEM_DON_TRA_DUNG?.MaDiem,
+          TenDiem: stop.DIEM_DON_TRA_DUNG?.TenDiem,
+          DiaChi: stop.DIEM_DON_TRA_DUNG?.DiaChi,
+          ThanhPho: stop.DIEM_DON_TRA_DUNG?.ThanhPho,
+          Tinh: stop.DIEM_DON_TRA_DUNG?.Tinh,
+          LoaiDiem: stop.DIEM_DON_TRA_DUNG?.LoaiDiem,
+          ThoiGianCoMatTruoc: stop.DIEM_DON_TRA_DUNG?.ThoiGianCoMatTruoc,
+          GioCanCoMat: stop.DIEM_DON_TRA_DUNG?.GioCanCoMat,
+        })),
+      };
+    });
+
+    const rawResults = await Promise.all(promises);
+    const endTime = Date.now();
+    console.log(`[DEBUG] searchTrips finished in ${endTime - startTime}ms`);
+    return rawResults.filter(Boolean);
   }
 
   // ===== GET TRIP DETAIL =====

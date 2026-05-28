@@ -46,7 +46,6 @@ export class HomeService {
     return this.prisma.tUYEN_XE.findMany({
       where: {
         TrangThaiTuyenXe: TrangThaiTuyenXe.DangHoatDong,
-        TrangThaiTuyenXe: 'DangHoatDong',
       },
       orderBy: { TenTuyenXe: 'asc' },
     });

@@ -3,5 +3,5 @@ import { environment } from '../../environments/environment';
 
 export const supabase = createClient(
   environment.supabaseUrl,
-  environment.supabaseAnonKey
+  environment.supabaseKey
 );

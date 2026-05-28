@@ -38,7 +38,8 @@ export class AdminGuard implements CanActivate, CanActivateChild {
     // Check permissions if route requires it
     const requiredPermission = route.data['requiredPermission'] as string;
     if (requiredPermission) {
-      const hasPermission = currentUser.Quyen?.includes(requiredPermission);
+      const isSuperAdmin = currentUser.LoaiTaiKhoan === 'QuanTriVien';
+      const hasPermission = isSuperAdmin || currentUser.Quyen?.includes(requiredPermission);
       if (!hasPermission) {
         if (isPlatformBrowser(this.platformId)) {
           alert('Bạn không có quyền truy cập vào chức năng này!');

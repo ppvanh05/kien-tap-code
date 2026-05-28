@@ -356,6 +356,7 @@ export class TrangChuComponent implements OnInit {
   }
 
   private hasPermission(permission: string): boolean {
+    if (this.currentUser?.LoaiTaiKhoan === 'QuanTriVien') return true;
     return !!this.currentUser?.Quyen?.includes(permission);
   }
 
@@ -364,11 +365,13 @@ export class TrangChuComponent implements OnInit {
   }
 
   private filterActions(actions: QuickAction[], perms: string[]): QuickAction[] {
-    return actions.filter(action => !action.permission || perms.includes(action.permission));
+    const isSuperAdmin = this.currentUser?.LoaiTaiKhoan === 'QuanTriVien';
+    return actions.filter(action => !action.permission || isSuperAdmin || perms.includes(action.permission));
   }
 
   private filterAdminTasks(tasks: AdminTask[], perms: string[]): AdminTask[] {
-    return tasks.filter(task => perms.includes(task.permission));
+    const isSuperAdmin = this.currentUser?.LoaiTaiKhoan === 'QuanTriVien';
+    return tasks.filter(task => isSuperAdmin || perms.includes(task.permission));
   }
 
   private formatDateLabel(date: Date): string {

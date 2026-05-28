@@ -343,7 +343,7 @@ export class QuanLyTaiKhoanNhanVienComponent implements OnInit {
       hoVaTenDem: nv.HoVaTenDem || '',
       ten: nv.Ten || '',
       tenHienThi: nv.TenHienThi || '',
-      gioiTinh: nv.GioiTinh || 'Nam',
+      gioiTinh: (nv.GioiTinh === 'Nu' ? 'Nữ' : nv.GioiTinh) || 'Nam',
       ngaySinh: nv.NgaySinh ? nv.NgaySinh.split('T')[0] : '',
       diaChi: nv.DiaChi || '',
       soDienThoai: nv.SoDienThoai || '',

@@ -172,6 +172,7 @@ export class QuanLyVeService {
       ChoKhoiHanh: 'Chờ khởi hành',
       DaHoanThanh: 'Đã hoàn thành',
       DaHuy: 'Đã hủy',
+      DaDanhGia: 'Đã hoàn thành',
     };
     return status ? map[status] || status : 'Chưa xác định';
   }
@@ -205,112 +206,72 @@ export class QuanLyVeService {
     return 'Chờ thanh toán';
   }
 
+  private get VE_INCLUDE() {
+    return {
+      DON_HANG: { include: { KHACH_HANG: true, THANH_TOAN: { orderBy: { ThoiGianGiaoDich: 'desc' as any } } } },
+      LICH_TRINH: { include: { TUYEN_XE: true, PHUONG_TIEN: true } },
+      GHE_CHUYEN_XE: { include: { GHE: true } },
+      DIEM_DON: true,
+      DIEM_TRA: true,
+      PHUONG_TIEN: true
+    };
+  }
+
+  private get DON_HANG_INCLUDE() {
+    return {
+      KHACH_HANG: true,
+      THANH_TOAN: { orderBy: { ThoiGianGiaoDich: 'desc' as any } },
+      VE_DIEN_TU: {
+        include: {
+          LICH_TRINH: { include: { TUYEN_XE: true, PHUONG_TIEN: true } },
+          GHE_CHUYEN_XE: { include: { GHE: true } },
+          DIEM_DON: true,
+          DIEM_TRA: true,
+          PHUONG_TIEN: true
+        }
+      }
+    };
+  }
+
   private async hydrateVeList(veList: any[]) {
     if (veList.length === 0) return [];
 
-    const donHangIds = this.unique(veList.map(ve => ve.MaDonHang));
-    const lichTrinhIds = this.unique(veList.map(ve => ve.MaLichTrinh));
-    const gheChuyenIds = this.unique(veList.map(ve => ve.MaGheChuyen));
-    const diemIds = this.unique([
-      ...veList.map(ve => ve.MaDiemDon),
-      ...veList.map(ve => ve.MaDiemTra),
-    ]);
+    let tickets = veList;
+    if (!tickets[0].DON_HANG) {
+      tickets = await this.prisma.vE_DIEN_TU.findMany({
+        where: { MaVe: { in: tickets.map(v => v.MaVe || v.maVe) } },
+        include: this.VE_INCLUDE
+      });
+      // Preserve the original order
+      const ticketMap = new Map(tickets.map(t => [t.MaVe, t]));
+      tickets = veList.map(v => ticketMap.get(v.MaVe || v.maVe)).filter(Boolean);
+    }
 
-    const [donHangList, lichTrinhList, gheChuyenList, diemList, thanhToanList] = await Promise.all([
-      donHangIds.length
-        ? this.prisma.dON_HANG.findMany({ where: { MaDonHang: { in: donHangIds } } })
-        : Promise.resolve([]),
-      lichTrinhIds.length
-        ? this.prisma.lICH_TRINH.findMany({ where: { MaLichTrinh: { in: lichTrinhIds } } })
-        : Promise.resolve([]),
-      gheChuyenIds.length
-        ? this.prisma.gHE_CHUYEN_XE.findMany({ where: { MaGheChuyen: { in: gheChuyenIds } } })
-        : Promise.resolve([]),
-      diemIds.length
-        ? this.prisma.dIEM_DON_TRA_DUNG.findMany({ where: { MaDiem: { in: diemIds } } })
-        : Promise.resolve([]),
-      donHangIds.length
-        ? this.prisma.tHANH_TOAN.findMany({
-            where: { MaDonHang: { in: donHangIds } },
-            orderBy: { ThoiGianGiaoDich: 'desc' },
-          })
-        : Promise.resolve([]),
-    ]);
-
-    const khachHangIds = this.unique(donHangList.map(donHang => donHang.MaKhachHang));
-    const tuyenXeIds = this.unique(lichTrinhList.map(lichTrinh => lichTrinh.MaTuyenXe));
-    const maGheIds = this.unique(gheChuyenList.map(gheChuyen => gheChuyen.MaGhe));
-    const maXeIds = this.unique([
-      ...veList.map(ve => ve.MaXe),
-      ...lichTrinhList.map(lichTrinh => lichTrinh.MaXe),
-    ]);
-
-    const [khachHangList, tuyenXeList, gheList, phuongTienList] = await Promise.all([
-      khachHangIds.length
-        ? this.prisma.kHACH_HANG.findMany({ where: { MaKhachHang: { in: khachHangIds } } })
-        : Promise.resolve([]),
-      tuyenXeIds.length
-        ? this.prisma.tUYEN_XE.findMany({ where: { MaTuyenXe: { in: tuyenXeIds } } })
-        : Promise.resolve([]),
-      maGheIds.length
-        ? this.prisma.gHE.findMany({ where: { MaGhe: { in: maGheIds } } })
-        : Promise.resolve([]),
-      maXeIds.length
-        ? this.prisma.pHUONG_TIEN.findMany({ where: { MaXe: { in: maXeIds } } })
-        : Promise.resolve([]),
-    ]);
-
-    const donHangById = new Map(donHangList.map(item => [item.MaDonHang, item]));
-    const khachHangById = new Map(khachHangList.map(item => [item.MaKhachHang, item]));
-    const lichTrinhById = new Map(lichTrinhList.map(item => [item.MaLichTrinh, item]));
-    const tuyenXeById = new Map(tuyenXeList.map(item => [item.MaTuyenXe, item]));
-    const gheChuyenById = new Map(gheChuyenList.map(item => [item.MaGheChuyen, item]));
-    const gheById = new Map(gheList.map(item => [item.MaGhe, item]));
-    const diemById = new Map(diemList.map(item => [item.MaDiem, item]));
-    const phuongTienById = new Map(phuongTienList.map(item => [item.MaXe, item]));
-    const thanhToanByDonHang = new Map<string, any[]>();
-
-    thanhToanList.forEach(thanhToan => {
-      const list = thanhToanByDonHang.get(thanhToan.MaDonHang) || [];
-      list.push(thanhToan);
-      thanhToanByDonHang.set(thanhToan.MaDonHang, list);
-    });
-
-    return veList.map(ve => {
-      const donHang = donHangById.get(ve.MaDonHang) || null;
-      const khachHang = donHang ? khachHangById.get(donHang.MaKhachHang) || null : null;
-      const lichTrinh = lichTrinhById.get(ve.MaLichTrinh) || null;
-      const tuyenXe = lichTrinh ? tuyenXeById.get(lichTrinh.MaTuyenXe) || null : null;
-      const gheChuyen = gheChuyenById.get(ve.MaGheChuyen) || null;
-      const ghe = gheChuyen ? gheById.get(gheChuyen.MaGhe) || null : null;
-      const diemDon = diemById.get(ve.MaDiemDon) || null;
-      const diemTra = diemById.get(ve.MaDiemTra) || null;
-      const phuongTien = phuongTienById.get(ve.MaXe || lichTrinh?.MaXe) || null;
-      const thanhToan = thanhToanByDonHang.get(ve.MaDonHang) || [];
+    return tickets.map(ve => {
+      const donHang = ve.DON_HANG;
+      const khachHang = donHang?.KHACH_HANG;
+      const thanhToan = donHang?.THANH_TOAN || [];
       const latestPayment = thanhToan[0];
-      const routeName = tuyenXe?.TenTuyenXe || (
-        tuyenXe ? `${tuyenXe.DiemKhoiHanh} → ${tuyenXe.DiemDen}` : 'Chưa rõ tuyến'
-      );
+
+      const lichTrinh = ve.LICH_TRINH;
+      const tuyenXe = lichTrinh?.TUYEN_XE;
+      const phuongTien = ve.PHUONG_TIEN || lichTrinh?.PHUONG_TIEN;
+
+      const gheChuyen = ve.GHE_CHUYEN_XE;
+      const ghe = gheChuyen?.GHE;
+
+      const diemDon = ve.DIEM_DON;
+      const diemTra = ve.DIEM_TRA;
+
+      const routeName = tuyenXe?.TenTuyenXe || (tuyenXe ? `${tuyenXe.DiemKhoiHanh} → ${tuyenXe.DiemDen}` : 'Chưa rõ tuyến');
       const customerName = donHang?.HoTenNguoiDi || khachHang?.HoTenKhachHang || 'Chưa rõ khách';
       const phone = donHang?.SdtNguoiDi || khachHang?.SoDienThoai || '';
       const seatName = ghe?.SoGhe || gheChuyen?.NhomGhe || ve.MaGheChuyen;
       const paymentStatus = this.mapPaymentStatus(donHang, thanhToan, ve.TrangThaiVe);
-      const paymentMethod = this.mapPaymentMethod(
-        latestPayment?.PhuongThucThanhToan || donHang?.PhuongThucThanhToan,
-      );
+      const paymentMethod = this.mapPaymentMethod(latestPayment?.PhuongThucThanhToan || donHang?.PhuongThucThanhToan);
 
       return {
         ...ve,
-        DON_HANG: donHang ? { ...donHang, KHACH_HANG: khachHang, THANH_TOAN: thanhToan } : null,
-        KHACH_HANG: khachHang,
-        THANH_TOAN: thanhToan,
-        LICH_TRINH: lichTrinh ? { ...lichTrinh, TUYEN_XE: tuyenXe, PHUONG_TIEN: phuongTien } : null,
-        TUYEN_XE: tuyenXe,
-        GHE_CHUYEN_XE: gheChuyen ? { ...gheChuyen, GHE: ghe } : null,
-        GHE: ghe,
-        DIEM_DON: diemDon,
-        DIEM_TRA: diemTra,
-        PHUONG_TIEN: phuongTien,
         maVe: ve.MaVe,
         maDonHang: ve.MaDonHang,
         tenKhachHang: customerName,
@@ -349,52 +310,44 @@ export class QuanLyVeService {
   private async hydrateDonHangList(donHangList: any[]) {
     if (donHangList.length === 0) return [];
 
-    const donHangIds = this.unique(donHangList.map(donHang => donHang.MaDonHang));
-    const khachHangIds = this.unique(donHangList.map(donHang => donHang.MaKhachHang));
+    let orders = donHangList;
+    if (!orders[0].KHACH_HANG) {
+      orders = await this.prisma.dON_HANG.findMany({
+        where: { MaDonHang: { in: orders.map(o => o.MaDonHang || o.maDonHang) } },
+        include: this.DON_HANG_INCLUDE
+      });
+      const orderMap = new Map(orders.map(o => [o.MaDonHang, o]));
+      orders = donHangList.map(o => orderMap.get(o.MaDonHang || o.maDonHang)).filter(Boolean);
+    }
 
-    const [khachHangList, thanhToanList, veList] = await Promise.all([
-      khachHangIds.length
-        ? this.prisma.kHACH_HANG.findMany({ where: { MaKhachHang: { in: khachHangIds } } })
-        : Promise.resolve([]),
-      donHangIds.length
-        ? this.prisma.tHANH_TOAN.findMany({
-            where: { MaDonHang: { in: donHangIds } },
-            orderBy: { ThoiGianGiaoDich: 'desc' },
-          })
-        : Promise.resolve([]),
-      donHangIds.length
-        ? this.prisma.vE_DIEN_TU.findMany({ where: { MaDonHang: { in: donHangIds } } })
-        : Promise.resolve([]),
-    ]);
-
-    const hydratedVeList = await this.hydrateVeList(veList);
-    const khachHangById = new Map(khachHangList.map(item => [item.MaKhachHang, item]));
-    const thanhToanByDonHang = new Map<string, any[]>();
-    const veByDonHang = new Map<string, any[]>();
-
-    thanhToanList.forEach(thanhToan => {
-      const list = thanhToanByDonHang.get(thanhToan.MaDonHang) || [];
-      list.push(thanhToan);
-      thanhToanByDonHang.set(thanhToan.MaDonHang, list);
+    // Prepare tickets for hydration
+    const allTicketsRaw = [];
+    orders.forEach(o => {
+      if (o.VE_DIEN_TU && o.VE_DIEN_TU.length > 0) {
+        // Ensure they have DON_HANG so hydrateVeList doesn't fetch again
+        o.VE_DIEN_TU.forEach(v => {
+           v.DON_HANG = o;
+           allTicketsRaw.push(v);
+        });
+      }
     });
+    
+    let hydratedTicketsMap = new Map();
+    if (allTicketsRaw.length > 0) {
+       const hydratedTickets = await this.hydrateVeList(allTicketsRaw);
+       hydratedTicketsMap = new Map(hydratedTickets.map(t => [t.MaVe || t.maVe, t]));
+    }
 
-    hydratedVeList.forEach(ve => {
-      const list = veByDonHang.get(ve.MaDonHang) || [];
-      list.push(ve);
-      veByDonHang.set(ve.MaDonHang, list);
-    });
-
-    return donHangList.map(donHang => {
-      const khachHang = khachHangById.get(donHang.MaKhachHang) || null;
-      const thanhToan = thanhToanByDonHang.get(donHang.MaDonHang) || [];
-      const ve = veByDonHang.get(donHang.MaDonHang) || [];
+    return orders.map(donHang => {
+      const khachHang = donHang.KHACH_HANG;
+      const thanhToan = donHang.THANH_TOAN || [];
+      const veRaw = donHang.VE_DIEN_TU || [];
+      const ve = veRaw.map(v => hydratedTicketsMap.get(v.MaVe || v.maVe)).filter(Boolean);
+      
       const paymentStatus = this.mapPaymentStatus(donHang, thanhToan, donHang.TrangThaiDonHang);
 
       return {
         ...donHang,
-        KHACH_HANG: khachHang,
-        THANH_TOAN: thanhToan,
-        VE_DIEN_TU: ve,
         maDonHang: donHang.MaDonHang,
         tenKhachHang: donHang.HoTenNguoiDi || khachHang?.HoTenKhachHang || 'Chưa rõ khách',
         soDienThoai: donHang.SdtNguoiDi || khachHang?.SoDienThoai || '',
@@ -413,6 +366,7 @@ export class QuanLyVeService {
     const veList = await this.prisma.vE_DIEN_TU.findMany({
       orderBy: { ThoiGianXuatVe: 'desc' },
       take: limit,
+      include: this.VE_INCLUDE
     });
 
     return this.hydrateVeList(veList);

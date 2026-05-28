@@ -144,11 +144,12 @@ export class AdminLayoutComponent {
   applyRBAC() {
     if (!this.currentUser) return;
     
+    const isSuperAdmin = this.currentUser.LoaiTaiKhoan === 'QuanTriVien';
     const permissions = this.currentUser.Quyen || [];
 
     this.menuItems.forEach(item => {
       // 1. Check parent item permission
-      if (item.permission && !permissions.includes(item.permission)) {
+      if (item.permission && !isSuperAdmin && !permissions.includes(item.permission)) {
         item.disabled = true;
       } else {
         item.disabled = false;
@@ -158,7 +159,7 @@ export class AdminLayoutComponent {
       if (item.children) {
         let hasActiveChild = false;
         item.children.forEach(child => {
-          if (child.permission && !permissions.includes(child.permission)) {
+          if (child.permission && !isSuperAdmin && !permissions.includes(child.permission)) {
             child.disabled = true;
           } else {
             child.disabled = false;
@@ -167,7 +168,7 @@ export class AdminLayoutComponent {
         });
 
         // If all children are disabled, disable the parent item too
-        if (item.children.length > 0 && !hasActiveChild) {
+        if (item.children.length > 0 && !hasActiveChild && !isSuperAdmin) {
           item.disabled = true;
         }
       }
@@ -205,7 +206,7 @@ export class AdminLayoutComponent {
       HoVaTenDem: this.currentUser.HoVaTenDem || '',
       Ten: this.currentUser.Ten || '',
       TenHienThi: this.currentUser.TenHienThi || '',
-      GioiTinh: this.currentUser.GioiTinh || 'Nam',
+      GioiTinh: (this.currentUser.GioiTinh === 'Nu' ? 'Nữ' : this.currentUser.GioiTinh) || 'Nam',
       NgaySinh: this.formatDateInput(this.currentUser.NgaySinh),
       DiaChi: this.currentUser.DiaChi || '',
       SoDienThoai: this.currentUser.SoDienThoai || '',

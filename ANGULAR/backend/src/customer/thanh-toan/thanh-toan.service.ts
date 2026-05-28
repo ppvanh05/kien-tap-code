@@ -27,7 +27,7 @@ export class ThanhToanService {
       throw new NotFoundException(`Không tìm thấy đơn hàng với mã ${MaDonHang}`);
     }
 
-    if (order.TrangThaiDonHang !== TrangThaiVe.Ch__thanh_to_n) {
+    if (order.TrangThaiDonHang !== TrangThaiVe.ChoThanhToan) {
       throw new BadRequestException(`Đơn hàng đã ở trạng thái ${order.TrangThaiDonHang}, không thể thực hiện thanh toán!`);
     }
 
@@ -41,7 +41,7 @@ export class ThanhToanService {
         PhuongThucThanhToan,
         SoTien: new Prisma.Decimal(SoTien),
         ThoiGianGiaoDich: new Date(),
-        TrangThaiGiaoDich: TrangThaiThanhToan.Ch__thanh_to_n,
+        TrangThaiGiaoDich: TrangThaiThanhToan.ChoThanhToan,
         LichSuHoanTien: '',
       },
     });
@@ -61,7 +61,7 @@ export class ThanhToanService {
       throw new NotFoundException(`Không tìm thấy giao dịch với mã ${MaGiaoDich}`);
     }
 
-    if (transaction.TrangThaiGiaoDich === TrangThaiThanhToan.thanh_to_n) {
+    if (transaction.TrangThaiGiaoDich === TrangThaiThanhToan.DaThanhToan) {
       return { success: true, message: 'Giao dịch đã được xử lý thành công từ trước.' };
     }
 
@@ -81,13 +81,13 @@ export class ThanhToanService {
       // 1. Update Transaction status
       await tx.tHANH_TOAN.update({
         where: { MaGiaoDich },
-        data: { TrangThaiGiaoDich: TrangThaiThanhToan.thanh_to_n },
+        data: { TrangThaiGiaoDich: TrangThaiThanhToan.DaThanhToan },
       });
 
       // 2. Update Order status
       await tx.dON_HANG.update({
         where: { MaDonHang },
-        data: { TrangThaiDonHang: TrangThaiVe.Ch__kh_i_h_nh },
+        data: { TrangThaiDonHang: TrangThaiVe.ChoKhoiHanh },
       });
 
       // 3. Update E-Tickets status
@@ -103,7 +103,7 @@ export class ThanhToanService {
           MaGheChuyen: { in: seatIds },
         },
         data: {
-          TrangThaiGhe: TrangThaiGhe.b_n,
+          TrangThaiGhe: TrangThaiGhe.DaBan,
           ThoiGianCapNhatTrangThai: new Date(),
         },
       });
@@ -151,19 +151,19 @@ export class ThanhToanService {
       // 1. Update Transaction status
       await tx.tHANH_TOAN.update({
         where: { MaGiaoDich },
-        data: { TrangThaiGiaoDich: TrangThaiThanhToan.h_y },
+        data: { TrangThaiGiaoDich: TrangThaiThanhToan.DaHuy },
       });
 
       // 2. Update Order status
       await tx.dON_HANG.update({
         where: { MaDonHang },
-        data: { TrangThaiDonHang: TrangThaiVe.h_y },
+        data: { TrangThaiDonHang: TrangThaiVe.DaHuy },
       });
 
       // 3. Update E-Tickets status
       await tx.vE_DIEN_TU.updateMany({
         where: { MaDonHang },
-        data: { TrangThaiVe: TrangThaiVe.h_y },
+        data: { TrangThaiVe: TrangThaiVe.DaHuy },
       });
 
       // 4. Release seats back to 'Trong'
@@ -173,7 +173,7 @@ export class ThanhToanService {
           MaGheChuyen: { in: seatIds },
         },
         data: {
-          TrangThaiGhe: TrangThaiGhe.C_n_Tr_ng,
+          TrangThaiGhe: TrangThaiGhe.Trong,
           ThoiGianCapNhatTrangThai: new Date(),
         },
       });
@@ -206,7 +206,7 @@ export class ThanhToanService {
       throw new NotFoundException(`Không tìm thấy đơn hàng mã ${dto.orderId}`);
     }
 
-    if (order.TrangThaiDonHang !== TrangThaiVe.Ch__thanh_to_n) {
+    if (order.TrangThaiDonHang !== TrangThaiVe.ChoThanhToan) {
       throw new BadRequestException('Đơn hàng này đã được xử lý thanh toán hoặc đã bị hủy.');
     }
 
@@ -221,7 +221,7 @@ export class ThanhToanService {
           PhuongThucThanhToan: dto.paymentMethod,
           SoTien: order.TongGiaVe,
           ThoiGianGiaoDich: new Date(),
-          TrangThaiGiaoDich: TrangThaiThanhToan.thanh_to_n,
+          TrangThaiGiaoDich: TrangThaiThanhToan.DaThanhToan,
           LichSuHoanTien: '',
         },
       });
@@ -230,7 +230,7 @@ export class ThanhToanService {
       await tx.dON_HANG.update({
         where: { MaDonHang: dto.orderId },
         data: {
-          TrangThaiDonHang: TrangThaiVe.Ch__kh_i_h_nh,
+          TrangThaiDonHang: TrangThaiVe.ChoKhoiHanh,
         },
       });
 
@@ -240,7 +240,7 @@ export class ThanhToanService {
         await tx.vE_DIEN_TU.update({
           where: { MaVe: ticket.MaVe },
           data: {
-            TrangThaiVe: TrangThaiVe.Ch__kh_i_h_nh,
+            TrangThaiVe: TrangThaiVe.ChoKhoiHanh,
           },
         });
 
@@ -248,7 +248,7 @@ export class ThanhToanService {
         await tx.gHE_CHUYEN_XE.update({
           where: { MaGheChuyen: ticket.MaGheChuyen },
           data: {
-            TrangThaiGhe: TrangThaiGhe.b_n,
+            TrangThaiGhe: TrangThaiGhe.DaBan,
             ThoiGianCapNhatTrangThai: new Date(),
           },
         });

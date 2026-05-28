@@ -3,7 +3,6 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
@@ -55,15 +54,15 @@ model DANH_GIA {
   MaVe              String              @db.VarChar
   MaKhachHang       String              @db.VarChar
   SoSao             Int
+  NoiDungDanhGia    String?             @db.VarChar(1000)
+  ThoiGianDanhGia   DateTime            @db.Timestamp(6)
+  TrangThaiPhanHoi  TrangThaiDanhGia
   DiemAnToan        Int?                @db.SmallInt
   DiemSachSe        Int?                @db.SmallInt
   DiemThaiDo        Int?                @db.SmallInt
   DiemDungGio       Int?                @db.SmallInt
   DiemThongTin      Int?                @db.SmallInt
   DiemTienNghi      Int?                @db.SmallInt
-  NoiDungDanhGia    String?             @db.VarChar(1000)
-  ThoiGianDanhGia   DateTime            @db.Timestamp(6)
-  TrangThaiPhanHoi  TrangThaiDanhGia
   KHACH_HANG        KHACH_HANG          @relation(fields: [MaKhachHang], references: [MaKhachHang], onDelete: NoAction, onUpdate: NoAction)
   VE_DIEN_TU        VE_DIEN_TU          @relation(fields: [MaVe], references: [MaVe], onDelete: NoAction, onUpdate: NoAction)
   MEDIA_DANH_GIA    MEDIA_DANH_GIA[]
@@ -526,7 +525,6 @@ enum TrangThaiViPhamEnum {
   NgungApDung
 }
 
-
 enum LoaiDiem {
   DiemDonTra
   DiemDung
@@ -593,6 +591,7 @@ enum TrangThaiVe {
   ChoKhoiHanh
   DaHoanThanh
   DaHuy
+  DaDanhGia
 }
 
 enum LoaiXe {
