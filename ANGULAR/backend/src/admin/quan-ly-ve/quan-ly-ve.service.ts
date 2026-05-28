@@ -513,7 +513,10 @@ export class QuanLyVeService {
     }
     return 'ChoThanhToan';
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/nghi
   // ===== CẬP NHẬT TRẠNG THÁI VÉ =====
   async updateTrangThaiVe(id: string, trangThai: string, maNhanVien?: string) {
     const ve = await this.getVeById(id);
@@ -535,7 +538,7 @@ export class QuanLyVeService {
         GhiChu: 'Cập nhật trạng thái vé bởi quản trị viên',
         MaVe: id,
         MaKhachHang: ve.DON_HANG?.MaKhachHang || '',
-        MaNVBanVe: maNhanVien || ve.DON_HANG?.MaNVBanVe || '',
+        MaNVBanVe: maNhanVien || ve.DON_HANG?.MaNVBanVe || null,
       },
     });
 
@@ -888,8 +891,13 @@ export class QuanLyVeService {
         ThoiGianThayDoi: new Date(),
         GhiChu: lyDo,
         MaVe: id,
+<<<<<<< HEAD
         MaKhachHang: ve.DON_HANG?.MaKhachHang,
         MaNVBanVe: maNV,
+=======
+        MaKhachHang: ve.DON_HANG?.MaKhachHang || '',
+        MaNVBanVe: maNVBanVe || null,
+>>>>>>> origin/nghi
       },
     });
 

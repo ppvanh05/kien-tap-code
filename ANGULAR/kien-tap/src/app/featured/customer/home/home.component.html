@@ -109,7 +109,7 @@
                                 <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_left</span>
                                 </button>
-                                <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
+                                <span class="font-bold text-navy text-body-md">{{ calendarTitle }}</span>
                                 <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_right</span>
                                 </button>
@@ -118,10 +118,7 @@
                                 <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
                             </div>
                             <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center">
-                                <div class="w-8 h-8"></div>
-                                <div class="w-8 h-8"></div>
-                                <div class="w-8 h-8"></div>
-                                <div class="w-8 h-8"></div>
+                                <div *ngFor="let empty of calendarEmptySpaces" class="w-8 h-8"></div>
                                 <div *ngFor="let d of calendarDays" (click)="selectDepartureDate(d.dateStr)"
                                     [class]="d.dateStr === departureDate
                                         ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'
@@ -153,7 +150,7 @@
                                 <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_left</span>
                                 </button>
-                                <span class="font-bold text-navy text-body-md">THÁNG 5/2026</span>
+                                <span class="font-bold text-navy text-body-md">{{ calendarTitle }}</span>
                                 <button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
                                     <span class="material-symbols-outlined text-title-md">chevron_right</span>
                                 </button>
@@ -162,10 +159,7 @@
                                 <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
                             </div>
                             <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center">
-                                <div class="w-8 h-8"></div>
-                                <div class="w-8 h-8"></div>
-                                <div class="w-8 h-8"></div>
-                                <div class="w-8 h-8"></div>
+                                <div *ngFor="let empty of calendarEmptySpaces" class="w-8 h-8"></div>
                                 <div *ngFor="let d of calendarDays" (click)="selectReturnDate(d.dateStr)"
                                     [class]="d.dateStr === returnDate
                                         ? 'w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-orange-50 border border-orange-500 text-orange-600 font-bold cursor-pointer relative shadow-sm'

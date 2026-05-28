@@ -64,7 +64,12 @@ export class AuthService {
   logout() {
     this._currentUser.next(null);
     if (typeof window !== 'undefined' && window.localStorage) {
+<<<<<<< HEAD
       localStorage.removeItem('currentUser');
+=======
+      localStorage.removeItem('currentUserName'); // Xóa tên người dùng khỏi localStorage
+      localStorage.removeItem('access_token'); // Xóa JWT Token
+>>>>>>> origin/nghi
     }
     this._isLoggedIn.next(false);
   }

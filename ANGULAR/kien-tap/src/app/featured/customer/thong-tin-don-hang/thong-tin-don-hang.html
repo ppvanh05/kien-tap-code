@@ -255,7 +255,7 @@
 
               <!-- Notes under pickup -->
               <p *ngIf="selectedPickup" class="text-body-sm text-on-surface-variant leading-relaxed">
-                Quý khách vui lòng có mặt tại điểm đón <span class="font-bold text-navy">{{ selectedPickup.name }}</span> trước <span class="font-bold text-secondary">{{ getPickupArrivalTime() }} ngày {{ getSelectedDate() }}</span>.
+                Quý khách vui lòng có mặt tại điểm đón <span class="font-bold text-navy">{{ selectedPickup.name }}</span> trước <span class="font-bold text-secondary">{{ getPickupArrivalTime(selectedPickup.time) }} ngày {{ getSelectedDate() }}</span>.
               </p>
             </div>
 
@@ -350,6 +350,11 @@
             <div class="flex justify-between">
               <span class="text-on-surface-variant">Thời gian xuất bến</span>
               <span class="text-primary text-right font-bold">{{ bookingData.departureTime }} {{ getSelectedDate() }}</span>
+            </div>
+            
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">Giờ cần có mặt</span>
+              <span class="text-primary text-right font-bold">{{ bookingData.suggestedPresenceTime }} {{ getSelectedDate() }}</span>
             </div>
 
             <div class="flex justify-between">

@@ -83,9 +83,10 @@ export class AuthService {
   }
 
   // ===== VERIFY OTP =====
-  async verifyOtp(dto: { SoDienThoai: string; otp: string; MucDich: string }) {
+  async verifyOtp(dto: { SoDienThoai: string; otp: string; MucDich: string; markUsed?: boolean }) {
     const phone = dto.SoDienThoai.trim();
     const code = dto.otp.trim();
+    const markUsed = dto.markUsed !== false;
 
     // Allow backdoor code '123456' for easier developer testing
     if (code === '123456') {
@@ -107,16 +108,25 @@ export class AuthService {
       throw new BadRequestException('Mã OTP không chính xác hoặc đã hết hạn!');
     }
 
-    // Mark as used
-    await this.prisma.oTP_XAC_THUC.update({
-      where: { MaOTP: otpRecord.MaOTP },
-      data: { DaSuDung: true },
-    });
+    if (markUsed) {
+      // Mark as used
+      await this.prisma.oTP_XAC_THUC.update({
+        where: { MaOTP: otpRecord.MaOTP },
+        data: { DaSuDung: true },
+      });
+    }
 
     return {
       success: true,
       message: 'Xác thực OTP thành công!',
     };
+  }
+
+  async checkPhoneExists(phone: string): Promise<boolean> {
+    const existing = await this.prisma.kHACH_HANG.findFirst({
+      where: { SoDienThoai: phone.trim() },
+    });
+    return !!existing;
   }
 
   // ===== REGISTER =====

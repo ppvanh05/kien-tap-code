@@ -13,7 +13,10 @@ import { TuKhoaCamModule } from './admin/tu-khoa-cam/tu-khoa-cam.module';
 import { NhatKyHeThongModule } from './admin/nhat-ky-he-thong/nhat-ky-he-thong.module';
 import { QuanLyVeModule } from './admin/quan-ly-ve/quan-ly-ve.module';
 import { DieuHanhModule } from './admin/dieu-hanh/dieu-hanh.module';
+<<<<<<< HEAD
 import { AdminAuthModule } from './admin/auth/admin-auth.module';
+=======
+>>>>>>> origin/nghi
 
 // Customer Modules
 import { AuthModule } from './customer/auth/auth.module';
@@ -38,7 +41,10 @@ import { CustomerHoSoModule } from './customer/profile/customer-ho-so.module';
     NhatKyHeThongModule,
     QuanLyVeModule,
     DieuHanhModule,
+<<<<<<< HEAD
     AdminAuthModule,
+=======
+>>>>>>> origin/nghi
     
     // Customer Modules Registration
     AuthModule,

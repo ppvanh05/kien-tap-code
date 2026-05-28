@@ -1,7 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseFilters } from '@nestjs/common';
 import { ThongTinDonHangService } from './thong-tin-don-hang.service';
+import { CustomerExceptionFilter } from '../customer-exception.filter';
 
 @Controller('customer/thong-tin-don-hang')
+@UseFilters(CustomerExceptionFilter)
 export class ThongTinDonHangController {
   constructor(private readonly orderService: ThongTinDonHangService) {}
 
@@ -15,7 +17,12 @@ export class ThongTinDonHangController {
       MaKhachHang?: string;
     },
   ) {
-    return this.orderService.holdSeats(dto);
+    const data = await this.orderService.holdSeats(dto);
+    return {
+      success: true,
+      message: 'Giữ ghế thành công!',
+      data,
+    };
   }
 
   // POST /customer/thong-tin-don-hang/create-order → Tạo đơn hàng kèm vé điện tử
@@ -34,6 +41,11 @@ export class ThongTinDonHangController {
       PhuongThucThanhToan: string;
     },
   ) {
-    return this.orderService.createOrder(dto);
+    const data = await this.orderService.createOrder(dto);
+    return {
+      success: true,
+      message: 'Tạo đơn đặt vé thành công!',
+      data,
+    };
   }
 }

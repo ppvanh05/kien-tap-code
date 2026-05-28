@@ -1,10 +1,12 @@
-﻿import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
 import { PrintService } from '../../../core/services/print.service';
+import { TraCuuVeApiService } from '../../../core/services/tra-cuu-ve-api.service';
+import { TimKiemApiService } from '../../../core/services/tim-kiem-api.service';
 
 interface Ticket {
   maVe: string;
@@ -21,6 +23,7 @@ interface Ticket {
 
 interface Order {
   maDonHang: string;
+  maKhachHang: string;
   hoTenNguoiDi: string;
   soDienThoai: string;
   email: string;
@@ -42,6 +45,8 @@ interface Order {
   maDiemTra: string;
   soLanDaSua: number;
   gioiHanChinhSua: number;
+  maLichTrinh?: string;
+  gioGoiYCoMat?: string;
   tickets: Ticket[];
 }
 
@@ -56,97 +61,6 @@ interface RatingCriteriaItem {
   label: string;
   score: number;
 }
-
-const MOCK_ORDERS: Order[] = [
-  {
-    maDonHang: 'P5CDWE67',
-    hoTenNguoiDi: 'Đỗ Thị Phương',
-    soDienThoai: '0908123456',
-    email: 'phuong@example.com',
-    thoiGianDat: '2026-05-15 09:30',
-    soLuongVeDaDat: 1,
-    tenTuyen: 'TP.HCM - Quy Nhơn',
-    gioKhoiHanh: '18:00',
-    gioTra: '05:00',
-    departureDate: '2026-05-25',
-    diemDon: 'Bến xe Miền Tây',
-    diemTra: 'Bến xe Quy Nhơn',
-    thoiGianCoMatTruoc: '17:30',
-    gioCanCoMat: '17:30',
-    tongGiaVe: 400000,
-    phuongThucThanhToan: 'Momo',
-    trangThaiDonHang: 'Đã hoàn thành',
-    bienSoXe: '51B-299.64',
-    maDiemDon: 'MD04',
-    maDiemTra: 'MT03',
-    soLanDaSua: 1,
-    gioiHanChinhSua: 3,
-    tickets: [
-      {
-        maVe: 'VE-001',
-        soGhe: 'A01',
-        bienSoXe: '51B-299.64',
-        diemDon: 'Bến xe Miền Tây',
-        diemDonThoiGian: '17:30 ngày 25-05-2026',
-        diemTra: 'Bến xe Quy Nhơn',
-        diemTraThoiGian: '05:00 ngày 26-05-2026',
-        giaVe: 400000,
-        trangThaiVe: 'Đã hoàn thành',
-        maQRVe: 'QR-VE-001'
-      }
-    ]
-  },
-  {
-    maDonHang: 'P5CDWE88',
-    hoTenNguoiDi: 'Trần Ngọc Bảo Nghi',
-    soDienThoai: '0912345678',
-    email: 'bao.nghi@example.com',
-    thoiGianDat: '2026-05-16 10:15',
-    soLuongVeDaDat: 2,
-    tenTuyen: 'Hà Nội - Sài Gòn',
-    gioKhoiHanh: '08:00',
-    gioTra: '18:30',
-    departureDate: '2026-06-02',
-    diemDon: 'Bến xe Giáp Bát',
-    diemTra: 'Bến xe Sài Gòn',
-    thoiGianCoMatTruoc: '07:30',
-    gioCanCoMat: '07:30',
-    tongGiaVe: 980000,
-    phuongThucThanhToan: 'Thẻ ngân hàng',
-    trangThaiDonHang: 'Chờ khởi hành',
-    bienSoXe: '29B-67890',
-    maDiemDon: 'MD02',
-    maDiemTra: 'MT02',
-    soLanDaSua: 0,
-    gioiHanChinhSua: 2,
-    tickets: [
-      {
-        maVe: 'VE-002',
-        soGhe: 'B01',
-        bienSoXe: '29B-67890',
-        diemDon: 'Bến xe Giáp Bát',
-        diemDonThoiGian: '07:30 ngày 02-06-2026',
-        diemTra: 'Bến xe Sài Gòn',
-        diemTraThoiGian: '18:30 ngày 02-06-2026',
-        giaVe: 490000,
-        trangThaiVe: 'Chờ khởi hành',
-        maQRVe: 'QR-VE-002'
-      },
-      {
-        maVe: 'VE-003',
-        soGhe: 'B02',
-        bienSoXe: '29B-67890',
-        diemDon: 'Bến xe Giáp Bát',
-        diemDonThoiGian: '07:30 ngày 02-06-2026',
-        diemTra: 'Bến xe Sài Gòn',
-        diemTraThoiGian: '18:30 ngày 02-06-2026',
-        giaVe: 490000,
-        trangThaiVe: 'Chờ khởi hành',
-        maQRVe: 'QR-VE-003'
-      }
-    ]
-  }
-];
 
 const LOCATION_OPTIONS: LocationOption[] = [
   { maDiem: 'MD01', tenDiem: 'Bến xe Miền Đông Cũ', thoiGian: '18:15', diaChi: '292 Đinh Bộ Lĩnh, P.26, Q.Bình Thạnh, TP HCM' },
@@ -166,7 +80,7 @@ const LOCATION_OPTIONS: LocationOption[] = [
   templateUrl: './tra-cuu-ve.html',
   styleUrl: './tra-cuu-ve.css'
 })
-export class TraCuuVeComponent {
+export class TraCuuVeComponent implements OnInit {
     // Đóng dropdown khi click ra ngoài
     onEditDiemDonBlur(event: FocusEvent) {
       setTimeout(() => { this.showDiemDonDropdown = false; }, 120);
@@ -237,9 +151,50 @@ export class TraCuuVeComponent {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private printService: PrintService
+    private printService: PrintService,
+    private traCuuVeApiService: TraCuuVeApiService,
+    private timKiemApiService: TimKiemApiService
   ) {}
+
+  restoreVietnameseAccents(str: string): string {
+    if (!str) return '';
+    const map: Record<string, string> = {
+      'Ben xe Mien Tay': 'Bến xe Miền Tây',
+      'Ben xe Mien Dong Cu': 'Bến xe Miền Đông Cũ',
+      'Ben xe Giap Bat': 'Bến xe Giáp Bát',
+      'Ben xe Gia Lam': 'Bến xe Gia Lâm',
+      'Ben xe Hai Phong': 'Bến xe Hải Phòng',
+      'Ben xe Sai Gon': 'Bến xe Sài Gòn',
+      'Ben xe Quy Nhon': 'Bến xe Quy Nhơn',
+      'Ben xe Vung Tau': 'Bến xe Vũng Tàu',
+      'Ho Chi Minh - Ha Noi': 'Hồ Chí Minh - Hà Nội',
+      'Ho Chi Minh - Hai Phong': 'Hồ Chí Minh - Hải Phòng',
+      'Ho Chi Minh - Binh Dinh': 'Hồ Chí Minh - Bình Định',
+      'Ho Chi Minh - Vung Tau': 'Hồ Chí Minh - Vũng Tàu'
+    };
+    return map[str] || str;
+  }
+
+  formatTimeStr(timeStr: string): string {
+    if (!timeStr) return '';
+    const parts = timeStr.split(':');
+    if (parts.length >= 2) return `${parts[0]}:${parts[1]}`;
+    return timeStr;
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const maDonHang = params['maDonHang'];
+      const soDienThoai = params['soDienThoai'];
+      if (maDonHang && soDienThoai) {
+        this.bookingCode = maDonHang;
+        this.phoneNumber = soDienThoai;
+        this.searchTickets();
+      }
+    });
+  }
 
   get canReview(): boolean {
     if (!this.currentOrder) return false;
@@ -259,39 +214,88 @@ export class TraCuuVeComponent {
     this.currentOrder = null;
     this.searchError = '';
 
-    setTimeout(() => {
-      const found = MOCK_ORDERS.find(
-        (order) =>
-          order.maDonHang.toLowerCase() === this.bookingCode.trim().toLowerCase() &&
-          order.soDienThoai.includes(this.phoneNumber.trim())
-      );
+    this.traCuuVeApiService.lookup(this.bookingCode, this.phoneNumber).subscribe({
+      next: (response: any) => {
+        const order = this.mapLookupResponse(response);
+        if (order) {
+          this.currentOrder = order;
+          this.syncTicketFieldsFromOrder();
+          this.currentStep = 'results';
+        } else {
+          this.searchError = 'Không tìm thấy đơn hàng nào với thông tin đã cung cấp.';
+          this.currentStep = 'search';
+        }
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Lookup error:', err);
+        let errorMessage = 'Không tìm thấy đơn đặt vé nào khớp với thông tin cung cấp!';
 
-      if (!found) {
-        this.searchError = 'Không tìm thấy đơn hàng nào với thông tin đã cung cấp.';
+        if (err.status === 0) {
+          errorMessage = 'Không thể kết nối tới máy chủ tra cứu vé. Vui lòng kiểm tra backend hoặc kết nối mạng.';
+        } else if (err.error?.message) {
+          errorMessage = err.error.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+
+        this.searchError = errorMessage;
         this.currentStep = 'search';
         this.isLoading = false;
         this.cdr.detectChanges();
-        return;
       }
-
-      this.currentOrder = { ...found, tickets: found.tickets.map((ticket) => ({ ...ticket })) };
-      this.syncTicketFieldsFromOrder();
-      this.currentStep = 'results';
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    }, 800);
+    });
   }
 
-  fillMockData(id: number): void {
-    if (id === 1) {
-      this.phoneNumber = '0908123456';
-      this.bookingCode = 'P5CDWE67';
-    } else {
-      this.phoneNumber = '0912345678';
-      this.bookingCode = 'P5CDWE88';
+  private mapLookupResponse(response: any): Order | null {
+    const data = response?.data || response;
+    if (!data) {
+      return null;
     }
 
-    this.searchTickets();
+    const orderSource = data.order || data;
+    const tickets = orderSource.tickets || orderSource.ticketList || orderSource.danhSachVe || [];
+
+    return {
+      maDonHang: orderSource.MaDonHang || orderSource.maDonHang || orderSource.maDonHangHienThi || this.bookingCode,
+      maKhachHang: orderSource.MaKhachHang || orderSource.maKhachHang || '',
+      hoTenNguoiDi: orderSource.HoTenNguoiDi || orderSource.hoTenNguoiDi || orderSource.hoTen || '',
+      soDienThoai: orderSource.SdtNguoiDi || orderSource.soDienThoai || orderSource.phone || this.phoneNumber,
+      email: orderSource.EmailNguoiDi || orderSource.email || orderSource.Email || '',
+      thoiGianDat: orderSource.ThoiGianDat || orderSource.thoiGianDat || orderSource.createdAt || '',
+      soLuongVeDaDat: orderSource.SoLuongVeDaDat || orderSource.soLuongVeDaDat || tickets.length || 0,
+      tenTuyen: orderSource.TenTuyen || orderSource.tenTuyen || orderSource.tuyenXe || '',
+      gioKhoiHanh: orderSource.GioKhoiHanh || orderSource.gioKhoiHanh || orderSource.thoiGianKhoiHanh || '',
+      gioTra: orderSource.GioTra || orderSource.gioTra || orderSource.thoiGianDen || '',
+      departureDate: orderSource.NgayDi || orderSource.departureDate || orderSource.NgayXuatBen || '',
+      diemDon: orderSource.DiemDon || orderSource.diemDon || orderSource.diemDonKhach || '',
+      diemTra: orderSource.DiemTra || orderSource.diemTra || orderSource.diemTraKhach || '',
+      thoiGianCoMatTruoc: orderSource.ThoiGianCoMatTruoc || orderSource.thoiGianCoMatTruoc || '',
+      gioCanCoMat: orderSource.GioCanCoMat || orderSource.gioCanCoMat || '',
+      tongGiaVe: orderSource.TongGiaVe || orderSource.tongGiaVe || orderSource.TongTien || 0,
+      phuongThucThanhToan: orderSource.PhuongThucThanhToan || orderSource.phuongThucThanhToan || orderSource.paymentMethod || '',
+      trangThaiDonHang: orderSource.TrangThaiDonHang || orderSource.trangThaiDonHang || orderSource.status || 'Chờ thanh toán',
+      bienSoXe: orderSource.BienSoXe || orderSource.bienSoXe || orderSource.bienSo || '',
+      maDiemDon: orderSource.MaDiemDon || orderSource.maDiemDon || '',
+      maDiemTra: orderSource.MaDiemTra || orderSource.maDiemTra || '',
+      soLanDaSua: orderSource.SoLanDaSua || orderSource.soLanDaSua || 0,
+      gioiHanChinhSua: orderSource.GioiHanChinhSua || orderSource.gioiHanChinhSua || 2,
+      maLichTrinh: orderSource.MaLichTrinh || orderSource.maLichTrinh || '',
+      gioGoiYCoMat: orderSource.GioGoiYCoMat || orderSource.gioGoiYCoMat || '',
+      tickets: Array.isArray(tickets) ? tickets.map((ticket: any) => ({
+        maVe: ticket.MaVe || ticket.maVe || ticket.MaPhieu || '',
+        soGhe: ticket.SoGhe || ticket.soGhe || ticket.SoGheXe || '',
+        bienSoXe: ticket.BienSoXe || ticket.bienSoXe || orderSource.BienSoXe || '',
+        diemDon: this.restoreVietnameseAccents(ticket.DiemDon || ticket.diemDon || ticket.diemDonKhach || orderSource.DiemDon || ''),
+        diemDonThoiGian: ticket.DiemDonThoiGian || ticket.diemDonThoiGian || ticket.ThoiGianDon || orderSource.GioCanCoMat || '',
+        diemTra: this.restoreVietnameseAccents(ticket.DiemTra || ticket.diemTra || ticket.diemTraKhach || orderSource.DiemTra || ''),
+        diemTraThoiGian: ticket.DiemTraThoiGian || ticket.diemTraThoiGian || ticket.ThoiGianTra || orderSource.GioTra || '',
+        giaVe: Number(ticket.GiaVe || ticket.giaVe || ticket.GiaTien || orderSource.TongGiaVe || 0),
+        trangThaiVe: ticket.TrangThaiVe || ticket.trangThaiVe || ticket.status || 'Chờ thanh toán',
+        maQRVe: ticket.MaQRVe || ticket.maQRVe || ticket.qrCode || ''
+      })) : []
+    };
   }
 
   backToSearch(): void {
@@ -304,11 +308,7 @@ export class TraCuuVeComponent {
   }
 
   maskPhone(phone: string): string {
-    if (!phone || phone.length < 8) {
-      return phone;
-    }
-
-    return `${phone.slice(0, 3)}****${phone.slice(-2)}`;
+    return phone;
   }
 
   maskEmail(email: string): string {
@@ -351,8 +351,8 @@ export class TraCuuVeComponent {
     if (!this.currentOrder) {
       return '';
     }
-
-    return `${this.currentOrder.gioCanCoMat} ngày ${this.formatDisplayDate(this.currentOrder.departureDate)}`;
+    const gio = this.formatTimeStr(this.currentOrder.gioGoiYCoMat || this.currentOrder.gioCanCoMat);
+    return `${gio} ${this.formatDisplayDate(this.currentOrder.departureDate)}`;
   }
 
   getPickupTimeLabel(): string {
@@ -385,6 +385,15 @@ export class TraCuuVeComponent {
 
   canEditOrder(): boolean {
     return this.getEditRemaining() > 0;
+  }
+  
+  canShowEditButton(): boolean {
+    if (!this.currentOrder) return false;
+    const isOrderChoKhoiHanh = this.currentOrder.trangThaiDonHang === 'Chờ khởi hành';
+    const areAllTicketsChoKhoiHanh = this.currentOrder.tickets.every(
+      ticket => ticket.trangThaiVe === 'Chờ khởi hành'
+    );
+    return isOrderChoKhoiHanh && areAllTicketsChoKhoiHanh && this.canEditOrder();
   }
 
   formatPrice(price: number): string {
@@ -467,11 +476,57 @@ export class TraCuuVeComponent {
     this.editDiemTraSearchText = this.currentOrder.diemTra;
     this.editMaDiemDon = this.currentOrder.maDiemDon;
     this.editMaDiemTra = this.currentOrder.maDiemTra;
-    this.filterDiemDonOptions = [...LOCATION_OPTIONS];
-    this.filterDiemTraOptions = [...LOCATION_OPTIONS];
-    this.showDiemDonDropdown = false;
-    this.showDiemTraDropdown = false;
-    this.showEditModal = true;
+
+    const maLichTrinh = this.currentOrder.maLichTrinh || '';
+    if (maLichTrinh) {
+      this.isLoading = true;
+      this.timKiemApiService.getTripDetail(maLichTrinh).subscribe({
+        next: (res: any) => {
+          if (res?.data) {
+            const trip = res.data;
+            // Use dynamically fetched options from getTripDetail response (diemDungLichTrinh)
+            const pickupPoints = trip.diemDungLichTrinh || trip.pickupPoints || trip.diemDon || [];
+            const dropoffPoints = trip.diemDungLichTrinh || trip.dropoffPoints || trip.diemTra || [];
+            
+            this.filterDiemDonOptions = (Array.isArray(pickupPoints) ? pickupPoints : []).map((p: any) => ({
+              maDiem: p.maDiem || p.MaDiem || p.id,
+              tenDiem: p.tenDiem || p.TenDiem || p.name,
+              thoiGian: p.thoiGian || p.ThoiGian || p.time || '',
+              diaChi: p.diaChi || p.DiaChi || p.address || ''
+            }));
+            this.filterDiemTraOptions = (Array.isArray(dropoffPoints) ? dropoffPoints : []).map((p: any) => ({
+              maDiem: p.maDiem || p.MaDiem || p.id,
+              tenDiem: p.tenDiem || p.TenDiem || p.name,
+              thoiGian: p.thoiGian || p.ThoiGian || p.time || '',
+              diaChi: p.diaChi || p.DiaChi || p.address || ''
+            }));
+          } else {
+            this.filterDiemDonOptions = [...LOCATION_OPTIONS];
+            this.filterDiemTraOptions = [...LOCATION_OPTIONS];
+          }
+          this.showDiemDonDropdown = false;
+          this.showDiemTraDropdown = false;
+          this.showEditModal = true;
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          this.filterDiemDonOptions = [...LOCATION_OPTIONS];
+          this.filterDiemTraOptions = [...LOCATION_OPTIONS];
+          this.showDiemDonDropdown = false;
+          this.showDiemTraDropdown = false;
+          this.showEditModal = true;
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      this.filterDiemDonOptions = [...LOCATION_OPTIONS];
+      this.filterDiemTraOptions = [...LOCATION_OPTIONS];
+      this.showDiemDonDropdown = false;
+      this.showDiemTraDropdown = false;
+      this.showEditModal = true;
+    }
   }
 
   closeEditOrderModal(): void {
@@ -480,23 +535,27 @@ export class TraCuuVeComponent {
 
   onEditDiemDonInput(): void {
     const search = this.editDiemDonSearchText.toLowerCase().trim();
+    // Filter using dynamically fetched options if available, otherwise fallback to LOCATION_OPTIONS
+    const optionsToFilter = this.filterDiemDonOptions.length > 0 ? this.filterDiemDonOptions : LOCATION_OPTIONS;
     this.filterDiemDonOptions = search
-      ? LOCATION_OPTIONS.filter((item) =>
+      ? optionsToFilter.filter((item) =>
           item.tenDiem.toLowerCase().includes(search) ||
           (item.diaChi || '').toLowerCase().includes(search)
         )
-      : [...LOCATION_OPTIONS];
+      : [...optionsToFilter];
     this.showDiemDonDropdown = true;
   }
 
   onEditDiemTraInput(): void {
     const search = this.editDiemTraSearchText.toLowerCase().trim();
+    // Filter using dynamically fetched options if available, otherwise fallback to LOCATION_OPTIONS
+    const optionsToFilter = this.filterDiemTraOptions.length > 0 ? this.filterDiemTraOptions : LOCATION_OPTIONS;
     this.filterDiemTraOptions = search
-      ? LOCATION_OPTIONS.filter((item) =>
+      ? optionsToFilter.filter((item) =>
           item.tenDiem.toLowerCase().includes(search) ||
           (item.diaChi || '').toLowerCase().includes(search)
         )
-      : [...LOCATION_OPTIONS];
+      : [...optionsToFilter];
     this.showDiemTraDropdown = true;
   }
 
@@ -522,29 +581,36 @@ export class TraCuuVeComponent {
       return;
     }
 
-    this.currentOrder.hoTenNguoiDi = this.editFullName.trim() || this.currentOrder.hoTenNguoiDi;
-    this.currentOrder.soDienThoai = this.editPhone.trim() || this.currentOrder.soDienThoai;
-    this.currentOrder.email = this.editEmail.trim() || this.currentOrder.email;
+    const payload = {
+      HoTenNguoiDi: this.editFullName.trim(),
+      SdtNguoiDi: this.editPhone.trim(),
+      EmailNguoiDi: this.editEmail.trim() || undefined,
+      MaDiemDon: this.editMaDiemDon,
+      MaDiemTra: this.editMaDiemTra
+    };
 
-    const selectedDon = LOCATION_OPTIONS.find((item) => item.maDiem === this.editMaDiemDon);
-    const selectedTra = LOCATION_OPTIONS.find((item) => item.maDiem === this.editMaDiemTra);
-
-    if (selectedDon) {
-      this.currentOrder.diemDon = selectedDon.tenDiem;
-      this.currentOrder.maDiemDon = selectedDon.maDiem;
-      this.currentOrder.gioCanCoMat = selectedDon.thoiGian || this.currentOrder.gioCanCoMat;
-    }
-
-    if (selectedTra) {
-      this.currentOrder.diemTra = selectedTra.tenDiem;
-      this.currentOrder.maDiemTra = selectedTra.maDiem;
-      this.currentOrder.gioTra = selectedTra.thoiGian || this.currentOrder.gioTra;
-    }
-
-    this.currentOrder.soLanDaSua = (this.currentOrder.soLanDaSua || 0) + 1;
-    this.syncTicketFieldsFromOrder();
-    this.showEditModal = false;
-    this.showToast('Cập nhật thông tin vé thành công.', 'success');
+    this.isLoading = true;
+    this.traCuuVeApiService.updateInfo(this.currentOrder.maDonHang, payload).subscribe({
+      next: (response: any) => {
+        const data = response?.data || response;
+        if (data) {
+          this.currentOrder = data;
+          this.syncTicketFieldsFromOrder();
+          this.showToast('Cập nhật thông tin vé thành công.', 'success');
+        } else {
+          this.showToast('Không thể cập nhật thông tin vé.', 'error');
+        }
+        this.showEditModal = false;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Update info error:', err);
+        this.showToast(err.error?.message || 'Cập nhật thông tin thất bại.', 'error');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   openCancelModal(): void {
@@ -565,21 +631,49 @@ export class TraCuuVeComponent {
       return;
     }
 
-    if (this.getRefundPercentage() === 0) {
-      this.showToast('Hủy vé không được hỗ trợ trong khoảng thời gian dưới 12 giờ so với giờ khởi hành.', 'error');
+    const activeTickets = this.currentOrder.tickets.filter(t => t.trangThaiVe !== 'Đã hủy');
+    if (activeTickets.length === 0) {
+      this.showToast('Không có vé nào khả dụng để hủy.', 'error');
       return;
     }
 
-    this.currentOrder.trangThaiDonHang = 'Đã hủy';
-    this.currentOrder.tickets = this.currentOrder.tickets.map((ticket) => ({
-      ...ticket,
-      trangThaiVe: 'Đã hủy'
-    }));
-    this.showCancelModal = false;
-    this.showToast(
-      `Hủy vé thành công, tiền sẽ được hoàn trong 48h. Số tiền thực nhận: ${this.formatPrice(this.getRefundAmount())}.`,
-      'success'
+    this.isLoading = true;
+
+    const cancelRequests = activeTickets.map(ticket => 
+      this.traCuuVeApiService.cancelTicket(ticket.maVe, this.selectedCancelReason)
     );
+
+    import('rxjs').then(({ forkJoin }) => {
+      forkJoin(cancelRequests).subscribe({
+        next: (results: any[]) => {
+          this.traCuuVeApiService.lookup(this.currentOrder!.maDonHang, this.phoneNumber).subscribe({
+            next: (response: any) => {
+              const data = response?.data || response;
+              if (data) {
+                this.currentOrder = data;
+                this.syncTicketFieldsFromOrder();
+              }
+              this.showCancelModal = false;
+              this.isLoading = false;
+              this.showToast('Yêu cầu hủy vé thành công.', 'success');
+              this.cdr.detectChanges();
+            },
+            error: (err: any) => {
+              this.showCancelModal = false;
+              this.isLoading = false;
+              this.showToast('Hủy vé thành công nhưng không thể tải lại thông tin.', 'success');
+              this.cdr.detectChanges();
+            }
+          });
+        },
+        error: (err: any) => {
+          console.error('Cancel ticket error:', err);
+          this.showToast(err.error?.message || 'Hủy vé thất bại.', 'error');
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    });
   }
 
   openReviewModal(): void {
@@ -622,15 +716,59 @@ export class TraCuuVeComponent {
       return;
     }
 
-    this.currentOrder.trangThaiDonHang = 'Đã đánh giá';
-    this.currentOrder.tickets = this.currentOrder.tickets.map((ticket) => ({
-      ...ticket,
-      trangThaiVe: 'Đã đánh giá'
-    }));
-    this.showReviewModal = false;
-    this.reviewComment = '';
-    this.reviewFiles = [];
-    this.showToast('Đánh giá đã được gửi thành công.', 'success');
+    const avgScore = Math.round(this.ratingCriteria.reduce((sum, c) => sum + c.score, 0) / this.ratingCriteria.length) || 5;
+    
+    // Convert files to Base64 and prepare mediaUrls
+    const fileConversionPromises = this.reviewFiles.map(file => this.fileToBase64(file));
+    
+    Promise.all(fileConversionPromises).then((mediaUrls) => {
+      const reviewRequests = this.currentOrder!.tickets.map(ticket => 
+        this.traCuuVeApiService.submitReview({
+          MaVe: ticket.maVe,
+          MaKhachHang: this.currentOrder!.maKhachHang,
+          SoSao: avgScore,
+          NoiDungDanhGia: this.reviewComment || 'Dịch vụ tốt',
+          mediaUrls: mediaUrls // Pass Base64 file data
+        })
+      );
+
+      this.isLoading = true;
+      import('rxjs').then(({ forkJoin }) => {
+        forkJoin(reviewRequests).subscribe({
+          next: (results: any[]) => {
+            this.showReviewModal = false;
+            this.reviewComment = '';
+            this.reviewFiles = [];
+            this.showToast('Đánh giá đã được gửi thành công.', 'success');
+
+            this.traCuuVeApiService.lookup(this.currentOrder!.maDonHang, this.phoneNumber).subscribe({
+              next: (response: any) => {
+                const data = response?.data || response;
+                if (data) {
+                  this.currentOrder = data;
+                  this.syncTicketFieldsFromOrder();
+                }
+                this.isLoading = false;
+                this.cdr.detectChanges();
+              },
+              error: () => {
+                this.isLoading = false;
+                this.cdr.detectChanges();
+              }
+            });
+          },
+          error: (err: any) => {
+            console.error('Submit review error:', err);
+            this.showToast(err.error?.message || 'Gửi đánh giá thất bại.', 'error');
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          }
+        });
+      });
+    }).catch((err) => {
+      console.error('Error converting files to Base64:', err);
+      this.showToast('Lỗi xử lý file. Vui lòng thử lại.', 'error');
+    });
   }
 
   printTicket(ticket: Ticket): void {
@@ -640,7 +778,7 @@ export class TraCuuVeComponent {
 
     const departureDateLabel = this.formatDisplayDate(this.currentOrder.departureDate);
     const departureTimeLabel = `${this.currentOrder.gioKhoiHanh} ${departureDateLabel}`;
-    const pickupTimeLabel = this.getPickupTimeLabel();
+    const pickupTimeLabel = this.getPresenceTimeLabel();
 
     const printData = {
       maDonHang: this.currentOrder.maDonHang,
@@ -686,10 +824,12 @@ export class TraCuuVeComponent {
     this.currentOrder.tickets = this.currentOrder.tickets.map((ticket) => ({
       ...ticket,
       bienSoXe: this.currentOrder!.bienSoXe,
-      diemDon: this.currentOrder!.diemDon,
-      diemDonThoiGian: `${this.currentOrder!.gioCanCoMat} ngày ${this.formatDisplayDate(this.currentOrder!.departureDate)}`,
-      diemTra: this.currentOrder!.diemTra,
-      diemTraThoiGian: `${this.currentOrder!.gioTra || this.currentOrder!.gioKhoiHanh} ngày ${this.formatDisplayDate(this.currentOrder!.departureDate)}`,
+      diemDon: this.restoreVietnameseAccents(this.currentOrder!.diemDon),
+      // Preserve ticket's own pickup time if it exists, otherwise use order's departure info
+      diemDonThoiGian: ticket.diemDonThoiGian || `${this.formatTimeStr(this.currentOrder!.gioKhoiHanh)} ngày ${this.formatDisplayDate(this.currentOrder!.departureDate)}`,
+      diemTra: this.restoreVietnameseAccents(this.currentOrder!.diemTra),
+      // Preserve ticket's own dropoff time if it exists, otherwise use order's arrival info
+      diemTraThoiGian: ticket.diemTraThoiGian || `${this.formatTimeStr(this.currentOrder!.gioTra || this.currentOrder!.gioKhoiHanh)} ngày ${this.formatDisplayDate(this.currentOrder!.departureDate)}`,
       giaVe: ticket.giaVe || ticketPrice,
       maQRVe: ticket.maQRVe || `QR-${ticket.maVe}`
     }));
@@ -708,6 +848,16 @@ export class TraCuuVeComponent {
     }
 
     return new Date(year, month - 1, day, hour, minute, 0, 0);
+  }
+
+  // Helper to convert file to Base64 string
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
   }
 
   private showToast(message: string, type: 'success' | 'error'): void {

@@ -179,6 +179,7 @@ model LICH_SU_HUY_VE {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model LICH_SU_VE {
+<<<<<<< HEAD
   MaLichSu         String            @id @db.VarChar
   HanhDong         String            @db.VarChar
   TrangThaiCu      String            @db.VarChar
@@ -191,6 +192,20 @@ model LICH_SU_VE {
   KHACH_HANG       KHACH_HANG?       @relation(fields: [MaKhachHang], references: [MaKhachHang], onDelete: NoAction, onUpdate: NoAction)
   NHAN_VIEN_BAN_VE NHAN_VIEN_BAN_VE? @relation(fields: [MaNVBanVe], references: [MaNVBanVe], onDelete: NoAction, onUpdate: NoAction)
   VE_DIEN_TU       VE_DIEN_TU        @relation(fields: [MaVe], references: [MaVe], onDelete: NoAction, onUpdate: NoAction)
+=======
+  MaLichSu         String           @id @db.VarChar
+  HanhDong         String           @db.VarChar
+  TrangThaiCu      String           @db.VarChar
+  TrangThaiMoi     String           @db.VarChar
+  ThoiGianThayDoi  DateTime         @db.Timestamp(6)
+  GhiChu           String           @db.VarChar
+  MaVe             String           @db.VarChar
+  MaKhachHang      String           @db.VarChar
+  MaNVBanVe        String?          @db.VarChar
+  KHACH_HANG       KHACH_HANG       @relation(fields: [MaKhachHang], references: [MaKhachHang], onDelete: NoAction, onUpdate: NoAction)
+  NHAN_VIEN_BAN_VE NHAN_VIEN_BAN_VE? @relation(fields: [MaNVBanVe], references: [MaNVBanVe], onDelete: NoAction, onUpdate: NoAction)
+  VE_DIEN_TU       VE_DIEN_TU       @relation(fields: [MaVe], references: [MaVe], onDelete: NoAction, onUpdate: NoAction)
+>>>>>>> origin/nghi
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -229,8 +244,13 @@ model LICH_TRINH_DIEM_DUNG {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model MEDIA_DANH_GIA {
+<<<<<<< HEAD
   MaMedia         String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar(10)
   DuongDanFile    String?
+=======
+  MaMedia         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  DuongDanFile    String?   @db.Text
+>>>>>>> origin/nghi
   LoaiMedia       String?   @db.VarChar
   DinhDang        String?   @db.VarChar
   DungLuong_bytes BigInt?
@@ -542,8 +562,13 @@ enum PhuongThucThanhToan {
   MoMo
   VNPay
   ZaloPay
+<<<<<<< HEAD
   ATM        @map("ATM nội địa")
   VisaMaster @map("Visa/Master/JCB")
+=======
+  ATM_noi_dia     @map("ATM nội địa")
+  Visa_Master_JCB @map("Visa/Master/JCB")
+>>>>>>> origin/nghi
   TienMat
 }
 
@@ -593,6 +618,7 @@ enum TrangThaiVe {
   ChoKhoiHanh
   DaHoanThanh
   DaHuy
+<<<<<<< HEAD
 }
 
 enum LoaiXe {
@@ -606,6 +632,9 @@ enum TienIch {
   GPS
   Wifi
   DieuHoa     @map("Điều hòa")
+=======
+  DaDanhGia
+>>>>>>> origin/nghi
 }
 
 enum TrangThaiDanhGia {

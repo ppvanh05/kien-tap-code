@@ -1,4 +1,4 @@
-﻿<div class="bg-background font-body text-on-surface min-h-screen flex flex-col">
+<div class="bg-background font-body text-on-surface min-h-screen flex flex-col">
   <app-header></app-header>
 
   <main class="pt-24 flex-grow pb-16">
@@ -55,35 +55,6 @@
             </button>
           </form>
 
-          <div class="mt-8 pt-6 border-t border-outline-variant/20">
-            <p class="text-label-md font-bold text-navy mb-3 text-center uppercase tracking-wider">
-              Chọn dữ liệu mẫu để xem giao diện:
-            </p>
-            <div class="grid grid-cols-1 gap-2.5">
-              <button
-                type="button"
-                (click)="fillMockData(1)"
-                class="w-full flex items-center justify-between px-4 py-3 bg-primary-light hover:bg-primary/10 border border-primary/20 rounded-xl text-left text-body-sm font-bold text-primary transition-all">
-                <span class="flex items-center gap-2">
-                  <span class="material-symbols-outlined">person</span>
-                  Đơn 1 vé (Đỗ Thị Phương)
-                </span>
-                <span class="text-label-sm opacity-80">P5CDWE67</span>
-              </button>
-
-              <button
-                type="button"
-                (click)="fillMockData(2)"
-                class="w-full flex items-center justify-between px-4 py-3 bg-secondary-light hover:bg-secondary/15 border border-secondary/20 rounded-xl text-left text-body-sm font-bold text-secondary transition-all">
-                <span class="flex items-center gap-2">
-                  <span class="material-symbols-outlined">group</span>
-                  Đơn nhiều vé (Trần Ngọc Bảo Nghi)
-                </span>
-                <span class="text-label-sm opacity-80">P5CDWE88</span>
-              </button>
-            </div>
-          </div>
-
           <div *ngIf="searchError" class="mt-6 flex items-start gap-3 bg-danger-light border border-danger/20 p-4 rounded-xl">
             <span class="material-symbols-outlined text-danger">warning</span>
             <p class="text-danger-text text-body-sm font-semibold leading-relaxed">{{ searchError }}</p>
@@ -107,10 +78,9 @@
 
             <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <button
-                *ngIf="currentOrder.trangThaiDonHang !== 'Đã hủy'"
-                [disabled]="!canEditOrder()"
+                *ngIf="canShowEditButton()"
                 (click)="openEditOrderModal()"
-                class="flex items-center gap-1.5 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-2.5 rounded-full text-body-sm transition-all active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                class="flex items-center gap-1.5 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-2.5 rounded-full text-body-sm transition-all active:scale-[0.98] shadow-sm">
                 <span class="material-symbols-outlined text-lg">edit</span>
                 Sửa thông tin
               </button>
@@ -131,7 +101,7 @@
 
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Số điện thoại</span>
-                <span class="font-bold text-navy text-body-md">{{ maskPhone(currentOrder.soDienThoai) }}</span>
+                <span class="font-bold text-navy text-body-md">{{ currentOrder.soDienThoai }}</span>
               </div>
 
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
@@ -187,7 +157,7 @@
                 <div class="text-body-sm font-bold text-navy">
                   Vé {{ idx + 1 }} / {{ currentOrder.tickets.length }}
                 </div>
-                <div class="bg-outline-variant/30 text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-bold">
+                <div class="px-3 py-1 rounded-full text-label-sm font-bold" [ngClass]="getTicketStatusClasses(ticket.trangThaiVe)">
                   {{ ticket.trangThaiVe }}
                 </div>
               </div>
@@ -226,7 +196,7 @@
                   <div class="flex items-center gap-2.5 bg-secondary-light/40 border border-secondary/15 p-4 rounded-xl text-secondary">
                     <span class="material-symbols-outlined text-[22px]">schedule</span>
                     <span class="text-body-sm font-semibold leading-relaxed">
-                      Có mặt tại điểm đón <span class="font-bold text-secondary">trước 30 phút</span> để chuẩn bị làm thủ tục lên xe.
+                      Có mặt tại điểm đón <span class="font-bold text-secondary">trước 15 phút</span> để chuẩn bị làm thủ tục lên xe.
                       <span class="font-bold text-secondary">Giờ cần có mặt: </span>
                       <span class="font-bold text-secondary">{{ getPresenceTimeLabel() }}</span>.
                     </span>
@@ -246,15 +216,18 @@
                       <span class="font-bold text-navy text-body-md">{{ ticket.bienSoXe }}</span>
                     </div>
                     <div class="flex flex-col gap-1 border-l border-outline-variant/20">
-                      <span class="text-label-sm text-outline uppercase tracking-wider">Trạng thái</span>
+                      <span class="text-label-sm text-outline uppercase tracking-wider">Trạng thái vé</span>
                       <span class="font-bold text-body-md" [ngClass]="getTicketStatusClasses(ticket.trangThaiVe)">{{ ticket.trangThaiVe }}</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="w-full lg:w-[260px] flex-shrink-0 flex flex-col items-center justify-center border-t-2 lg:border-t-0 lg:border-l-2 border-dashed border-outline-variant/30 pt-6 lg:pt-0 lg:pl-8">
+                 <div class="w-full lg:w-[260px] flex-shrink-0 flex flex-col items-center justify-center border-t-2 lg:border-t-0 lg:border-l-2 border-dashed border-outline-variant/30 pt-6 lg:pt-0 lg:pl-8">
                   <div class="flex flex-col items-center justify-center w-full gap-3">
-                    <img [src]="getQrCodeUrl(ticket)" alt="QR Code" class="w-[140px] h-[140px] rounded-xl border border-outline-variant/20 bg-white object-contain p-2 mb-2" />
+                    <!-- QR Code Display Above Print Button -->
+                    <div class="mb-4 flex flex-col items-center">
+                      <img [src]="getQrCodeUrl(ticket)" alt="Mã QR Vé" class="w-40 h-40 object-contain border-2 border-primary/20 p-2 rounded-xl bg-white shadow-md">
+                    </div>
                     <button
                       (click)="printTicket(ticket)"
                       class="mx-auto flex items-center justify-center gap-2 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-3 rounded-full text-body-md transition-all active:scale-[0.98] shadow-sm">

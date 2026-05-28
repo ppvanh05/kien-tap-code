@@ -4,10 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
+<<<<<<< HEAD
 import { AuthService, UserProfile } from '../../../core/services/auth.service'; // Import UserProfile
 import { CustomerHoSoService } from '../../../core/customer-ho-so.service';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+=======
+import { AuthService } from '../../../core/services/auth.service';
+import { ProfileApiService } from '../../../core/services/profile-api.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+>>>>>>> origin/nghi
 
 interface Order {
   maDonHang: string;
@@ -16,9 +23,13 @@ interface Order {
   ngayKhoiHanh: string;
   gioKhoiHanh: string;
   tongGiaVe: number;
-  phuongThucThanhToan: string;
-  trangThaiDonHang: 'Chờ thanh toán' | 'Chờ khởi hành' | 'Đã hoàn thành' | 'Đã hủy' | 'Chưa đánh giá' | 'Đã đánh giá';
+  phuongThucThanhToan?: string;
+  trangThaiDonHang: 'Chờ thanh toán' | 'Chờ khởi hành' | 'Đã xác nhận' | 'Đã hoàn thành' | 'Đã hủy' | 'Chưa đánh giá' | 'Đã đánh giá';
   soDienThoai: string;
+  departureDate?: string;
+  tenTuyen?: string;
+  maVe?: string;
+  formattedNgayDi?: string;
 }
 
 @Component({
@@ -34,35 +45,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   showOtpModal = false;
   showSuccessModal = false;
   isLogoutActive = false;
-  
-  // Password Visibility
+
   showCurrentPwd = false;
   showNewPwd = false;
   showConfirmPwd = false;
 
-  // Password fields
-  passwords = {
-    current: '',
-    new: '',
-    confirm: ''
-  };
+  passwords = { current: '', new: '', confirm: '' };
 
-  // OTP
   otpInputs = [
-    { value: '' },
-    { value: '' },
-    { value: '' },
-    { value: '' },
-    { value: '' },
-    { value: '' }
+    { value: '' }, { value: '' }, { value: '' },
+    { value: '' }, { value: '' }, { value: '' }
   ];
-  otpTimer = 90; // 01:30
+  otpTimer = 90;
   timerInterval: any;
 
-  // Success Redirect
   redirectTimer = 3;
   redirectInterval: any;
 
+<<<<<<< HEAD
   user: UserProfile = {
     MaKhachHang: '',
     HoTenKhachHang: 'Guest',
@@ -87,34 +87,91 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return !this.HoTenKhachHangError && !this.EmailError && !this.NgaySinhError && !this.AnhDaiDienError && 
            this.editUser.HoTenKhachHang.trim().length >= 2;
   }
+=======
+  user = {
+    fullName: '',
+    phone: '',
+    gender: '',
+    email: '',
+    dob: '',
+    address: '',
+    avatar: 'asset/images/customer/avatar_placeholder.png',
+  };
 
-  // Filters state variables
+  editUser = { ...this.user };
+  isProfileLoading = false;
+>>>>>>> origin/nghi
+
   filterMaDonHang = '';
   filterThoiGianDat = '';
   filterTenTuyenXe = '';
   filterTrangThai = '';
 
+<<<<<<< HEAD
   // Avatar upload
   selectedAvatarFile: File | null = null;
 
   // Mock booking history records
   historyOrders: Order[] = [];
   filteredHistoryOrders: Order[] = [];
+=======
+  historyOrders: Order[] = [];
+  filteredHistoryOrders: Order[] = [];
+  isHistoryLoading = false;
+
+  currentUserId = '';
+  totalItems = 0;
+  currentPage = 1;
+  pageSize = 10;
+  maVeSubject = new Subject<string>();
+  tuyenXeSubject = new Subject<string>();
+>>>>>>> origin/nghi
 
   constructor(
     private router: Router,
     private authService: AuthService,
+<<<<<<< HEAD
     private route: ActivatedRoute,
     private customerHoSoService: CustomerHoSoService
   ) {}
+=======
+    private profileApiService: ProfileApiService,
+    private route: ActivatedRoute
+  ) {
+    this.authService.userName$.subscribe((name: string) => this.user.fullName = name);
+  }
+>>>>>>> origin/nghi
 
   ngOnInit(): void {
+    this.loadProfile();
+
+    this.maVeSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.filterMaDonHang = value;
+      this.currentPage = 1;
+      this.loadHistoryFromApi();
+    });
+
+    this.tuyenXeSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.filterTenTuyenXe = value;
+      this.currentPage = 1;
+      this.loadHistoryFromApi();
+    });
+
     this.route.queryParamMap.subscribe(params => {
       const tab = params.get('tab');
       if (tab === 'history' || tab === 'password' || tab === 'profile') {
         this.activeTab = tab;
       } else {
         this.activeTab = 'profile';
+      }
+      if (this.activeTab === 'history') {
+        this.loadHistory();
       }
     });
 
@@ -157,59 +214,193 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.redirectInterval) clearInterval(this.redirectInterval);
   }
 
-  // Filter history logic
-  searchHistory(): void {
-    const code = this.filterMaDonHang.trim().toUpperCase();
-    const date = this.filterThoiGianDat; // Format YYYY-MM-DD
-    const route = this.filterTenTuyenXe.trim().toLowerCase();
-    const status = this.filterTrangThai;
+  loadProfile(): void {
+    this.isProfileLoading = true;
+    this.profileApiService.getProfile().subscribe({
+      next: (response: any) => {
+        const profile = response?.data || {};
+        this.currentUserId = profile.MaKhachHang || profile.maKhachHang || '';
+        this.user = {
+          fullName: profile.HoTenKhachHang || profile.hoTenKhachHang || '',
+          phone: profile.SoDienThoai || profile.soDienThoai || '',
+          gender: profile.GioiTinh || profile.gioiTinh || '',
+          email: profile.Email || profile.email || '',
+          dob: profile.NgaySinh ? new Date(profile.NgaySinh).toISOString().slice(0, 10) : '',
+          address: profile.DiaChi || profile.diaChi || '',
+          avatar: profile.AnhDaiDien || profile.anhDaiDien || 'asset/images/customer/avatar_placeholder.png',
+        };
+        this.editUser = { ...this.user };
+        this.authService.setUserName(this.user.fullName || 'Khách hàng');
+        this.isProfileLoading = false;
 
-    this.filteredHistoryOrders = this.historyOrders.filter(order => {
-      // 1. Check Code matching
-      if (code && !order.maDonHang.toUpperCase().includes(code)) return false;
-
-      // 2. Check Date matching (convert order date DD-MM-YYYY to YYYY-MM-DD)
-      if (date) {
-        const parts = order.ngayKhoiHanh.split('-');
-        if (parts.length === 3) {
-          const orderDateStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
-          if (orderDateStr !== date) return false;
+        if (this.activeTab === 'history') {
+          this.loadHistory();
         }
+      },
+      error: (err: any) => {
+        console.error('Load profile error:', err);
+        this.isProfileLoading = false;
       }
-
-      // 3. Check Route matching
-      if (route && !order.tenTuyenXe.toLowerCase().includes(route)) return false;
-
-      // 4. Check Status matching
-      if (status) {
-        if (status === 'Chờ thanh toán') {
-          if (order.trangThaiDonHang !== 'Chờ thanh toán') return false;
-        } else if (status === 'Chờ khởi hành') {
-          if (order.trangThaiDonHang !== 'Chờ khởi hành') return false;
-        } else if (status === 'Đã hoàn thành') {
-          if (order.trangThaiDonHang !== 'Đã hoàn thành') return false;
-        } else if (status === 'Đã hủy') {
-          if (order.trangThaiDonHang !== 'Đã hủy') return false;
-        } else if (status === 'Chưa đánh giá') {
-          if (order.trangThaiDonHang !== 'Chưa đánh giá') return false;
-        } else if (status === 'Đã đánh giá') {
-          if (order.trangThaiDonHang !== 'Đã đánh giá') return false;
-        }
-      }
-
-      return true;
     });
   }
+
+  loadHistory(): void {
+    this.currentPage = 1;
+    this.loadHistoryFromApi();
+  }
+
+  onMaVeChange(val: string): void { this.maVeSubject.next(val); }
+  onTuyenXeChange(val: string): void { this.tuyenXeSubject.next(val); }
+  onFilterChange(): void { this.currentPage = 1; this.loadHistoryFromApi(); }
+  searchHistory(): void { this.currentPage = 1; this.loadHistoryFromApi(); }
 
   resetHistoryFilter(): void {
     this.filterMaDonHang = '';
     this.filterThoiGianDat = '';
     this.filterTenTuyenXe = '';
     this.filterTrangThai = '';
-    this.searchHistory();
+    this.currentPage = 1;
+    this.loadHistoryFromApi();
   }
 
-  // Go to ticket detail
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadHistoryFromApi();
+    }
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.pageSize) || 1;
+  }
+
+  get pages(): number[] {
+    const arr = [];
+    for (let i = 1; i <= this.totalPages; i++) arr.push(i);
+    return arr;
+  }
+
+  // ===== HÀM CHÍNH: Gọi backend API (KHÔNG dùng Supabase) =====
+  loadHistoryFromApi(): void {
+    this.isHistoryLoading = true;
+    this.filteredHistoryOrders = [];
+
+    this.profileApiService.getHistory().subscribe({
+      next: (response: any) => {
+        const orders = Array.isArray(response?.data) ? response.data : [];
+
+        // Mỗi order trong response chứa field tickets[]
+        // Mình flat ra thành từng vé để hiển thị theo dòng
+        let allTickets: any[] = [];
+        const ticketCounts: Record<string, number> = {};
+
+        for (const order of orders) {
+          const orderId = order.maDonHang;
+          const tickets = order.tickets || [];
+          ticketCounts[orderId] = tickets.length;
+
+          for (const ticket of tickets) {
+            allTickets.push({ ticket, order });
+          }
+        }
+
+        // Lọc theo mã vé
+        if (this.filterMaDonHang.trim()) {
+          const q = this.filterMaDonHang.trim().toLowerCase();
+          allTickets = allTickets.filter(item =>
+            (item.ticket.maVe || '').toLowerCase().includes(q)
+          );
+        }
+
+        // Lọc theo tuyến đường
+        if (this.filterTenTuyenXe.trim()) {
+          const q = this.filterTenTuyenXe.trim().toLowerCase();
+          allTickets = allTickets.filter(item =>
+            (item.order.tenTuyen || '').toLowerCase().includes(q)
+          );
+        }
+
+        // Lọc theo ngày đi (departureDate dạng YYYY-MM-DD)
+        if (this.filterThoiGianDat) {
+          allTickets = allTickets.filter(item =>
+            item.order.departureDate === this.filterThoiGianDat
+          );
+        }
+
+        // Lọc theo trạng thái
+        if (this.filterTrangThai) {
+          allTickets = allTickets.filter(item => {
+            const s = item.ticket.trangThaiVe || '';
+            if (this.filterTrangThai === 'Chờ thanh toán')
+              return ['Chờ thanh toán','ChoThanhToan','CHO_THANH_TOAN'].includes(s);
+            if (this.filterTrangThai === 'Đã xác nhận')
+              return ['Đã xác nhận','Chờ khởi hành','ChoKhoiHanh','DA_XAC_NHAN'].includes(s);
+            if (this.filterTrangThai === 'Đã hoàn thành')
+              return ['Đã hoàn thành','Đã đánh giá','DaHoanThanh','DaDanhGia','DA_SU_DUNG'].includes(s);
+            if (this.filterTrangThai === 'Đã hủy')
+              return ['Đã hủy','DaHuy','DA_HUY'].includes(s);
+            return true;
+          });
+        }
+
+        // Sắp xếp mã vé mới nhất lên đầu
+        allTickets.sort((a, b) =>
+          (b.ticket.maVe || '').localeCompare(a.ticket.maVe || '')
+        );
+
+        this.totalItems = allTickets.length;
+
+        // Phân trang
+        const from = (this.currentPage - 1) * this.pageSize;
+        const paged = allTickets.slice(from, from + this.pageSize);
+
+        this.filteredHistoryOrders = paged.map(item => {
+          const t = item.ticket;
+          const o = item.order;
+
+          // Format ngày giờ: "HH:mm DD-MM-YYYY"
+          let formattedNgayDi = '';
+          if (o.gioKhoiHanh && o.departureDate) {
+            const [y, m, d] = o.departureDate.split('-');
+            formattedNgayDi = `${o.gioKhoiHanh} ${d}-${m}-${y}`;
+          }
+
+          // Chuẩn hóa trạng thái
+          let displayStatus = t.trangThaiVe || 'Chờ thanh toán';
+          if (['Chờ khởi hành','ChoKhoiHanh','DA_XAC_NHAN'].includes(displayStatus))
+            displayStatus = 'Đã xác nhận';
+          else if (['DaHoanThanh','DaDanhGia','Đã đánh giá','DA_SU_DUNG'].includes(displayStatus))
+            displayStatus = 'Đã hoàn thành';
+          else if (['ChoThanhToan','CHO_THANH_TOAN'].includes(displayStatus))
+            displayStatus = 'Chờ thanh toán';
+          else if (['DaHuy','DA_HUY'].includes(displayStatus))
+            displayStatus = 'Đã hủy';
+
+          return {
+            maVe: t.maVe,
+            maDonHang: o.maDonHang,
+            soLuongVeDaDat: ticketCounts[o.maDonHang] || 1,
+            tenTuyenXe: o.tenTuyen || '',
+            gioKhoiHanh: o.gioKhoiHanh || '',
+            ngayKhoiHanh: o.departureDate || '',
+            formattedNgayDi,
+            tongGiaVe: t.giaVe || 0,
+            trangThaiDonHang: displayStatus as any,
+            soDienThoai: o.soDienThoai || this.user.phone
+          };
+        });
+
+        this.isHistoryLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Load history error:', err);
+        this.filteredHistoryOrders = [];
+        this.totalItems = 0;
+        this.isHistoryLoading = false;
+      }
+    });
+  }
+
   viewTicketDetail(order: any): void {
     this.router.navigate(['/tra-cuu-ve'], {
       queryParams: {
@@ -219,6 +410,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+<<<<<<< HEAD
   startEdit() {
     if (this.user.TrangThaiTaiKhoan === 'DaKhoa') {
       alert('Tài khoản của bạn đang bị khóa, không thể chỉnh sửa hồ sơ.');
@@ -360,24 +552,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
       error: (err: any) => {
         console.error('Error updating profile:', err);
         alert('Cập nhật hồ sơ thất bại: ' + (err.error.message || 'Lỗi không xác định'));
+=======
+  startEdit() { this.editUser = { ...this.user }; this.isEditing = true; }
+  cancelEdit() { this.isEditing = false; }
+
+  saveProfile() {
+    this.profileApiService.updateProfile({
+      HoTenKhachHang: this.editUser.fullName,
+      Email: this.editUser.email,
+      GioiTinh: this.editUser.gender,
+      NgaySinh: this.editUser.dob,
+    }).subscribe({
+      next: () => {
+        this.user = { ...this.editUser };
+        this.authService.setUserName(this.user.fullName || 'Khách hàng');
+        this.isEditing = false;
+      },
+      error: (err: any) => {
+        console.error('Save profile error:', err);
+        this.isEditing = false;
+>>>>>>> origin/nghi
       }
     });
   }
 
-  confirmChangePassword() {
-    this.showOtpModal = true;
-    this.startOtpTimer();
-  }
+  confirmChangePassword() { this.showOtpModal = true; this.startOtpTimer(); }
 
   startOtpTimer() {
     this.otpTimer = 90;
     if (this.timerInterval) clearInterval(this.timerInterval);
     this.timerInterval = setInterval(() => {
-      if (this.otpTimer > 0) {
-        this.otpTimer--;
-      } else {
-        clearInterval(this.timerInterval);
-      }
+      if (this.otpTimer > 0) this.otpTimer--;
+      else clearInterval(this.timerInterval);
     }, 1000);
   }
 
@@ -398,8 +604,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.closeOtpModal();
       this.showSuccessModal = true;
       this.startRedirectTimer();
-    } else {
-      console.log('Vui lòng nhập đủ 6 số OTP');
     }
   }
 
@@ -407,12 +611,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.redirectTimer = 3;
     if (this.redirectInterval) clearInterval(this.redirectInterval);
     this.redirectInterval = setInterval(() => {
+<<<<<<< HEAD
       if (this.redirectTimer > 1) {
         this.redirectTimer--;
       }
       else {
         this.goToLogin();
       }
+=======
+      if (this.redirectTimer > 1) this.redirectTimer--;
+      else this.goToLogin();
+>>>>>>> origin/nghi
     }, 1000);
   }
 
@@ -431,14 +640,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  goToBooking() {
-    this.router.navigate(['/tim-kiem-chuyen']);
-  }
+  goToBooking() { this.router.navigate(['/tim-kiem-chuyen']); }
 
   logout() {
     this.isLogoutActive = true;
     this.authService.logout();
     this.router.navigate(['/home']);
+  }
+
+  selectTab(tab: string) {
+    this.activeTab = tab;
+    this.router.navigate([], {
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+    });
+    if (tab === 'history') this.loadHistory();
   }
 
   getStatusClasses(status: string): { [key: string]: boolean } {
@@ -447,12 +663,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       'text-success-text': status === 'Đã hoàn thành' || status === 'Đã đánh giá',
       'bg-danger-light': status === 'Đã hủy',
       'text-danger-text': status === 'Đã hủy',
-      'bg-info-light': status === 'Chờ thanh toán',
-      'text-info-text': status === 'Chờ thanh toán',
-      'bg-warning-light': status === 'Chờ khởi hành',
-      'text-warning-text': status === 'Chờ khởi hành',
+      'bg-info-light': status === 'Đã xác nhận',
+      'text-info-text': status === 'Đã xác nhận',
+      'bg-warning-light': status === 'Chờ thanh toán',
+      'text-warning-text': status === 'Chờ thanh toán',
     };
   }
 }
-
-

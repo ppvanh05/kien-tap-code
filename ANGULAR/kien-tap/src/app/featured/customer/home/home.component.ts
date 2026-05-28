@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, HostListener, OnInit, ChangeDetectorRef } from '@angular/core';
+=======
+import { Component, HostListener, OnInit } from '@angular/core';
+>>>>>>> origin/nghi
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,8 +10,13 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
 import { ToastService } from '../../../core/services/toast.service';
+<<<<<<< HEAD
 import { DanhGiaService } from '../../../core/services/danh-gia.service';
 import { CustomerTinTucService } from '../../../core/services/customer-tin-tuc.service';
+=======
+import { HomeApiService } from '../../../core/services/home-api.service';
+import { LunarCalendarService } from '../../../core/services/lunar-calendar.service';
+>>>>>>> origin/nghi
 
 @Component({
   selector: 'app-home',
@@ -18,9 +27,9 @@ import { CustomerTinTucService } from '../../../core/services/customer-tin-tuc.s
 })
 export class HomeComponent implements OnInit {
   isRoundTrip: boolean = false;
-  departure: string = 'TP. Hồ Chí Minh';
-  destination: string = 'Bình Định';
-  departureDate: string = '22/05/2026';
+  departure: string = '';
+  destination: string = '';
+  departureDate: string = '';
   returnDate: string = '';
   passengerCount: number = 1;
 
@@ -42,10 +51,7 @@ export class HomeComponent implements OnInit {
 
   locations = ['TP. Hồ Chí Minh', 'Bình Định', 'Phú Yên'];
 
-  recentSearches = [
-    { from: 'TP. Hồ Chí Minh', to: 'Bình Định', date: '22/05/2026' },
-    { from: 'TP. Hồ Chí Minh', to: 'Phú Yên', date: '25/05/2026' }
-  ];
+  recentSearches: any[] = [];
 
   popularRoutes = [
     { from: 'Bình Định', to: 'Bình Dương', price: '250.000đ', image: 'benxemientay.jpg' },
@@ -53,40 +59,11 @@ export class HomeComponent implements OnInit {
     { from: 'Phú Yên', to: 'TP. Hồ Chí Minh', price: '250.000đ', image: 'benxemiendong.jpg' }
   ];
 
-  calendarDays = [
-    { day: 1, label: '15/3', dateStr: '01/05/2026' },
-    { day: 2, label: '16', dateStr: '02/05/2026' },
-    { day: 3, label: '17', dateStr: '03/05/2026' },
-    { day: 4, label: '18', dateStr: '04/05/2026' },
-    { day: 5, label: '19', dateStr: '05/05/2026' },
-    { day: 6, label: '20', dateStr: '06/05/2026' },
-    { day: 7, label: '21', dateStr: '07/05/2026' },
-    { day: 8, label: '22', dateStr: '08/05/2026' },
-    { day: 9, label: '23', dateStr: '09/05/2026' },
-    { day: 10, label: '24', dateStr: '10/05/2026' },
-    { day: 11, label: '25', dateStr: '11/05/2026' },
-    { day: 12, label: '26', dateStr: '12/05/2026' },
-    { day: 13, label: '27', dateStr: '13/05/2026' },
-    { day: 14, label: '28', dateStr: '14/05/2026' },
-    { day: 15, label: '29', dateStr: '15/05/2026' },
-    { day: 16, label: '30', dateStr: '16/05/2026' },
-    { day: 17, label: '1/4', dateStr: '17/05/2026' },
-    { day: 18, label: '2', dateStr: '18/05/2026' },
-    { day: 19, label: '3', dateStr: '19/05/2026' },
-    { day: 20, label: '4', dateStr: '20/05/2026' },
-    { day: 21, label: '5', dateStr: '21/05/2026' },
-    { day: 22, label: '6', dateStr: '22/05/2026', highlighted: true },
-    { day: 23, label: '7', dateStr: '23/05/2026' },
-    { day: 24, label: '8', dateStr: '24/05/2026' },
-    { day: 25, label: '9', dateStr: '25/05/2026' },
-    { day: 26, label: '10', dateStr: '26/05/2026' },
-    { day: 27, label: '11', dateStr: '27/05/2026' },
-    { day: 28, label: '12', dateStr: '28/05/2026' },
-    { day: 29, label: '13', dateStr: '29/05/2026' },
-    { day: 30, label: '14', dateStr: '30/05/2026' },
-    { day: 31, label: '15', dateStr: '31/05/2026' }
-  ];
+  calendarTitle: string = '';
+  calendarEmptySpaces: number[] = [];
+  calendarDays: any[] = [];
 
+<<<<<<< HEAD
   homeReviews: any[] = [];
   homeNews: any[] = [];
 
@@ -119,6 +96,112 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+=======
+  constructor(
+    private router: Router, 
+    private toastService: ToastService,
+    private homeApiService: HomeApiService,
+    private lunarCalendarService: LunarCalendarService
+  ) {}
+
+  ngOnInit(): void {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    this.departureDate = `${dd}/${mm}/${yyyy}`;
+
+    this.generateCalendarDays();
+    this.loadActiveRoutes();
+    this.loadRecentSearches();
+  }
+
+  generateCalendarDays() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+
+    this.calendarTitle = `THÁNG ${month + 1}/${year}`;
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const emptySpacesCount = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    this.calendarEmptySpaces = Array(emptySpacesCount).fill(0);
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const days = [];
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      const d = String(i).padStart(2, '0');
+      const m = String(month + 1).padStart(2, '0');
+      const dateStr = `${d}/${m}/${year}`;
+
+      const lunar = this.lunarCalendarService.getLunarDate(i, month + 1, year);
+      const label = lunar.day === 1 ? `1/${lunar.month}` : `${lunar.day}`;
+
+      const isToday = i === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+
+      days.push({
+        day: i,
+        label: label,
+        dateStr: dateStr,
+        highlighted: isToday
+      });
+    }
+
+    this.calendarDays = days;
+  }
+
+  loadActiveRoutes(): void {
+    this.homeApiService.getActiveRoutes().subscribe({
+      next: (response: any) => {
+        if (response && response.success && Array.isArray(response.data)) {
+          const locSet = new Set<string>();
+          response.data.forEach((route: any) => {
+            if (route.DiemKhoiHanh) locSet.add(route.DiemKhoiHanh.trim());
+            if (route.DiemDen) locSet.add(route.DiemDen.trim());
+          });
+          if (locSet.size > 0) {
+            this.locations = Array.from(locSet);
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load active routes', err);
+      }
+    });
+  }
+
+  loadRecentSearches(): void {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined' || !window.localStorage) return;
+    const stored = window.localStorage.getItem('recentSearches');
+    if (stored) {
+      try {
+        this.recentSearches = JSON.parse(stored);
+      } catch (e) {
+        this.recentSearches = [];
+      }
+    } else {
+      this.recentSearches = [];
+    }
+  }
+
+  saveSearchToRecent(from: string, to: string, date: string): void {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined' || !window.localStorage) return;
+    if (!from || !to || !date) return;
+
+    const search = { from, to, date };
+    // Remove if already exists
+    this.recentSearches = this.recentSearches.filter(s => !(s.from === from && s.to === to && s.date === date));
+    // Add to top
+    this.recentSearches.unshift(search);
+    // Keep only last 5
+    if (this.recentSearches.length > 5) {
+      this.recentSearches = this.recentSearches.slice(0, 5);
+    }
+    // Save to localStorage
+    window.localStorage.setItem('recentSearches', JSON.stringify(this.recentSearches));
+  }
+>>>>>>> origin/nghi
 
   isPastDate(dateStr: string): boolean {
     const today = new Date();
@@ -339,18 +422,30 @@ export class HomeComponent implements OnInit {
   }
 
   searchTrip() {
+    this.departure = this.departureSearch ? this.departureSearch.trim() : '';
+    this.destination = this.destinationSearch ? this.destinationSearch.trim() : '';
+
+    if (!this.departure || !this.destination || !this.departureDate) {
+      this.toastService.show('Vui lòng nhập đầy đủ thông tin tìm kiếm', 'warning');
+      return;
+    }
+
     this.showPassengerPopover = false;
+    
+    // Save to recent searches
+    this.saveSearchToRecent(this.departure, this.destination, this.departureDate);
+    
     this.router.navigate(['/tim-kiem-chuyen'], {
       queryParams: {
-        departure: this.departure,
-        destination: this.destination,
-        date: this.departureDate,
-        returnDate: this.returnDate,
-        isRoundTrip: this.isRoundTrip,
-        passengers: this.passengerCount,
-        adults: this.adultCount,
-        children: this.childCount,
-        infants: this.infantCount
+        diemDi: this.departure || null,
+        diemDen: this.destination || null,
+        ngayDi: this.departureDate || null,
+        ngayVe: this.returnDate || null,
+        isRoundTrip: this.isRoundTrip || null,
+        passengers: this.passengerCount || null,
+        adults: this.adultCount || null,
+        children: this.childCount || null,
+        infants: this.infantCount || null
       }
     });
   }

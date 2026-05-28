@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
-import { AuthModalService } from '../auth-modal.service'; // Correct import
+import { AuthModalService } from '../auth-modal.service'; 
+import { AuthApiService } from '../../../../core/services/auth-api.service';
 
 interface MockUser {
   phoneNumber: string;
@@ -36,10 +37,19 @@ export class LoginComponent implements OnInit {
   passwordError = '';
   loginError = '';
 
+  customerAuthApiService = {
+    setToken: (token: string) => {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('auth_token', token);
+      }
+    }
+  };
+
   constructor(
     private router: Router,
     private authService: AuthService,
-    private authModalService: AuthModalService
+    private authModalService: AuthModalService,
+    private authApiService: AuthApiService
   ) {}
 
   ngOnInit(): void {
@@ -94,34 +104,44 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const mockUsers = this.getMockUsers();
-    const user: MockUser | undefined = mockUsers.find(u => 
-      (u.phoneNumber === this.phoneOrEmail || u.email === this.phoneOrEmail) && u.password === this.password
-    );
+    const loginPayload = {
+      phoneOrEmail: this.phoneOrEmail,
+      MatKhau: this.password,
+    };
+    console.log('Auth login payload:', loginPayload);
 
-    if (user) {
-      this.authService.login(
-        user.MaKhachHang || '',
-        user.fullName,
-        user.phoneNumber,
-        user.email,
-        user.AnhDaiDien || '',
-        user.GioiTinh || '',
-        user.NgaySinh || '',
-        user.TrangThaiTaiKhoan || '',
-        user.NgayDangKy || ''
-      );
-      this.loggedIn.emit(user.fullName); 
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('lastLoggedInUser', JSON.stringify({
-          phoneOrEmail: this.phoneOrEmail,
-          password: this.password
-        }));
+    this.authApiService.login(loginPayload).subscribe({
+      next: (response: any) => {
+        const data = response?.data || response;
+        const token = data?.token || data?.access_token;
+        const customer = data?.customer || data?.user || {};
+        if (data && token) {
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('access_token', token);
+            localStorage.setItem('customer_info', JSON.stringify(customer));
+            localStorage.setItem('lastLoggedInUser', JSON.stringify({
+              phoneOrEmail: this.phoneOrEmail,
+              password: this.password
+            }));
+            localStorage.setItem('currentUserId', customer.MaKhachHang || '');
+          }
+
+          this.customerAuthApiService.setToken(token);
+          const userName = customer.HoTenKhachHang || 'Người dùng';
+          this.authService.login(userName);
+          this.loggedIn.emit(userName);
+
+          this.closeModal();
+          this.router.navigate(['/home']);
+        } else {
+          this.loginError = 'Đăng nhập không thành công, phản hồi không hợp lệ.';
+        }
+      },
+      error: (err: any) => {
+        console.error('Login error:', err);
+        this.loginError = err.error?.message || err.message || 'Số điện thoại/email hoặc mật khẩu không đúng.';
       }
-      this.router.navigate(['/home']);
-    } else {
-      this.loginError = 'Số điện thoại/email hoặc mật khẩu không đúng.';
-    }
+    });
   }
 
   toggleShowPassword() {

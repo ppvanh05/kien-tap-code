@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { ThanhToanApiService } from '../../../core/services/thanh-toan-api.service';
+import { TimKiemApiService } from '../../../core/services/tim-kiem-api.service';
 
 import { HeaderComponent } from '../layout/header/header.component';
 import { FooterComponent } from '../layout/footer/footer.component';
@@ -38,6 +40,12 @@ export class ThanhToan implements OnInit, OnDestroy {
   timeLeft: number = 600;
   timerInterval: any = null;
 
+  // Getter for suggested presence time
+  get suggestedPresenceTime(): string {
+    // Return the trip's original scheduled presence time (gioGoiYCoMat) instead of the pickup point time
+    return this.bookingData.gioGoiYCoMat || this.bookingData.suggestedPresenceTime || '';
+  }
+
   // Modal states
   showCancelModal: boolean = false;
   showExpirationModal: boolean = false;
@@ -55,16 +63,19 @@ export class ThanhToan implements OnInit, OnDestroy {
     { id: 'zalopay', name: 'Ví ZaloPay', icon: 'https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png', badge: 'Giảm 25% tối đa 20k cho khách lần đầu thanh toán. Giảm tối đa 50k cho đơn từ 500k cho tất cả các giao dịch' }
   ];
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private router: Router, 
+    private cdr: ChangeDetectorRef,
+    private thanhToanService: ThanhToanApiService,
+    private timKiemApiService: TimKiemApiService
+  ) {}
 
   // Selected date from booking context
   selectedDate: string = '22/05/2026';
 
   ngOnInit() {
-    console.log('ThanhToan ngOnInit called. window type:', typeof window);
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('final_booking');
-      console.log('ThanhToan final_booking in localStorage:', saved);
       if (saved) {
         try {
           this.bookingData = JSON.parse(saved);
@@ -72,7 +83,12 @@ export class ThanhToan implements OnInit, OnDestroy {
           console.error('Error parsing final_booking:', e);
         }
       }
-      // Extract selected date from booking data if available
+
+      if (!this.bookingData || !this.bookingData.tripId) {
+        this.router.navigate(['/tim-kiem-chuyen']);
+        return;
+      }
+
       if (this.bookingData && this.bookingData.selectedDate) {
         this.selectedDate = this.bookingData.selectedDate;
       }
@@ -156,29 +172,90 @@ export class ThanhToan implements OnInit, OnDestroy {
 
   confirmCancel() {
     this.showCancelModal = false;
-    this.router.navigate(['/tim-kiem-chuyen']);
+    this.router.navigate(['/tim-kiem-chuyen'], {
+      queryParams: {
+        diemDi: this.bookingData.searchDeparture || this.bookingData.startStation || null,
+        diemDen: this.bookingData.searchDestination || this.bookingData.endStation || null,
+        ngayDi: this.bookingData.searchDate || this.bookingData.selectedDate || null,
+        adults: this.bookingData.adults || null,
+        children: this.bookingData.children || null,
+        infants: this.bookingData.infants || null,
+        isRoundTrip: this.bookingData.isRoundTrip || null,
+        ngayVe: this.bookingData.ngayVe || null,
+        passengers: this.bookingData.passengers || null
+      }
+    });
   }
 
   finishPayment() {
-    this.showSuccessModal = true;
-    this.successRedirectTime = 20;
-    localStorage.removeItem('current_booking');
-    localStorage.removeItem('final_booking');
+    const paymentMethodMap: Record<string, string> = {
+      vietqr: 'VietQR',
+      momo: 'Ví MoMo',
+      vnpay: 'Ví VNPay',
+      zalopay: 'Ví ZaloPay',
+    };
+
+    const methodStr = paymentMethodMap[this.selectedPayment] || 'Ví MoMo';
     
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-    
-    if (typeof window !== 'undefined') {
-      this.successInterval = setInterval(() => {
-        if (this.successRedirectTime > 1) {
-          this.successRedirectTime--;
+    const createOrderPayload = {
+      MaKhachHang: this.bookingData.MaKhachHang || 'KH001',
+      MaLichTrinh: String(this.bookingData.tripId || 1),
+      DanhSachMaGheChuyen: this.bookingData.DanhSachMaGheChuyen || [],
+      HoTenNguoiDi: this.bookingData.customerName,
+      SdtNguoiDi: this.bookingData.customerPhone,
+      EmailNguoiDi: this.bookingData.customerEmail || undefined,
+      MaDiemDon: this.bookingData.pickup?.maDiem || this.bookingData.MaDiemDon || 'MD04',
+      MaDiemTra: this.bookingData.dropoff?.maDiem || this.bookingData.MaDiemTra || 'MT03',
+      PhuongThucThanhToan: methodStr,
+    };
+
+    console.log('Payment create-order payload:', createOrderPayload);
+
+    this.timKiemApiService.createOrder(createOrderPayload).subscribe({
+      next: (response: any) => {
+        if (response && response.success && response.data) {
+          const realMaDonHang = response.data.order.MaDonHang;
+          
+          this.bookingData = {
+            ...this.bookingData,
+            MaDonHang: realMaDonHang,
+            orderData: response.data.order,
+            ticketsData: response.data.tickets,
+            phuongThucThanhToan: methodStr
+          };
+
+          this.showSuccessModal = true;
+          this.successRedirectTime = 20;
+          
+          if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+            localStorage.removeItem('current_booking');
+            localStorage.removeItem('final_booking');
+          }
+          
+          if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+          }
+          
+          if (typeof window !== 'undefined') {
+            this.successInterval = setInterval(() => {
+              if (this.successRedirectTime > 1) {
+                this.successRedirectTime--;
+                this.cdr.detectChanges();
+              } else {
+                this.closeSuccessModal();
+              }
+            }, 1000);
+          }
           this.cdr.detectChanges();
         } else {
-          this.closeSuccessModal();
+          alert('Không thể hoàn tất thanh toán. Vui lòng thử lại.');
         }
-      }, 1000);
-    }
+      },
+      error: (err: any) => {
+        console.error('Failed to create order and pay', err);
+        alert('Lỗi xác nhận thanh toán: ' + (err.error?.message || err.message));
+      }
+    });
   }
 
   closeSuccessModal() {
@@ -233,11 +310,35 @@ export class ThanhToan implements OnInit, OnDestroy {
     this.finishPayment();
   }
 
+  getPickupArrivalTime(timeStr?: string): string {
+    const timeToUse = timeStr || this.bookingData.departureTime;
+    const timeParts = timeToUse.split(':');
+    if (timeParts.length !== 2) return timeToUse;
+    let hours = parseInt(timeParts[0], 10);
+    let minutes = parseInt(timeParts[1], 10);
+    minutes -= 30;
+    if (minutes < 0) {
+      minutes += 60;
+      hours -= 1;
+    }
+    if (hours < 0) {
+      hours += 24;
+    }
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+
   viewTicketDetails() {
     if (this.successInterval) {
       clearInterval(this.successInterval);
     }
-    this.router.navigate(['/tra-cuu-ve']);
+    const orderCode = this.bookingData?.MaDonHang || '';
+    const phone = this.bookingData?.customerPhone || '';
+    this.router.navigate(['/tra-cuu-ve'], {
+      queryParams: {
+        maDonHang: orderCode,
+        soDienThoai: phone
+      }
+    });
   }
 
   printTicket() {

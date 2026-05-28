@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class SupabaseService {
+<<<<<<< HEAD
   private supabase: SupabaseClient;
 
   constructor() {
@@ -35,5 +36,11 @@ export class SupabaseService {
         }
       )
       .subscribe();
+=======
+  public supabase: SupabaseClient;
+
+  constructor() {
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+>>>>>>> origin/nghi
   }
 }

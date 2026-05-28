@@ -1,7 +1,9 @@
-import { Controller, Get, Query, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Query, Param, NotFoundException, UseFilters } from '@nestjs/common';
 import { CustomerTinTucService } from './customer-tin-tuc.service';
+import { CustomerExceptionFilter } from '../customer-exception.filter';
 
 @Controller('customer/tin-tuc')
+@UseFilters(CustomerExceptionFilter)
 export class CustomerTinTucController {
   constructor(private readonly customerTinTucService: CustomerTinTucService) {}
 
@@ -12,12 +14,17 @@ export class CustomerTinTucController {
     @Query('loai') loai?: string,
     @Query('search') search?: string,
   ) {
-    return this.customerTinTucService.getPublishedNews({
+    const data = await this.customerTinTucService.getPublishedNews({
       page,
       limit,
       loai,
       search,
     });
+    return {
+      success: true,
+      message: 'Lấy danh sách tin tức thành công!',
+      data,
+    };
   }
 
   @Get('home')
@@ -32,6 +39,10 @@ export class CustomerTinTucController {
     if (!data) {
       throw new NotFoundException(`News article with ID ${id} not found or not published.`);
     }
-    return data;
+    return {
+      success: true,
+      message: 'Lấy chi tiết tin tức thành công!',
+      data,
+    };
   }
 }

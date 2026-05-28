@@ -40,6 +40,19 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
     return `VE${Date.now().toString().slice(-6)}${Math.floor(1000 + Math.random() * 9000)}`;
   }
 
+  private mapPhuongThucThanhToan(method: string): any {
+    if (!method) return 'VietQR';
+    const m = method.toLowerCase();
+    if (m.includes('vietqr') || m.includes('chuyenkhoan') || m.includes('chuyển khoản')) return 'VietQR';
+    if (m.includes('momo')) return 'MoMo';
+    if (m.includes('vnpay')) return 'VNPay';
+    if (m.includes('zalopay')) return 'ZaloPay';
+    if (m.includes('atm') || m.includes('nội địa')) return 'ATM_noi_dia';
+    if (m.includes('visa') || m.includes('master') || m.includes('jcb') || m.includes('card') || m.includes('thẻ quốc tế')) return 'Visa_Master_JCB';
+    if (m.includes('tiền mặt') || m.includes('tienmat') || m.includes('cash')) return 'TienMat';
+    return 'VietQR';
+  }
+
   // ===== AUTOMATIC SEAT RELEASE =====
   async releaseExpiredHeldSeats() {
     try {
@@ -151,7 +164,43 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
     };
   }
 
-  // ===== CREATE ORDER WITH E-TICKETS =====
+  private async generateNextCustomerId(): Promise<string> {
+    const list = await this.prisma.kHACH_HANG.findMany({
+      select: { MaKhachHang: true },
+    });
+
+    let maxNum = 0;
+    list.forEach(kh => {
+      const match = kh.MaKhachHang.match(/KH(\d+)/i);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxNum) {
+          maxNum = num;
+        }
+      }
+    });
+
+    return `KH${String(maxNum + 1).padStart(3, '0')}`;
+  }
+
+  private async generateNextOrderCode(): Promise<string> {
+    const list = await this.prisma.dON_HANG.findMany({
+      select: { MaDonHang: true },
+    });
+    let maxNum = 10000000; // starts before DH10000001
+    list.forEach(item => {
+      const match = item.MaDonHang.match(/DH(\d+)/i);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxNum) {
+          maxNum = num;
+        }
+      }
+    });
+    return `DH${maxNum + 1}`;
+  }
+
+  // ===== CREATE ORDER WITH E-TICKETS (MARKED PAID AND RECORDED DIRECTLY ON CONFIRMATION) =====
   async createOrder(dto: {
     MaKhachHang: string;
     MaLichTrinh: string;
@@ -175,13 +224,51 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
       PhuongThucThanhToan,
     } = dto;
 
+<<<<<<< HEAD
     const customer = await this.prisma.kHACH_HANG.findUnique({
+=======
+    let finalMaKhachHang = MaKhachHang;
+
+    // Verify customer exists or find/create guest customer record
+    let customer = await this.prisma.kHACH_HANG.findUnique({
+>>>>>>> origin/nghi
       where: { MaKhachHang },
     });
+
     if (!customer) {
-      throw new NotFoundException(`Không tìm thấy khách hàng với mã ${MaKhachHang}`);
+      // Try to find customer by phone number SdtNguoiDi to avoid duplicating if guest already ordered before
+      const phoneClean = SdtNguoiDi.trim();
+      const existingByPhone = await this.prisma.kHACH_HANG.findFirst({
+        where: { SoDienThoai: phoneClean },
+      });
+
+      if (existingByPhone) {
+        customer = existingByPhone;
+        finalMaKhachHang = existingByPhone.MaKhachHang;
+      } else {
+        // Auto-create a new guest customer record
+        const nextId = await this.generateNextCustomerId();
+        customer = await this.prisma.kHACH_HANG.create({
+          data: {
+            MaKhachHang: nextId,
+            HoTenKhachHang: HoTenNguoiDi || 'Khách vãng lai',
+            SoDienThoai: phoneClean,
+            Email: EmailNguoiDi || null,
+            MatKhau: 'GUEST_NO_PASSWORD',
+            GioiTinh: 'Nam',
+            TrangThaiTaiKhoan: 'HoatDong',
+            NgayDangKy: new Date(),
+          },
+        });
+        finalMaKhachHang = nextId;
+      }
     }
 
+<<<<<<< HEAD
+=======
+
+    // Verify schedule exists
+>>>>>>> origin/nghi
     const schedule = await this.prisma.lICH_TRINH.findUnique({
       where: { MaLichTrinh },
       include: { PHUONG_TIEN: true },
@@ -205,6 +292,7 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
         MaLichTrinh,
         MaGheChuyen: { in: DanhSachMaGheChuyen },
       },
+      include: { GHE: true },
     });
 
     if (seats.length !== DanhSachMaGheChuyen.length) {
@@ -222,17 +310,44 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
       totalSeatPrice += s.GiaVe.toNumber();
     });
 
+<<<<<<< HEAD
     const insurancePerTicket = 10000;
     const totalInsurance = insurancePerTicket * DanhSachMaGheChuyen.length;
+=======
+    const insurancePerTicket = 0; // removed insurance calculation
+    const totalInsurance = 0;
+>>>>>>> origin/nghi
     const finalTotal = totalSeatPrice + totalInsurance;
 
-    const maDonHang = this.generateOrderCode();
+    const maDonHang = await this.generateNextOrderCode();
 
+<<<<<<< HEAD
     const result = await this.prisma.$transaction(async (tx) => {
+=======
+    // Query tickets to find the start sequential number for new tickets
+    const listTickets = await this.prisma.vE_DIEN_TU.findMany({
+      select: { MaVe: true },
+    });
+    let maxTicketNum = 100000; // starts before VE100001
+    listTickets.forEach(item => {
+      const match = item.MaVe.match(/^VE(\d{6})$/i);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxTicketNum) {
+          maxTicketNum = num;
+        }
+      }
+    });
+    let nextTicketNum = maxTicketNum + 1;
+
+    // Use Prisma transaction to create order, create tickets, update seats and create payment
+    const result = await this.prisma.$transaction(async (tx) => {
+      // 1. Create order (State: ChoKhoiHanh since it's paid)
+>>>>>>> origin/nghi
       const order = await tx.dON_HANG.create({
         data: {
           MaDonHang: maDonHang,
-          MaKhachHang,
+          MaKhachHang: finalMaKhachHang,
           HoTenNguoiDi,
           SdtNguoiDi,
           EmailNguoiDi: EmailNguoiDi || null,
@@ -240,6 +355,7 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
           SoLuongVeDaDat: DanhSachMaGheChuyen.length,
           TienBaoHiem: new Prisma.Decimal(totalInsurance),
           TongGiaVe: new Prisma.Decimal(finalTotal),
+<<<<<<< HEAD
           PhuongThucThanhToan: PhuongThucThanhToan as PhuongThucThanhToan,
           TrangThaiDonHang: TrangThaiVe.Ch__thanh_to_n,
           PhuongThucThanhToan: PhuongThucThanhToan as any,
@@ -247,17 +363,31 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
         },
       });
 
+=======
+          PhuongThucThanhToan: this.mapPhuongThucThanhToan(PhuongThucThanhToan),
+          TrangThaiDonHang: 'ChoKhoiHanh',
+        },
+      });
+
+      // 2. Create tickets and update seat status to DaBan
+>>>>>>> origin/nghi
       const tickets = [];
       for (const seat of seats) {
-        const maVe = this.generateTicketId();
+        const maVe = `VE${String(nextTicketNum).padStart(6, '0')}`;
+        nextTicketNum++;
+        const soGhe = (seat as any).GHE?.SoGhe || seat.MaGheChuyen.split('_').pop() || seat.MaGhe;
         const ticket = await tx.vE_DIEN_TU.create({
           data: {
             MaVe: maVe,
             GiaVe: seat.GiaVe,
+<<<<<<< HEAD
             TrangThaiVe: TrangThaiVe.Ch__thanh_to_n,
+=======
+            TrangThaiVe: 'ChoKhoiHanh',
+>>>>>>> origin/nghi
             SoLanDaSua: 0,
             ThoiGianXuatVe: new Date(),
-            MaQRVe: `QR-${maVe}`,
+            MaQRVe: `QR_${maVe}_${MaLichTrinh}_${soGhe}`,
             MaDonHang: maDonHang,
             MaLichTrinh,
             MaXe: schedule.MaXe,
@@ -268,22 +398,45 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
         });
         tickets.push(ticket);
 
+<<<<<<< HEAD
         await tx.gHE_CHUYEN_XE.update({
           where: { MaGheChuyen: seat.MaGheChuyen },
           data: {
             TrangThaiGhe: TrangThaiGhe.ang_ch_n,
+=======
+        // Update seat to DaBan status permanently
+        await tx.gHE_CHUYEN_XE.update({
+          where: { MaGheChuyen: seat.MaGheChuyen },
+          data: {
+            TrangThaiGhe: 'DaBan',
+>>>>>>> origin/nghi
             ThoiGianCapNhatTrangThai: new Date(),
           },
         });
       }
 
-      return { order, tickets };
+      // 3. Create payment record (ThanhToan)
+      const maGiaoDich = `GD_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
+      const payment = await tx.tHANH_TOAN.create({
+        data: {
+          MaGiaoDich: maGiaoDich,
+          MaDonHang: maDonHang,
+          LoaiGiaoDich: 'ThanhToan',
+          PhuongThucThanhToan: this.mapPhuongThucThanhToan(PhuongThucThanhToan),
+          SoTien: new Prisma.Decimal(finalTotal),
+          ThoiGianGiaoDich: new Date(),
+          TrangThaiGiaoDich: 'ThanhCong',
+          LichSuHoanTien: '',
+        },
+      });
+
+      return { order, tickets, payment };
     });
 
     await this.nhatKyService.ghiLog({
-      MaKhachHang,
-      LoaiThaoTac: 'Đặt vé',
-      NoiDungChiTiet: `Tạo mới đơn hàng ${maDonHang} gồm ${DanhSachMaGheChuyen.length} vé. Trạng thái: Chờ thanh toán.`,
+      MaKhachHang: finalMaKhachHang,
+      LoaiThaoTac: 'Đặt và thanh toán vé',
+      NoiDungChiTiet: `Tạo mới đơn hàng ${maDonHang} gồm ${DanhSachMaGheChuyen.length} vé và ghi nhận thanh toán thành công.`,
       TrangThai: 'Thành công',
     });
 

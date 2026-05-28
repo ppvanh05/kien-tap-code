@@ -1,7 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseFilters } from '@nestjs/common';
 import { ThanhToanService } from './thanh-toan.service';
+import { CustomerExceptionFilter } from '../customer-exception.filter';
 
 @Controller('customer/thanh-toan')
+@UseFilters(CustomerExceptionFilter)
 export class ThanhToanController {
   constructor(private readonly paymentService: ThanhToanService) {}
 
@@ -10,7 +12,12 @@ export class ThanhToanController {
   async createTransaction(
     @Body() dto: { MaDonHang: string; PhuongThucThanhToan: string; SoTien: number },
   ) {
-    return this.paymentService.createTransaction(dto);
+    const result = await this.paymentService.createTransaction(dto);
+    return {
+      success: true,
+      message: 'Tạo giao dịch thanh toán thành công!',
+      data: result,
+    };
   }
 
   // POST /customer/thanh-toan/callback/success → Xử lý callback thanh toán thành công

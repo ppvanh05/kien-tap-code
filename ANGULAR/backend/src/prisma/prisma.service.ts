@@ -15,6 +15,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async onModuleInit() {
     await this.$connect();
+    // Allow skipping automatic seeding in developer environments where the schema/data
+    // may be incomplete. Set SKIP_DB_SEED=true to opt out of seeding.
+    if (process.env.SKIP_DB_SEED === 'true') {
+      console.log('SKIP_DB_SEED is set; skipping automatic DB seeding.');
+      return;
+    }
     
     // Đảm bảo có các dữ liệu hệ thống bắt buộc để tránh lỗi ràng buộc khóa ngoại (Foreign Key Constraint)
     try {

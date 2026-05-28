@@ -4,16 +4,24 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+<<<<<<< HEAD
 import { adminAuthInterceptor } from './core/interceptors/admin-auth.interceptor';
+=======
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+>>>>>>> origin/nghi
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
+<<<<<<< HEAD
     provideHttpClient(
       withFetch(),
       withInterceptors([adminAuthInterceptor])
     ),
+=======
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+>>>>>>> origin/nghi
   ]
 };

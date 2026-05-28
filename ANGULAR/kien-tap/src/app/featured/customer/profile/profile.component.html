@@ -7,7 +7,7 @@
             <div class="lg:col-span-3">
                 <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 overflow-hidden p-4">
                     <div class="space-y-2">
-                        <button (click)="activeTab = 'profile'"
+                        <button (click)="selectTab('profile')"
                             [class.bg-secondary-light]="activeTab === 'profile'"
                             [class.text-secondary]="activeTab === 'profile'"
                             class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-surface-container-low group">
@@ -15,7 +15,7 @@
                             <span class="font-bold text-body-md">Thông tin cá nhân</span>
                         </button>
                         
-                        <button (click)="activeTab = 'history'"
+                        <button (click)="selectTab('history')"
                             [class.bg-secondary-light]="activeTab === 'history'"
                             [class.text-secondary]="activeTab === 'history'"
                             class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-surface-container-low group text-on-surface-variant">
@@ -23,7 +23,7 @@
                             <span class="font-bold text-body-md">Lịch sử mua vé</span>
                         </button>
 
-                        <button (click)="activeTab = 'password'"
+                        <button (click)="selectTab('password')"
                             [class.bg-secondary-light]="activeTab === 'password'"
                             [class.text-secondary]="activeTab === 'password'"
                             class="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-left transition-all hover:bg-surface-container-low group text-on-surface-variant">
@@ -168,6 +168,7 @@
                                         <input 
                                             type="text" 
                                             [(ngModel)]="filterMaDonHang" 
+                                            (ngModelChange)="onMaVeChange($event)"
                                             placeholder="Nhập mã vé" 
                                             class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium"
                                         />
@@ -178,6 +179,7 @@
                                         <input 
                                             type="date" 
                                             [(ngModel)]="filterThoiGianDat" 
+                                            (ngModelChange)="onFilterChange()"
                                             class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium text-on-surface-variant"
                                         />
                                     </div>
@@ -187,6 +189,7 @@
                                         <input 
                                             type="text" 
                                             [(ngModel)]="filterTenTuyenXe" 
+                                            (ngModelChange)="onTuyenXeChange($event)"
                                             placeholder="Nhập tuyến đường" 
                                             class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium"
                                         />
@@ -196,14 +199,13 @@
                                         <label class="text-label-sm font-bold text-navy uppercase tracking-wider">Trạng thái</label>
                                         <select 
                                             [(ngModel)]="filterTrangThai" 
+                                            (ngModelChange)="onFilterChange()"
                                             class="w-full px-3 py-2 bg-white border border-outline-variant rounded-xl text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 font-medium outline-none cursor-pointer text-on-surface-variant">
-                                            <option value="">Tất cả trạng thái</option>
+                                            <option value="">Tất cả</option>
                                             <option value="Chờ thanh toán">Chờ thanh toán</option>
-                                            <option value="Chờ khởi hành">Chờ khởi hành</option>
+                                            <option value="Đã xác nhận">Đã xác nhận</option>
                                             <option value="Đã hoàn thành">Đã hoàn thành</option>
                                             <option value="Đã hủy">Đã hủy</option>
-                                            <option value="Chưa đánh giá">Chưa đánh giá</option>
-                                            <option value="Đã đánh giá">Đã đánh giá</option>
                                         </select>
                                     </div>
 
@@ -239,39 +241,99 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-outline-variant/10 font-medium text-on-surface">
-                                                <tr *ngIf="filteredHistoryOrders.length === 0">
-                                                    <td colspan="8" class="text-center py-10 text-on-surface-variant font-semibold">
-                                                        Không tìm thấy lịch sử giao dịch phù hợp.
+                                                <!-- Skeleton Rows -->
+                                                <ng-container *ngIf="isHistoryLoading">
+                                                    <tr *ngFor="let i of [1, 2, 3, 4, 5]" class="animate-pulse">
+                                                        <td class="px-4 py-5"><div class="h-4 bg-gray-200 rounded w-20"></div></td>
+                                                        <td class="px-4 py-5 text-center"><div class="h-4 bg-gray-200 rounded w-8 mx-auto"></div></td>
+                                                        <td class="px-4 py-5"><div class="h-4 bg-gray-200 rounded w-36"></div></td>
+                                                        <td class="px-4 py-5 text-center"><div class="h-4 bg-gray-200 rounded w-28 mx-auto"></div></td>
+                                                        <td class="px-4 py-5 text-right"><div class="h-4 bg-gray-200 rounded w-16 ml-auto"></div></td>
+                                                        <td class="px-4 py-5 text-center"><div class="h-6 bg-gray-200 rounded-full w-24 mx-auto"></div></td>
+                                                        <td class="px-4 py-5 text-center"><div class="h-8 bg-gray-200 rounded-full w-20 mx-auto"></div></td>
+                                                    </tr>
+                                                </ng-container>
+
+                                                <!-- Empty State -->
+                                                <tr *ngIf="!isHistoryLoading && filteredHistoryOrders.length === 0">
+                                                    <td colspan="7" class="text-center py-12 text-on-surface-variant font-semibold">
+                                                        <div class="flex flex-col items-center justify-center space-y-2 py-4">
+                                                            <span class="material-symbols-outlined text-4xl text-outline-variant">drafts</span>
+                                                            <span>Không có vé nào</span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 
-                                                <tr *ngFor="let order of filteredHistoryOrders" class="hover:bg-surface-container-lowest/50 transition-colors">
-                                                    <td class="px-4 py-4 font-bold text-navy font-mono">{{ order.maDonHang }}</td>
-                                                    <td class="px-4 py-4 text-center">{{ order.soLuongVeDaDat }}</td>
-                                                    <td class="px-4 py-4 font-bold text-primary">{{ order.tenTuyenXe }}</td>
-                                                    <td class="px-4 py-4 text-center text-navy font-semibold whitespace-nowrap">
-                                                        {{ order.gioKhoiHanh }} {{ order.ngayKhoiHanh }}
-                                                    </td>
-                                                    <td class="px-4 py-4 text-right font-bold text-secondary">
-                                                        {{ order.tongGiaVe | number:'1.0-0' }}đ
-                                                    </td>
-                                                    <td class="px-4 py-4 text-center whitespace-nowrap">
-                                                        <span 
-                                                            class="px-2.5 py-0.5 rounded-full text-label-sm font-bold shadow-xs border border-transparent"
-                                                            [ngClass]="getStatusClasses(order.trangThaiDonHang)">
-                                                            {{ order.trangThaiDonHang }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-4 py-4 text-center">
-                                                        <button 
-                                                            (click)="viewTicketDetail(order)"
-                                                            class="bg-primary-light text-primary hover:bg-primary hover:text-white px-3.5 py-1.5 rounded-full font-bold text-label-sm transition-all shadow-xs">
-                                                            Chi tiết
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                <!-- Real Data Rows -->
+                                                <ng-container *ngIf="!isHistoryLoading">
+                                                    <tr *ngFor="let order of filteredHistoryOrders" class="hover:bg-surface-container-lowest/50 transition-colors">
+                                                        <td class="px-4 py-4 font-bold text-navy font-mono">{{ order.maVe }}</td>
+                                                        <td class="px-4 py-4 text-center">{{ order.soLuongVeDaDat }}</td>
+                                                        <td class="px-4 py-4 font-bold text-primary">{{ order.tenTuyenXe }}</td>
+                                                        <td class="px-4 py-4 text-center text-navy font-semibold whitespace-nowrap">
+                                                            {{ order.formattedNgayDi }}
+                                                        </td>
+                                                        <td class="px-4 py-4 text-right font-bold text-secondary">
+                                                            {{ order.tongGiaVe | number:'1.0-0' }}đ
+                                                        </td>
+                                                        <td class="px-4 py-4 text-center whitespace-nowrap">
+                                                            <span 
+                                                                class="px-2.5 py-0.5 rounded-full text-label-sm font-bold shadow-xs border border-transparent"
+                                                                [ngClass]="getStatusClasses(order.trangThaiDonHang)">
+                                                                {{ order.trangThaiDonHang }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="px-4 py-4 text-center">
+                                                            <button 
+                                                                (click)="viewTicketDetail(order)"
+                                                                class="bg-primary text-white hover:bg-primary-hover px-3.5 py-1.5 rounded-full font-bold text-label-sm transition-all shadow-xs">
+                                                                Chi tiết
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </ng-container>
                                             </tbody>
                                         </table>
+                                    </div>
+
+                                    <!-- Pagination Controls -->
+                                    <div *ngIf="!isHistoryLoading && totalItems > 0" class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-outline-variant/10 bg-surface-container-lowest">
+                                        <div class="text-body-sm text-on-surface-variant font-medium">
+                                            Hiển thị <span class="font-bold text-navy">{{ (currentPage - 1) * pageSize + 1 }}</span> - 
+                                            <span class="font-bold text-navy">{{ (currentPage * pageSize > totalItems) ? totalItems : (currentPage * pageSize) }}</span> 
+                                            trong tổng số <span class="font-bold text-navy">{{ totalItems }}</span> kết quả
+                                        </div>
+                                        
+                                        <div class="flex items-center gap-1.5">
+                                            <button 
+                                                [disabled]="currentPage === 1"
+                                                (click)="changePage(currentPage - 1)"
+                                                class="w-9 h-9 rounded-xl flex items-center justify-center border border-outline-variant/20 hover:bg-surface-container-low transition-all disabled:opacity-40 disabled:cursor-not-allowed text-navy">
+                                                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                                            </button>
+                                            
+                                            <button 
+                                                *ngFor="let p of pages"
+                                                (click)="changePage(p)"
+                                                [class.bg-secondary]="currentPage === p"
+                                                [class.text-white]="currentPage === p"
+                                                [class.shadow-md]="currentPage === p"
+                                                [class.shadow-secondary/20]="currentPage === p"
+                                                [class.border-transparent]="currentPage === p"
+                                                [class.bg-white]="currentPage !== p"
+                                                [class.text-on-surface-variant]="currentPage !== p"
+                                                [class.border-outline-variant/20]="currentPage !== p"
+                                                class="w-9 h-9 rounded-xl font-bold text-body-sm flex items-center justify-center border transition-all hover:bg-surface-container-low">
+                                                {{ p }}
+                                            </button>
+                                            
+                                            <button 
+                                                [disabled]="currentPage === totalPages"
+                                                (click)="changePage(currentPage + 1)"
+                                                class="w-9 h-9 rounded-xl flex items-center justify-center border border-outline-variant/20 hover:bg-surface-container-low transition-all disabled:opacity-40 disabled:cursor-not-allowed text-navy">
+                                                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -1,7 +1,9 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseFilters } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { CustomerExceptionFilter } from '../customer-exception.filter';
 
 @Controller('customer/auth')
+@UseFilters(CustomerExceptionFilter)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -15,8 +17,15 @@ export class AuthController {
   // POST /customer/auth/verify-otp → Xác thực mã OTP
   @Post('verify-otp')
   @HttpCode(HttpStatus.OK)
-  async verifyOtp(@Body() dto: { SoDienThoai: string; otp: string; MucDich: string }) {
+  async verifyOtp(@Body() dto: { SoDienThoai: string; otp: string; MucDich: string; markUsed?: boolean }) {
     return this.authService.verifyOtp(dto);
+  }
+
+  @Post('check-phone')
+  @HttpCode(HttpStatus.OK)
+  async checkPhone(@Body() dto: { SoDienThoai: string }) {
+    const exists = await this.authService.checkPhoneExists(dto.SoDienThoai);
+    return { exists };
   }
 
   // POST /customer/auth/register → Đăng ký tài khoản mới
@@ -33,14 +42,24 @@ export class AuthController {
       otp?: string;
     },
   ) {
-    return this.authService.register(dto);
+    const result = await this.authService.register(dto);
+    return {
+      success: true,
+      message: 'Đăng ký tài khoản thành công!',
+      data: result,
+    };
   }
 
   // POST /customer/auth/login → Đăng nhập tài khoản
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: { phoneOrEmail: string; MatKhau: string }) {
-    return this.authService.login(dto);
+    const result = await this.authService.login(dto);
+    return {
+      success: true,
+      message: 'Đăng nhập thành công!',
+      data: result,
+    };
   }
 
   // POST /customer/auth/forgot-password → Gửi OTP quên mật khẩu
