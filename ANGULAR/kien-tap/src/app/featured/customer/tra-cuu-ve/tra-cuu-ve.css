@@ -1,0 +1,83 @@
+/* Transition Animations and Custom Overrides for Tra Cuu Ve */
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom micro-adjustments for QR code and layout spacing */
+.backdrop-blur-xs {
+  backdrop-filter: blur(2px);
+}
+
+/* Material Symbols alignment inside headers */
+.material-symbols-outlined {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Adjusted form size for review form */
+.review-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Adjusted button styles for disabled state */
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Adjusted QR code display */
+.ticket-info img {
+  max-width: 100px;
+  height: auto;
+  margin-top: 10px;
+}

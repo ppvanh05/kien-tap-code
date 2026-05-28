@@ -1,18 +1,17 @@
 <div class="admin-container" [class.collapsed]="isSidebarCollapsed">
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo-container">
-        <img src="/asset/images/TXP_logo.png" alt="TXP Logo" class="logo">
+        <img *ngIf="!isSidebarCollapsed" src="/asset/images/admin/TXP_logo2.png" alt="TXP Logo" class="logo">
+        <img *ngIf="isSidebarCollapsed" src="/asset/images/admin/TXP_logo.png" alt="TXP Logo" class="logo-collapsed-in-sidebar">
       </div>
     </div>
 
     <nav class="sidebar-nav">
-      <div *ngFor="let item of menuItems" class="menu-item-container" routerLinkActive="parent-active"
-        #rla="routerLinkActive">
-        <div class="menu-item" [routerLink]="item.route"
+      <div *ngFor="let item of menuItems" class="menu-item-container" routerLinkActive="parent-active" #rla="routerLinkActive">
+        <div class="menu-item" [routerLink]="item.disabled ? null : item.route"
           [class.active]="item.isOpen || (rla.isActive && !isAnyMenuOpen)" (click)="toggleSubmenu(item)"
-          [class.has-children]="item.children">
+          [class.has-children]="item.children" [class.disabled]="item.disabled">
           <span class="material-icons">{{ item.icon }}</span>
           <span class="label">{{ item.label }}</span>
           <span *ngIf="item.children" class="material-icons arrow" [class.open]="item.isOpen">
@@ -21,8 +20,8 @@
         </div>
 
         <div *ngIf="item.children && item.isOpen" class="submenu">
-          <div *ngFor="let child of item.children" class="submenu-item" [routerLink]="child.route"
-            routerLinkActive="active">
+          <div *ngFor="let child of item.children" class="submenu-item" [routerLink]="child.disabled ? null : child.route"
+            routerLinkActive="active" [class.disabled]="child.disabled">
             <span class="material-icons">{{ child.icon }}</span>
             <span class="label">{{ child.label }}</span>
           </div>
@@ -31,31 +30,35 @@
     </nav>
 
     <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="avatar"></div>
+      <div class="user-info" (click)="toggleAvatarMenu()">
+        <div class="avatar">
+          <img *ngIf="currentUser?.AnhDaiDien" [src]="currentUser?.AnhDaiDien" alt="Avatar">
+          <span *ngIf="!currentUser?.AnhDaiDien" class="material-icons">account_circle</span>
+        </div>
         <div class="details">
-          <span class="name">Nguyễn Văn A</span>
-          <span class="role">Quản trị viên</span>
+          <span class="name">{{ currentUser?.TenHienThi || 'Người dùng' }}</span>
+          <span class="role">{{ getRoleLabel(currentUser?.LoaiTaiKhoan) }}</span>
+        </div>
+        <div class="avatar-menu" [class.show]="isAvatarMenuOpen">
+          <div class="menu-item" (click)="openProfileModal($event)">
+            <span class="material-icons">manage_accounts</span>
+            Thông tin cá nhân
+          </div>
+          <div class="menu-item" (click)="$event.stopPropagation(); logout()">
+            <span class="material-icons">logout</span>
+            Đăng xuất
+          </div>
         </div>
       </div>
-      <button class="logout-btn">
-        Đăng xuất
-      </button>
     </div>
   </aside>
 
-  <!-- Main Content Area -->
   <main class="main-area">
-    <!-- Header -->
     <header class="header">
       <div class="header-left">
         <button class="menu-toggle" (click)="toggleSidebar()">
           <span class="material-icons">menu</span>
         </button>
-        <div class="search-bar">
-          <span class="material-icons">search</span>
-          <input type="text" placeholder="Tìm kiếm...">
-        </div>
       </div>
 
       <div class="header-right">
@@ -69,9 +72,102 @@
       </div>
     </header>
 
-    <!-- Page Content -->
     <div class="content">
       <router-outlet></router-outlet>
     </div>
   </main>
+
+  <div class="profile-modal-backdrop" *ngIf="isProfileModalOpen" (click)="closeProfileModal()">
+    <section class="profile-modal" (click)="$event.stopPropagation()">
+      <header class="profile-modal-header">
+        <div>
+          <h2>Thông tin cá nhân</h2>
+          <p>{{ currentUser?.MaNhanVien }} · {{ getRoleLabel(currentUser?.LoaiTaiKhoan) }}</p>
+        </div>
+        <button type="button" class="profile-close-btn" (click)="closeProfileModal()" aria-label="Đóng">
+          <span class="material-icons">close</span>
+        </button>
+      </header>
+
+      <div class="profile-modal-body">
+        <div class="profile-avatar-panel">
+          <button type="button" class="profile-avatar-preview" (click)="profileAvatarInput.click()">
+            <img *ngIf="profileForm.AnhDaiDien" [src]="profileForm.AnhDaiDien" alt="Avatar">
+            <span *ngIf="!profileForm.AnhDaiDien">{{ getInitials(profileForm.TenHienThi) }}</span>
+          </button>
+          <input #profileAvatarInput type="file" accept="image/*" hidden (change)="onProfileAvatarSelected($event)">
+          <div class="profile-avatar-actions">
+            <button type="button" class="profile-secondary-btn" (click)="profileAvatarInput.click()">
+              <span class="material-icons">photo_camera</span>
+              Đổi ảnh
+            </button>
+            <button type="button" class="profile-icon-btn" *ngIf="profileForm.AnhDaiDien" (click)="removeProfileAvatar($event)" title="Xóa ảnh">
+              <span class="material-icons">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <form class="profile-form" (ngSubmit)="saveProfile()">
+          <label [class.invalid]="hasProfileFieldError('HoVaTenDem')">
+            <span>Họ và tên đệm</span>
+            <input name="HoVaTenDem" [(ngModel)]="profileForm.HoVaTenDem" (ngModelChange)="onProfileFieldInput('HoVaTenDem')" required>
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('HoVaTenDem')">{{ profileFieldErrors.HoVaTenDem }}</small>
+          </label>
+          <label [class.invalid]="hasProfileFieldError('Ten')">
+            <span>Tên</span>
+            <input name="Ten" [(ngModel)]="profileForm.Ten" (ngModelChange)="onProfileFieldInput('Ten')" required>
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('Ten')">{{ profileFieldErrors.Ten }}</small>
+          </label>
+          <label class="wide" [class.invalid]="hasProfileFieldError('TenHienThi')">
+            <span>Tên hiển thị</span>
+            <input name="TenHienThi" [(ngModel)]="profileForm.TenHienThi" (ngModelChange)="onProfileFieldInput('TenHienThi')" required>
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('TenHienThi')">{{ profileFieldErrors.TenHienThi }}</small>
+          </label>
+          <label [class.invalid]="hasProfileFieldError('SoDienThoai')">
+            <span>Số điện thoại</span>
+            <input name="SoDienThoai" [(ngModel)]="profileForm.SoDienThoai" (ngModelChange)="onProfileFieldInput('SoDienThoai')" required>
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('SoDienThoai')">{{ profileFieldErrors.SoDienThoai }}</small>
+          </label>
+          <label [class.invalid]="hasProfileFieldError('Email')">
+            <span>Email</span>
+            <input name="Email" type="email" [(ngModel)]="profileForm.Email" (ngModelChange)="onProfileFieldInput('Email')" required>
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('Email')">{{ profileFieldErrors.Email }}</small>
+          </label>
+          <label>
+            <span>Giới tính</span>
+            <select name="GioiTinh" [(ngModel)]="profileForm.GioiTinh">
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+            </select>
+          </label>
+          <label [class.invalid]="hasProfileFieldError('NgaySinh')">
+            <span>Ngày sinh</span>
+            <input name="NgaySinh" type="date" [(ngModel)]="profileForm.NgaySinh" (ngModelChange)="onProfileFieldInput('NgaySinh')">
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('NgaySinh')">{{ profileFieldErrors.NgaySinh }}</small>
+          </label>
+          <label class="wide" [class.invalid]="hasProfileFieldError('DiaChi')">
+            <span>Địa chỉ</span>
+            <input name="DiaChi" [(ngModel)]="profileForm.DiaChi" (ngModelChange)="onProfileFieldInput('DiaChi')">
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('DiaChi')">{{ profileFieldErrors.DiaChi }}</small>
+          </label>
+          <label class="wide" [class.invalid]="hasProfileFieldError('GhiChu')">
+            <span>Ghi chú</span>
+            <textarea name="GhiChu" rows="3" [(ngModel)]="profileForm.GhiChu" (ngModelChange)="onProfileFieldInput('GhiChu')"></textarea>
+            <small class="profile-field-error" *ngIf="hasProfileFieldError('GhiChu')">{{ profileFieldErrors.GhiChu }}</small>
+          </label>
+
+          <div class="profile-alert error" *ngIf="profileError">{{ profileError }}</div>
+          <div class="profile-alert success" *ngIf="profileSuccess">{{ profileSuccess }}</div>
+
+          <footer class="profile-actions">
+            <button type="button" class="profile-secondary-btn" (click)="closeProfileModal()">Hủy</button>
+            <button type="submit" class="profile-primary-btn" [disabled]="isSavingProfile || hasProfileValidationErrors">
+              <span class="material-icons">{{ isSavingProfile ? 'hourglass_top' : 'save' }}</span>
+              {{ isSavingProfile ? 'Đang lưu...' : 'Lưu thay đổi' }}
+            </button>
+          </footer>
+        </form>
+      </div>
+    </section>
+  </div>
 </div>

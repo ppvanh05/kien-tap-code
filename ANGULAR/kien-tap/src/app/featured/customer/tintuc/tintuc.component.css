@@ -1,0 +1,16 @@
+/* Ẩn thanh cuộn nhưng vẫn có thể cuộn ngang cho tabs */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Hiệu ứng line-clamp cho mô tả tin tức */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

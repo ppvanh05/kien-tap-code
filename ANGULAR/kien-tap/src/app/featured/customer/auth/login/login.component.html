@@ -1,0 +1,61 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
+  <div class="w-full max-w-md bg-surface rounded-2xl shadow-modal overflow-hidden">
+    <div class="px-6 py-5 border-b border-outline-variant/30 text-center relative">
+      <h2 class="text-title-lg font-bold text-navy mb-2">Đăng nhập</h2>
+      <button (click)="closeModal()" class="absolute top-5 right-5 text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="px-6 py-6 space-y-6">
+      <form (ngSubmit)="onLogin()" class="space-y-5">
+        <!-- Phone or Email input -->
+        <div class="space-y-2">
+          <label class="sr-only">Số điện thoại / Email</label>
+          <div class="flex items-center rounded-2xl border border-outline-variant/50 bg-surface px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+            <span class="material-symbols-outlined text-primary mr-3">person</span>
+            <input type="text" [(ngModel)]="phoneOrEmail" name="phoneOrEmail" placeholder="Nhập số điện thoại hoặc email"
+              class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none" />
+          </div>
+          <p *ngIf="phoneOrEmailError" class="text-sm text-danger font-semibold mt-1 text-center">{{ phoneOrEmailError }}</p>
+        </div>
+
+        <!-- Password input with eye toggle -->
+        <div class="space-y-2">
+          <label class="sr-only">Mật khẩu</label>
+          <div class="flex items-center rounded-2xl border border-outline-variant/50 bg-surface px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+            <span class="material-symbols-outlined text-primary mr-3">lock</span>
+            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" placeholder="Mật khẩu" autocomplete="current-password"
+              class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none" />
+            <button type="button" class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none" (click)="toggleShowPassword()">
+              <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          <p *ngIf="passwordError" class="text-sm text-danger font-semibold mt-1 text-center">{{ passwordError }}</p>
+        </div>
+
+        <!-- Forgot password link -->
+        <div class="flex items-center justify-end text-body-sm">
+          <a href="#" (click)="openForgot($event)" class="text-secondary font-bold hover:underline">Quên mật khẩu?</a>
+        </div>
+
+        <!-- Validation error -->
+        <div *ngIf="loginError" class="text-sm text-danger font-semibold text-center py-1">
+          {{ loginError }}
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="w-full rounded-xl bg-secondary text-on-primary py-3 text-title-md font-bold hover:bg-secondary-hover transition-all">
+            Đăng nhập
+          </button>
+      </form>
+
+      <div class="text-center border-t border-outline-variant/20 pt-4">
+        <p class="text-body-sm text-on-surface-variant">
+          Bạn chưa có tài khoản?
+          <a href="#" (click)="openRegister($event)" class="text-secondary font-bold hover:underline ml-1">Đăng ký ngay</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

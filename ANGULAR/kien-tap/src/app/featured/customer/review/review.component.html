@@ -1,0 +1,123 @@
+<div class="bg-[#F8F9FA] min-h-screen font-body">
+    <app-header></app-header>
+
+    <main class="pt-28 pb-20 max-w-container-max mx-auto px-margin-desktop">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+            <div>
+                <p class="text-primary font-bold text-label-md uppercase tracking-widest mb-1">Đánh giá & Nhận xét</p>
+                <h1 class="text-headline-sm font-bold text-navy">Phản hồi từ khách hàng đã trải nghiệm dịch vụ của chúng tôi.</h1>
+            </div>
+        </div>
+
+        <!-- Overview Stats Card -->
+        <div class="bg-white rounded-3xl shadow-sm border border-outline-variant/20 p-8 md:p-12 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                <!-- Big Score -->
+                <div class="md:col-span-4 text-center border-r border-outline-variant/10 pr-0 md:pr-12">
+                    <p class="text-secondary font-bold text-headline-lg mb-2 scale-110">{{ summary.averageOverall.toFixed(1) }}</p>
+                    <div class="flex justify-center gap-1 text-secondary mb-3 text-2xl font-bold">
+                        <span *ngFor="let s of [1,2,3,4,5]">{{ s <= Math.round(summary.averageOverall) ? '★' : '☆' }}</span>
+                    </div>
+                    <p class="text-on-surface-variant text-body-md">{{ summary.totalReviews }} đánh giá</p>
+                </div>
+
+                <!-- Detailed Stats -->
+                <div class="md:col-span-8 space-y-4">
+                    <div *ngFor="let stat of stats" class="flex items-center gap-6">
+                        <span class="w-24 text-body-md font-bold text-navy shrink-0">{{ stat.label }}</span>
+                        <div class="flex-1 h-2.5 bg-surface-container-low rounded-full overflow-hidden">
+                            <div class="h-full bg-secondary rounded-full transition-all duration-1000" [style.width.%]="stat.percentage"></div>
+                        </div>
+                        <span class="w-10 text-body-md font-bold text-navy text-right shrink-0">{{ stat.score.toFixed(1) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap gap-3 mb-10">
+            <button *ngFor="let filter of filters" 
+                (click)="selectFilter(filter.label)"
+                [class.bg-secondary-light]="activeFilter === filter.label"
+                [class.text-secondary]="activeFilter === filter.label"
+                [class.border-secondary]="activeFilter === filter.label"
+                class="px-5 py-2.5 rounded-xl border border-outline-variant/30 bg-white text-on-surface-variant font-bold text-body-sm hover:border-secondary hover:text-secondary transition-all">
+                {{ filter.label }} ({{ filter.count }})
+            </button>
+        </div>
+
+        <!-- Review List -->
+        <div class="bg-white rounded-3xl shadow-sm border border-outline-variant/20 divide-y divide-outline-variant/10">
+            <div *ngFor="let review of reviews" class="p-8 group">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex gap-4">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-outline-variant/10 bg-surface-container flex items-center justify-center">
+                            <!-- Sử dụng ảnh user.png làm icon mặc định -->
+                            <img [src]="review.avatar || '/asset/images/customer/user.png'" 
+                                 (error)="review.avatar = '/asset/images/customer/user.png'"
+                                 [alt]="review.author" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-bold text-title-md text-navy">{{ review.author }}</h4>
+                                <span *ngIf="review.isVerified" class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">Đã đi</span>
+                            </div>
+                            <p class="text-outline text-[13px]">{{ formatDate(review.date) }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-title-md font-bold text-secondary">{{ review.rating.toFixed(1) }}</span>
+                        <div class="flex gap-0.5 text-secondary text-xl font-bold">
+                            <span *ngFor="let s of [1,2,3,4,5]">{{ s <= review.rating ? '★' : '☆' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-on-surface text-body-md leading-relaxed mb-6">
+                    {{ review.content }}
+                </p>
+
+                <!-- Review Images -->
+                <div *ngIf="review.images && review.images.length > 0" class="flex gap-4 mb-6">
+                    <div *ngFor="let img of review.images" class="w-28 h-28 rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10">
+                        <img [src]="img" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                </div>
+
+                <!-- Route info -->
+                <div class="flex items-center gap-3 text-on-surface-variant">
+                    <span class="text-xl">🛣️</span>
+                    <span class="text-body-sm italic">Tuyến: {{ review.route }}</span>
+                </div>
+            </div>
+            
+            <div *ngIf="reviews.length === 0" class="p-12 text-center text-on-surface-variant font-medium text-body-lg">
+                Chưa có đánh giá nào phù hợp với bộ lọc này.
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="pages.length > 0" class="flex justify-center items-center gap-2 mt-16">
+            <button (click)="prevPage()" [disabled]="currentPage === 1" class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/50 text-navy hover:border-secondary hover:text-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all font-bold text-lg">
+                ‹
+            </button>
+            <button *ngFor="let page of pages" 
+                (click)="changePage(page)"
+                [disabled]="page === '...'"
+                [class.bg-secondary]="page === currentPage"
+                [class.text-white]="page === currentPage"
+                [class.border-secondary]="page === currentPage"
+                [class.cursor-not-allowed]="page === '...'"
+                class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/50 text-body-sm font-bold hover:border-secondary hover:text-secondary transition-all">
+                {{ page }}
+            </button>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/50 text-navy hover:border-secondary hover:text-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all font-bold text-lg">
+                ›
+            </button>
+        </div>
+    </main>
+
+    <app-footer></app-footer>
+</div>
