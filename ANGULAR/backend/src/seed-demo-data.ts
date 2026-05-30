@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 import { DEFAULT_ROLE_PERMISSIONS } from './admin/auth/default-permissions';
 
 const prisma = new PrismaClient();
@@ -11,7 +12,7 @@ const banQuanLyId = 'BQL100001';
 
 const date = (value: string) => new Date(`${value}T00:00:00.000Z`);
 const time = (hour: number, minute = 0) => new Date(Date.UTC(1970, 0, 1, hour, minute, 0));
-const money = (value: number) => new Prisma.Decimal(value);
+const money = (value: number) => new Decimal(value);
 
 const lowerSeats = ['1A', '2A', '3A', '4A', '5A', '6A', '7A', '8A', '9A', '10A', '11A', '12A'];
 const upperSeats = ['1B', '2B', '3B', '4B', '5B', '6B', '7B', '8B', '9B', '10B'];

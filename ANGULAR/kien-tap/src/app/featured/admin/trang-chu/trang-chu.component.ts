@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AdminAuthService, AdminUser } from '../../../core/services/admin-auth.service';
+import { environment } from '../../../../environments/environment';
 
 interface QuickAction {
   label: string;
@@ -56,7 +57,7 @@ interface AdminTask {
   styleUrls: ['./trang-chu.component.css']
 })
 export class TrangChuComponent implements OnInit {
-  private readonly apiBaseUrl = 'http://localhost:3000';
+  private readonly apiBaseUrl = environment.apiBase;
 
   currentUser: AdminUser | null = null;
   greeting = '';

@@ -89,33 +89,39 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         data: { Quyen: DEFAULT_ROLE_PERMISSIONS.QuanTriVien },
       });
 
-      const banQuanLyAccounts = await this.nHAN_VIEN.findMany({
-        where: {
-          LoaiTaiKhoan: 'BanQuanLy',
-          NOT: {
-            Quyen: {
-              has: 'report',
-            },
-          },
-        },
-        select: {
-          MaNhanVien: true,
-          Quyen: true,
-        },
+      await this.nHAN_VIEN.updateMany({
+        where: { LoaiTaiKhoan: 'BanQuanLy' },
+        data: { Quyen: DEFAULT_ROLE_PERMISSIONS.BanQuanLy },
       });
-
-      for (const account of banQuanLyAccounts) {
-        await this.nHAN_VIEN.update({
-          where: { MaNhanVien: account.MaNhanVien },
-          data: {
-            Quyen: [...new Set([...(account.Quyen ?? []), 'report'])],
-          },
-        });
-      }
-      
-      console.log('Successfully seeded system default records (NVDP100001, QTV100001).');
     } catch (e) {
-      console.error('Failed to seed default records:', e);
+      console.error('Lỗi khi đảm bảo dữ liệu hệ thống:', e);
     }
+  }
+
+  // --- ID Generation Helpers ---
+  private formatCode(prefix: string, width: number, value: number): string {
+    return `${prefix}${String(value).padStart(width, '0')}`;
+  }
+
+  private getNumberPart(id: string | null | undefined, prefix: string): number {
+    if (!id || !id.startsWith(prefix)) return 0;
+    const numPart = id.slice(prefix.length).replace(/[^0-9]/g, '');
+    const parsed = parseInt(numPart, 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  async generateNextId(model: string, field: string, prefix: string, width: number = 6, startNumber: number = 100001): Promise<string> {
+    const rows = await (this as any)[model].findMany({
+      where: { [field]: { startsWith: prefix } },
+      select: { [field]: true },
+    });
+
+    let maxNum = startNumber - 1;
+    for (const row of rows) {
+      maxNum = Math.max(maxNum, this.getNumberPart(row[field], prefix));
+    }
+
+    const nextNum = Math.max(maxNum + 1, startNumber);
+    return this.formatCode(prefix, width, nextNum);
   }
 }

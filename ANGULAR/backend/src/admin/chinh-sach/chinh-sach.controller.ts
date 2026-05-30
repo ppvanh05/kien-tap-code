@@ -13,7 +13,7 @@ import { Prisma } from '@prisma/client';
 import { AdminPermissionsGuard } from '../auth/admin-permissions.guard';
 import { RequirePermissions } from '../auth/permissions.decorator';
 
-@Controller('chinh-sach')
+@Controller('admin/chinh-sach')
 @UseGuards(AdminPermissionsGuard)
 export class ChinhSachController {
   constructor(private readonly chinhSachService: ChinhSachService) {}

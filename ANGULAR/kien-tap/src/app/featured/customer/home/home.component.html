@@ -1,6 +1,4 @@
 <div class="bg-background font-body-md text-on-surface">
-    <app-header></app-header>
-
     <main class="pt-20">
         <!-- Hero Section -->
         <section class="relative h-[400px] overflow-hidden">
@@ -98,6 +96,7 @@
                             class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2.5 focus-within:border-primary transition-all cursor-pointer">
                             <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
                             <input readonly class="bg-transparent border-none focus:ring-transparent focus:ring-0 focus:outline-none outline-none w-full text-on-surface text-body-lg cursor-pointer font-medium"
+                                [placeholder]="'Thêm ngày đi'"
                                 [(ngModel)]="departureDate">
                         </div>
 
@@ -285,32 +284,36 @@
                             <a class="font-title-md text-primary hover:underline font-bold" routerLink="/danh-gia">Xem tất cả ></a>
                         </div>
                         <div class="space-y-3">
-                            <!-- Testimonial Card -->
-                            <div *ngFor="let rev of homeReviews"
-                                class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/20">
-                                <div class="flex items-center gap-4 mb-4">
-                                    <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden flex items-center justify-center border border-outline-variant/10">
-                                        <img [src]="rev.avatar || '/asset/images/customer/user.png'" 
-                                            (error)="rev.avatar = '/asset/images/customer/user.png'"
-                                            [alt]="rev.author" class="w-full h-full object-cover">
-                                    </div>
-                                    <div>
-                                        <h4 class="font-title-lg text-title-lg text-secondary">{{ rev.author }}</h4>
-                                        <div class="flex text-urgent-orange">
-                                            <span *ngFor="let s of [1,2,3,4,5]" class="material-symbols-outlined"
-                                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <div *ngIf="isLoadingReviews" class="text-on-surface-variant italic text-center py-6">
+                                Đang tải đánh giá...
+                            </div>
+                            <div *ngIf="!isLoadingReviews && homeReviews.length > 0">
+                                <div *ngFor="let rev of homeReviews"
+                                    class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/20">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden flex items-center justify-center border border-outline-variant/10">
+                                            <img [src]="rev.avatar || '/asset/images/customer/user.png'" 
+                                                (error)="rev.avatar = '/asset/images/customer/user.png'"
+                                                [alt]="rev.author" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-title-lg text-title-lg text-secondary">{{ rev.author }}</h4>
+                                            <div class="flex text-urgent-orange">
+                                                <span *ngFor="let s of [1,2,3,4,5]" class="material-symbols-outlined"
+                                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <p class="font-body-md text-on-surface-variant italic text-lg leading-relaxed">
+                                        "{{ rev.content }}"
+                                    </p>
+                                    <p *ngIf="rev.route" class="text-xs text-on-surface-variant/70 italic mt-2">
+                                        Tuyến: {{ rev.route }}
+                                    </p>
                                 </div>
-                                <p class="font-body-md text-on-surface-variant italic text-lg leading-relaxed">
-                                    "{{ rev.content }}"
-                                </p>
-                                <p *ngIf="rev.route" class="text-xs text-on-surface-variant/70 italic mt-2">
-                                    Tuyến: {{ rev.route }}
-                                </p>
                             </div>
                             
-                            <div *ngIf="homeReviews.length === 0" class="text-on-surface-variant italic text-center py-6">
+                            <div *ngIf="!isLoadingReviews && homeReviews.length === 0" class="text-on-surface-variant italic text-center py-6">
                                 Chưa có đánh giá 5 sao nào nổi bật.
                             </div>
                         </div>
@@ -327,26 +330,32 @@
                     &gt;</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-                <div *ngFor="let news of homeNews" class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10 cursor-pointer" [routerLink]="['/tin-tuc/chi-tiet', news.MaTinTuc]">
-                    <div class="h-48 overflow-hidden">
-                        <img [src]="news.AnhBia || '/asset/images/customer/tintuc4.png'" alt="{{news.TieuDe}}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div *ngIf="isLoadingNews" class="col-span-full text-on-surface-variant italic text-center py-6">
+                    Đang tải tin tức...
+                </div>
+                <ng-container *ngIf="!isLoadingNews && homeNews.length > 0">
+                    <div *ngFor="let news of homeNews" class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(11,42,74,0.05)] border border-outline-variant/10 cursor-pointer" [routerLink]="['/tin-tuc/chi-tiet', news.MaTinTuc]">
+                        <div class="h-48 overflow-hidden">
+                            <img [src]="news.AnhBia || '/asset/images/customer/tintuc4.png'" alt="{{news.TieuDe}}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <span class="font-label-sm text-label-sm text-on-surface-variant">{{ news.NgayDang | date:'dd/MM/yyyy' }}</span>
+                            <h4 class="font-headline-md text-headline-md text-secondary group-hover:text-primary transition-colors">
+                                {{ news.TieuDe }}
+                            </h4>
+                            <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                                {{ news.MoTaNgan }}
+                            </p>
+                            <button class="font-title-lg text-title-lg text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+                                Chi Tiết <span class="material-symbols-outlined">chevron_right</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="p-6 space-y-3">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">{{ news.NgayDang | date:'dd/MM/yyyy' }}</span>
-                        <h4 class="font-headline-md text-headline-md text-secondary group-hover:text-primary transition-colors">
-                            {{ news.TieuDe }}
-                        </h4>
-                        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
-                            {{ news.MoTaNgan }}
-                        </p>
-                        <button class="font-title-lg text-title-lg text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
-                            Chi Tiết <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
-                    </div>
+                </ng-container>
+                <div *ngIf="!isLoadingNews && homeNews.length === 0" class="col-span-full text-on-surface-variant italic text-center py-6">
+                    Chưa có tin tức nào.
                 </div>
             </div>
         </section>
     </main>
-
-    <app-footer></app-footer>
 </div>

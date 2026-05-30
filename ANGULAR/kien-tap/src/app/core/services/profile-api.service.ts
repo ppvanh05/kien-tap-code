@@ -25,16 +25,6 @@ export class ProfileApiService {
     return this.http.put<any>(`${API_BASE}/customer/profile`, dto);
   }
 
-  private getAuthHeaders(): HttpHeaders {
-    let token = '';
-    if (typeof localStorage !== 'undefined') {
-      token = localStorage.getItem('auth_token') || localStorage.getItem('access_token') || '';
-    }
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
   getHistory(trangThai?: string, sortByDate: 'asc' | 'desc' = 'desc'): Observable<any> {
     let params = new HttpParams();
     if (trangThai) {
@@ -45,8 +35,15 @@ export class ProfileApiService {
     }
 
     return this.http.get<any>(`${API_BASE}/customer/tra-cuu-ve/history`, {
-      params,
-      headers: this.getAuthHeaders()
+      params
     });
+  }
+
+  changePassword(dto: { MatKhauCu: string; MatKhauMoi: string; XacNhanMatKhauMoi: string }): Observable<any> {
+    return this.http.post<any>(`${API_BASE}/customer/profile/change-password`, dto);
+  }
+
+  sendOtpForPasswordChange(): Observable<any> {
+    return this.http.post<any>(`${API_BASE}/customer/profile/send-otp`, {});
   }
 }

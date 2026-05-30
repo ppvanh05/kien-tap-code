@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TuyenXeService } from '../tuyen-xe.service';
 import { TaiXeService } from '../tai-xe.service';
 import { PhuongTienService } from '../phuong-tien.service';
+import { environment } from '../../../../../environments/environment';
 
 import { CustomSelectComponent } from '../custom-select.component';
 import { DiemDonTraService } from '../diem-don-tra.service';
@@ -410,7 +411,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       }
     ];
 
-    this.http.get<any[]>('http://localhost:3000/dieu-hanh/lich-trinh').subscribe({
+    this.http.get<any[]>(environment.apiBase + '/dieu-hanh/lich-trinh').subscribe({
       next: (data) => {
         setTimeout(() => {
           console.log('LỊCH TRÌNH DATA RECEIVED:', data ? data.length : null, data);
@@ -1105,7 +1106,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       if (index !== -1) {
         this.schedules[index] = { ...this.currentSchedule as Schedule };
       }
-      this.http.put(`http://localhost:3000/dieu-hanh/lich-trinh/${this.currentSchedule.id}`, this.currentSchedule).subscribe({
+      this.http.put(`${environment.apiBase}/dieu-hanh/lich-trinh/${this.currentSchedule.id}`, this.currentSchedule).subscribe({
         next: () => this.refreshSchedules(),
         error: (err) => console.error('Lỗi khi cập nhật lịch trình:', err)
       });
@@ -1117,7 +1118,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       } as Schedule;
       this.schedules.unshift(newSchedule);
 
-      this.http.post<any>('http://localhost:3000/dieu-hanh/lich-trinh', this.currentSchedule).subscribe({
+      this.http.post<any>(environment.apiBase + '/dieu-hanh/lich-trinh', this.currentSchedule).subscribe({
         next: (res) => {
           newSchedule.id = res.MaLichTrinh;
           this.refreshSchedules();
@@ -1143,7 +1144,7 @@ export class QuanLyLichTrinhComponent implements OnInit {
       if (index !== -1) {
         const id = this.schedules[index].id;
         this.schedules.splice(index, 1);
-        this.http.delete(`http://localhost:3000/dieu-hanh/lich-trinh/${id}`).subscribe({
+        this.http.delete(`${environment.apiBase}/dieu-hanh/lich-trinh/${id}`).subscribe({
           next: () => this.refreshSchedules(),
           error: (err) => console.error('Lỗi khi xóa lịch trình:', err)
         });

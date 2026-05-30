@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface DiemDonTra {
   id: string | number;
@@ -18,7 +19,7 @@ export interface DiemDonTra {
   providedIn: 'root'
 })
 export class DiemDonTraService {
-  private apiUrl = 'http://localhost:3000/dieu-hanh/diem-don-tra-dung';
+  private apiUrl = environment.apiBase + '/dieu-hanh/diem-don-tra-dung';
   private points: DiemDonTra[] = [];
   public pointsUpdated$ = new Subject<void>();
 

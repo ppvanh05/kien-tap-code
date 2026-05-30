@@ -1,6 +1,4 @@
 <div class="bg-background font-body text-on-surface min-h-screen flex flex-col">
-  <app-header></app-header>
-
   <main class="pt-24 flex-grow pb-16">
     <div class="max-w-container-max mx-auto px-margin-desktop">
       <div *ngIf="toastMessage"
@@ -78,9 +76,9 @@
 
             <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <button
-                *ngIf="canShowEditButton()"
+                [disabled]="isEditButtonDisabled"
                 (click)="openEditOrderModal()"
-                class="flex items-center gap-1.5 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-2.5 rounded-full text-body-sm transition-all active:scale-[0.98] shadow-sm">
+                class="flex items-center gap-1.5 bg-secondary text-white hover:bg-secondary-hover font-bold px-6 py-2.5 rounded-full text-body-sm transition-all active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                 <span class="material-symbols-outlined text-lg">edit</span>
                 Sửa thông tin
               </button>
@@ -106,7 +104,7 @@
 
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
                 <span class="text-body-sm text-on-surface-variant font-medium">Email</span>
-                <span class="font-bold text-navy text-body-md">{{ maskEmail(currentOrder.email) }}</span>
+                <span class="font-bold text-navy text-body-md">{{ currentOrder.email }}</span>
               </div>
 
               <div class="flex justify-between items-center border-b border-dashed border-outline-variant/20 py-2">
@@ -242,7 +240,7 @@
 
           <div class="flex justify-end gap-3 pt-6 border-t border-outline-variant/10">
             <button
-              [disabled]="isCancelDisabled()"
+              [disabled]="isCancelButtonDisabled"
               (click)="openCancelModal()"
               class="flex items-center gap-2 bg-white hover:bg-danger-light text-danger hover:text-danger-text border border-danger/20 rounded-xl px-6 py-3 font-bold text-body-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
               <span class="material-symbols-outlined text-lg">cancel</span>
@@ -250,10 +248,10 @@
             </button>
 
             <button
-              [disabled]="!canReview"
+              [disabled]="isReviewButtonDisabled"
               (click)="openReviewModal()"
               class="flex items-center gap-2 rounded-xl px-6 py-3 font-bold text-body-sm transition-all shadow-sm"
-              [ngClass]="canReview ? 'bg-secondary text-white hover:bg-secondary-hover' : 'bg-secondary-light text-secondary border border-secondary/30 opacity-70 cursor-not-allowed'">
+              [ngClass]="isReviewButtonEnabled ? 'bg-secondary text-white hover:bg-secondary-hover' : 'bg-secondary-light text-secondary border border-secondary/30 opacity-70 cursor-not-allowed'">
               <span class="material-symbols-outlined text-lg">star</span>
               Đánh giá dịch vụ
             </button>
@@ -262,8 +260,6 @@
       </div>
     </div>
   </main>
-
-  <app-footer></app-footer>
 
   <div class="fixed inset-0 z-50 bg-navy/60 backdrop-blur-xs flex items-center justify-center p-4" *ngIf="showEditModal && currentOrder">
     <div class="bg-white rounded-2xl max-w-[760px] w-full overflow-hidden shadow-modal border border-outline-variant/10 animate-scale-up">

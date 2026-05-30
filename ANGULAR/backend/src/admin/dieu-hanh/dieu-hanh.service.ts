@@ -704,7 +704,7 @@ export class DieuHanhService implements OnModuleInit {
       wifi: TienIch.Wifi,
       water: TienIch.N__c__kh_n___t,
       gps: TienIch.GPS,
-      ac: TienIch.i_u_h_a,
+      aircon: TienIch.i_u_h_a,
     };
     return amenities
       .map(a => AMENITY_MAP[a.toLowerCase()])

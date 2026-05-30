@@ -2,6 +2,7 @@ import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 export interface AdminUser {
   MaNhanVien: string;
@@ -43,7 +44,7 @@ export interface AdminPasswordChange {
   providedIn: 'root'
 })
 export class AdminAuthService {
-  private apiUrl = 'http://localhost:3000/admin/auth';
+  private apiUrl = environment.apiBase + '/admin/auth';
   private currentUserSubject = new BehaviorSubject<AdminUser | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 

@@ -5,13 +5,11 @@ import { Router, RouterModule } from '@angular/router';
 import { ThanhToanApiService } from '../../../core/services/thanh-toan-api.service';
 import { TimKiemApiService } from '../../../core/services/tim-kiem-api.service';
 
-import { HeaderComponent } from '../layout/header/header.component';
-import { FooterComponent } from '../layout/footer/footer.component';
 
 @Component({
   selector: 'app-thanh-toan',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './thanh-toan.html',
   styleUrl: './thanh-toan.css',
 })

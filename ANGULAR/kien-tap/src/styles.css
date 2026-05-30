@@ -2,6 +2,10 @@
 @config "../tailwind.config.js";
 
 /* Custom Base Styles */
+html {
+  overflow-y: scroll;
+}
+
 body {
   margin: 0;
   font-family: 'Be Vietnam Pro', 'Inter', sans-serif;

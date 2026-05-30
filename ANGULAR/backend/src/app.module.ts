@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ChinhSachModule } from './admin/chinh-sach/chinh-sach.module';
+import { ChinhSachPublicModule } from './chinh-sach/chinh-sach.module';
 import { BaoCaoModule } from './admin/bao-cao/bao-cao.module';
 import { TinTucModule } from './admin/tin-tuc/tin-tuc.module';
 import { KhachHangModule } from './admin/khach-hang/khach-hang.module';
@@ -21,13 +22,14 @@ import { TimKiemChuyenXeModule } from './customer/tim-kiem-chuyen-xe/tim-kiem-ch
 import { ThongTinDonHangModule } from './customer/thong-tin-don-hang/thong-tin-don-hang.module';
 import { ThanhToanModule } from './customer/thanh-toan/thanh-toan.module';
 import { TraCuuVeModule } from './customer/tra-cuu-ve/tra-cuu-ve.module';
-import { CustomerHoSoModule } from './customer/profile/customer-ho-so.module';
+import { ProfileModule } from './customer/profile/profile.module';
 import { AdminAuthModule } from './admin/auth/admin-auth.module';
 
 @Module({
   imports: [
     PrismaModule,
     ChinhSachModule,
+    ChinhSachPublicModule,
     BaoCaoModule,
     TinTucModule,
     KhachHangModule,
@@ -47,7 +49,7 @@ import { AdminAuthModule } from './admin/auth/admin-auth.module';
     ThongTinDonHangModule,
     ThanhToanModule,
     TraCuuVeModule,
-    CustomerHoSoModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

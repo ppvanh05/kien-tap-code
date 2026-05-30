@@ -1,6 +1,4 @@
 <div class="bg-[#F8F9FA] min-h-screen font-body">
-    <app-header></app-header>
-
     <div class="pt-28 pb-20 max-w-container-max mx-auto px-margin-desktop">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Sidebar -->
@@ -94,7 +92,7 @@
                                         </div>
                                         <div class="space-y-1">
                                             <p class="text-label-sm text-outline uppercase tracking-wider">Giới tính</p>
-                                            <p class="font-bold text-navy text-body-md">{{ user.GioiTinh }}</p>
+                                            <p class="font-bold text-navy text-body-md">{{ user.GioiTinh === 'Nu' ? 'Nữ' : user.GioiTinh }}</p>
                                         </div>
                                         <div class="space-y-1">
                                             <p class="text-label-sm text-outline uppercase tracking-wider">Email</p>
@@ -126,8 +124,7 @@
                                             <label class="text-label-sm text-on-surface-variant font-bold">Giới tính</label>
                                             <select [(ngModel)]="editUser.GioiTinh" class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all">
                                                 <option value="Nam">Nam</option>
-                                                <option value="Nữ">Nữ</option>
-                                                <option value="Khác">Khác</option>
+                                                <option value="Nu">Nữ</option>
                                             </select>
                                         </div>
                                         <div class="space-y-2">
@@ -351,44 +348,54 @@
                                         <label class="text-label-sm text-on-surface-variant font-bold">Mật khẩu hiện tại</label>
                                         <div class="relative">
                                             <input [type]="showCurrentPwd ? 'text' : 'password'" [(ngModel)]="passwords.current" placeholder="Nhập mật khẩu hiện tại" 
-                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12">
-                                            <button (click)="showCurrentPwd = !showCurrentPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors">
+                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12" (focus)="currentPasswordError = ''">
+                                            <button (click)="showCurrentPwd = !showCurrentPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors" type="button">
                                                 <span class="material-symbols-outlined text-xl">{{ showCurrentPwd ? 'visibility' : 'visibility_off' }}</span>
                                             </button>
                                         </div>
+                                        <p *ngIf="currentPasswordError" class="text-danger text-[11px] font-bold">{{ currentPasswordError }}</p>
                                     </div>
 
                                     <div class="space-y-2">
                                         <label class="text-label-sm text-on-surface-variant font-bold">Mật khẩu mới</label>
                                         <div class="relative">
                                             <input [type]="showNewPwd ? 'text' : 'password'" [(ngModel)]="passwords.new" placeholder="Nhập mật khẩu mới" 
-                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12">
-                                            <button (click)="showNewPwd = !showNewPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors">
+                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12" (focus)="newPasswordError = ''">
+                                            <button (click)="showNewPwd = !showNewPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors" type="button">
                                                 <span class="material-symbols-outlined text-xl">{{ showNewPwd ? 'visibility' : 'visibility_off' }}</span>
                                             </button>
                                         </div>
+                                        <p *ngIf="newPasswordError" class="text-danger text-[11px] font-bold">{{ newPasswordError }}</p>
                                     </div>
 
                                     <div class="space-y-2">
                                         <label class="text-label-sm text-on-surface-variant font-bold">Xác nhận mật khẩu mới</label>
                                         <div class="relative">
                                             <input [type]="showConfirmPwd ? 'text' : 'password'" [(ngModel)]="passwords.confirm" placeholder="Xác nhận mật khẩu mới" 
-                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12">
-                                            <button (click)="showConfirmPwd = !showConfirmPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors">
+                                                class="w-full px-4 py-3 bg-white border border-outline-variant/50 rounded-xl text-body-md focus:outline-none focus:border-secondary transition-all pr-12" (focus)="confirmPasswordError = ''">
+                                            <button (click)="showConfirmPwd = !showConfirmPwd" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-secondary transition-colors" type="button">
                                                 <span class="material-symbols-outlined text-xl">{{ showConfirmPwd ? 'visibility' : 'visibility_off' }}</span>
                                             </button>
                                         </div>
+                                        <p *ngIf="confirmPasswordError" class="text-danger text-[11px] font-bold">{{ confirmPasswordError }}</p>
+                                    </div>
+
+                                    <div *ngIf="changePasswordSuccess" class="bg-success-light text-success-text px-4 py-3 rounded-xl font-bold text-body-sm text-center">
+                                        {{ changePasswordSuccess }}
+                                    </div>
+                                    <div *ngIf="changePasswordFailure" class="bg-danger-light text-danger-text px-4 py-3 rounded-xl font-bold text-body-sm text-center">
+                                        {{ changePasswordFailure }}
                                     </div>
 
                                     <div class="pt-6">
-                                        <button (click)="confirmChangePassword()" 
+                                        <button (click)="changePassword()" 
                                             class="w-full bg-secondary text-white py-4 rounded-xl font-bold text-title-md shadow-lg shadow-secondary/20 hover:bg-secondary-hover transition-all">
                                             Xác nhận đổi mật khẩu
                                         </button>
                                     </div>
 
                                     <div class="text-center">
-                                        <a href="#" class="text-secondary font-bold text-body-sm hover:underline">Quên mật khẩu?</a>
+                                        <a href="#" (click)="openForgotPwdModal(); $event.preventDefault()" class="text-secondary font-bold text-body-sm hover:underline">Quên mật khẩu?</a>
                                     </div>
                                 </div>
                             </div>
@@ -399,81 +406,128 @@
         </div>
     </div>
 
-    <!-- OTP Verification Modal -->
-    <div *ngIf="showOtpModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" (click)="closeOtpModal()"></div>
-        
-        <!-- Modal Content -->
-        <div class="relative bg-white rounded-3xl w-full max-w-md p-8 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
-            <div class="text-center mb-8">
-                <h3 class="text-headline-sm font-bold text-secondary mb-3">Xác thực OTP</h3>
-                <p class="text-on-surface-variant text-body-md leading-relaxed">
-                    Vui lòng nhập mã OTP gồm 6 chữ số đã được gửi về số điện thoại của bạn.
-                </p>
-            </div>
+    <!-- Modals / Popups for Forgot Password (OTP flow) -->
+    <div *ngIf="showForgotPwdModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
+        <!-- Dynamic Dropdown Toast Alert inside Modal -->
+        <div *ngIf="showForgotToast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-3 px-6 py-3.5 bg-success text-white rounded-2xl shadow-lg border border-white/20" style="animation: slideDown 0.3s ease-out">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span class="font-bold text-body-md text-nowrap">{{ forgotToastMessage }}</span>
+        </div>
 
-            <!-- OTP Inputs -->
-            <div class="flex justify-between gap-2 mb-8">
-                <input *ngFor="let digit of otpInputs; let i = index" 
-                    type="text" maxlength="1" 
-                    [(ngModel)]="digit.value"
-                    (input)="onOtpInput($event, i)"
-                    class="w-12 h-14 md:w-14 md:h-16 text-center text-headline-sm font-bold border-2 border-outline-variant/30 rounded-xl focus:outline-none focus:border-secondary focus:bg-secondary-light/20 transition-all">
-            </div>
-
-            <div class="text-center mb-10">
-                <p class="text-on-surface-variant text-body-sm">
-                    Mã OTP có hiệu lực trong: <span class="text-secondary font-bold">{{ formatTime(otpTimer) }}</span>
-                </p>
-            </div>
-
-            <div class="flex gap-4">
-                <button (click)="closeOtpModal()" 
-                    class="flex-1 py-4 border-2 border-outline-variant/30 rounded-2xl font-bold text-on-surface-variant hover:bg-surface-container-low transition-all">
-                    Hủy
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-outline-variant/30">
+            <div class="px-6 py-5 border-b border-outline-variant/30 text-center relative">
+                <h2 class="text-title-lg font-bold text-navy mb-2">
+                    {{ forgotStep === 'phone' ? 'Quên mật khẩu' : forgotStep === 'otp' ? 'Nhập mã xác thực' : 'Cài đặt mật khẩu mới' }}
+                </h2>
+                <button (click)="closeForgotPwdModal()" class="absolute top-5 right-5 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">close</span>
                 </button>
-                <button (click)="verifyOtp()" 
-                    class="flex-1 py-4 bg-secondary text-white rounded-2xl font-bold shadow-lg shadow-secondary/20 hover:bg-secondary-hover transition-all">
-                    Xác nhận
-                </button>
+            </div>
+
+            <div class="px-6 py-6 space-y-6">
+                <ng-container [ngSwitch]="forgotStep">
+                    
+                    <!-- Step 1: Input Phone Number -->
+                    <div *ngSwitchCase="'phone'" class="space-y-5">
+                        <p class="text-body-sm text-on-surface-variant text-center">
+                            Nhập số điện thoại đăng ký tài khoản của bạn để nhận mã xác thực OTP.
+                        </p>
+                        <div class="space-y-3">
+                            <label class="sr-only">Số điện thoại</label>
+                            <div class="flex items-center rounded-2xl border border-outline-variant/50 bg-white px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                                <span class="material-symbols-outlined text-primary mr-3">phone</span>
+                                <input
+                                    type="text"
+                                    [(ngModel)]="forgotPhone"
+                                    placeholder="Nhập số điện thoại"
+                                    class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none"
+                                />
+                            </div>
+                            <p *ngIf="forgotPhoneError" class="text-sm text-danger font-semibold mt-1 text-center">{{ forgotPhoneError }}</p>
+                        </div>
+
+                        <button (click)="sendForgotOtp()" [disabled]="isSendingForgotOtp" class="w-full rounded-xl bg-secondary text-white py-3 text-title-md font-bold hover:bg-secondary-hover transition-all disabled:opacity-55">
+                            {{ isSendingForgotOtp ? 'Đang gửi...' : 'Gửi mã xác thực' }}
+                        </button>
+                    </div>
+
+                    <!-- Step 2: Verification OTP -->
+                    <div *ngSwitchCase="'otp'" class="space-y-5">
+                        <p class="text-body-sm text-on-surface-variant text-center">
+                            Mã xác thực đã được gửi về số <span class="font-bold text-primary">{{ forgotPhone }}</span>.
+                        </p>
+                        
+                        <!-- Single overlay OTP Input -->
+                        <div class="relative flex justify-center items-center py-2">
+                            <input
+                                type="text"
+                                maxlength="6"
+                                pattern="[0-9]*"
+                                inputmode="numeric"
+                                [(ngModel)]="forgotOtpString"
+                                (ngModelChange)="onForgotOtpChange($event)"
+                                style="position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; opacity: 0 !important; background: transparent !important; border: none !important; outline: none !important; color: transparent !important; caret-color: transparent !important; cursor: pointer !important; z-index: 10 !important;"
+                                autofocus
+                            />
+                            <div class="grid grid-cols-6 gap-2 w-full max-w-xs mx-auto">
+                                <div *ngFor="let index of [0,1,2,3,4,5]"
+                                    [class]="'w-11 h-14 rounded-2xl border-2 flex items-center justify-center text-body-lg font-bold text-navy transition-all bg-white ' + 
+                                        (forgotOtpString.length === index ? 'border-primary shadow-md ring-2 ring-primary/10 scale-105' : 
+                                         forgotOtpString.length > index ? 'border-primary/50' : 'border-outline-variant/50')">
+                                    {{ forgotOtpString[index] || '' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-body-sm text-on-surface-variant px-1">
+                            <span>Thời gian còn lại: <span class="font-semibold text-navy">{{ formatForgotCountdown(forgotOtpCountdown) }}</span></span>
+                            <button type="button" (click)="resendForgotOtp()" class="text-secondary font-bold hover:underline">Gửi lại mã</button>
+                        </div>
+                        <p *ngIf="forgotOtpError" class="text-sm text-danger font-semibold text-center mt-2">{{ forgotOtpError }}</p>
+                        <button (click)="verifyForgotOtp()" class="w-full rounded-xl bg-secondary text-white py-3 text-title-md font-bold hover:bg-secondary-hover transition-all">
+                            Tiếp tục
+                        </button>
+                    </div>
+
+                    <!-- Step 3: Reset Password -->
+                    <div *ngSwitchCase="'reset'" class="space-y-5">
+                        <p class="text-body-sm text-on-surface-variant text-center">
+                            Vui lòng nhập mật khẩu mới của bạn.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="sr-only">Mật khẩu mới</label>
+                                <div class="flex items-center rounded-2xl border border-outline-variant/50 bg-white px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                                    <span class="material-symbols-outlined text-primary mr-3">lock</span>
+                                    <input [type]="forgotShowNewPwd ? 'text' : 'password'" [(ngModel)]="forgotNewPwd" placeholder="Mật khẩu mới (ít nhất 6 ký tự)" autocomplete="new-password"
+                                        class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none" />
+                                    <button type="button" class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none" (click)="toggleForgotShowNewPwd()">
+                                        <span class="material-symbols-outlined">{{ forgotShowNewPwd ? 'visibility_off' : 'visibility' }}</span>
+                                    </button>
+                                </div>
+                                <p *ngIf="forgotNewPwdError" class="text-sm text-danger font-semibold mt-1 text-center">{{ forgotNewPwdError }}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="sr-only">Nhập lại mật khẩu mới</label>
+                                <div class="flex items-center rounded-2xl border border-outline-variant/50 bg-white px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                                    <span class="material-symbols-outlined text-primary mr-3">lock</span>
+                                    <input [type]="forgotShowConfirmPwd ? 'text' : 'password'" [(ngModel)]="forgotConfirmPwd" placeholder="Nhập lại mật khẩu" autocomplete="new-password"
+                                        class="w-full bg-transparent text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none" />
+                                    <button type="button" class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none" (click)="toggleForgotShowConfirmPwd()">
+                                        <span class="material-symbols-outlined">{{ forgotShowConfirmPwd ? 'visibility_off' : 'visibility' }}</span>
+                                    </button>
+                                </div>
+                                <p *ngIf="forgotConfirmPwdError" class="text-sm text-danger font-semibold mt-1 text-center">{{ forgotConfirmPwdError }}</p>
+                            </div>
+                        </div>
+                        <p *ngIf="forgotResetError" class="text-sm text-danger font-semibold text-center mt-2">{{ forgotResetError }}</p>
+                        <button (click)="resetForgotNewPassword()" class="w-full rounded-xl bg-secondary text-white py-3 text-title-md font-bold hover:bg-secondary-hover transition-all">
+                            Xác nhận
+                        </button>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </div>
-
-    <!-- Success Message Modal -->
-    <div *ngIf="showSuccessModal" class="fixed inset-0 z-[110] flex items-center justify-center p-4">
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
-        
-        <!-- Modal Content -->
-        <div class="relative bg-white rounded-3xl w-full max-w-md p-10 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
-            <!-- Animated Success Icon -->
-            <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce-slow">
-                <span class="material-symbols-outlined text-primary text-6xl">check_circle</span>
-            </div>
-
-            <h3 class="text-headline-sm font-bold text-navy mb-4">Đổi mật khẩu thành công!</h3>
-            
-            <p class="text-on-surface-variant text-body-md leading-relaxed mb-10 px-4">
-                Tài khoản của bạn đã được cập nhật mật khẩu mới. Hệ thống sẽ tự động quay về trang <span class="font-bold">Đăng nhập</span> sau <span class="text-primary font-bold">{{ redirectTimer }}</span> giây...
-            </p>
-
-            <!-- Countdown Ring (Simple CSS) -->
-            <div class="relative w-16 h-16 mx-auto mb-10 flex items-center justify-center">
-                <div class="absolute inset-0 border-4 border-primary/10 rounded-full"></div>
-                <div class="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
-                <span class="text-headline-sm font-bold text-primary">{{ redirectTimer }}</span>
-            </div>
-
-            <button (click)="goToLogin()" 
-                class="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-hover transition-all flex items-center justify-center gap-3">
-                <span class="material-symbols-outlined">login</span>
-                Đăng nhập ngay
-            </button>
-        </div>
-    </div>
-
-    <app-footer></app-footer>
 </div>
 

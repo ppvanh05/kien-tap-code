@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy, BadRequestException, NotFoun
 import { PrismaService } from '../../prisma/prisma.service';
 import { NhatKyHeThongService } from '../../admin/nhat-ky-he-thong/nhat-ky-he-thong.service';
 import { Prisma, TrangThaiGhe, TrangThaiVe, PhuongThucThanhToan, TrangThaiThanhToan } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
@@ -200,6 +201,103 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
     return `DH${maxNum + 1}`;
   }
 
+  private isFallbackPickupId(maDiem: string, maLichTrinh: string): boolean {
+    return maDiem === `PICKUP_${maLichTrinh}`;
+  }
+
+  private isFallbackDropoffId(maDiem: string, maLichTrinh: string): boolean {
+    return maDiem === `DROPOFF_${maLichTrinh}`;
+  }
+
+  private normalizePointName(value?: string | null): string {
+    return (value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .toLowerCase()
+      .trim();
+  }
+
+  private async resolveStationPoint(params: {
+    maDiem: string;
+    maLichTrinh: string;
+    schedule: {
+      MaTuyenXe: string;
+      MaNVDieuPhoi: string;
+      TUYEN_XE: { DiemKhoiHanh: string; DiemDen: string; MaNVDieuPhoi: string };
+    };
+    isFallback: boolean;
+    routePointName: string;
+    fallbackPrefix: 'PICKUP' | 'DROPOFF';
+  }): Promise<{ maDiem: string; tenDiem: string }> {
+    const { maDiem, maLichTrinh, schedule, isFallback, routePointName, fallbackPrefix } = params;
+
+    if (!isFallback) {
+      const station = await this.prisma.dIEM_DON_TRA_DUNG.findUnique({
+        where: { MaDiem: maDiem },
+      });
+      if (!station) {
+        throw new NotFoundException('Trạm đón hoặc trạm trả không hợp lệ!');
+      }
+      return { maDiem: station.MaDiem, tenDiem: station.TenDiem };
+    }
+
+    const expectedFallbackId = `${fallbackPrefix}_${maLichTrinh}`;
+    if (maDiem !== expectedFallbackId) {
+      throw new NotFoundException('Trạm đón hoặc trạm trả không hợp lệ!');
+    }
+
+    const routePoints = await this.prisma.dIEM_DON_TRA_DUNG.findMany({
+      where: { MaTuyenXe: schedule.MaTuyenXe },
+    });
+    const normalizedRoutePoint = this.normalizePointName(routePointName);
+    const matched = routePoints.find((point) => {
+      const normalizedName = this.normalizePointName(point.TenDiem);
+      return (
+        normalizedName === normalizedRoutePoint ||
+        normalizedName.includes(normalizedRoutePoint) ||
+        normalizedRoutePoint.includes(normalizedName)
+      );
+    });
+
+    if (matched) {
+      return { maDiem: matched.MaDiem, tenDiem: matched.TenDiem };
+    }
+
+    const maNVDieuPhoi = schedule.TUYEN_XE.MaNVDieuPhoi || schedule.MaNVDieuPhoi;
+    const gioCoMat = new Date();
+    gioCoMat.setUTCHours(0, 0, 0, 0);
+
+    await this.prisma.dIEM_DON_TRA_DUNG.upsert({
+      where: { MaDiem: expectedFallbackId },
+      update: {
+        MaTuyenXe: schedule.MaTuyenXe,
+        TenDiem: routePointName,
+        ThanhPho: routePointName,
+        Tinh: routePointName,
+        DiaChi: routePointName,
+        TrangThaiDiem: 'DangHoatDong',
+        MaNVDieuPhoi: maNVDieuPhoi,
+      },
+      create: {
+        MaDiem: expectedFallbackId,
+        MaTuyenXe: schedule.MaTuyenXe,
+        TenDiem: routePointName,
+        ThanhPho: routePointName,
+        Tinh: routePointName,
+        DiaChi: routePointName,
+        LoaiDiem: 'DiemDonTra',
+        TrangThaiDiem: 'DangHoatDong',
+        MaNVDieuPhoi: maNVDieuPhoi,
+        GioCanCoMat: gioCoMat,
+        ThoiGianCoMatTruoc: 15,
+      },
+    });
+
+    return { maDiem: expectedFallbackId, tenDiem: routePointName };
+  }
+
   // ===== CREATE ORDER WITH E-TICKETS (MARKED PAID AND RECORDED DIRECTLY ON CONFIRMATION) =====
   async createOrder(dto: {
     MaKhachHang: string;
@@ -262,21 +360,50 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
     // Verify schedule exists
     const schedule = await this.prisma.lICH_TRINH.findUnique({
       where: { MaLichTrinh },
-      include: { PHUONG_TIEN: true },
+      include: { PHUONG_TIEN: true, TUYEN_XE: true },
     });
     if (!schedule) {
       throw new NotFoundException(`Không tìm thấy chuyến xe với mã ${MaLichTrinh}`);
     }
 
-    const pickupStation = await this.prisma.dIEM_DON_TRA_DUNG.findUnique({
-      where: { MaDiem: MaDiemDon },
+    const isFallbackPickup = this.isFallbackPickupId(MaDiemDon, MaLichTrinh);
+    const isFallbackDropoff = this.isFallbackDropoffId(MaDiemTra, MaLichTrinh);
+
+    console.log('[createOrder] MaDiemDon/MaDiemTra received:', {
+      MaDiemDon,
+      MaDiemTra,
     });
-    const dropoffStation = await this.prisma.dIEM_DON_TRA_DUNG.findUnique({
-      where: { MaDiem: MaDiemTra },
+    console.log('[createOrder] isFallbackPickup/isFallbackDropoff:', {
+      isFallbackPickup,
+      isFallbackDropoff,
     });
-    if (!pickupStation || !dropoffStation) {
-      throw new NotFoundException('Trạm đón hoặc trạm trả không hợp lệ!');
-    }
+
+    const pickupStation = await this.resolveStationPoint({
+      maDiem: MaDiemDon,
+      maLichTrinh: MaLichTrinh,
+      schedule,
+      isFallback: isFallbackPickup,
+      routePointName: schedule.TUYEN_XE.DiemKhoiHanh,
+      fallbackPrefix: 'PICKUP',
+    });
+    const dropoffStation = await this.resolveStationPoint({
+      maDiem: MaDiemTra,
+      maLichTrinh: MaLichTrinh,
+      schedule,
+      isFallback: isFallbackDropoff,
+      routePointName: schedule.TUYEN_XE.DiemDen,
+      fallbackPrefix: 'DROPOFF',
+    });
+
+    const resolvedMaDiemDon = pickupStation.maDiem;
+    const resolvedMaDiemTra = dropoffStation.maDiem;
+
+    console.log('[createOrder] resolved pickup/dropoff:', {
+      resolvedMaDiemDon,
+      resolvedMaDiemTra,
+      pickupName: pickupStation.tenDiem,
+      dropoffName: dropoffStation.tenDiem,
+    });
 
     const seats = await this.prisma.gHE_CHUYEN_XE.findMany({
       where: {
@@ -360,8 +487,8 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
             MaLichTrinh,
             MaXe: schedule.MaXe,
             MaGheChuyen: seat.MaGheChuyen,
-            MaDiemDon,
-            MaDiemTra,
+            MaDiemDon: resolvedMaDiemDon,
+            MaDiemTra: resolvedMaDiemTra,
           },
         });
         tickets.push(ticket);
@@ -376,14 +503,14 @@ export class ThongTinDonHangService implements OnModuleInit, OnModuleDestroy {
       }
 
       // 3. Create payment record (ThanhToan)
-      const maGiaoDich = `GD_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
+      const maGiaoDich = await this.prisma.generateNextId('tHANH_TOAN', 'MaGiaoDich', 'GD_TT_', 6, 100001);
       const payment = await tx.tHANH_TOAN.create({
         data: {
           MaGiaoDich: maGiaoDich,
           MaDonHang: maDonHang,
           LoaiGiaoDich: 'ThanhToan',
           PhuongThucThanhToan: this.mapPhuongThucThanhToan(PhuongThucThanhToan),
-          SoTien: new Prisma.Decimal(finalTotal),
+          SoTien: new Decimal(finalTotal),
           ThoiGianGiaoDich: new Date(),
           TrangThaiGiaoDich: TrangThaiThanhToan.DaThanhToan,
           LichSuHoanTien: '',

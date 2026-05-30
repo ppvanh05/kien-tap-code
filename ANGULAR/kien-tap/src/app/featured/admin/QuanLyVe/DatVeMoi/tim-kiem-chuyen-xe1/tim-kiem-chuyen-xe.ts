@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize, switchMap, timeout } from 'rxjs/operators';
 import { SupabaseService } from '../../../../../core/services/supabase.service';
+import { environment } from '../../../../../../environments/environment';
 
 
 interface Seat {
@@ -44,7 +45,7 @@ interface Trip {
   styleUrl: './tim-kiem-chuyen-xe.css',
 })
 export class TimKiemChuyenXe implements OnInit {
-  private readonly apiBaseUrl = 'http://localhost:3000';
+  private readonly apiBaseUrl = environment.apiBase;
 
   // Alert modal
   showAlertModal: boolean = false;

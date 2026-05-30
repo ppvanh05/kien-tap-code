@@ -220,6 +220,8 @@ model LICH_TRINH_DIEM_DUNG {
   MaDiem              String            @db.VarChar
   GioDenDuKien        DateTime          @db.Time(6)
   Ngay                DateTime?         @db.Date
+  GhiChu              String?
+  ThuTuDung           Int?
   DIEM_DON_TRA_DUNG   DIEM_DON_TRA_DUNG @relation(fields: [MaDiem], references: [MaDiem], onDelete: NoAction, onUpdate: NoAction)
   LICH_TRINH          LICH_TRINH        @relation(fields: [MaLichTrinh], references: [MaLichTrinh], onDelete: NoAction, onUpdate: NoAction)
 }

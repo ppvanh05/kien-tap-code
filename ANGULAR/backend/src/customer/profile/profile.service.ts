@@ -1,10 +1,15 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { GioiTinhEnum, TrangThaiTaiKhoanEnum } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private authService: AuthService,
+  ) {}
 
   // 1. GET /customer/ho-so/:id
   async getProfile(id: string) {
@@ -20,7 +25,6 @@ export class ProfileService {
         NgaySinh: true,
         TrangThaiTaiKhoan: true,
         NgayDangKy: true,
-        // MatKhau: false (Mặc định không chọn là không trả về)
       },
     });
 
@@ -48,12 +52,44 @@ export class ProfileService {
 
     const updateData: any = {};
 
-    // Cho phép sửa các trường cụ thể
-    if (data.HoTenKhachHang !== undefined) updateData.HoTenKhachHang = data.HoTenKhachHang;
-    if (data.Email !== undefined) updateData.Email = data.Email;
+    // Chỉ cho phép sửa các trường yêu cầu
+    if (data.HoTenKhachHang !== undefined) {
+      const hoTen = data.HoTenKhachHang.trim();
+      if (!hoTen || hoTen.length < 2 || hoTen.length > 100) {
+        throw new BadRequestException('Họ tên phải từ 2 đến 100 ký tự và không được để trống');
+      }
+      updateData.HoTenKhachHang = hoTen;
+    }
+
+    if (data.Email !== undefined) {
+      if (data.Email) {
+        const email = data.Email.trim();
+        // Regex validate email chuẩn hơn
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        
+        if (email.includes(' ') || !emailRegex.test(email) || email.endsWith('.') || email.length > 254) {
+          throw new BadRequestException('Định dạng email không hợp lệ hoặc quá dài');
+        }
+
+        // Kiểm tra trùng email với khách hàng khác
+        const existingEmail = await this.prisma.kHACH_HANG.findFirst({
+          where: {
+            Email: email,
+            NOT: { MaKhachHang: id }
+          }
+        });
+        if (existingEmail) {
+          throw new BadRequestException('Email này đã được sử dụng bởi một tài khoản khác');
+        }
+        updateData.Email = email;
+      } else {
+        updateData.Email = null;
+      }
+    }
+
     if (data.AnhDaiDien !== undefined) updateData.AnhDaiDien = data.AnhDaiDien;
 
-    // Validate GioiTinh
+    // Validate GioiTinh theo enum trong schema
     if (data.GioiTinh !== undefined) {
       if (!Object.values(GioiTinhEnum).includes(data.GioiTinh as GioiTinhEnum)) {
         throw new BadRequestException(`Giới tính không hợp lệ. Chỉ chấp nhận: ${Object.values(GioiTinhEnum).join(', ')}`);
@@ -61,12 +97,20 @@ export class ProfileService {
       updateData.GioiTinh = data.GioiTinh;
     }
 
-    // Convert NgaySinh sang Date
+    // Convert NgaySinh sang Date nếu có
     if (data.NgaySinh !== undefined) {
-      updateData.NgaySinh = data.NgaySinh ? new Date(data.NgaySinh) : null;
+      if (data.NgaySinh) {
+        const ngaySinh = new Date(data.NgaySinh);
+        if (ngaySinh > new Date()) {
+          throw new BadRequestException('Ngày sinh không được lớn hơn ngày hiện tại');
+        }
+        updateData.NgaySinh = ngaySinh;
+      } else {
+        updateData.NgaySinh = null;
+      }
     }
 
-    // Thực hiện cập nhật
+    // Thực hiện cập nhật và trả về dữ liệu (không có MatKhau)
     const updatedCustomer = await this.prisma.kHACH_HANG.update({
       where: { MaKhachHang: id },
       data: updateData,
@@ -86,7 +130,23 @@ export class ProfileService {
     return updatedCustomer;
   }
 
-  async changePassword(id: string, dto: { MatKhauCu: string; MatKhauMoi: string; otp: string }) {
+  async sendOtpForPasswordChange(id: string) {
+    const customer = await this.prisma.kHACH_HANG.findUnique({
+      where: { MaKhachHang: id },
+      select: { SoDienThoai: true },
+    });
+
+    if (!customer) {
+      throw new NotFoundException(`Không tìm thấy khách hàng với mã ${id}`);
+    }
+
+    return this.authService.sendOtp({
+      SoDienThoai: customer.SoDienThoai,
+      MucDich: 'DoiMatKhau',
+    });
+  }
+
+  async changePassword(id: string, dto: { MatKhauCu: string; MatKhauMoi: string; XacNhanMatKhauMoi: string }) {
     const customer = await this.prisma.kHACH_HANG.findUnique({
       where: { MaKhachHang: id },
     });
@@ -95,13 +155,32 @@ export class ProfileService {
       throw new NotFoundException(`Không tìm thấy khách hàng với mã ${id}`);
     }
 
-    if (customer.MatKhau !== dto.MatKhauCu) {
+    // Validate mật khẩu mới không được rỗng
+    if (!dto.MatKhauMoi || dto.MatKhauMoi.trim() === '') {
+      throw new BadRequestException('Mật khẩu mới không được để trống.');
+    }
+
+    // Validate mật khẩu mới và xác nhận mật khẩu mới phải giống nhau
+    if (dto.MatKhauMoi !== dto.XacNhanMatKhauMoi) {
+      throw new BadRequestException('Mật khẩu mới và xác nhận mật khẩu mới không khớp.');
+    }
+
+    // Validate mật khẩu mới không được trùng mật khẩu cũ
+    if (dto.MatKhauMoi === dto.MatKhauCu) {
+      throw new BadRequestException('Mật khẩu mới không được trùng với mật khẩu cũ.');
+    }
+
+    // So sánh mật khẩu cũ
+    const isPasswordValid = await bcrypt.compare(dto.MatKhauCu, customer.MatKhau);
+    if (!isPasswordValid && customer.MatKhau !== dto.MatKhauCu) {
       throw new BadRequestException('Mật khẩu cũ không đúng.');
     }
 
+    // Hash mật khẩu mới và cập nhật
+    const hashedPassword = await bcrypt.hash(dto.MatKhauMoi, 10);
     await this.prisma.kHACH_HANG.update({
       where: { MaKhachHang: id },
-      data: { MatKhau: dto.MatKhauMoi },
+      data: { MatKhau: hashedPassword },
     });
 
     return {

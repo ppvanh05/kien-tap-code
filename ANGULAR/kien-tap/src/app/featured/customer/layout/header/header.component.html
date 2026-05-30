@@ -5,39 +5,33 @@
             <img src="/asset/images/customer/logo_removebg.png" alt="TXP Logo" class="h-[120px] w-auto">
         </div>
         <nav class="hidden lg:flex items-center gap-gutter">
-            <a #rlaHome="routerLinkActive"
-                class="font-body-lg text-body-lg hover:text-on-primary transition-colors transition-all duration-300 border-b-2 border-transparent pb-1"
-                [class.text-on-primary]="rlaHome.isActive"
-                [class.text-on-primary/80]="!rlaHome.isActive"
-                [class.font-bold]="rlaHome.isActive"
-                routerLink="/home" routerLinkActive="border-on-primary">TRANG CHỦ</a>
-            <a #rlaTraCuu="routerLinkActive"
-                class="font-body-lg text-body-lg hover:text-on-primary transition-colors transition-all duration-300 border-b-2 border-transparent pb-1"
-                [class.text-on-primary]="rlaTraCuu.isActive"
-                [class.text-on-primary/80]="!rlaTraCuu.isActive"
-                [class.font-bold]="rlaTraCuu.isActive"
-                routerLink="/tra-cuu-ve" routerLinkActive="border-on-primary">TRA CỨU VÉ</a>
-            <a #rlaTinTuc="routerLinkActive"
-                class="font-body-lg text-body-lg hover:text-on-primary transition-colors transition-all duration-300 border-b-2 border-transparent pb-1"
-                [class.text-on-primary]="rlaTinTuc.isActive"
-                [class.text-on-primary/80]="!rlaTinTuc.isActive"
-                [class.font-bold]="rlaTinTuc.isActive"
-                routerLink="/tin-tuc" routerLinkActive="border-on-primary">TIN TỨC</a>
-            <a #rlaDanhGia="routerLinkActive"
-                class="font-body-lg text-body-lg hover:text-on-primary transition-colors transition-all duration-300 border-b-2 border-transparent pb-1"
-                [class.text-on-primary]="rlaDanhGia.isActive"
-                [class.text-on-primary/80]="!rlaDanhGia.isActive"
-                [class.font-bold]="rlaDanhGia.isActive"
-                routerLink="/danh-gia" routerLinkActive="border-on-primary">ĐÁNH GIÁ</a>
+            <a
+                class="font-bold text-body-lg border-b-2 border-transparent pb-1 text-on-primary/70 hover:text-on-primary transition-colors"
+                routerLink="/home"
+                routerLinkActive="border-on-primary text-on-primary"
+                [routerLinkActiveOptions]="{ exact: true }">TRANG CHỦ</a>
+            <a
+                class="font-bold text-body-lg border-b-2 border-transparent pb-1 text-on-primary/70 hover:text-on-primary transition-colors"
+                routerLink="/tra-cuu-ve"
+                routerLinkActive="border-on-primary text-on-primary"
+                [routerLinkActiveOptions]="{ exact: true }">TRA CỨU VÉ</a>
+            <a
+                class="font-bold text-body-lg border-b-2 border-transparent pb-1 text-on-primary/70 hover:text-on-primary transition-colors"
+                routerLink="/tin-tuc"
+                routerLinkActive="border-on-primary text-on-primary">TIN TỨC</a>
+            <a
+                class="font-bold text-body-lg border-b-2 border-transparent pb-1 text-on-primary/70 hover:text-on-primary transition-colors"
+                routerLink="/danh-gia"
+                routerLinkActive="border-on-primary text-on-primary"
+                [routerLinkActiveOptions]="{ exact: true }">ĐÁNH GIÁ</a>
             
             <!-- GIỚI THIỆU with Dropdown -->
             <div class="relative group">
                 <button (click)="toggleIntroDropdown($event)" 
                     [class.border-on-primary]="isIntroActive()"
                     [class.text-on-primary]="isIntroActive()"
-                    [class.font-bold]="isIntroActive()"
-                    [class.text-on-primary/80]="!isIntroActive()"
-                    class="flex items-center gap-1 font-body-lg text-body-lg hover:text-on-primary transition-all duration-300 uppercase border-b-2 border-transparent pb-1">
+                    [class.text-on-primary/70]="!isIntroActive()"
+                    class="flex items-center gap-1 font-bold text-body-lg hover:text-on-primary transition-colors uppercase border-b-2 border-transparent pb-1">
                     GIỚI THIỆU
                     <span class="material-symbols-outlined text-sm transition-transform duration-300" 
                         [class.rotate-180]="isIntroDropdownOpen">expand_more</span>

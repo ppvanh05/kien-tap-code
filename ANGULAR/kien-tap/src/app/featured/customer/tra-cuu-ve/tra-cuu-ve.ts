@@ -2,8 +2,6 @@ import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '../layout/header/header.component';
-import { FooterComponent } from '../layout/footer/footer.component';
 import { PrintService } from '../../../core/services/print.service';
 import { TraCuuVeApiService } from '../../../core/services/tra-cuu-ve-api.service';
 import { TimKiemApiService } from '../../../core/services/tim-kiem-api.service';
@@ -76,7 +74,7 @@ const LOCATION_OPTIONS: LocationOption[] = [
 @Component({
   selector: 'app-tim-kiem-chuyen-xe',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './tra-cuu-ve.html',
   styleUrl: './tra-cuu-ve.css'
 })
@@ -386,14 +384,95 @@ export class TraCuuVeComponent implements OnInit {
   canEditOrder(): boolean {
     return this.getEditRemaining() > 0;
   }
+
+  // Helper to calculate hours remaining until departure
+  getHoursUntilDeparture(): number | null {
+    if (!this.currentOrder || !this.currentOrder.departureDate || !this.currentOrder.gioKhoiHanh) {
+      return null;
+    }
+    const departureDateTime = this.buildDepartureDate(this.currentOrder.departureDate, this.currentOrder.gioKhoiHanh);
+    if (!departureDateTime) {
+      return null;
+    }
+    const now = new Date();
+    const diffMs = departureDateTime.getTime() - now.getTime();
+    return diffMs / (1000 * 60 * 60); // Convert milliseconds to hours
+  }
+
+  // New getter for "Sửa thông tin" button enabled state
+  get isEditButtonEnabled(): boolean {
+    if (!this.currentOrder) return false;
+
+    const orderStatus = this.currentOrder.trangThaiDonHang;
+    const ticketsStatusValid = this.currentOrder.tickets.every(
+      ticket => ticket.trangThaiVe === 'Chờ thanh toán' || ticket.trangThaiVe === 'Chờ khởi hành'
+    );
+
+    const canEditCount = this.getEditRemaining() > 0;
+    const hoursRemaining = this.getHoursUntilDeparture();
+    const hasEnoughTime = hoursRemaining !== null && hoursRemaining >= 2;
+
+    return (orderStatus === 'Chờ thanh toán' || orderStatus === 'Chờ khởi hành') &&
+           ticketsStatusValid &&
+           canEditCount &&
+           hasEnoughTime;
+  }
+
+  // New getter for "Sửa thông tin" button disabled state (for visual dimming)
+  get isEditButtonDisabled(): boolean {
+    if (!this.currentOrder) return true; // Always disabled if no order
+
+    const orderStatus = this.currentOrder.trangThaiDonHang;
+    const ticketsStatusValid = this.currentOrder.tickets.every(
+      ticket => ticket.trangThaiVe === 'Chờ thanh toán' || ticket.trangThaiVe === 'Chờ khởi hành'
+    );
+
+    const canEditCount = this.getEditRemaining() > 0;
+    const hoursRemaining = this.getHoursUntilDeparture();
+    const hasEnoughTime = hoursRemaining !== null && hoursRemaining >= 2;
+
+    // Disabled if status is not 'ChoThanhToan' or 'ChoKhoiHanh'
+    // OR if not enough edit count
+    // OR if not enough time remaining
+    // OR if any ticket status is not 'ChoThanhToan' or 'ChoKhoiHanh'
+    return !((orderStatus === 'Chờ thanh toán' || orderStatus === 'Chờ khởi hành') &&
+             ticketsStatusValid &&
+             canEditCount &&
+             hasEnoughTime);
+  }
+
+  // New getter for "Yêu cầu hủy vé" button enabled state
+  get isCancelButtonEnabled(): boolean {
+    if (!this.currentOrder) return false;
+    const orderStatus = this.currentOrder.trangThaiDonHang;
+    const ticketsStatusValid = this.currentOrder.tickets.every(
+      ticket => ticket.trangThaiVe === 'Chờ thanh toán' || ticket.trangThaiVe === 'Chờ khởi hành'
+    );
+    return (orderStatus === 'Chờ thanh toán' || orderStatus === 'Chờ khởi hành') && ticketsStatusValid;
+  }
+
+  // New getter for "Yêu cầu hủy vé" button disabled state (for visual dimming)
+  get isCancelButtonDisabled(): boolean {
+    return !this.isCancelButtonEnabled;
+  }
+
+  // New getter for "Đánh giá dịch vụ" button enabled state
+  get isReviewButtonEnabled(): boolean {
+    if (!this.currentOrder) return false;
+    const orderStatus = this.currentOrder.trangThaiDonHang;
+    const ticketsStatusValid = this.currentOrder.tickets.every(
+      ticket => ticket.trangThaiVe === 'Đã hoàn thành'
+    );
+    return orderStatus === 'Đã hoàn thành' && ticketsStatusValid;
+  }
+
+  // New getter for "Đánh giá dịch vụ" button disabled state (for visual dimming)
+  get isReviewButtonDisabled(): boolean {
+    return !this.isReviewButtonEnabled;
+  }
   
   canShowEditButton(): boolean {
-    if (!this.currentOrder) return false;
-    const isOrderChoKhoiHanh = this.currentOrder.trangThaiDonHang === 'Chờ khởi hành';
-    const areAllTicketsChoKhoiHanh = this.currentOrder.tickets.every(
-      ticket => ticket.trangThaiVe === 'Chờ khởi hành'
-    );
-    return isOrderChoKhoiHanh && areAllTicketsChoKhoiHanh && this.canEditOrder();
+    return this.getEditRemaining() > 0;
   }
 
   formatPrice(price: number): string {

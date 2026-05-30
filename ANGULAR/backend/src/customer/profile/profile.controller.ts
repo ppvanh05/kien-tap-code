@@ -78,7 +78,7 @@ export class ProfileController {
     dto: {
       MatKhauCu: string;
       MatKhauMoi: string;
-      otp: string;
+      XacNhanMatKhauMoi: string;
     },
   ) {
     return this.profileService.changePassword(user.maKhachHang, dto);
@@ -109,17 +109,5 @@ export class ProfileController {
     };
   }
 
-  // POST /customer/profile/:id/change-password → Đổi mật khẩu bằng ID (cần JWT)
-  @Post(':id/change-password')
-  async changePassword(
-    @Param('id') id: string,
-    @Body()
-    dto: {
-      MatKhauCu: string;
-      MatKhauMoi: string;
-      otp: string;
-    },
-  ) {
-    return this.profileService.changePassword(id, dto);
-  }
+
 }

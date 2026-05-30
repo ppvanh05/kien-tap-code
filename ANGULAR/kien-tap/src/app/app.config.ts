@@ -6,12 +6,13 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { adminAuthInterceptor } from './core/interceptors/admin-auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, adminAuthInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, adminAuthInterceptor, errorInterceptor])),
   ]
 };

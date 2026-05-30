@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { NhatKyHeThongService } from '../../admin/nhat-ky-he-thong/nhat-ky-he-thong.service';
 import { JwtHelper } from './jwt.helper';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -56,7 +57,7 @@ export class AuthService {
     // Generate random 6 digit OTP
     const code = String(Math.floor(100000 + Math.random() * 900000));
     const hashed = this.hashOtp(code);
-    const maOtp = `OTP_${Date.now()}_${Math.floor(100 + Math.random() * 900)}`;
+    const maOtp = await this.prisma.generateNextId('oTP_XAC_THUC', 'MaOTP', 'OTP', 6, 100001);
 
     // Store OTP in database
     await this.prisma.oTP_XAC_THUC.create({
@@ -166,6 +167,7 @@ export class AuthService {
 
     const maKhachHang = await this.generateNextCustomerId();
     const gioiTinhVal = dto.GioiTinh === 'Nữ' || dto.GioiTinh === 'Nu' ? 'Nu' : 'Nam';
+    const hashedPassword = await bcrypt.hash(dto.MatKhau, 10);
 
     const customer = await this.prisma.kHACH_HANG.create({
       data: {
@@ -173,7 +175,7 @@ export class AuthService {
         HoTenKhachHang: dto.HoTenKhachHang,
         SoDienThoai: phone,
         Email: dto.Email ? dto.Email.trim() : null,
-        MatKhau: dto.MatKhau, // Storing as plain text for simplicity and consistency with admin
+        MatKhau: hashedPassword, // Store hashed password
         AnhDaiDien: null,
         GioiTinh: gioiTinhVal,
         NgaySinh: dto.NgaySinh ? new Date(dto.NgaySinh) : null,
@@ -216,7 +218,10 @@ export class AuthService {
     }
 
     // Compare plain passwords matching admin design
-    if (customer.MatKhau !== dto.MatKhau) {
+    // For existing plain text passwords, compare directly.
+    // For new hashed passwords, use bcrypt.
+    const isPasswordValid = await bcrypt.compare(dto.MatKhau, customer.MatKhau);
+    if (!isPasswordValid && customer.MatKhau !== dto.MatKhau) {
       throw new UnauthorizedException('Tài khoản hoặc mật khẩu không chính xác!');
     }
 
@@ -266,9 +271,10 @@ export class AuthService {
     }
 
     // Reset password
+    const hashedPassword = await bcrypt.hash(dto.MatKhauMoi, 10);
     await this.prisma.kHACH_HANG.update({
       where: { MaKhachHang: customer.MaKhachHang },
-      data: { MatKhau: dto.MatKhauMoi },
+      data: { MatKhau: hashedPassword },
     });
 
     // Record system log

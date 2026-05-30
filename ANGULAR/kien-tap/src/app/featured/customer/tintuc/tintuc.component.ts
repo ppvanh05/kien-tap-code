@@ -1,14 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef, AfterViewInit, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '../layout/header/header.component';
-import { FooterComponent } from '../layout/footer/footer.component';
 import { CustomerTinTucService } from '../../../core/services/customer-tin-tuc.service';
 
 @Component({
   selector: 'app-tintuc',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './tintuc.component.html',
   styleUrl: './tintuc.component.css'
 })
@@ -76,13 +74,14 @@ export class TintucComponent implements OnInit, AfterViewInit {
       search: this.searchQuery
     }).subscribe({
       next: (response) => {
-        const items = response.items || [];
+        const data = response.data || {};
+        const items = data.items || [];
         const mappedItems = items.map((item: any) => this.mapNewsItem(item));
 
         if (this.currentPage === 1) {
           if (!this.activeCategory && !this.searchQuery) {
             // TRANG TỔNG: Chia layout Featured, Latest, Sub, All
-            this.featuredNews = response.featuredNews ? this.mapNewsItem(response.featuredNews) : null;
+            this.featuredNews = data.featuredNews ? this.mapNewsItem(data.featuredNews) : null;
             this.latestNews = mappedItems.slice(0, 3);
             this.subFeaturedNews = mappedItems.slice(3, 5);
             
@@ -100,7 +99,7 @@ export class TintucComponent implements OnInit, AfterViewInit {
           this.allNews = mappedItems;
         }
 
-        this.totalPages = response.meta?.totalPages || 1;
+        this.totalPages = data.meta?.totalPages || 1;
         this.generatePagination(this.currentPage, this.totalPages);
         
         // Cần detectChanges để đảm bảo UI cập nhật ngay lập tức sau khi có dữ liệu

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface Route {
   id: string | number;
@@ -20,7 +21,7 @@ export interface Route {
   providedIn: 'root'
 })
 export class TuyenXeService {
-  private apiUrl = 'http://localhost:3000/dieu-hanh/tuyen-xe';
+  private apiUrl = environment.apiBase + '/dieu-hanh/tuyen-xe';
   private routes: Route[] = [];
   public routesUpdated$ = new Subject<void>();
 

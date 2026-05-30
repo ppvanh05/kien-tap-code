@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface Vehicle {
   id: string | number;
@@ -71,7 +72,7 @@ function parsePgArray(str: string): string[] {
   providedIn: 'root'
 })
 export class PhuongTienService {
-  private apiUrl = 'http://localhost:3000/dieu-hanh/phuong-tien';
+  private apiUrl = environment.apiBase + '/dieu-hanh/phuong-tien';
   private vehicles: Vehicle[] = [];
   public vehiclesUpdated$ = new Subject<void>();
 

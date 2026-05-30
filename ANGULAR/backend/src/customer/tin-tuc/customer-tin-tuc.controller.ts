@@ -30,7 +30,12 @@ export class CustomerTinTucController {
   @Get('home')
   async getHomeNews() {
     // Return 3 latest published news for home page
-    return this.customerTinTucService.getHomeNews();
+    const data = await this.customerTinTucService.getHomeNews();
+    return {
+      success: true,
+      message: 'Lấy tin tức trang chủ thành công!',
+      data,
+    };
   }
 
   @Get(':id')

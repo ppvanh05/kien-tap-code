@@ -6,9 +6,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                || localStorage.getItem('auth_token');
 
     // Đính kèm token cho tất cả API customer cần xác thực
-    const needsAuth =
-      req.url.includes('/customer/profile') ||
-      req.url.includes('/customer/tra-cuu-ve');
+    const needsAuth = req.url.includes('/customer/');
 
     if (token && needsAuth) {
       const clonedReq = req.clone({

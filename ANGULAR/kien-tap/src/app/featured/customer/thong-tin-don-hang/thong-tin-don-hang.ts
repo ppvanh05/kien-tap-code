@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { HeaderComponent } from '../layout/header/header.component';
-import { FooterComponent } from '../layout/footer/footer.component';
 import { ToastService } from '../../../core/services/toast.service';
 import { TimKiemApiService } from '../../../core/services/tim-kiem-api.service';
 
@@ -19,7 +17,7 @@ interface Seat {
 @Component({
   selector: 'app-thong-tin-don-hang',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './thong-tin-don-hang.html',
   styleUrl: './thong-tin-don-hang.css',
 })

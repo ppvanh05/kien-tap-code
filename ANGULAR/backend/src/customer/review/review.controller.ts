@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseFilters } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseFilters, Query } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CustomerExceptionFilter } from '../customer-exception.filter';
 
@@ -18,6 +18,38 @@ export class ReviewController {
   }
 
   @Get()
+  async getReviews(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '5',
+    @Query('rating') rating?: string,
+    @Query('hasComment') hasComment?: string,
+    @Query('hasImage') hasImage?: string,
+  ) {
+    const data = await this.reviewService.getReviews({
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+      rating: rating ? parseInt(rating, 10) : undefined,
+      hasComment: hasComment === 'true' ? true : hasComment === 'false' ? false : undefined,
+      hasImage: hasImage === 'true' ? true : hasImage === 'false' ? false : undefined,
+    });
+    return {
+      success: true,
+      message: 'Lấy danh sách đánh giá thành công!',
+      data,
+    };
+  }
+
+  @Get('home')
+  async getHomeReviews() {
+    const data = await this.reviewService.getHomeReviews();
+    return {
+      success: true,
+      message: 'Lấy đánh giá trang chủ thành công!',
+      data,
+    };
+  }
+
+  @Get('all')
   async findAll() {
     const data = await this.reviewService.findAll();
     return {

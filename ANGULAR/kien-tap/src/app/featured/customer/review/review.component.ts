@@ -1,8 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../layout/header/header.component';
-import { FooterComponent } from '../layout/footer/footer.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { DanhGiaService } from '../../../core/services/danh-gia.service';
@@ -22,7 +20,7 @@ interface Review {
 @Component({
   selector: 'app-review',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
 })
@@ -107,7 +105,8 @@ export class ReviewComponent implements OnInit {
       hasComment,
       hasImage
     }).subscribe({
-      next: (res) => {
+      next: (response: any) => {
+        const res = response.data || response;
         this.reviews = (res.items || []).map((item: any) => ({
           author: item.author,
           avatar: item.avatar,
@@ -126,9 +125,9 @@ export class ReviewComponent implements OnInit {
 
           isVerified: true
         }));
-        this.summary = res.summary;
-        this.currentPage = res.meta.currentPage;
-        this.totalPages = res.meta.totalPages;
+        this.summary = res.summary || this.summary;
+        this.currentPage = res.meta?.currentPage || this.currentPage;
+        this.totalPages = res.meta?.totalPages || 1;
 
         this.updateFiltersAndStats();
         this.generatePagination();

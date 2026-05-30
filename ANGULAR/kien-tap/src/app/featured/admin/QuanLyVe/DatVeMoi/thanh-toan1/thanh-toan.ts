@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../environments/environment';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './thanh-toan.css',
 })
 export class ThanhToan implements OnInit, OnDestroy {
-  private readonly apiBaseUrl = 'http://localhost:3000';
+  private readonly apiBaseUrl = environment.apiBase;
   bookingData: any = {
     tripId: 1,
     departureTime: '18:00',

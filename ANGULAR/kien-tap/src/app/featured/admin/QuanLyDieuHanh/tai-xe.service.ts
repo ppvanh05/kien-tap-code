@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface Driver {
   id: string | number;
@@ -24,7 +25,7 @@ export interface Driver {
 }
 )
 export class TaiXeService {
-  private apiUrl = 'http://localhost:3000/dieu-hanh/tai-xe-phu-xe';
+  private apiUrl = environment.apiBase + '/dieu-hanh/tai-xe-phu-xe';
   private drivers: Driver[] = [];
   public driversUpdated$ = new Subject<void>();
 

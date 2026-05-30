@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NhatKyHeThongService } from '../../admin/nhat-ky-he-thong/nhat-ky-he-thong.service';
+
+const MA_DANH_GIA_PREFIX = 'DG';
+const MA_DANH_GIA_WIDTH = 6;
+const MA_DANH_GIA_START = 100001;
+const MA_DANH_GIA_MAX_ATTEMPTS = 5;
 
 @Injectable()
 export class ReviewService {
@@ -9,54 +15,71 @@ export class ReviewService {
     private nhatKyService: NhatKyHeThongService
   ) {}
 
+  private parseMaDanhGiaNumber(id: string | null | undefined): number {
+    if (!id || !id.startsWith(MA_DANH_GIA_PREFIX)) {
+      return 0;
+    }
+    const numPart = id.slice(MA_DANH_GIA_PREFIX.length).replace(/[^0-9]/g, '');
+    const parsed = parseInt(numPart, 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  private formatMaDanhGia(value: number): string {
+    return `${MA_DANH_GIA_PREFIX}${String(value).padStart(MA_DANH_GIA_WIDTH, '0')}`;
+  }
+
+  private async generateNextMaDanhGia(tx: Prisma.TransactionClient): Promise<string> {
+    const rows = await tx.dANH_GIA.findMany({
+      where: { MaDanhGia: { startsWith: MA_DANH_GIA_PREFIX } },
+      select: { MaDanhGia: true },
+    });
+
+    let maxNum = MA_DANH_GIA_START - 1;
+    for (const row of rows) {
+      maxNum = Math.max(maxNum, this.parseMaDanhGiaNumber(row.MaDanhGia));
+    }
+
+    const nextNum = Math.max(maxNum + 1, MA_DANH_GIA_START);
+    return this.formatMaDanhGia(nextNum);
+  }
+
+  private isMaDanhGiaUniqueConstraintError(error: unknown): boolean {
+    return (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002' &&
+      Array.isArray(error.meta?.target) &&
+      (error.meta.target as string[]).includes('MaDanhGia')
+    );
+  }
+
   async create(createReviewDto: any) {
     const { MaVe, MaKhachHang, SoSao, NoiDungDanhGia, mediaUrls } = createReviewDto;
 
-    const generatedMaDanhGia = `DG${Date.now().toString().slice(-8)}`;
+    let result: Awaited<ReturnType<typeof this.createReviewInTransaction>> | undefined;
 
-    const result = await this.prisma.$transaction(async (tx) => {
-      const newReview = await tx.dANH_GIA.create({
-        data: {
-          MaDanhGia: generatedMaDanhGia, // Cung cấp ID đã tạo
-          SoSao,
-          NoiDungDanhGia,
-          ThoiGianDanhGia: new Date(),
-          TrangThaiPhanHoi: 'ChuaPhanHoi', // Trạng thái mặc định
-          KHACH_HANG: {
-            connect: { MaKhachHang: MaKhachHang }, // Kết nối với bản ghi KHACH_HANG hiện có
-          },
-          VE_DIEN_TU: {
-            connect: { MaVe: MaVe }, // Kết nối với bản ghi VE_DIEN_TU hiện có
-          },
-        },
-      });
-
-      if (mediaUrls && mediaUrls.length > 0) {
-        const mediaData = mediaUrls.map((url) => ({
-          MaDanhGia: newReview.MaDanhGia, // Sử dụng ID của đánh giá vừa tạo
-          DuongDanFile: url,
-        }));
-        await tx.mEDIA_DANH_GIA.createMany({
-          data: mediaData,
-        });
+    for (let attempt = 1; attempt <= MA_DANH_GIA_MAX_ATTEMPTS; attempt++) {
+      try {
+        result = await this.prisma.$transaction(async (tx) =>
+          this.createReviewInTransaction(tx, {
+            MaVe,
+            MaKhachHang,
+            SoSao,
+            NoiDungDanhGia,
+            mediaUrls,
+          }),
+        );
+        break;
+      } catch (error) {
+        if (this.isMaDanhGiaUniqueConstraintError(error) && attempt < MA_DANH_GIA_MAX_ATTEMPTS) {
+          continue;
+        }
+        throw error;
       }
+    }
 
-      // Find associated ticket and update statuses
-      const ticket = await tx.vE_DIEN_TU.findUnique({ where: { MaVe: MaVe } });
-      if (ticket && ticket.MaDonHang) {
-        await tx.dON_HANG.update({
-          where: { MaDonHang: ticket.MaDonHang },
-          data: { TrangThaiDonHang: 'DaDanhGia' },
-        });
-
-        await tx.vE_DIEN_TU.updateMany({
-          where: { MaDonHang: ticket.MaDonHang },
-          data: { TrangThaiVe: 'DaDanhGia' },
-        });
-      }
-
-      return newReview;
-    });
+    if (!result) {
+      throw new Error('Không thể tạo mã đánh giá duy nhất sau nhiều lần thử.');
+    }
 
     await this.nhatKyService.ghiLog({
       MaKhachHang: MaKhachHang,
@@ -69,6 +92,63 @@ export class ReviewService {
     return result;
   }
 
+  private async createReviewInTransaction(
+    tx: Prisma.TransactionClient,
+    input: {
+      MaVe: string;
+      MaKhachHang: string;
+      SoSao: number;
+      NoiDungDanhGia: string;
+      mediaUrls?: string[];
+    },
+  ) {
+    const { MaVe, MaKhachHang, SoSao, NoiDungDanhGia, mediaUrls } = input;
+
+    const generatedMaDanhGia = await this.generateNextMaDanhGia(tx);
+    console.log('Generated MaDanhGia:', generatedMaDanhGia);
+
+    const newReview = await tx.dANH_GIA.create({
+      data: {
+        MaDanhGia: generatedMaDanhGia,
+        SoSao,
+        NoiDungDanhGia,
+        ThoiGianDanhGia: new Date(),
+        TrangThaiPhanHoi: 'ChuaPhanHoi',
+        KHACH_HANG: {
+          connect: { MaKhachHang: MaKhachHang },
+        },
+        VE_DIEN_TU: {
+          connect: { MaVe: MaVe },
+        },
+      },
+    });
+
+    if (mediaUrls && mediaUrls.length > 0) {
+      const mediaData = mediaUrls.map((url) => ({
+        MaDanhGia: newReview.MaDanhGia,
+        DuongDanFile: url,
+      }));
+      await tx.mEDIA_DANH_GIA.createMany({
+        data: mediaData,
+      });
+    }
+
+    const ticket = await tx.vE_DIEN_TU.findUnique({ where: { MaVe: MaVe } });
+    if (ticket && ticket.MaDonHang) {
+      await tx.dON_HANG.update({
+        where: { MaDonHang: ticket.MaDonHang },
+        data: { TrangThaiDonHang: 'DaDanhGia' },
+      });
+
+      await tx.vE_DIEN_TU.updateMany({
+        where: { MaDonHang: ticket.MaDonHang },
+        data: { TrangThaiVe: 'DaDanhGia' },
+      });
+    }
+
+    return newReview;
+  }
+
   async getReviews(params: {
     page: number;
     limit: number;
@@ -76,54 +156,10 @@ export class ReviewService {
     hasComment?: boolean;
     hasImage?: boolean;
   }) {
+    console.time('getReviews');
     const { page, limit, rating, hasComment, hasImage } = params;
 
-    // 1. Get all reviews to compute summary statistics
-    const allReviews = await this.prisma.dANH_GIA.findMany({
-      include: {
-        MEDIA_DANH_GIA: true,
-      },
-    });
-
-    const totalReviews = allReviews.length;
-    const averageOverall = totalReviews > 0 
-      ? parseFloat((allReviews.reduce((sum, r) => sum + r.SoSao, 0) / totalReviews).toFixed(1)) 
-      : 0;
-
-    const getAverage = (arr: any[], key: string) => {
-      const valid = arr.filter((r) => r[key] !== null && r[key] !== undefined);
-      if (valid.length === 0) return 0;
-      const sum = valid.reduce((s, r) => s + r[key], 0);
-      return parseFloat((sum / valid.length).toFixed(1));
-    };
-
-    const criteriaAverage = {
-      anToan: getAverage(allReviews, 'DiemAnToan'),
-      sachSe: getAverage(allReviews, 'DiemSachSe'),
-      thaiDoNhanVien: getAverage(allReviews, 'DiemThaiDo'),
-      dungGio: getAverage(allReviews, 'DiemDungGio'),
-      thongTinDayDu: getAverage(allReviews, 'DiemThongTin'),
-      tienNghi: getAverage(allReviews, 'DiemTienNghi'),
-    };
-
-    const ratingCount = {
-      five: allReviews.filter((r) => r.SoSao === 5).length,
-      four: allReviews.filter((r) => r.SoSao === 4).length,
-      three: allReviews.filter((r) => r.SoSao === 3).length,
-      two: allReviews.filter((r) => r.SoSao === 2).length,
-      one: allReviews.filter((r) => r.SoSao === 1).length,
-    };
-
-    const commentCount = allReviews.filter(
-      (r) => r.NoiDungDanhGia && r.NoiDungDanhGia.trim() !== '',
-    ).length;
-    
-    const imageCount = allReviews.filter(
-      (r) => r.MEDIA_DANH_GIA && r.MEDIA_DANH_GIA.length > 0,
-    ).length;
-
-    // 2. Build where filter for paginated list
-    const where: any = {};
+    const where: Prisma.DANH_GIAWhereInput = {};
 
     if (rating !== undefined) {
       where.SoSao = rating;
@@ -135,10 +171,7 @@ export class ReviewService {
         notIn: [''],
       };
     } else if (hasComment === false) {
-      where.OR = [
-        { NoiDungDanhGia: null },
-        { NoiDungDanhGia: '' },
-      ];
+      where.OR = [{ NoiDungDanhGia: null }, { NoiDungDanhGia: '' }];
     }
 
     if (hasImage === true) {
@@ -151,43 +184,103 @@ export class ReviewService {
       };
     }
 
-    const totalItems = await this.prisma.dANH_GIA.count({ where });
-    const totalPages = Math.ceil(totalItems / limit);
+    const commentWhere: Prisma.DANH_GIAWhereInput = {
+      AND: [{ NoiDungDanhGia: { not: null } }, { NOT: { NoiDungDanhGia: '' } }],
+    };
 
-    const items = await this.prisma.dANH_GIA.findMany({
-      where,
-      orderBy: {
-        ThoiGianDanhGia: 'desc',
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        KHACH_HANG: {
-          select: {
-            HoTenKhachHang: true,
-            AnhDaiDien: true,
-          },
+    const formatAvg = (value: number | null | undefined) =>
+      value != null ? parseFloat(value.toFixed(1)) : 0;
+
+    const [
+      statsAgg,
+      ratingGroups,
+      commentCount,
+      imageCount,
+      totalItems,
+      items,
+    ] = await Promise.all([
+      this.prisma.dANH_GIA.aggregate({
+        _count: { _all: true },
+        _avg: {
+          SoSao: true,
+          DiemAnToan: true,
+          DiemSachSe: true,
+          DiemThaiDo: true,
+          DiemDungGio: true,
+          DiemThongTin: true,
+          DiemTienNghi: true,
         },
-        MEDIA_DANH_GIA: {
-          select: {
-            DuongDanFile: true,
-          },
+      }),
+      this.prisma.dANH_GIA.groupBy({
+        by: ['SoSao'],
+        _count: { _all: true },
+      }),
+      this.prisma.dANH_GIA.count({ where: commentWhere }),
+      this.prisma.dANH_GIA.count({
+        where: { MEDIA_DANH_GIA: { some: {} } },
+      }),
+      this.prisma.dANH_GIA.count({ where }),
+      this.prisma.dANH_GIA.findMany({
+        where,
+        orderBy: {
+          ThoiGianDanhGia: 'desc',
         },
-        VE_DIEN_TU: {
-          select: {
-            LICH_TRINH: {
-              select: {
-                TUYEN_XE: {
-                  select: {
-                    TenTuyenXe: true,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          KHACH_HANG: {
+            select: {
+              HoTenKhachHang: true,
+              AnhDaiDien: true,
+            },
+          },
+          MEDIA_DANH_GIA: {
+            select: {
+              DuongDanFile: true,
+            },
+          },
+          VE_DIEN_TU: {
+            select: {
+              LICH_TRINH: {
+                select: {
+                  TUYEN_XE: {
+                    select: {
+                      TenTuyenXe: true,
+                    },
                   },
                 },
               },
             },
           },
         },
-      },
-    });
+      }),
+    ]);
+
+    const totalReviews = statsAgg._count._all;
+    const averageOverall = formatAvg(statsAgg._avg.SoSao);
+
+    const criteriaAverage = {
+      anToan: formatAvg(statsAgg._avg.DiemAnToan),
+      sachSe: formatAvg(statsAgg._avg.DiemSachSe),
+      thaiDoNhanVien: formatAvg(statsAgg._avg.DiemThaiDo),
+      dungGio: formatAvg(statsAgg._avg.DiemDungGio),
+      thongTinDayDu: formatAvg(statsAgg._avg.DiemThongTin),
+      tienNghi: formatAvg(statsAgg._avg.DiemTienNghi),
+    };
+
+    const ratingCountMap = Object.fromEntries(
+      ratingGroups.map((group) => [group.SoSao, group._count._all]),
+    );
+
+    const ratingCount = {
+      five: ratingCountMap[5] ?? 0,
+      four: ratingCountMap[4] ?? 0,
+      three: ratingCountMap[3] ?? 0,
+      two: ratingCountMap[2] ?? 0,
+      one: ratingCountMap[1] ?? 0,
+    };
+
+    const totalPages = Math.ceil(totalItems / limit);
 
     const formattedItems = items.map((item) => ({
       id: item.MaDanhGia,
@@ -205,6 +298,8 @@ export class ReviewService {
       diemThongTin: item.DiemThongTin,
       diemTienNghi: item.DiemTienNghi,
     }));
+
+    console.timeEnd('getReviews');
 
     return {
       summary: {
