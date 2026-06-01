@@ -12,7 +12,7 @@ Thay vì con người phải thủ công Inspect DOM, bước này giao nhiệm 
 ## Cách sử dụng
 
 1. Điền URL, tài khoản test và Test Cases vào file `prompt.txt`.
-2. Gửi cho AI — AI sẽ sử dụng Playwright/Selenium MCP để:
+2. Gửi cho AI — AI sẽ sử dụng Browser/Playwright để:
    - Tự khởi động browser
    - Điều hướng theo test steps
    - Thu thập locators từ DOM thật

@@ -1,136 +1,105 @@
-# 📁 Practices — Tài Liệu Thực Hành AI Testing
+# Practices - TXP Limousine QA Assets
 
-> Thư mục chứa các **tài liệu thực hành** (requirements, test cases) được sinh bởi AI theo quy trình **AI-RBT (Risk-Based Testing)**, phục vụ học tập và demo trong dự án **Antigravity Testing Kit**.
+Thư mục này chứa tài liệu phục vụ kiểm thử cho project TXP Limousine: requirement theo module, manual test cases, file Excel/CSV tổng hợp và báo cáo bug. Nội dung ở đây là nguồn tham chiếu để viết hoặc rà soát automation trong `src/tests/`.
 
----
+Nội dung chỉ dành cho TXP Limousine, không phải danh sách web demo hay tài khoản demo bên ngoài.
 
-## 🌐 Web Demo
+## Cấu trúc
 
-Các ứng dụng web demo dùng để thực hành kiểm thử:
-
-### 🔹 CRM — Perfex CRM
-
-| Thông tin       | Chi tiết                                                  |
-| --------------- | --------------------------------------------------------- |
-| **URL**         | https://crm.anhtester.com/admin/authentication            |
-| **Email**       | `admin@example.com`                                       |
-| **Password**    | `123456`                                                  |
-| **Mô tả**      | Hệ thống quản lý khách hàng (CRM) với các module: Login, Customers, Projects, ... |
-
-### 🔹 Ecommerce
-
-| Thông tin       | Chi tiết                                                  |
-| --------------- | --------------------------------------------------------- |
-| **URL**         | https://ecommerce.anhtester.com/login                     |
-| **Email**       | `admin@example.com`                                       |
-| **Password**    | `123456`                                                  |
-| **Mô tả**      | Hệ thống thương mại điện tử với các module: Category, Brand, Products, ...  |
-
-> [!NOTE]
-> Đây là tài khoản demo công khai, dùng cho mục đích học tập và thực hành. Dữ liệu có thể được reset định kỳ.
-
----
-
-## 📂 Cấu Trúc Thư Mục
-
-```
+```text
 practices/
-├── requirements/                    # Tài liệu yêu cầu (Requirements)
-│   ├── crm/                         # Requirements cho hệ thống CRM
-│   │   ├── requirements_login.md        # Module Login
-│   │   ├── requirements_customers.md    # Module Customers
-│   │   └── requirements_projects.md     # Module Projects
-│   ├── ecommerce/                   # Requirements cho hệ thống Ecommerce
-│   │   └── requirements_category_brand.txt  # Module Category & Brand
-│   └── jira/                        # Requirements lấy từ Jira
-│       └── KAN-5/                       # Epic KAN-5
-│           ├── KAN-5_overview.md            # Tổng quan epic
-│           ├── KAN-1/                       # Story: Forgot Password
-│           ├── KAN-4/                       # Task: Login
-│           └── KAN-6/                       # Story: Logout
-│
-└── testcases/                       # Manual Test Cases
-    └── crm/                         # Test cases cho hệ thống CRM
-        ├── TC_CRM_LOGIN.md              # 27 TCs — AI-RBT Full Mode
-        ├── TC_CRM_LOGIN.xlsx            # Export Excel
-        ├── test_cases_crm_login.md      # TCs — Quick Mode
-        └── test_cases_crm_login.xlsx    # Export Excel
+├── requirements/
+│   └── txp-bus/
+│       ├── requirements_admin_accounts.md
+│       ├── requirements_admin_blacklist.md
+│       ├── requirements_admin_dispatch.md
+│       ├── requirements_admin_logs.md
+│       ├── requirements_admin_news.md
+│       ├── requirements_admin_policy.md
+│       ├── requirements_admin_rbac.md
+│       ├── requirements_admin_tickets.md
+│       ├── requirements_customer_booking_payment.md
+│       ├── requirements_customer_forgot_password.md
+│       ├── requirements_customer_home.md
+│       ├── requirements_customer_news.md
+│       ├── requirements_customer_policy_about.md
+│       ├── requirements_customer_profile.md
+│       ├── requirements_customer_register.md
+│       ├── requirements_customer_review.md
+│       ├── requirements_customer_ticket_lookup.md
+│       └── requirements_search_trip.md
+├── testcases/
+│   ├── testcases_*.csv
+│   ├── testcases_customer_register.xlsx
+│   ├── testcase_template.xlsx
+│   └── compiled/
+└── reports/
+    ├── admin/
+    ├── customer/
+    └── txp_bug_report_detailed_2026-06-01.md
 ```
 
----
+## Nhóm tài liệu
 
-## 📝 Nội Dung Chính
+Requirements:
 
-### 1. Requirements (`requirements/`)
+- Mô tả chức năng theo module admin và customer.
+- Ghi nhận acceptance criteria, validation, luồng chính, luồng lỗi và điểm cần làm rõ.
+- Là đầu vào chính khi sinh manual test case hoặc kiểm tra coverage automation.
 
-Tài liệu yêu cầu chức năng được sinh từ việc phân tích website thực tế bằng AI, bao gồm:
+Test cases:
 
-- **Tổng quan module** — mô tả mục đích, phạm vi
-- **Yêu cầu chức năng** — Acceptance Criteria (AC)
-- **Đặc tả trường dữ liệu** — loại UI, HTML attributes, validation rules
-- **Luồng xử lý** — Happy path & các kịch bản thất bại
-- **Yêu cầu phi chức năng** — bảo mật, tương thích, hiệu năng
-- **Câu hỏi cần làm rõ** — các điểm chưa xác nhận với PO/User
+- Các file `testcases_*.csv` là manual test cases theo từng module.
+- File trong `compiled/` là bản tổng hợp theo nhóm admin/customer.
+- `testcase_template.xlsx` là mẫu Excel để chuẩn hóa khi cần import hoặc chia sẻ.
 
-### 2. Test Cases (`testcases/`)
+Reports:
 
-Manual test cases được sinh theo phương pháp **AI-RBT 6 bước**, bao gồm:
+- Chứa báo cáo bug, kết quả kiểm thử và tài liệu rà soát theo module.
+- Dùng để đối chiếu lỗi đã phát hiện với automation test tương ứng.
 
-- **Test case chi tiết** — ID, Pre-condition, Steps, Expected Result, Priority
-- **Risk assessment** — đánh giá rủi ro (High / Medium / Low) cho từng module
-- **Traceability Matrix** — ma trận truy vết Requirements ↔ Test Cases
-- **Kỹ thuật áp dụng** — EP, BVA, Decision Table, State Transition
-- **Xuất Excel** — file `.xlsx` tiện cho quản lý và báo cáo
+## Module đang được cover
 
----
+Admin:
 
-## 🚀 Hướng Dẫn Sử Dụng
+- Accounts
+- Blacklist
+- Dispatch
+- Logs
+- News
+- Policy
+- RBAC
+- Tickets
 
-### Sinh Requirements từ Website
+Customer:
 
-```
-/generate_requirements_from_website
-```
-Cung cấp URL module → AI sẽ inspect DOM thực tế và sinh tài liệu requirements.
+- Home
+- Register
+- Forgot password
+- Profile
+- Search trip
+- Booking/payment
+- Ticket lookup
+- News
+- Policy/About
+- Review
 
-### Phân Tích Requirement Document
+## Cách dùng trong project
 
-```
-/analyze_requirement_document
-```
-Cung cấp file .doc / Jira ticket / requirement document → AI phân tích chi tiết: AC breakdown, dependencies, ambiguities, risks. **KHÔNG sinh test cases.**
+1. Đọc requirement trong `practices/requirements/txp-bus/`.
+2. Đối chiếu manual test case tương ứng trong `practices/testcases/`.
+3. Viết hoặc cập nhật page object trong `src/pages/`.
+4. Viết automation spec trong `src/tests/admin/` hoặc `src/tests/customer/`.
+5. Sau khi chạy test, đối chiếu lỗi với `practices/reports/` nếu cần.
 
-### Sinh Test Cases từ Requirements
+Script hỗ trợ tổng hợp workbook:
 
-```
-/generate_testcases_from_requirements     # Quick Mode — sinh nhanh
-/generate_manual_testcases_rbt            # Full RBT — 6 bước đầy đủ
-```
-
-### Sinh Test Cases từ Jira
-
-```
-/fetch_jira_requirements                  # Lấy requirements từ Jira
-/generate_testcases_from_requirements     # Sinh TCs từ requirements đã lấy
-```
-
-### Chuyển Manual → Automation
-
-```
-/generate_automation_from_testcases       # Convert TCs → automation scripts
+```bash
+python scripts/build_consolidated_testcase_workbooks.py
 ```
 
----
+Script chuyển Markdown test case sang Excel:
 
-## 🔗 Liên Kết Hữu Ích
-
-| Tài liệu                              | Đường dẫn                                          |
-| -------------------------------------- | --------------------------------------------------- |
-| Quy trình AI-RBT Manual Testing       | `.agent/skills/rbt_manual_testing/SKILL.md`         |
-| Quy trình QA Automation               | `.agent/skills/qa_automation_engineer/SKILL.md`     |
-| Kế hoạch Manual Testing               | `plans/manual/QUICK_START.md`                       |
-| Kế hoạch Automation                   | `plans/automation/QUICK_START.md`                   |
-
----
-
-> **Antigravity Testing Kit** — Bộ công cụ AI-powered cho QA Testing 🚀
+```bash
+node scripts/convert_excel/md_to_xlsx.js <input.md> [output.xlsx]
+```

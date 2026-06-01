@@ -5,7 +5,7 @@ Sử dụng AI để tự động hóa quá trình xây dựng Automation Framew
 
 ## 📌 Nguyên Tắc Cốt Lõi
 
-1. **AI DOM Recon First:** AI phải sử dụng browser MCP (Playwright/Selenium) để tự mở trình duyệt, inspect DOM thật. TUYỆT ĐỐI không đoán locator.
+1. **AI DOM Recon First:** AI phải sử dụng Browser/Playwright để tự mở trình duyệt, inspect DOM thật. TUYỆT ĐỐI không đoán locator.
 2. **POM Architecture:** Mọi script tuân thủ Page Object Model — phân tách rõ Pages và Tests.
 3. **Smart Waits & Stability:** Không hard sleep (`Thread.sleep`, `waitForTimeout`). Chỉ dùng auto-waiting.
 4. **Deterministic Data:** Test data unique + traceable, không hardcode.
@@ -50,8 +50,6 @@ Gọi workflow `/generate_automation_from_testcases` + đính kèm Test Cases:
 - `.agent/rules/automation_rules.md` — POM, Data, Naming conventions
 - `.agent/rules/locator_strategy.md` — Thứ tự ưu tiên locator
 - `.agent/rules/playwright_rules.md` — Playwright-specific rules
-- `.agent/rules/selenium_rules.md` — Selenium-specific rules
-- `.agent/rules/appium_rules.md` — Appium-specific rules
 
 ## 📁 Hướng dẫn nhanh
 

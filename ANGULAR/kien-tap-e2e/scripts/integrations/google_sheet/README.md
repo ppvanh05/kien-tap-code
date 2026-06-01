@@ -1,6 +1,6 @@
 # 📊 Google Sheets Integration Scripts
 
-> Bộ scripts Node.js kết nối Antigravity Testing Kit với Google Sheets API — đọc test data, ghi kết quả test automation, và quản lý dữ liệu kiểm thử.
+> Bộ scripts Node.js kết nối project TXP Limousine E2E với Google Sheets API — đọc test data, ghi kết quả test automation, và quản lý dữ liệu kiểm thử.
 
 ---
 
@@ -74,12 +74,12 @@ node sheet_auth.js --verify --sheet "Login"
 **Bước 3: Tạo Service Account** _(bỏ qua nếu đã có)_
 
 1. APIs & Services → **Credentials** → **Create Credentials** → **Service Account**
-2. Điền tên (VD: `antigravity-automation`) → Click **Create and continue** → Done
+2. Điền tên (VD: `txp-limousine-automation`) → Click **Create and continue** → Done
 
 **Bước 4: Tải file JSON Key** ⬅️ _Đây là bước quan trọng_
 
 1. Vào **IAM & Admin** → **Service Accounts**
-2. Click vào tên Service Account của bạn (VD: `antigravity-automation`)
+2. Click vào tên Service Account của bạn (VD: `txp-limousine-automation`)
 3. Chọn tab **"Keys"** (thanh menu ngang phía trên)
 4. Click **"Add key"** → **"Create new key"**
 
@@ -114,7 +114,7 @@ GOOGLE_SPREADSHEET_ID=your-spreadsheet-id-here
 2. Click **"Share"** (góc trên phải)
 3. Nhập **email của Service Account** — tìm trong file `service-account.json`, trường `client_email`:
    ```json
-   "client_email": "antigravity-automation@your-project.iam.gserviceaccount.com"
+   "client_email": "txp-limousine-automation@your-project.iam.gserviceaccount.com"
    ```
 4. Cấp quyền **"Editor"** (để cả đọc + ghi)
 5. Bỏ tích "Notify people" nếu muốn → Click **"Share"**
@@ -186,12 +186,12 @@ node scripts/integrations/google_sheet/sheet_auth.js --verify --sheet "Test Resu
 ```
 [LOG] Đang kiểm tra kết nối Google Sheets API...
 [LOG] ✅ Kết nối thành công!
-[LOG] 📊 Spreadsheet: "Antigravity Integration - Anh Tester"
+[LOG] 📊 Spreadsheet: "TXP Limousine QA"
 [LOG] 🔗 URL: https://docs.google.com/spreadsheets/d/.../edit
 [LOG] 📋 Danh sách Sheets:
 [LOG]    1. "Login" (ID: 0, Rows: 1000, Cols: 26)
 [LOG]    2. "Test Results" (ID: 1, Rows: 1000, Cols: 26)
-[LOG] 🔑 Auth: Service Account (antigravity-automation@project.iam.gserviceaccount.com)
+[LOG] 🔑 Auth: Service Account (txp-limousine-automation@project.iam.gserviceaccount.com)
 ```
 
 **Output mẫu `--verify --sheet "Login"` (sheet có data):**
@@ -288,8 +288,8 @@ requirements/google_sheet/
 ```bash
 # Upload file Excel lên sheet mới hoặc sheet đã có
 node scripts/integrations/google_sheet/sheet_writer.js \
-  --excel ./requirements/crm/test_cases_crm_login.xlsx \
-  --sheet "CRM_TC_LOGIN"
+  --excel ./practices/testcases/testcases_admin_accounts.xlsx \
+  --sheet "TXP_ADMIN_ACCOUNTS"
 
 # Upload tab thứ 2 trong file Excel (index bắt đầu từ 0)
 node scripts/integrations/google_sheet/sheet_writer.js \
@@ -303,19 +303,19 @@ node scripts/integrations/google_sheet/sheet_writer.js \
 **Output mẫu `--excel`:**
 
 ```
-[LOG] Đọc file Excel: test_cases_crm_login.xlsx
+[LOG] Đọc file Excel: testcases_admin_accounts.xlsx
 [LOG] Excel sheet: "Test Cases" → 31 rows × 9 cột
-[LOG] Google Sheet đích: "CRM_TC_LOGIN"
-[LOG] Sheet "CRM_TC_LOGIN" đã tồn tại.
-[LOG] Xóa data cũ trong "CRM_TC_LOGIN"...
+[LOG] Google Sheet đích: "TXP_ADMIN_ACCOUNTS"
+[LOG] Sheet "TXP_ADMIN_ACCOUNTS" đã tồn tại.
+[LOG] Xóa data cũ trong "TXP_ADMIN_ACCOUNTS"...
 [LOG] Đang upload 31 rows...
-[LOG] ✅ Upload hoàn tất: 31 rows → Sheet "CRM_TC_LOGIN"
+[LOG] ✅ Upload hoàn tất: 31 rows → Sheet "TXP_ADMIN_ACCOUNTS"
 
 --- Kết quả upload Excel ---
-  📁 File: test_cases_crm_login.xlsx
+  📁 File: testcases_admin_accounts.xlsx
   📋 Excel sheet: "Test Cases" (index 0)
   📊 Rows: 31 | Cols: 9
-  ✅ Google Sheet: "CRM_TC_LOGIN"
+  ✅ Google Sheet: "TXP_ADMIN_ACCOUNTS"
   🔗 URL: https://docs.google.com/spreadsheets/d/.../edit
 ```
 
@@ -393,7 +393,7 @@ const testData = await readSheet('Test Data');
 console.log(testData.data); // Array of objects
 
 // Upload file Excel lên Google Sheet
-await importExcel('./requirements/crm_login.xlsx', 'CRM_TC_LOGIN', {
+await importExcel('./practices/testcases/testcases_admin_accounts.xlsx', 'TXP_ADMIN_ACCOUNTS', {
   sheetIndex: 0,    // Tab đầu tiên của file Excel
   clearFirst: true, // Xóa data cũ trước khi upload
 });

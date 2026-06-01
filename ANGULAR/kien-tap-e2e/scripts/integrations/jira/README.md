@@ -1,6 +1,6 @@
 # 📋 Jira & Xray Integration Scripts
 
-> Bộ scripts Node.js kết nối Antigravity Testing Kit với Jira REST API và Xray Test Management.
+> Bộ scripts Node.js kết nối project TXP Limousine E2E với Jira REST API và Xray Test Management.
 
 ---
 
@@ -68,7 +68,7 @@ XRAY_CLIENT_SECRET=your-client-secret
 
 1. Truy cập: https://id.atlassian.com/manage-profile/security/api-tokens
 2. Click **"Create API token"**
-3. Đặt label (ví dụ: `antigravity-automation`) → Click **Create**
+3. Đặt label (ví dụ: `txp-limousine-automation`) → Click **Create**
 4. **Copy token ngay** → Dán vào `JIRA_API_TOKEN` trong file `.env`
 
 > ⚠️ Token chỉ hiển thị **MỘT LẦN**. Nếu mất, phải tạo mới.
@@ -183,7 +183,7 @@ requirements/jira/
   "issues": [
     {
       "key": "KAN-1",
-      "summary": "Authentication CRM",
+      "summary": "TXP Admin Login",
       "status": "To Do",
       "priority": "High",
       "issueType": "Story",
@@ -197,7 +197,7 @@ requirements/jira/
 **Output mẫu (Markdown):**
 
 ```markdown
-# KAN-1: Authentication CRM
+# KAN-1: TXP Admin Login
 
 | Thuộc tính | Giá trị |
 |---|---|
@@ -207,7 +207,7 @@ requirements/jira/
 | **Độ ưu tiên** | High |
 
 ## Mô tả (Description)
-Xác thực hệ thống CRM
+Xác thực trang quản trị TXP Limousine
 ```
 
 ---
@@ -287,9 +287,9 @@ const md = issueToRequirementMarkdown(issue);
 
 ---
 
-## 🤖 Sử dụng qua Antigravity Agent
+## 🤖 Sử dụng qua AI Agent
 
-Bạn có thể gọi các slash commands sau trong Antigravity (Gemini):
+Bạn có thể gọi các slash commands sau nếu AI agent đang dùng đã cấu hình workflow tương ứng:
 
 | Command | Mô tả |
 |---------|--------|
