@@ -1,18 +1,18 @@
 # TXP Bus - Detailed Bug Report
 
-- Generated at: 01/06/2026 01:22
+- Generated at: 01/06/2026 11:16
 - Design By: Đỗ Thị Phương
 - Execute By: Playwright
 - Evidence source: consolidated CSV testcase status, Playwright E2E notes, and code review of `backend/` + `kien-tap/`.
 
 ## Executive Summary
-- Total testcase rows reviewed: 509
-- Passed: 440
-- Failed: 8
+- Total testcase rows reviewed: 479
+- Passed: 466
+- Failed: 9
 - Skip: 4
-- Not Run: 57
-- Reported issues/gaps: 12
-- Bugs: 8
+- Not Run: 0
+- Reported issues/gaps: 13
+- Bugs: 9
 - Requirement gaps: 1
 - Test gaps: 3
 - High/Critical items: 9
@@ -29,10 +29,10 @@
 - Bug / Requirement Gap / Test Gap: 4 / 0 / 2
 
 ## Customer Summary
-- Testcase rows: 323
-- Passed / Failed / Skip / Not Run: 260 / 4 / 2 / 57
-- Issues in report: 6
-- Bug / Requirement Gap / Test Gap: 4 / 1 / 1
+- Testcase rows: 293
+- Passed / Failed / Skip / Not Run: 286 / 5 / 2 / 0
+- Issues in report: 7
+- Bug / Requirement Gap / Test Gap: 5 / 1 / 1
 
 ## Detailed Admin Issues
 ### BUG-ADMIN-001 - Security - Nhập ký tự đặc biệt / XSS vào Nội dung từ khóa
@@ -244,7 +244,33 @@ Xử lý phím Escape ở cấp độ modal để đóng hoặc reset modal quê
 **Regression Scope**
 Chạy file test src/tests/customer/forgot-password.spec.ts, đặc biệt là TXP_FP_TC_029; test lại việc gửi lại OTP và đóng modal.
 
-### BUG-CUSTOMER-003 - Known Gap - Nút hoán đổi chưa cập nhật đúng giá trị input tìm kiếm
+### BUG-CUSTOMER-003 - Alternate Path - Tra cứu với mã có khoảng trắng đầu/cuối (Trim whitespace)
+- Issue Type: Bug
+- Severity / Priority: Low / P2
+- Status in testcase: Failed
+- Module: Tra cứu vé
+- Related testcase: TXP_LOOK_TC_033 (`testcases_customer_ticket_lookup.csv`)
+- Suspected area: `Frontend component and corresponding backend validation/API service for this module.`
+
+**Steps / Trigger**
+1. Nhập mã đơn hàng có khoảng trắng đầu/cuối: "  DH10000001  "2. Nhập SĐT: 09123456783. Click "Tra cứu"
+
+**Actual Result**
+Failed/Bug: Backend có biến trimmedCode nhưng truy vấn lookup vẫn dùng code gốc, nên mã có khoảng trắng đầu/cuối không tra cứu thành công. Cần dùng trimmedCode trong điều kiện Prisma.
+
+**Expected Result**
+Hệ thống trim khoảng trắng và tìm kiếm thành công, trả về thông tin đơn hàng DH10000001.
+
+**Evidence**
+CSV: testcases_customer_ticket_lookup.csv; TC: TXP_LOOK_TC_033; Status: Failed; Actual: Failed/Bug: Backend có biến trimmedCode nhưng truy vấn lookup vẫn dùng code gốc, nên mã có khoảng trắng đầu/cuối không tra cứu thành công. Cần dùng trimmedCode trong điều kiện Prisma.
+
+**Recommendation**
+Xác nhận lại quy tắc nghiệp vụ mong muốn với Product Owner, sửa lỗi xác thực nguồn, sau đó bổ sung test case Playwright để kiểm thử hồi quy.
+
+**Regression Scope**
+Chạy các test case Playwright của file testcases_customer_ticket_lookup.csv, đặc biệt là TXP_LOOK_TC_033.
+
+### BUG-CUSTOMER-004 - Known Gap - Nút hoán đổi chưa cập nhật đúng giá trị input tìm kiếm
 - Issue Type: Requirement Gap
 - Severity / Priority: High / P1
 - Status in testcase: Skip
@@ -270,7 +296,7 @@ Hoán đổi cả hai giá trị đã chọn và dữ liệu hiển thị trên 
 **Regression Scope**
 Chạy file test src/tests/customer/search-trip.spec.ts, đặc biệt là TXP_SEARCH_TC_003; đồng thời test lại luồng thanh toán đặt vé với các ghế đã bán/đang giữ.
 
-### BUG-CUSTOMER-004 - Boundary - Màn tìm chuyến chỉ chặn khi chọn quá 5 cabin trong cùng trip
+### BUG-CUSTOMER-005 - Boundary - Màn tìm chuyến chỉ chặn khi chọn quá 5 cabin trong cùng trip
 - Issue Type: Bug
 - Severity / Priority: High / P1
 - Status in testcase: Failed
@@ -296,7 +322,7 @@ Xác định quy tắc nghiệp vụ cho tỷ lệ số lượng khách hàng so
 **Regression Scope**
 Chạy file test src/tests/customer/search-trip.spec.ts, đặc biệt là TXP_SEARCH_TC_014; đồng thời test lại luồng thanh toán đặt vé với các ghế đã bán/đang giữ.
 
-### BUG-CUSTOMER-005 - Current Behavior - Dropdown địa điểm không hỗ trợ tìm không dấu
+### BUG-CUSTOMER-006 - Current Behavior - Dropdown địa điểm không hỗ trợ tìm không dấu
 - Issue Type: Test Gap
 - Severity / Priority: Medium / P2
 - Status in testcase: Skip
@@ -322,7 +348,7 @@ Chuẩn hóa bỏ dấu tiếng Việt cho cả từ khóa tìm kiếm và văn 
 **Regression Scope**
 Chạy file test src/tests/customer/search-trip.spec.ts, đặc biệt là TXP_SEARCH_TC_025; đồng thời test lại luồng thanh toán đặt vé với các ghế đã bán/đang giữ.
 
-### BUG-CUSTOMER-006 - State Transition - Collapse trip card hoàn tác selection chưa đi tiếp
+### BUG-CUSTOMER-007 - State Transition - Collapse trip card hoàn tác selection chưa đi tiếp
 - Issue Type: Bug
 - Severity / Priority: High / P1
 - Status in testcase: Failed
@@ -347,10 +373,6 @@ Xác định trạng thái rảnh/bận của tài nguyên dựa trên trạng t
 
 **Regression Scope**
 Chạy file test src/tests/customer/search-trip.spec.ts, đặc biệt là TXP_SEARCH_TC_032; đồng thời test lại luồng thanh toán đặt vé với các ghế đã bán/đang giữ.
-
-## Coverage Note
-- `testcases_customer_ticket_lookup.csv` has 57 rows with blank/Not Run status. This is tracked as execution coverage debt, not as individual product bugs.
-- Recommendation: run or split ticket lookup cases before final QA sign-off so the dashboard no longer hides a full module as unexecuted.
 
 ## Suggested Dev Ticket Format
 Use one ticket per `Bug ID` and keep the title format: `[Severity][Module] Short failing behavior`.

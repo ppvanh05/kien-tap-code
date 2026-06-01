@@ -7,6 +7,96 @@ test.describe('Phân Hệ Khách Hàng - Module Tra Cứu Vé & Quản Lý Đơn
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   };
 
+  const liveLookupData = {
+    orderCode: 'DH10000017',
+    ticketCode: 'VE100022',
+    phone: '0912345678',
+    customerName: 'An An',
+    secondTicketCode: 'VE100023',
+  };
+
+  const buildLookupOrder = (overrides: Record<string, any> = {}) => {
+    const status = overrides.trangThaiDonHang || 'Chờ khởi hành';
+    return {
+      maDonHang: liveLookupData.orderCode,
+      hoTenNguoiDi: liveLookupData.customerName,
+      soDienThoai: liveLookupData.phone,
+      email: 'an.an@test.com',
+      thoiGianDat: '01/06/2026 08:30',
+      soLuongVeDaDat: 2,
+      tongGiaVe: 480000,
+      phuongThucThanhToan: 'MoMo',
+      trangThaiDonHang: status,
+      tenTuyen: 'Điêu Trì - Bến xe Miền Đông',
+      gioKhoiHanh: '15:30',
+      departureDate: '2026-06-15',
+      diemDon: 'Bến xe Điêu Trì',
+      diemTra: 'Bến xe Miền Đông',
+      maDiemDon: 'DDT100003',
+      maDiemTra: 'DDT100004',
+      maLichTrinh: 'LT100010',
+      gioGoiYCoMat: '15:15',
+      soLanDaSua: 0,
+      gioiHanChinhSua: 2,
+      tickets: [
+        {
+          maVe: liveLookupData.ticketCode,
+          soGhe: '1A',
+          bienSoXe: '77B-012.34',
+          diemDon: 'Bến xe Điêu Trì',
+          diemTra: 'Bến xe Miền Đông',
+          giaVe: 240000,
+          trangThaiVe: overrides.trangThaiVe || status,
+          maQRVe: `QR_${liveLookupData.ticketCode}_LT100010_1A`,
+        },
+        {
+          maVe: liveLookupData.secondTicketCode,
+          soGhe: '2A',
+          bienSoXe: '77B-012.34',
+          diemDon: 'Bến xe Điêu Trì',
+          diemTra: 'Bến xe Miền Đông',
+          giaVe: 240000,
+          trangThaiVe: overrides.trangThaiVe || status,
+          maQRVe: `QR_${liveLookupData.secondTicketCode}_LT100010_2A`,
+        },
+      ],
+      ...overrides,
+    };
+  };
+
+  const mockLookupSuccess = async (page: any, overrides: Record<string, any> = {}) => {
+    await page.route(url => url.toString().includes('/customer/tra-cuu-ve/lookup'), async (route: any) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: corsHeaders,
+        body: JSON.stringify({
+          success: true,
+          data: buildLookupOrder(overrides)
+        })
+      });
+    });
+  };
+
+  const mockTripDetail = async (page: any) => {
+    await page.route(url => url.toString().includes('/customer/tim-kiem-chuyen-xe/detail'), async (route: any) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: corsHeaders,
+        body: JSON.stringify({
+          success: true,
+          data: {
+            diemDungLichTrinh: [
+              { MaDiem: 'DDT100003', TenDiem: 'Bến xe Điêu Trì', DiaChi: 'Bình Định', LoaiDiem: 'DiemDon' },
+              { MaDiem: 'DDT100004', TenDiem: 'Bến xe Miền Đông', DiaChi: 'TP HCM', LoaiDiem: 'DiemTra' },
+            ]
+          }
+        })
+      });
+    });
+  };
+
   test.beforeEach(async ({ page }) => {
     // In browser logs
     page.on('console', msg => {
@@ -223,6 +313,153 @@ test.describe('Phân Hệ Khách Hàng - Module Tra Cứu Vé & Quản Lý Đơn
 
     await expect(ticketLookupPage.searchErrorAlert).toBeVisible();
     await expect(ticketLookupPage.searchErrorAlert).toContainText('Không tìm thấy đơn đặt vé nào khớp với thông tin cung cấp!');
+  });
+
+  test('TXP_LOOK_TC_005: Negative - Tra cứu với mã đơn hàng không tồn tại', async ({ ticketLookupPage, page }) => {
+    await page.route(url => url.toString().includes('/customer/tra-cuu-ve/lookup'), async (route) => {
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        headers: corsHeaders,
+        body: JSON.stringify({
+          success: false,
+          message: 'Không tìm thấy đơn đặt vé nào khớp với thông tin cung cấp!'
+        })
+      });
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, 'DH00000000');
+
+    await expect(ticketLookupPage.searchErrorAlert).toBeVisible();
+    await expect(ticketLookupPage.searchErrorAlert).toContainText('Không tìm thấy đơn đặt vé nào khớp với thông tin cung cấp!');
+  });
+
+  test('TXP_LOOK_TC_006: Validation - Tra cứu để trống trường thông tin bắt buộc trả lỗi 400', async ({ ticketLookupPage, page }) => {
+    await page.route(url => url.toString().includes('/customer/tra-cuu-ve/lookup'), async (route) => {
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        headers: corsHeaders,
+        body: JSON.stringify({
+          success: false,
+          message: 'Vui lòng cung cấp đầy đủ mã vé/mã đơn hàng và số điện thoại!'
+        })
+      });
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    const lookupResponse = page.waitForResponse(response => response.url().includes('/customer/tra-cuu-ve/lookup') && response.status() === 400);
+    await ticketLookupPage.clickOn(ticketLookupPage.lookupBtn);
+    await lookupResponse;
+
+    await expect(ticketLookupPage.searchErrorAlert).toBeVisible();
+    await expect(ticketLookupPage.searchErrorAlert).toContainText('Vui lòng cung cấp đầy đủ mã vé/mã đơn hàng và số điện thoại!');
+  });
+
+  test('TXP_LOOK_TC_007: Mapping - Trạng thái Chờ khởi hành hiển thị chuẩn hóa tiếng Việt', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      trangThaiDonHang: 'ChoKhoiHanh',
+      trangThaiVe: 'ChoKhoiHanh',
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator('.px-3.py-1.rounded-full:has-text("Chờ khởi hành")').first()).toBeVisible();
+  });
+
+  test('TXP_LOOK_TC_008: Mapping - Trạng thái Đã hủy hiển thị tiếng Việt', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      trangThaiDonHang: 'DaHuy',
+      trangThaiVe: 'DaHuy',
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator('.px-3.py-1.rounded-full:has-text("Đã hủy")').first()).toBeVisible();
+    await expect(ticketLookupPage.openCancelModalBtn).toBeDisabled();
+  });
+
+  test('TXP_LOOK_TC_032: UI - Hiển thị ảnh QR Code của từng vé xe trong chi tiết tra cứu', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page);
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator('img[alt="Mã QR Vé"]')).toHaveCount(2);
+  });
+
+  test('TXP_LOOK_TC_034: Mapping - Trạng thái Chờ thanh toán hiển thị đúng tiếng Việt', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      trangThaiDonHang: 'ChoThanhToan',
+      trangThaiVe: 'ChoThanhToan',
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator('.px-3.py-1.rounded-full:has-text("Chờ thanh toán")').first()).toBeVisible();
+    await expect(ticketLookupPage.openCancelModalBtn).toBeDisabled();
+  });
+
+  test('TXP_LOOK_TC_035 & TXP_LOOK_TC_037: Mapping Đã hoàn thành và disable nút Hủy vé', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      trangThaiDonHang: 'DaHoanThanh',
+      trangThaiVe: 'DaHoanThanh',
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator('.px-3.py-1.rounded-full:has-text("Đã hoàn thành")').first()).toBeVisible();
+    await expect(ticketLookupPage.openCancelModalBtn).toBeDisabled();
+  });
+
+  test('TXP_LOOK_TC_036 & TXP_LOOK_TC_038: Mapping Đã đánh giá và disable nút Hủy vé', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      trangThaiDonHang: 'DaDanhGia',
+      trangThaiVe: 'DaDanhGia',
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator('.px-3.py-1.rounded-full:has-text("Đã đánh giá")').first()).toBeVisible();
+    await expect(ticketLookupPage.openCancelModalBtn).toBeDisabled();
+  });
+
+  test('TXP_LOOK_TC_039: UI - Hiển thị số lần chỉnh sửa còn lại theo format X/2 lần chỉnh', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      soLanDaSua: 1,
+      gioiHanChinhSua: 2,
+    });
+    await mockTripDetail(page);
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await ticketLookupPage.clickOn(ticketLookupPage.openEditModalBtn);
+    await expect(ticketLookupPage.editModal).toBeVisible();
+    await expect(ticketLookupPage.editModal).toContainText('Bạn còn 1/2 lần chỉnh thông tin cho vé này.');
+  });
+
+  test('TXP_LOOK_TC_040: UI - Query params tự động tra cứu khi mở URL', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page);
+
+    await page.goto(`${ENV.CUSTOMER_URL}/tra-cuu-ve?maDonHang=${liveLookupData.orderCode}&soDienThoai=${liveLookupData.phone}`);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await expect(page.locator(`span:has-text("${liveLookupData.orderCode}")`)).toBeVisible();
+    await expect(page.locator(`span:has-text("${liveLookupData.phone}")`)).toBeVisible();
   });
 
   test('TXP_LOOK_TC_031: Negative - Nhập SĐT sai định dạng khi tra cứu', async ({ ticketLookupPage, page }) => {
@@ -697,5 +934,23 @@ test.describe('Phân Hệ Khách Hàng - Module Tra Cứu Vé & Quản Lý Đơn
     const toast = page.locator('div.fixed.top-24').first();
     await expect(toast).toBeVisible();
     await expect(toast).toContainText('Không thể hủy vé khi chỉ còn dưới 12 giờ trước khởi hành.');
+  });
+
+  test('TXP_LOOK_TC_051 & TXP_LOOK_TC_054: Hiển thị chính sách và danh sách lý do hủy vé trong modal', async ({ ticketLookupPage, page }) => {
+    await mockLookupSuccess(page, {
+      trangThaiDonHang: 'ChoKhoiHanh',
+      trangThaiVe: 'ChoKhoiHanh',
+    });
+
+    await ticketLookupPage.navigateTo(ENV.CUSTOMER_URL + '/tra-cuu-ve');
+    await ticketLookupPage.lookupOrder(liveLookupData.phone, liveLookupData.orderCode);
+
+    await expect(ticketLookupPage.orderDetailsSection).toBeVisible();
+    await ticketLookupPage.clickOn(ticketLookupPage.openCancelModalBtn);
+    await expect(ticketLookupPage.cancelModal).toBeVisible();
+
+    await expect(ticketLookupPage.cancelModal).toContainText('Hủy trước 24h');
+    await expect(ticketLookupPage.cancelReasonSelect.locator('option')).toHaveCount(4);
+    await expect(ticketLookupPage.cancelReasonSelect).toContainText('Tôi đổi kế hoạch');
   });
 });

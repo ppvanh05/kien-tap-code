@@ -20,6 +20,7 @@ TESTCASE_DIR = ROOT / "practices" / "testcases"
 OUTPUT_DIR = TESTCASE_DIR / "compiled"
 REPORTS_DIR = ROOT / "practices" / "reports"
 TEMPLATE_PATH = TESTCASE_DIR / "testcase_template.xlsx"
+AUTHOR = "Đỗ Thị Phương"
 
 STANDARD_HEADERS = [
     "TC ID",
@@ -158,7 +159,23 @@ def normalize_priority(value: str | None) -> str:
         return "Normal"
     if key == "low":
         return "Low"
-    return raw or "Medium"
+    return "Medium"
+
+
+def repair_shifted_source_row(source: Dict[str, str]) -> Dict[str, str]:
+    """Repair known CSV rows where an unquoted comma shifts fields left."""
+    priority = (source.get("Priority") or "").strip()
+    status = normalize_status(source.get("Status"))
+    if priority and normalize_priority(priority) == "Medium" and priority.lower() not in {"medium", "med"} and status in STATUS_ORDER:
+        repaired = dict(source)
+        repaired["Test Scenario"] = f"{source.get('Test Scenario', '').strip()}, {source.get('Pre-Condition', '').strip()}".strip(", ")
+        repaired["Pre-Condition"] = (source.get("Test Steps") or "").strip()
+        repaired["Test Steps"] = (source.get("Test Data") or "").strip()
+        repaired["Test Data"] = (source.get("Expected Result") or "").strip()
+        repaired["Expected Result"] = priority
+        repaired["Priority"] = source.get("Risk Level") or "Medium"
+        return repaired
+    return source
 
 
 def read_csv(path: Path, group: str) -> List[Dict[str, str]]:
@@ -175,7 +192,13 @@ def read_csv(path: Path, group: str) -> List[Dict[str, str]]:
     rows: List[Dict[str, str]] = []
     reader = csv.DictReader(text.splitlines())
     module_name = pretty_module_name(path, group)
-    for source in reader:
+    for raw_source in reader:
+        source = {
+            (key or "").lstrip("\ufeff").strip(): value
+            for key, value in raw_source.items()
+            if key is not None
+        }
+        source = repair_shifted_source_row(source)
         row = {header: (source.get(header) or "").strip() for header in STANDARD_HEADERS}
         row["TC ID"] = row["TC ID"] or (source.get("ID") or "").strip()
         row["Module"] = row["Module"] or module_name
@@ -187,6 +210,7 @@ def read_csv(path: Path, group: str) -> List[Dict[str, str]]:
         row["Priority"] = normalize_priority(row["Priority"] or source.get("PRIORITY"))
         row["Risk Level"] = normalize_priority(row["Risk Level"] or row["Priority"])
         row["Status"] = normalize_status(row["Status"] or source.get("STATUS"))
+        row["Design By"] = AUTHOR
         row["Source File"] = path.name
         rows.append(row)
     return rows
@@ -467,6 +491,238 @@ def write_kpi_card(ws, cell_range: str, label: str, value, fill: str, font_color
             c.border = BOX_BORDER
 
 
+def scenario_type(value: str | None) -> str:
+    text = (value or "").strip()
+    if " - " in text:
+        return text.split(" - ", 1)[0].strip()
+    if "-" in text:
+        return text.split("-", 1)[0].strip()
+    return text.split(" ", 1)[0].strip() if text else "(blank)"
+
+
+def attention_count(counter: Counter) -> int:
+    return counter.get("Failed", 0) + counter.get("Skip", 0) + counter.get("Not Run", 0)
+
+
+def pass_rate(counter: Counter) -> float:
+    total = sum(counter.get(status, 0) for status in STATUS_ORDER)
+    return counter.get("Passed", 0) / total if total else 0
+
+
+def grouped_status_rows(rows: List[Dict[str, str]], key_name: str) -> List[List[object]]:
+    grouped: Dict[str, Counter] = defaultdict(Counter)
+    for row in rows:
+        key = row.get(key_name, "").strip() or "(blank)"
+        grouped[key][row["Status"]] += 1
+
+    output: List[List[object]] = []
+    for key, counter in grouped.items():
+        total = sum(counter.get(status, 0) for status in STATUS_ORDER)
+        output.append(
+            [
+                key,
+                counter.get("Passed", 0),
+                counter.get("Failed", 0),
+                counter.get("Skip", 0),
+                counter.get("Not Run", 0),
+                total,
+                pass_rate(counter),
+                attention_count(counter),
+            ]
+        )
+    output.sort(key=lambda item: (item[7], item[5], item[0]), reverse=True)
+    return output
+
+
+def write_dashboard_section(ws, row_idx: int, title: str, end_col: int = 9) -> int:
+    ws.merge_cells(start_row=row_idx, start_column=1, end_row=row_idx, end_column=end_col)
+    cell = ws.cell(row_idx, 1, title)
+    cell.fill = PatternFill("solid", fgColor=PALETTE["blue"])
+    cell.font = Font(bold=True, color=PALETTE["white"])
+    cell.alignment = Alignment(horizontal="left", vertical="center")
+    cell.border = BOX_BORDER
+    ws.row_dimensions[row_idx].height = 22
+    return row_idx + 1
+
+
+def write_dashboard_table(
+    ws,
+    row_idx: int,
+    headers: List[str],
+    values: List[List[object]],
+    percent_cols: set[int] | None = None,
+    long_rows: bool = False,
+) -> int:
+    percent_cols = percent_cols or set()
+    for col_idx, header in enumerate(headers, start=1):
+        cell = ws.cell(row_idx, col_idx, header)
+        cell.fill = PatternFill("solid", fgColor=PALETTE["navy"])
+        cell.font = Font(bold=True, color=PALETTE["white"])
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        cell.border = BOX_BORDER
+
+    for offset, row_values in enumerate(values, start=1):
+        excel_row = row_idx + offset
+        for col_idx, value in enumerate(row_values, start=1):
+            cell = ws.cell(excel_row, col_idx, value)
+            cell.border = BOX_BORDER
+            cell.alignment = Alignment(
+                horizontal="left" if col_idx in {1, 2, 3, 6, 7, 8} else "center",
+                vertical="top",
+                wrap_text=True,
+            )
+            if excel_row % 2 == 0:
+                cell.fill = PatternFill("solid", fgColor="F8FBFD")
+            if col_idx in percent_cols:
+                cell.number_format = "0.0%"
+            if col_idx == 1 and value in STATUS_COLORS:
+                fill, font = STATUS_COLORS[str(value)]
+                cell.fill = PatternFill("solid", fgColor=fill)
+                cell.font = Font(bold=True, color=font)
+                cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+            if isinstance(value, str) and value.startswith("#'"):
+                cell.hyperlink = value
+                cell.value = "Open"
+                cell.style = "Hyperlink"
+        ws.row_dimensions[excel_row].height = 58 if long_rows else 24
+    return row_idx + len(values) + 1
+
+
+def add_dashboard_details(ws, group_name: str, rows: List[Dict[str, str]], start_row: int) -> None:
+    totals = Counter(row["Status"] for row in rows)
+    total = len(rows)
+    executed = total - totals.get("Not Run", 0)
+    open_items = totals.get("Failed", 0) + totals.get("Skip", 0) + totals.get("Not Run", 0)
+    modules = {row.get("Module", "") for row in rows if row.get("Module")}
+    sources = {row.get("Source File", "") for row in rows if row.get("Source File")}
+    high_priority = [row for row in rows if normalize_priority(row.get("Priority")) in {"Critical", "High"}]
+    high_risk = [row for row in rows if normalize_priority(row.get("Risk Level")) in {"Critical", "High"}]
+
+    row_idx = write_dashboard_section(ws, start_row, "DETAILED EXECUTION OVERVIEW")
+    ws.merge_cells(start_row=row_idx, start_column=1, end_row=row_idx, end_column=9)
+    note = ws.cell(row_idx, 1)
+    note.value = "Detailed summary generated from all source CSV rows: status, module, priority, risk, scenario type, source file, and open-item list."
+    note.font = Font(italic=True, color=PALETTE["gray_dark"])
+    note.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    note.border = BOX_BORDER
+    row_idx += 2
+
+    row_idx = write_dashboard_section(ws, row_idx, "QUALITY SNAPSHOT")
+    snapshot = [
+        ["Total Test Cases", total, "Executed", executed, "Pass Rate", f"{totals.get('Passed', 0) / total:.1%}" if total else "0.0%"],
+        ["Passed", totals.get("Passed", 0), "Failed", totals.get("Failed", 0), "Open Items", open_items],
+        ["Skip", totals.get("Skip", 0), "Not Run", totals.get("Not Run", 0), "Source Files", len(sources)],
+        ["High/Critical Priority", len(high_priority), "High/Critical Priority Open", sum(1 for item in high_priority if item["Status"] != "Passed"), "Modules", len(modules)],
+        ["High/Critical Risk", len(high_risk), "High/Critical Risk Open", sum(1 for item in high_risk if item["Status"] != "Passed"), "Designer", AUTHOR],
+        ["Workbook Group", group_name.title(), "Generated From", "practices/testcases", "Dashboard Scope", "All rows"],
+    ]
+    row_idx = write_dashboard_table(ws, row_idx, ["Metric", "Value", "Metric", "Value", "Metric", "Value"], snapshot) + 1
+
+    module_rows = grouped_status_rows(rows, "Module")
+    attention_modules = [item for item in module_rows if item[7] > 0] or module_rows[:10]
+    row_idx = write_dashboard_section(ws, row_idx, "MODULES NEEDING ATTENTION")
+    row_idx = write_dashboard_table(
+        ws,
+        row_idx,
+        ["Module", "Passed", "Failed", "Skip", "Not Run", "Total", "Pass Rate", "Attention"],
+        attention_modules[:15],
+        {7},
+    ) + 1
+
+    row_idx = write_dashboard_section(ws, row_idx, "PRIORITY SUMMARY")
+    row_idx = write_dashboard_table(
+        ws,
+        row_idx,
+        ["Priority", "Passed", "Failed", "Skip", "Not Run", "Total", "Pass Rate", "Attention"],
+        grouped_status_rows(rows, "Priority"),
+        {7},
+    ) + 1
+
+    row_idx = write_dashboard_section(ws, row_idx, "RISK SUMMARY")
+    row_idx = write_dashboard_table(
+        ws,
+        row_idx,
+        ["Risk Level", "Passed", "Failed", "Skip", "Not Run", "Total", "Pass Rate", "Attention"],
+        grouped_status_rows(rows, "Risk Level"),
+        {7},
+    ) + 1
+
+    scenario_counters: Dict[str, Counter] = defaultdict(Counter)
+    for source_row in rows:
+        scenario_counters[scenario_type(source_row.get("Test Scenario"))][source_row["Status"]] += 1
+    scenario_rows: List[List[object]] = []
+    for label, counter in scenario_counters.items():
+        subtotal = sum(counter.get(status, 0) for status in STATUS_ORDER)
+        scenario_rows.append(
+            [
+                label,
+                counter.get("Passed", 0),
+                counter.get("Failed", 0),
+                counter.get("Skip", 0),
+                counter.get("Not Run", 0),
+                subtotal,
+                pass_rate(counter),
+                attention_count(counter),
+            ]
+        )
+    scenario_rows.sort(key=lambda item: (item[5], item[0]), reverse=True)
+    row_idx = write_dashboard_section(ws, row_idx, "SCENARIO TYPE SUMMARY")
+    row_idx = write_dashboard_table(
+        ws,
+        row_idx,
+        ["Scenario Type", "Passed", "Failed", "Skip", "Not Run", "Total", "Pass Rate", "Attention"],
+        scenario_rows,
+        {7},
+    ) + 1
+
+    row_idx = write_dashboard_section(ws, row_idx, "SOURCE FILE COVERAGE")
+    row_idx = write_dashboard_table(
+        ws,
+        row_idx,
+        ["Source File", "Passed", "Failed", "Skip", "Not Run", "Total", "Pass Rate", "Attention"],
+        grouped_status_rows(rows, "Source File"),
+        {7},
+    ) + 1
+
+    priority_rank = {"Critical": 0, "High": 1, "Medium": 2, "Normal": 3, "Low": 4}
+    status_rank = {"Failed": 0, "Skip": 1, "Not Run": 2}
+    attention_rows = [
+        (idx, source_row)
+        for idx, source_row in enumerate(rows, start=2)
+        if source_row.get("Status") in {"Failed", "Skip", "Not Run"}
+    ]
+    attention_rows.sort(
+        key=lambda item: (
+            status_rank.get(item[1]["Status"], 9),
+            priority_rank.get(normalize_priority(item[1].get("Priority")), 9),
+            priority_rank.get(normalize_priority(item[1].get("Risk Level")), 9),
+            item[1].get("TC ID", ""),
+        )
+    )
+    attention_values = [
+        [
+            item["Status"],
+            item.get("TC ID", ""),
+            item.get("Module", ""),
+            item.get("Priority", ""),
+            item.get("Risk Level", ""),
+            item.get("Test Scenario", ""),
+            item.get("Actual Result", ""),
+            item.get("Source File", ""),
+            f"#'All {group_name.title()}'!A{row_number}",
+        ]
+        for row_number, item in attention_rows[:30]
+    ]
+    row_idx = write_dashboard_section(ws, row_idx, "ATTENTION ITEMS (FAILED / SKIP / NOT RUN - FIRST 30)")
+    write_dashboard_table(
+        ws,
+        row_idx,
+        ["Status", "TC ID", "Module", "Priority", "Risk", "Scenario", "Actual Result", "Source File", "Open Row"],
+        attention_values,
+        long_rows=True,
+    )
+
+
 def add_dashboard(wb: Workbook, group_name: str, rows: List[Dict[str, str]], chart_sizes: Dict[str, tuple[float, float]]) -> None:
     ws = wb.active
     ws.title = "Dashboard"
@@ -558,7 +814,10 @@ def add_dashboard(wb: Workbook, group_name: str, rows: List[Dict[str, str]], cha
             if row_idx % 2 == 0:
                 cell.fill = PatternFill("solid", fgColor="F3F8FC")
 
-    for col, width in {"A": 28, "B": 13, "C": 13, "D": 13, "E": 13, "F": 13, "G": 14, "H": 22}.items():
+    details_start = module_start + len(module_counts) + 5
+    add_dashboard_details(ws, group_name, rows, details_start)
+
+    for col, width in {"A": 28, "B": 18, "C": 22, "D": 22, "E": 18, "F": 44, "G": 42, "H": 28, "I": 13}.items():
         ws.column_dimensions[col].width = width
     for row in range(4, max(module_start + len(module_counts) + 4, 44)):
         ws.row_dimensions[row].height = 21
@@ -1039,7 +1298,7 @@ def main() -> None:
     if search_trip.exists():
         customer_files.append(search_trip)
 
-    date_suffix = datetime.now().strftime("%Y-%m-%d")
+    date_suffix = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     admin_output, admin_reports, admin_rows = build_workbook(
         "Admin",
         admin_files,
