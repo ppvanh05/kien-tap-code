@@ -1,0 +1,23 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - img "TXP Logo" [ref=e7]
+    - heading "Đăng Nhập Quản Trị" [level=2] [ref=e8]
+    - paragraph [ref=e9]: Dành riêng cho nhân viên và quản trị viên
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]: Tài khoản hoặc Email
+      - generic [ref=e13]:
+        - generic [ref=e14]: person
+        - textbox "Tài khoản hoặc Email" [ref=e15]:
+          - /placeholder: Nhập tên đăng nhập hoặc email
+          - text: banve1
+    - generic [ref=e16]:
+      - generic [ref=e17]: Mật khẩu
+      - generic [ref=e18]:
+        - generic [ref=e19]: lock
+        - textbox "Mật khẩu" [ref=e20]:
+          - /placeholder: Nhập mật khẩu
+          - text: Banve@123
+    - button "Đăng nhập" [disabled] [ref=e21]: Đăng nhập
+    - link "Quay lại trang khách hàng" [ref=e23] [cursor=pointer]:
+      - /url: /home

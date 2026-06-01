@@ -1,0 +1,136 @@
+- generic [ref=e4]:
+  - complementary [ref=e5]:
+    - img "TXP Logo" [ref=e8]
+    - navigation [ref=e9]:
+      - generic [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: home
+        - generic [ref=e13]: Trang chủ
+      - generic [ref=e15] [cursor=pointer]:
+        - generic [ref=e16]: settings_input_component
+        - generic [ref=e17]: Quản lý điều hành
+        - generic [ref=e18]: expand_more
+    - generic [ref=e20] [cursor=pointer]:
+      - generic [ref=e22]: account_circle
+      - generic [ref=e23]:
+        - generic [ref=e24]: Nguyen Van Dieu Phoi
+        - generic [ref=e25]: Nhân viên điều phối
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - button "menu" [ref=e29] [cursor=pointer]:
+        - generic [ref=e30]: menu
+      - generic [ref=e31]:
+        - generic [ref=e33] [cursor=pointer]: notifications
+        - generic [ref=e35]: Chủ Nhật, 31/05/2026
+    - generic [ref=e38]:
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - heading "Chào buổi sáng, Nguyen Van Dieu Phoi! 👋" [level=1] [ref=e41]
+          - paragraph [ref=e42]:
+            - generic [ref=e43]: verified_user
+            - text: Nhân viên điều phối
+        - generic [ref=e44]:
+          - generic [ref=e45]: today
+          - generic [ref=e46]: Chủ Nhật, 31/05/2026
+      - generic [ref=e47]:
+        - heading "bolt Thao tác nhanh" [level=2] [ref=e48]:
+          - generic [ref=e49]: bolt
+          - text: Thao tác nhanh
+        - generic [ref=e50]:
+          - link "calendar_month Quản lý lịch trình arrow_forward" [ref=e51] [cursor=pointer]:
+            - /url: /admin/quan-ly-dieu-hanh/quan-ly-lich-trinh
+            - generic [ref=e53]: calendar_month
+            - generic [ref=e54]: Quản lý lịch trình
+            - generic [ref=e55]: arrow_forward
+          - link "route Quản lý tuyến xe arrow_forward" [ref=e56] [cursor=pointer]:
+            - /url: /admin/quan-ly-dieu-hanh/quan-ly-tuyen-xe
+            - generic [ref=e58]: route
+            - generic [ref=e59]: Quản lý tuyến xe
+            - generic [ref=e60]: arrow_forward
+          - link "directions_bus Quản lý phương tiện arrow_forward" [ref=e61] [cursor=pointer]:
+            - /url: /admin/quan-ly-dieu-hanh/quan-ly-phuong-tien
+            - generic [ref=e63]: directions_bus
+            - generic [ref=e64]: Quản lý phương tiện
+            - generic [ref=e65]: arrow_forward
+          - link "badge Tài xế & phụ xe arrow_forward" [ref=e66] [cursor=pointer]:
+            - /url: /admin/quan-ly-dieu-hanh/quan-ly-tai-xe-phu-xe
+            - generic [ref=e68]: badge
+            - generic [ref=e69]: Tài xế & phụ xe
+            - generic [ref=e70]: arrow_forward
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e74]: departure_board
+          - generic [ref=e75]:
+            - generic [ref=e76]: Chuyến hôm nay
+            - generic [ref=e77]: "12"
+            - generic [ref=e78]:
+              - generic [ref=e79]: trending_up
+              - text: 2 đang chạy
+        - generic [ref=e80]:
+          - generic [ref=e82]: directions_bus
+          - generic [ref=e83]:
+            - generic [ref=e84]: Phương tiện hoạt động
+            - generic [ref=e85]: 28/32
+            - generic [ref=e86]:
+              - generic [ref=e87]: trending_up
+              - text: Tỉ lệ vận hành 87%
+        - generic [ref=e88]:
+          - generic [ref=e90]: pending
+          - generic [ref=e91]:
+            - generic [ref=e92]: Chuyến chờ khởi hành
+            - generic [ref=e93]: "5"
+            - generic [ref=e94]:
+              - generic [ref=e95]: trending_up
+              - text: 1 chuyến sắp xuất bến
+        - generic [ref=e96]:
+          - generic [ref=e98]: route
+          - generic [ref=e99]:
+            - generic [ref=e100]: Tuyến đang hoạt động
+            - generic [ref=e101]: "8"
+            - generic [ref=e102]:
+              - generic [ref=e103]: trending_up
+              - text: Đầy đủ tài xế
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - heading "route Tuyến đường hoạt động" [level=2] [ref=e107]:
+            - generic [ref=e108]: route
+            - text: Tuyến đường hoạt động
+          - button "Xem tất cả arrow_forward" [ref=e109] [cursor=pointer]:
+            - text: Xem tất cả
+            - generic [ref=e110]: arrow_forward
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]: BX Miền Đông → Hà Nội
+              - generic [ref=e115]:
+                - generic [ref=e116]: local_activity
+                - text: 342 vé đã bán
+            - generic [ref=e117]:
+              - generic [ref=e118]: trending_up
+              - text: +12%
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e121]: BX Miền Đông → Đà Nẵng
+              - generic [ref=e122]:
+                - generic [ref=e123]: local_activity
+                - text: 289 vé đã bán
+            - generic [ref=e124]:
+              - generic [ref=e125]: trending_up
+              - text: +8%
+          - generic [ref=e126]:
+            - generic [ref=e127]:
+              - generic [ref=e128]: BX Miền Đông → Vinh
+              - generic [ref=e129]:
+                - generic [ref=e130]: local_activity
+                - text: 231 vé đã bán
+            - generic [ref=e131]:
+              - generic [ref=e132]: trending_down
+              - text: "-5%"
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]: BX Miền Đông → Huế
+              - generic [ref=e136]:
+                - generic [ref=e137]: local_activity
+                - text: 187 vé đã bán
+            - generic [ref=e138]:
+              - generic [ref=e139]: trending_up
+              - text: +15%

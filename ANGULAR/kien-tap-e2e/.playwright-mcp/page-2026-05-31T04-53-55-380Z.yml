@@ -1,0 +1,286 @@
+- generic [ref=e69]:
+  - complementary [ref=e70]:
+    - img "TXP Logo" [ref=e73]
+    - navigation [ref=e74]:
+      - generic [ref=e76] [cursor=pointer]:
+        - generic [ref=e77]: home
+        - generic [ref=e78]: Trang chủ
+      - generic [ref=e80] [cursor=pointer]:
+        - generic [ref=e81]: article
+        - generic [ref=e82]: Quản lý tin tức
+      - generic [ref=e84] [cursor=pointer]:
+        - generic [ref=e85]: groups
+        - generic [ref=e86]: Quản lý khách hàng
+      - generic [ref=e88] [cursor=pointer]:
+        - generic [ref=e89]: engineering
+        - generic [ref=e90]: Quản lý nhân viên
+      - generic [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: policy
+        - generic [ref=e94]: Quản lý chính sách
+      - generic [ref=e96] [cursor=pointer]:
+        - generic [ref=e97]: block
+        - generic [ref=e98]: Quản lý từ khóa cấm
+      - generic [ref=e100] [cursor=pointer]:
+        - generic [ref=e101]: history_edu
+        - generic [ref=e102]: Quản lý nhật ký
+    - generic [ref=e104] [cursor=pointer]:
+      - generic [ref=e106]: account_circle
+      - generic [ref=e107]:
+        - generic [ref=e108]: Nguyen An Ninh
+        - generic [ref=e109]: Quản trị viên
+  - main [ref=e110]:
+    - generic [ref=e111]:
+      - button "menu" [ref=e113] [cursor=pointer]:
+        - generic [ref=e114]: menu
+      - generic [ref=e115]:
+        - generic [ref=e117] [cursor=pointer]: notifications
+        - generic [ref=e119]: Chủ Nhật, 31/05/2026
+    - generic [ref=e122]:
+      - generic [ref=e123]:
+        - generic [ref=e124]:
+          - generic [ref=e125] [cursor=pointer]: Quản trị hệ thống
+          - generic [ref=e126]: /
+          - generic [ref=e127]: Quản lý tài khoản khách hàng
+        - heading "Quản lý tài khoản khách hàng" [level=1] [ref=e128]
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - button "Tất cả" [ref=e131] [cursor=pointer]
+          - button "Đang hoạt động" [ref=e132] [cursor=pointer]
+          - button "Đã khóa" [ref=e133] [cursor=pointer]
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - generic [ref=e137]: search
+              - textbox "Tìm theo Mã KH, Họ tên, SĐT, Email..." [ref=e138]
+            - combobox [ref=e140] [cursor=pointer]:
+              - option "Tất cả giới tính" [selected]
+              - option "Nam"
+              - option "Nữ"
+              - option "Khác"
+            - button "Tìm kiếm" [ref=e141] [cursor=pointer]
+          - button "person_add Thêm tài khoản mới" [ref=e142] [cursor=pointer]:
+            - generic [ref=e143]: person_add
+            - text: Thêm tài khoản mới
+        - table [ref=e145]:
+          - rowgroup [ref=e146]:
+            - row "Mã KH Họ và tên Số điện thoại Email Ngày đăng ký Vé đã đặt Trạng thái Chức năng" [ref=e147]:
+              - columnheader "Mã KH" [ref=e148]
+              - columnheader "Họ và tên" [ref=e149]
+              - columnheader "Số điện thoại" [ref=e150]
+              - columnheader "Email" [ref=e151]
+              - columnheader "Ngày đăng ký" [ref=e152]
+              - columnheader "Vé đã đặt" [ref=e153]
+              - columnheader "Trạng thái" [ref=e154]
+              - columnheader "Chức năng" [ref=e155]
+          - rowgroup [ref=e156]:
+            - row "KH100058 VK Đặng Văn Khoa 0945424158 auto_profile_1780145424158@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e157]:
+              - cell "KH100058" [ref=e158]:
+                - strong [ref=e161]: KH100058
+              - cell "VK Đặng Văn Khoa" [ref=e162]:
+                - generic [ref=e163]:
+                  - generic [ref=e164]: VK
+                  - generic [ref=e165]: Đặng Văn Khoa
+              - cell "0945424158" [ref=e166]
+              - cell "auto_profile_1780145424158@test.com" [ref=e167]:
+                - generic "auto_profile_1780145424158@test.com" [ref=e168]
+              - cell "30/05/2026" [ref=e169]
+              - cell "0 vé" [ref=e170]
+              - cell "block Đã khóa" [ref=e171]:
+                - generic [ref=e172]:
+                  - generic [ref=e173]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e174]:
+                - button "edit" [ref=e176] [cursor=pointer]:
+                  - generic [ref=e177]: edit
+            - row "KH100057 VK Phan Văn Khoa 0945408913 auto_profile_1780145408913@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e178]:
+              - cell "KH100057" [ref=e179]:
+                - strong [ref=e182]: KH100057
+              - cell "VK Phan Văn Khoa" [ref=e183]:
+                - generic [ref=e184]:
+                  - generic [ref=e185]: VK
+                  - generic [ref=e186]: Phan Văn Khoa
+              - cell "0945408913" [ref=e187]
+              - cell "auto_profile_1780145408913@test.com" [ref=e188]:
+                - generic "auto_profile_1780145408913@test.com" [ref=e189]
+              - cell "30/05/2026" [ref=e190]
+              - cell "0 vé" [ref=e191]
+              - cell "block Đã khóa" [ref=e192]:
+                - generic [ref=e193]:
+                  - generic [ref=e194]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e195]:
+                - button "edit" [ref=e197] [cursor=pointer]:
+                  - generic [ref=e198]: edit
+            - row "KH100056 VL Phan Văn Linh 0945384192 auto_profile_1780145384192@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e199]:
+              - cell "KH100056" [ref=e200]:
+                - strong [ref=e203]: KH100056
+              - cell "VL Phan Văn Linh" [ref=e204]:
+                - generic [ref=e205]:
+                  - generic [ref=e206]: VL
+                  - generic [ref=e207]: Phan Văn Linh
+              - cell "0945384192" [ref=e208]
+              - cell "auto_profile_1780145384192@test.com" [ref=e209]:
+                - generic "auto_profile_1780145384192@test.com" [ref=e210]
+              - cell "30/05/2026" [ref=e211]
+              - cell "0 vé" [ref=e212]
+              - cell "block Đã khóa" [ref=e213]:
+                - generic [ref=e214]:
+                  - generic [ref=e215]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e216]:
+                - button "edit" [ref=e218] [cursor=pointer]:
+                  - generic [ref=e219]: edit
+            - row "KH100055 NP Hoàng Ngọc Phương 0945382586 auto_profile_1780145382586@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e220]:
+              - cell "KH100055" [ref=e221]:
+                - strong [ref=e224]: KH100055
+              - cell "NP Hoàng Ngọc Phương" [ref=e225]:
+                - generic [ref=e226]:
+                  - generic [ref=e227]: NP
+                  - generic [ref=e228]: Hoàng Ngọc Phương
+              - cell "0945382586" [ref=e229]
+              - cell "auto_profile_1780145382586@test.com" [ref=e230]:
+                - generic "auto_profile_1780145382586@test.com" [ref=e231]
+              - cell "30/05/2026" [ref=e232]
+              - cell "0 vé" [ref=e233]
+              - cell "block Đã khóa" [ref=e234]:
+                - generic [ref=e235]:
+                  - generic [ref=e236]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e237]:
+                - button "edit" [ref=e239] [cursor=pointer]:
+                  - generic [ref=e240]: edit
+            - row "KH100054 GL Vũ Gia Linh 0945366674 auto_profile_1780145366675@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e241]:
+              - cell "KH100054" [ref=e242]:
+                - strong [ref=e245]: KH100054
+              - cell "GL Vũ Gia Linh" [ref=e246]:
+                - generic [ref=e247]:
+                  - generic [ref=e248]: GL
+                  - generic [ref=e249]: Vũ Gia Linh
+              - cell "0945366674" [ref=e250]
+              - cell "auto_profile_1780145366675@test.com" [ref=e251]:
+                - generic "auto_profile_1780145366675@test.com" [ref=e252]
+              - cell "30/05/2026" [ref=e253]
+              - cell "0 vé" [ref=e254]
+              - cell "block Đã khóa" [ref=e255]:
+                - generic [ref=e256]:
+                  - generic [ref=e257]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e258]:
+                - button "edit" [ref=e260] [cursor=pointer]:
+                  - generic [ref=e261]: edit
+            - row "KH100053 HD Hoàng Hoài Dũng 0945349800 auto_profile_1780145349801@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e262]:
+              - cell "KH100053" [ref=e263]:
+                - strong [ref=e266]: KH100053
+              - cell "HD Hoàng Hoài Dũng" [ref=e267]:
+                - generic [ref=e268]:
+                  - generic [ref=e269]: HD
+                  - generic [ref=e270]: Hoàng Hoài Dũng
+              - cell "0945349800" [ref=e271]
+              - cell "auto_profile_1780145349801@test.com" [ref=e272]:
+                - generic "auto_profile_1780145349801@test.com" [ref=e273]
+              - cell "30/05/2026" [ref=e274]
+              - cell "0 vé" [ref=e275]
+              - cell "block Đã khóa" [ref=e276]:
+                - generic [ref=e277]:
+                  - generic [ref=e278]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e279]:
+                - button "edit" [ref=e281] [cursor=pointer]:
+                  - generic [ref=e282]: edit
+            - row "KH100052 KL Hoàng Khánh Linh 0945348164 auto_profile_1780145348164@test.com 30/05/2026 0 vé block Đã khóa edit" [ref=e283]:
+              - cell "KH100052" [ref=e284]:
+                - strong [ref=e287]: KH100052
+              - cell "KL Hoàng Khánh Linh" [ref=e288]:
+                - generic [ref=e289]:
+                  - generic [ref=e290]: KL
+                  - generic [ref=e291]: Hoàng Khánh Linh
+              - cell "0945348164" [ref=e292]
+              - cell "auto_profile_1780145348164@test.com" [ref=e293]:
+                - generic "auto_profile_1780145348164@test.com" [ref=e294]
+              - cell "30/05/2026" [ref=e295]
+              - cell "0 vé" [ref=e296]
+              - cell "block Đã khóa" [ref=e297]:
+                - generic [ref=e298]:
+                  - generic [ref=e299]: block
+                  - text: Đã khóa
+              - cell "edit" [ref=e300]:
+                - button "edit" [ref=e302] [cursor=pointer]:
+                  - generic [ref=e303]: edit
+            - row "KH100051 TN Bùi Tuấn Nam 0945341026 auto_profile_1780145341026@test.com 30/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e304]:
+              - cell "KH100051" [ref=e305]:
+                - strong [ref=e308]: KH100051
+              - cell "TN Bùi Tuấn Nam" [ref=e309]:
+                - generic [ref=e310]:
+                  - generic [ref=e311]: TN
+                  - generic [ref=e312]: Bùi Tuấn Nam
+              - cell "0945341026" [ref=e313]
+              - cell "auto_profile_1780145341026@test.com" [ref=e314]:
+                - generic "auto_profile_1780145341026@test.com" [ref=e315]
+              - cell "30/05/2026" [ref=e316]
+              - cell "0 vé" [ref=e317]
+              - cell "check_circle Đang hoạt động" [ref=e318]:
+                - generic [ref=e319]:
+                  - generic [ref=e320]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e321]:
+                - button "edit" [ref=e323] [cursor=pointer]:
+                  - generic [ref=e324]: edit
+            - row "KH100050 GD Đặng Gia Dũng 0945346626 auto_profile_1780145346626@test.com 30/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e325]:
+              - cell "KH100050" [ref=e326]:
+                - strong [ref=e329]: KH100050
+              - cell "GD Đặng Gia Dũng" [ref=e330]:
+                - generic [ref=e331]:
+                  - generic [ref=e332]: GD
+                  - generic [ref=e333]: Đặng Gia Dũng
+              - cell "0945346626" [ref=e334]
+              - cell "auto_profile_1780145346626@test.com" [ref=e335]:
+                - generic "auto_profile_1780145346626@test.com" [ref=e336]
+              - cell "30/05/2026" [ref=e337]
+              - cell "0 vé" [ref=e338]
+              - cell "check_circle Đang hoạt động" [ref=e339]:
+                - generic [ref=e340]:
+                  - generic [ref=e341]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e342]:
+                - button "edit" [ref=e344] [cursor=pointer]:
+                  - generic [ref=e345]: edit
+            - row "KH100049 TE Lê Tuấn Em 0945340353 auto_profile_1780145340354@test.com 30/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e346]:
+              - cell "KH100049" [ref=e347]:
+                - strong [ref=e350]: KH100049
+              - cell "TE Lê Tuấn Em" [ref=e351]:
+                - generic [ref=e352]:
+                  - generic [ref=e353]: TE
+                  - generic [ref=e354]: Lê Tuấn Em
+              - cell "0945340353" [ref=e355]
+              - cell "auto_profile_1780145340354@test.com" [ref=e356]:
+                - generic "auto_profile_1780145340354@test.com" [ref=e357]
+              - cell "30/05/2026" [ref=e358]
+              - cell "0 vé" [ref=e359]
+              - cell "check_circle Đang hoạt động" [ref=e360]:
+                - generic [ref=e361]:
+                  - generic [ref=e362]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e363]:
+                - button "edit" [ref=e365] [cursor=pointer]:
+                  - generic [ref=e366]: edit
+        - generic [ref=e367]:
+          - generic [ref=e368]: Hiển thị từ 1 đến 10 trong tổng số 58 khách hàng
+          - generic [ref=e369]:
+            - generic [ref=e370]:
+              - generic [ref=e371]: Hiển thị
+              - combobox [ref=e372] [cursor=pointer]:
+                - option "5 dòng/trang"
+                - option "10 dòng/trang"
+                - option "20 dòng/trang"
+                - option "50 dòng/trang"
+            - generic [ref=e373]:
+              - button "chevron_left" [disabled] [ref=e374]:
+                - generic [ref=e375]: chevron_left
+              - button "1" [ref=e376] [cursor=pointer]
+              - button "2" [ref=e377] [cursor=pointer]
+              - button "3" [ref=e378] [cursor=pointer]
+              - button "4" [ref=e379] [cursor=pointer]
+              - button "5" [ref=e380] [cursor=pointer]
+              - button "6" [ref=e381] [cursor=pointer]
+              - button "chevron_right" [ref=e382] [cursor=pointer]:
+                - generic [ref=e383]: chevron_right

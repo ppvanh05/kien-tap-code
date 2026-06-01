@@ -1,0 +1,21 @@
+TC ID,Module,Risk Level,Test Scenario,Pre-Condition,Test Steps,Test Data,Expected Result,Priority
+TXP_LOOK_TC_001,Tra cứu vé,Medium,Happy Path - Tra cứu vé thành công bằng mã đơn hàng hợp lệ và SĐT đúng,Đơn hàng DH10000001 tồn tại trong hệ thống liên kết với số điện thoại 0912345678. Chuyến xe chưa khởi hành.,"1. Truy cập trang Tra cứu vé
+2. Nhập mã đơn hàng vào ô mã
+3. Nhập số điện thoại
+4. Click nút ""Tra cứu""",Mã đơn/vé: DH10000001 | SĐT: 0912345678,"1. Trả về thông tin chi tiết đơn hàng: Mã đơn, tên người đi, số điện thoại, ngày đi, giờ khởi hành, điểm đón/trả, biển số xe, số lần đã sửa.
+2. Hiển thị danh sách vé điện tử thuộc đơn hàng gồm mã vé, số ghế, trạng thái bằng tiếng Việt (Ví dụ: Chờ khởi hành) và mã QR.",Medium
+TXP_LOOK_TC_002,Tra cứu vé,Medium,Happy Path - Tra cứu vé thành công bằng mã vé điện tử và SĐT đúng,Vé điện tử VE100001 (thuộc đơn hàng DH10000001) liên kết với số điện thoại 0912345678.,"1. Nhập mã vé vào ô nhập mã
+2. Nhập số điện thoại
+3. Click nút ""Tra cứu""",Mã đơn/vé: VE100001 | SĐT: 0912345678,Hệ thống trả về thông tin chi tiết đơn hàng tương ứng giống như khi tra cứu bằng mã đơn hàng.,Medium
+TXP_LOOK_TC_003,Tra cứu vé,Medium,Alternate Path - Tra cứu với mã viết thường (Case-insensitiv
+<truncated 25990 bytes>
+ công đơn hàng có trạng thái ""Chờ khởi hành"".","1. Click nút ""Hủy vé"" trên giao diện
+2. Quan sát modal hủy vé và danh sách lý do",Mã đơn: DH10000001,"Modal hủy vé hiển thị 4 lý do có thể chọn: ""Tôi đổi kế hoạch"", ""Tôi không thể tham gia"", ""Tôi gặp sự cố"", ""Lý do khác"".",Low
+TXP_LOOK_TC_055,Cập nhật trạng thái đơn hàng,High,Happy Path - Cập nhật trạng thái đơn hàng và đồng bộ trạng thái tất cả vé điện tử,"Đơn hàng DH10000001 có 2 vé đều đang ở trạng thái ""ChoKhoiHanh"".","1. Gọi API PUT /customer/tra-cuu-ve/update-status/DH10000001
+2. Truyền body: { ""trangThai"": ""Đã hoàn thành"" }","MaDonHang: DH10000001 | trangThai: ""Đã hoàn thành""","1. TrangThaiDonHang của DH10000001 cập nhật thành ""DaHoanThanh"".
+2. Toàn bộ vé điện tử trong đơn cập nhật TrangThaiVe thành ""DaHoanThanh"".
+3. Trả về thông tin đơn hàng đã được map sang tiếng Việt.",High
+TXP_LOOK_TC_056,Cập nhật trạng thái đơn hàng,Medium,"Mapping - Cập nhật trạng thái với chuỗi tiếng Việt có dấu ""Chờ thanh toán""",Đơn hàng DH10000001 đang ở trạng thái bất kỳ.,"1. Gọi API PUT update-status với body: { ""trangThai"": ""Chờ thanh toán"" }","trangThai: ""Chờ thanh toán""",Hệ thống ánh xạ đúng chuỗi tiếng Việt sang enum ChoThanhToan và cập nhật thành công.,Medium
+TXP_LOOK_TC_057,Cập nhật trạng thái đơn hàng,Medium,Negative - Cập nhật trạng thái với mã đơn hàng trống/null,API update-status đang hoạt động bình thường.,"1. Gọi API PUT /customer/tra-cuu-ve/update-status với maDonHang rỗng
+2. Quan sát phản hồi",MaDonHang: (Rỗng),"1. API trả về status 400 Bad Request.
+2. Message lỗi: ""Mã đơn hàng không hợp lệ"".",Medium

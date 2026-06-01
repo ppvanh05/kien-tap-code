@@ -1,0 +1,372 @@
+- generic [ref=e29]:
+  - complementary [ref=e30]:
+    - img "TXP Logo" [ref=e33]
+    - navigation [ref=e34]:
+      - generic [ref=e36] [cursor=pointer]:
+        - generic [ref=e37]: home
+        - generic [ref=e38]: Trang chủ
+      - generic [ref=e40] [cursor=pointer]:
+        - generic [ref=e41]: article
+        - generic [ref=e42]: Quản lý tin tức
+      - generic [ref=e44] [cursor=pointer]:
+        - generic [ref=e45]: groups
+        - generic [ref=e46]: Quản lý khách hàng
+      - generic [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: engineering
+        - generic [ref=e50]: Quản lý nhân viên
+      - generic [ref=e52] [cursor=pointer]:
+        - generic [ref=e53]: policy
+        - generic [ref=e54]: Quản lý chính sách
+      - generic [ref=e56] [cursor=pointer]:
+        - generic [ref=e57]: block
+        - generic [ref=e58]: Quản lý từ khóa cấm
+      - generic [ref=e60] [cursor=pointer]:
+        - generic [ref=e61]: history_edu
+        - generic [ref=e62]: Quản lý nhật ký
+    - generic [ref=e64] [cursor=pointer]:
+      - generic [ref=e66]: account_circle
+      - generic [ref=e67]:
+        - generic [ref=e68]: Nguyen An Ninh
+        - generic [ref=e69]: Quản trị viên
+  - main [ref=e70]:
+    - generic [ref=e71]:
+      - button "menu" [ref=e73] [cursor=pointer]:
+        - generic [ref=e74]: menu
+      - generic [ref=e75]:
+        - generic [ref=e77] [cursor=pointer]: notifications
+        - generic [ref=e79]: Thứ Bảy, 30/05/2026
+    - generic [ref=e182]:
+      - generic [ref=e183]:
+        - generic [ref=e184]:
+          - generic [ref=e185]:
+            - generic [ref=e186] [cursor=pointer]: Quản trị hệ thống
+            - generic [ref=e187]: /
+            - generic [ref=e188]: Quản lý tài khoản khách hàng
+          - heading "Quản lý tài khoản khách hàng" [level=1] [ref=e189]
+        - generic [ref=e190]:
+          - generic [ref=e191]:
+            - button "Tất cả" [ref=e192] [cursor=pointer]
+            - button "Đang hoạt động" [ref=e193] [cursor=pointer]
+            - button "Đã khóa" [ref=e194] [cursor=pointer]
+          - generic [ref=e195]:
+            - generic [ref=e196]:
+              - generic [ref=e197]:
+                - generic [ref=e198]: search
+                - textbox "Tìm theo Mã KH, Họ tên, SĐT, Email..." [ref=e199]
+              - combobox [ref=e201] [cursor=pointer]:
+                - option "Tất cả giới tính" [selected]
+                - option "Nam"
+                - option "Nữ"
+                - option "Khác"
+              - button "Tìm kiếm" [ref=e202] [cursor=pointer]
+            - button "person_add Thêm tài khoản mới" [ref=e203] [cursor=pointer]:
+              - generic [ref=e204]: person_add
+              - text: Thêm tài khoản mới
+          - table [ref=e206]:
+            - rowgroup [ref=e207]:
+              - row "Mã KH Họ và tên Số điện thoại Email Ngày đăng ký Vé đã đặt Trạng thái Chức năng" [ref=e208]:
+                - columnheader "Mã KH" [ref=e209]
+                - columnheader "Họ và tên" [ref=e210]
+                - columnheader "Số điện thoại" [ref=e211]
+                - columnheader "Email" [ref=e212]
+                - columnheader "Ngày đăng ký" [ref=e213]
+                - columnheader "Vé đã đặt" [ref=e214]
+                - columnheader "Trạng thái" [ref=e215]
+                - columnheader "Chức năng" [ref=e216]
+            - rowgroup [ref=e217]:
+              - row "KH100016 AA AAAAAAA 0123456789 Chưa cung cấp 30/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e218]:
+                - cell "KH100016" [ref=e219]:
+                  - strong [ref=e222]: KH100016
+                - cell "AA AAAAAAA" [ref=e223]:
+                  - generic [ref=e224]:
+                    - generic [ref=e225]: AA
+                    - generic [ref=e226]: AAAAAAA
+                - cell "0123456789" [ref=e227]
+                - cell "Chưa cung cấp" [ref=e228]:
+                  - generic "Chưa cung cấp" [ref=e229]
+                - cell "30/05/2026" [ref=e230]
+                - cell "0 vé" [ref=e231]
+                - cell "check_circle Đang hoạt động" [ref=e232]:
+                  - generic [ref=e233]:
+                    - generic [ref=e234]: check_circle
+                    - text: Đang hoạt động
+                - cell "edit" [ref=e235]:
+                  - button "edit" [ref=e237] [cursor=pointer]:
+                    - generic [ref=e238]: edit
+              - row "KH100015 VA Phan Phạm Vân Anh 0862512466 anhppv23406@st.uel.edu.vn 29/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e239]:
+                - cell "KH100015" [ref=e240]:
+                  - strong [ref=e243]: KH100015
+                - cell "VA Phan Phạm Vân Anh" [ref=e244]:
+                  - generic [ref=e245]:
+                    - generic [ref=e246]: VA
+                    - generic [ref=e247]: Phan Phạm Vân Anh
+                - cell "0862512466" [ref=e248]
+                - cell "anhppv23406@st.uel.edu.vn" [ref=e249]:
+                  - generic "anhppv23406@st.uel.edu.vn" [ref=e250]
+                - cell "29/05/2026" [ref=e251]
+                - cell "0 vé" [ref=e252]
+                - cell "check_circle Đang hoạt động" [ref=e253]:
+                  - generic [ref=e254]:
+                    - generic [ref=e255]: check_circle
+                    - text: Đang hoạt động
+                - cell "edit" [ref=e256]:
+                  - button "edit" [ref=e258] [cursor=pointer]:
+                    - generic [ref=e259]: edit
+              - row "KH100014 TP Trần Phượng 0967376797 Chưa cung cấp 28/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e260]:
+                - cell "KH100014" [ref=e261]:
+                  - strong [ref=e264]: KH100014
+                - cell "TP Trần Phượng" [ref=e265]:
+                  - generic [ref=e266]:
+                    - generic [ref=e267]: TP
+                    - generic [ref=e268]: Trần Phượng
+                - cell "0967376797" [ref=e269]
+                - cell "Chưa cung cấp" [ref=e270]:
+                  - generic "Chưa cung cấp" [ref=e271]
+                - cell "28/05/2026" [ref=e272]
+                - cell "0 vé" [ref=e273]
+                - cell "check_circle Đang hoạt động" [ref=e274]:
+                  - generic [ref=e275]:
+                    - generic [ref=e276]: check_circle
+                    - text: Đang hoạt động
+                - cell "edit" [ref=e277]:
+                  - button "edit" [ref=e279] [cursor=pointer]:
+                    - generic [ref=e280]: edit
+              - row "KH100013 BN Trần Ngọc Bảo Nghi 0981939379 Chưa cung cấp 28/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e281]:
+                - cell "KH100013" [ref=e282]:
+                  - strong [ref=e285]: KH100013
+                - cell "BN Trần Ngọc Bảo Nghi" [ref=e286]:
+                  - generic [ref=e287]:
+                    - generic [ref=e288]: BN
+                    - generic [ref=e289]: Trần Ngọc Bảo Nghi
+                - cell "0981939379" [ref=e290]
+                - cell "Chưa cung cấp" [ref=e291]:
+                  - generic "Chưa cung cấp" [ref=e292]
+                - cell "28/05/2026" [ref=e293]
+                - cell "0 vé" [ref=e294]
+                - cell "check_circle Đang hoạt động" [ref=e295]:
+                  - generic [ref=e296]:
+                    - generic [ref=e297]: check_circle
+                    - text: Đang hoạt động
+                - cell "edit" [ref=e298]:
+                  - button "edit" [ref=e300] [cursor=pointer]:
+                    - generic [ref=e301]: edit
+              - row "KH100012 TM Tran Thi Mai 0901000002 mai.tran@example.com 27/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e302]:
+                - cell "KH100012" [ref=e303]:
+                  - strong [ref=e306]: KH100012
+                - cell "TM Tran Thi Mai" [ref=e307]:
+                  - generic [ref=e308]:
+                    - generic [ref=e309]: TM
+                    - generic [ref=e310]: Tran Thi Mai
+                - cell "0901000002" [ref=e311]
+                - cell "mai.tran@example.com" [ref=e312]:
+                  - generic "mai.tran@example.com" [ref=e313]
+                - cell "27/05/2026" [ref=e314]
+                - cell "0 vé" [ref=e315]
+                - cell "check_circle Đang hoạt động" [ref=e316]:
+                  - generic [ref=e317]:
+                    - generic [ref=e318]: check_circle
+                    - text: Đang hoạt động
+                - cell "edit" [ref=e319]:
+                  - button "edit" [ref=e321] [cursor=pointer]:
+                    - generic [ref=e322]: edit
+              - row "KH100011 VH Nguyen Van Hung 0901000001 hung.nguyen@example.com 27/05/2026 0 vé check_circle Đang hoạt động edit" [ref=e323]:
+                - cell "KH100011" [ref=e324]:
+                  - strong [ref=e327]: KH100011
+                - cell "VH Nguyen Van Hung" [ref=e328]:
+                  - generic [ref=e329]:
+                    - generic [ref=e330]: VH
+                    - generic [ref=e331]: Nguyen Van Hung
+                - cell "0901000001" [ref=e332]
+                - cell "hung.nguyen@example.com" [ref=e333]:
+                  - generic "hung.nguyen@example.com" [ref=e334]
+                - cell "27/05/2026" [ref=e335]
+                - cell "0 vé" [ref=e336]
+                - cell "check_circle Đang hoạt động" [ref=e337]:
+                  - generic [ref=e338]:
+                    - generic [ref=e339]: check_circle
+                    - text: Đang hoạt động
+                - cell "edit" [ref=e340]:
+                  - button "edit" [ref=e342] [cursor=pointer]:
+                    - generic [ref=e343]: edit
+              - row "KH100010 avatar Hihi 0897456314 Chưa cung cấp 24/05/2026 0 vé block Đã khóa edit" [ref=e344]:
+                - cell "KH100010" [ref=e345]:
+                  - strong [ref=e348]: KH100010
+                - cell "avatar Hihi" [ref=e349]:
+                  - generic [ref=e350]:
+                    - img "avatar" [ref=e351]
+                    - generic [ref=e352]: Hihi
+                - cell "0897456314" [ref=e353]
+                - cell "Chưa cung cấp" [ref=e354]:
+                  - generic "Chưa cung cấp" [ref=e355]
+                - cell "24/05/2026" [ref=e356]
+                - cell "0 vé" [ref=e357]
+                - cell "block Đã khóa" [ref=e358]:
+                  - generic [ref=e359]:
+                    - generic [ref=e360]: block
+                    - text: Đã khóa
+                - cell "edit" [ref=e361]:
+                  - button "edit" [ref=e363] [cursor=pointer]:
+                    - generic [ref=e364]: edit
+              - row "KH100009 HL Hay làm 0569874631 Chưa cung cấp 24/05/2026 0 vé block Đã khóa edit" [ref=e365]:
+                - cell "KH100009" [ref=e366]:
+                  - strong [ref=e369]: KH100009
+                - cell "HL Hay làm" [ref=e370]:
+                  - generic [ref=e371]:
+                    - generic [ref=e372]: HL
+                    - generic [ref=e373]: Hay làm
+                - cell "0569874631" [ref=e374]
+                - cell "Chưa cung cấp" [ref=e375]:
+                  - generic "Chưa cung cấp" [ref=e376]
+                - cell "24/05/2026" [ref=e377]
+                - cell "0 vé" [ref=e378]
+                - cell "block Đã khóa" [ref=e379]:
+                  - generic [ref=e380]:
+                    - generic [ref=e381]: block
+                    - text: Đã khóa
+                - cell "edit" [ref=e382]:
+                  - button "edit" [ref=e384] [cursor=pointer]:
+                    - generic [ref=e385]: edit
+              - row "KH100008 NN Như Như 0564789123 nhulun@gmail.com 24/05/2026 0 vé block Đã khóa edit" [ref=e386]:
+                - cell "KH100008" [ref=e387]:
+                  - strong [ref=e390]: KH100008
+                - cell "NN Như Như" [ref=e391]:
+                  - generic [ref=e392]:
+                    - generic [ref=e393]: NN
+                    - generic [ref=e394]: Như Như
+                - cell "0564789123" [ref=e395]
+                - cell "nhulun@gmail.com" [ref=e396]:
+                  - generic "nhulun@gmail.com" [ref=e397]
+                - cell "24/05/2026" [ref=e398]
+                - cell "0 vé" [ref=e399]
+                - cell "block Đã khóa" [ref=e400]:
+                  - generic [ref=e401]:
+                    - generic [ref=e402]: block
+                    - text: Đã khóa
+                - cell "edit" [ref=e403]:
+                  - button "edit" [ref=e405] [cursor=pointer]:
+                    - generic [ref=e406]: edit
+              - row "KH100007 TP Đỗ Thị Phương 0547896412 daoa@gmail.com 24/05/2026 0 vé block Đã khóa edit" [ref=e407]:
+                - cell "KH100007" [ref=e408]:
+                  - strong [ref=e411]: KH100007
+                - cell "TP Đỗ Thị Phương" [ref=e412]:
+                  - generic [ref=e413]:
+                    - generic [ref=e414]: TP
+                    - generic [ref=e415]: Đỗ Thị Phương
+                - cell "0547896412" [ref=e416]
+                - cell "daoa@gmail.com" [ref=e417]:
+                  - generic "daoa@gmail.com" [ref=e418]
+                - cell "24/05/2026" [ref=e419]
+                - cell "0 vé" [ref=e420]
+                - cell "block Đã khóa" [ref=e421]:
+                  - generic [ref=e422]:
+                    - generic [ref=e423]: block
+                    - text: Đã khóa
+                - cell "edit" [ref=e424]:
+                  - button "edit" [ref=e426] [cursor=pointer]:
+                    - generic [ref=e427]: edit
+          - generic [ref=e428]:
+            - generic [ref=e429]: Hiển thị từ 1 đến 10 trong tổng số 16 khách hàng
+            - generic [ref=e430]:
+              - generic [ref=e431]:
+                - generic [ref=e432]: Hiển thị
+                - combobox [ref=e433] [cursor=pointer]:
+                  - option "5 dòng/trang"
+                  - option "10 dòng/trang"
+                  - option "20 dòng/trang"
+                  - option "50 dòng/trang"
+              - generic [ref=e434]:
+                - button "chevron_left" [disabled] [ref=e435]:
+                  - generic [ref=e436]: chevron_left
+                - button "1" [ref=e437] [cursor=pointer]
+                - button "2" [ref=e438] [cursor=pointer]
+                - button "chevron_right" [ref=e439] [cursor=pointer]:
+                  - generic [ref=e440]: chevron_right
+      - generic [ref=e442]:
+        - generic [ref=e443]:
+          - generic [ref=e444]:
+            - generic [ref=e446]: AA
+            - generic [ref=e447]:
+              - heading "AAAAAAA" [level=3] [ref=e448]
+              - generic [ref=e449]: "Mã khách hàng: KH100016"
+            - generic [ref=e450]: Hoạt động
+          - button "close" [ref=e452] [cursor=pointer]:
+            - generic [ref=e453]: close
+        - generic [ref=e454]:
+          - generic [ref=e455]:
+            - button "person Thông tin tài khoản" [ref=e456] [cursor=pointer]:
+              - generic [ref=e457]: person
+              - text: Thông tin tài khoản
+            - button "confirmation_number Lịch sử đặt vé (0)" [ref=e458] [cursor=pointer]:
+              - generic [ref=e459]: confirmation_number
+              - text: Lịch sử đặt vé (0)
+            - button "history Nhật ký hoạt động" [ref=e460] [cursor=pointer]:
+              - generic [ref=e461]: history
+              - text: Nhật ký hoạt động
+            - generic [ref=e462]:
+              - generic [ref=e463]:
+                - generic [ref=e464]: Ngày đăng ký
+                - generic [ref=e465]: 30/05/2026
+              - generic [ref=e466]:
+                - generic [ref=e467]: Tổng vé đặt
+                - generic [ref=e468]: 0 vé
+          - generic [ref=e470]:
+            - heading "Cập nhật hồ sơ khách hàng" [level=4] [ref=e471]
+            - generic [ref=e472]:
+              - generic [ref=e473]:
+                - generic [ref=e474]: Ảnh đại diện
+                - generic [ref=e476] [cursor=pointer]:
+                  - generic [ref=e477]: file_upload
+                  - generic [ref=e478]: Tải ảnh lên
+              - generic [ref=e479]:
+                - generic [ref=e480]: Mã khách hàng *
+                - textbox [disabled] [ref=e481]: KH100016
+              - generic [ref=e482]:
+                - generic [ref=e483]: Họ và tên khách hàng *
+                - textbox [ref=e484]: AAAAAAA
+              - generic [ref=e485]:
+                - generic [ref=e486]: Số điện thoại *
+                - textbox [ref=e487]: "0123456789"
+              - generic [ref=e488]:
+                - generic [ref=e489]: Địa chỉ Email
+                - textbox [ref=e490]
+              - generic [ref=e491]:
+                - generic [ref=e492]: Giới tính
+                - combobox [ref=e493]:
+                  - option "Nam" [selected]
+                  - option "Nữ"
+                  - option "Khác"
+              - generic [ref=e494]:
+                - generic [ref=e495]: Ngày sinh *
+                - textbox [ref=e496]
+        - generic [ref=e497]:
+          - button "lock Khóa tài khoản khách hàng" [active] [ref=e499] [cursor=pointer]:
+            - generic [ref=e500]: lock
+            - text: Khóa tài khoản khách hàng
+          - generic [ref=e501]:
+            - button "Đóng cửa sổ" [ref=e502] [cursor=pointer]
+            - button "save Lưu thay đổi" [ref=e503] [cursor=pointer]:
+              - generic [ref=e504]: save
+              - text: Lưu thay đổi
+      - generic [ref=e506]:
+        - generic [ref=e507]:
+          - generic [ref=e508]:
+            - generic [ref=e509]: warning
+            - heading "Xác nhận khóa tài khoản" [level=3] [ref=e510]
+          - button "close" [ref=e511] [cursor=pointer]:
+            - generic [ref=e512]: close
+        - generic [ref=e513]:
+          - paragraph [ref=e514]:
+            - text: Bạn đang thực hiện khóa tài khoản của khách hàng
+            - strong [ref=e515]: AAAAAAA
+            - text: "(Mã:"
+            - strong [ref=e516]: KH100016
+            - text: ).
+          - paragraph [ref=e517]: Tài khoản sau khi bị khóa sẽ không thể đăng nhập vào website đặt vé, không đặt được ghế mới và không thể chỉnh sửa vé xe.
+          - generic [ref=e518]:
+            - generic [ref=e519]: Lý do khóa tài khoản *
+            - 'textbox "Nhập chi tiết lý do khóa (Ví dụ: Spam giữ chỗ nhiều lần không thanh toán, Vi phạm nghiêm trọng điều khoản...)" [ref=e520]'
+        - generic [ref=e521]:
+          - button "Hủy bỏ" [ref=e522] [cursor=pointer]
+          - button "lock Khóa tài khoản" [ref=e523] [cursor=pointer]:
+            - generic [ref=e524]: lock
+            - text: Khóa tài khoản

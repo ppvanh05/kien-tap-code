@@ -1,0 +1,156 @@
+- generic [ref=e26]:
+  - complementary [ref=e27]:
+    - img "TXP Logo" [ref=e30]
+    - navigation [ref=e31]:
+      - generic [ref=e33] [cursor=pointer]:
+        - generic [ref=e34]: home
+        - generic [ref=e35]: Trang chủ
+      - generic [ref=e37] [cursor=pointer]:
+        - generic [ref=e38]: confirmation_number
+        - generic [ref=e39]: Quản lý vé
+        - generic [ref=e40]: expand_more
+      - generic [ref=e42] [cursor=pointer]:
+        - generic [ref=e43]: groups
+        - generic [ref=e44]: Quản lý khách hàng
+    - generic [ref=e46] [cursor=pointer]:
+      - generic [ref=e48]: account_circle
+      - generic [ref=e49]:
+        - generic [ref=e50]: Phan Thu Trang
+        - generic [ref=e51]: Nhân viên bán vé
+  - main [ref=e52]:
+    - generic [ref=e53]:
+      - button "menu" [ref=e55] [cursor=pointer]:
+        - generic [ref=e56]: menu
+      - generic [ref=e57]:
+        - generic [ref=e59] [cursor=pointer]: notifications
+        - generic [ref=e61]: Thứ Bảy, 30/05/2026
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - heading "Chào buổi chiều, Phan Thu Trang! 👋" [level=1] [ref=e67]
+          - paragraph [ref=e68]:
+            - generic [ref=e69]: verified_user
+            - text: Nhân viên bán vé
+        - generic [ref=e70]:
+          - generic [ref=e71]: today
+          - generic [ref=e72]: Thứ Bảy, 30/05/2026
+      - generic [ref=e73]:
+        - heading "bolt Thao tác nhanh" [level=2] [ref=e74]:
+          - generic [ref=e75]: bolt
+          - text: Thao tác nhanh
+        - generic [ref=e76]:
+          - link "add_circle Đặt vé mới arrow_forward" [ref=e77] [cursor=pointer]:
+            - /url: /admin/quan-ly-ve/dat-ve-moi
+            - generic [ref=e79]: add_circle
+            - generic [ref=e80]: Đặt vé mới
+            - generic [ref=e81]: arrow_forward
+          - link "search Tra cứu vé arrow_forward" [ref=e82] [cursor=pointer]:
+            - /url: /admin/quan-ly-ve/danh-sach-ve
+            - generic [ref=e84]: search
+            - generic [ref=e85]: Tra cứu vé
+            - generic [ref=e86]: arrow_forward
+          - link "people Khách hàng arrow_forward" [ref=e87] [cursor=pointer]:
+            - /url: /admin/quan-ly-khach-hang
+            - generic [ref=e89]: people
+            - generic [ref=e90]: Khách hàng
+            - generic [ref=e91]: arrow_forward
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e95]: local_activity
+          - generic [ref=e96]:
+            - generic [ref=e97]: Vé đang quản lý
+            - generic [ref=e98]: "0"
+            - generic [ref=e99]:
+              - generic [ref=e100]: trending_up
+              - text: Đang tải dữ liệu
+        - generic [ref=e101]:
+          - generic [ref=e103]: pending_actions
+          - generic [ref=e104]:
+            - generic [ref=e105]: Vé chờ thanh toán
+            - generic [ref=e106]: "0"
+            - generic [ref=e107]:
+              - generic [ref=e108]: trending_down
+              - text: Theo dữ liệu mới nhất
+        - generic [ref=e109]:
+          - generic [ref=e111]: payments
+          - generic [ref=e112]:
+            - generic [ref=e113]: Doanh thu đã thanh toán
+            - generic [ref=e114]: 0đ
+            - generic [ref=e115]:
+              - generic [ref=e116]: trending_up
+              - text: Theo dữ liệu mới nhất
+        - generic [ref=e117]:
+          - generic [ref=e119]: cancel
+          - generic [ref=e120]:
+            - generic [ref=e121]: Vé đã hủy
+            - generic [ref=e122]: "0"
+            - generic [ref=e123]:
+              - generic [ref=e124]: trending_up
+              - text: Theo dữ liệu mới nhất
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - heading "receipt_long Vé đặt gần đây" [level=2] [ref=e128]:
+              - generic [ref=e129]: receipt_long
+              - text: Vé đặt gần đây
+            - button "Xem tất cả arrow_forward" [ref=e130] [cursor=pointer]:
+              - text: Xem tất cả
+              - generic [ref=e131]: arrow_forward
+          - table [ref=e133]:
+            - rowgroup [ref=e134]:
+              - row "MÃ VÉ KHÁCH HÀNG TUYẾN GHẾ GIỜ GIÁ VÉ TRẠNG THÁI" [ref=e135]:
+                - columnheader "MÃ VÉ" [ref=e136]
+                - columnheader "KHÁCH HÀNG" [ref=e137]
+                - columnheader "TUYẾN" [ref=e138]
+                - columnheader "GHẾ" [ref=e139]
+                - columnheader "GIỜ" [ref=e140]
+                - columnheader "GIÁ VÉ" [ref=e141]
+                - columnheader "TRẠNG THÁI" [ref=e142]
+            - rowgroup [ref=e143]:
+              - row "Chưa có vé để hiển thị." [ref=e144]:
+                - cell "Chưa có vé để hiển thị." [ref=e145]
+        - generic [ref=e146]:
+          - generic [ref=e147]:
+            - heading "route Tuyến bán gần đây" [level=2] [ref=e148]:
+              - generic [ref=e149]: route
+              - text: Tuyến bán gần đây
+            - button "Xem vé arrow_forward" [ref=e150] [cursor=pointer]:
+              - text: Xem vé
+              - generic [ref=e151]: arrow_forward
+          - generic [ref=e152]:
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: BX Miền Đông → Hà Nội
+                - generic [ref=e156]:
+                  - generic [ref=e157]: local_activity
+                  - text: 342 vé đã bán
+              - generic [ref=e158]:
+                - generic [ref=e159]: donut_large
+                - text: +12%
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - generic [ref=e162]: BX Miền Đông → Đà Nẵng
+                - generic [ref=e163]:
+                  - generic [ref=e164]: local_activity
+                  - text: 289 vé đã bán
+              - generic [ref=e165]:
+                - generic [ref=e166]: donut_large
+                - text: +8%
+            - generic [ref=e167]:
+              - generic [ref=e168]:
+                - generic [ref=e169]: BX Miền Đông → Vinh
+                - generic [ref=e170]:
+                  - generic [ref=e171]: local_activity
+                  - text: 231 vé đã bán
+              - generic [ref=e172]:
+                - generic [ref=e173]: donut_large
+                - text: "-5%"
+            - generic [ref=e174]:
+              - generic [ref=e175]:
+                - generic [ref=e176]: BX Miền Đông → Huế
+                - generic [ref=e177]:
+                  - generic [ref=e178]: local_activity
+                  - text: 187 vé đã bán
+              - generic [ref=e179]:
+                - generic [ref=e180]: donut_large
+                - text: +15%

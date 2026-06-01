@@ -1,0 +1,285 @@
+- generic [ref=e89]:
+  - complementary [ref=e90]:
+    - img "TXP Logo" [ref=e93]
+    - navigation [ref=e94]:
+      - generic [ref=e96] [cursor=pointer]:
+        - generic [ref=e97]: home
+        - generic [ref=e98]: Trang chủ
+      - generic [ref=e100] [cursor=pointer]:
+        - generic [ref=e101]: article
+        - generic [ref=e102]: Quản lý tin tức
+      - generic [ref=e104] [cursor=pointer]:
+        - generic [ref=e105]: groups
+        - generic [ref=e106]: Quản lý khách hàng
+      - generic [ref=e108] [cursor=pointer]:
+        - generic [ref=e109]: engineering
+        - generic [ref=e110]: Quản lý nhân viên
+      - generic [ref=e112] [cursor=pointer]:
+        - generic [ref=e113]: policy
+        - generic [ref=e114]: Quản lý chính sách
+      - generic [ref=e116] [cursor=pointer]:
+        - generic [ref=e117]: block
+        - generic [ref=e118]: Quản lý từ khóa cấm
+      - generic [ref=e120] [cursor=pointer]:
+        - generic [ref=e121]: history_edu
+        - generic [ref=e122]: Quản lý nhật ký
+    - generic [ref=e124] [cursor=pointer]:
+      - generic [ref=e126]: account_circle
+      - generic [ref=e127]:
+        - generic [ref=e128]: Nguyen An Ninh
+        - generic [ref=e129]: Quản trị viên
+  - main [ref=e130]:
+    - generic [ref=e131]:
+      - button "menu" [ref=e133] [cursor=pointer]:
+        - generic [ref=e134]: menu
+      - generic [ref=e135]:
+        - generic [ref=e137] [cursor=pointer]: notifications
+        - generic [ref=e139]: Thứ Bảy, 30/05/2026
+    - generic [ref=e243]:
+      - generic [ref=e244]:
+        - generic [ref=e245]:
+          - generic [ref=e246]: Quản lý tài khoản
+          - generic [ref=e247]: /
+          - generic [ref=e248]: Danh sách tài khoản
+        - heading "Danh sách tài khoản" [level=1] [ref=e249]
+      - generic [ref=e250]:
+        - generic [ref=e251]:
+          - button "Tất cả" [ref=e252] [cursor=pointer]
+          - button "Đang hoạt động" [ref=e253] [cursor=pointer]
+          - button "Đã khóa" [ref=e254] [cursor=pointer]
+        - button "add Thêm tài khoản mới" [active] [ref=e256] [cursor=pointer]:
+          - generic [ref=e257]: add
+          - text: Thêm tài khoản mới
+        - generic [ref=e258]:
+          - generic [ref=e259]:
+            - generic [ref=e260]: search
+            - textbox "Nhập ID/Tên truy cập/Tên hiển thị..." [ref=e261]
+          - combobox [ref=e263] [cursor=pointer]:
+            - option "Tất cả chức vụ" [selected]
+            - option "Ban quản lý"
+            - option "Quản trị viên"
+            - option "Nhân viên điều phối"
+            - option "Nhân viên bán vé"
+          - button "Tìm kiếm" [ref=e264] [cursor=pointer]
+        - table [ref=e266]:
+          - rowgroup [ref=e267]:
+            - row "ID Tên truy cập Tên hiển thị Nhóm quyền hoạt động Chức vụ mặc định Trạng thái Chức năng" [ref=e268]:
+              - columnheader "ID" [ref=e269]
+              - columnheader "Tên truy cập" [ref=e270]
+              - columnheader "Tên hiển thị" [ref=e271]
+              - columnheader "Nhóm quyền hoạt động" [ref=e272]
+              - columnheader "Chức vụ mặc định" [ref=e273]
+              - columnheader "Trạng thái" [ref=e274]
+              - columnheader "Chức năng" [ref=e275]
+          - rowgroup [ref=e276]:
+            - row "BQL100001 quanly1 AT Hoang Anh Tuan Ban Quản lý (1 quyền) Ban quản lý check_circle Đang hoạt động edit" [ref=e277]:
+              - cell "BQL100001" [ref=e278]:
+                - generic [ref=e279]: BQL100001
+              - cell "quanly1" [ref=e281]:
+                - strong [ref=e282]: quanly1
+              - cell "AT Hoang Anh Tuan" [ref=e283]:
+                - generic [ref=e284]:
+                  - generic [ref=e285]: AT
+                  - generic [ref=e286]: Hoang Anh Tuan
+              - cell "Ban Quản lý (1 quyền)" [ref=e287]:
+                - generic [ref=e288]: Ban Quản lý (1 quyền)
+              - cell "Ban quản lý" [ref=e289]
+              - cell "check_circle Đang hoạt động" [ref=e290]:
+                - generic [ref=e291]:
+                  - generic [ref=e292]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e293]:
+                - button "edit" [ref=e294] [cursor=pointer]:
+                  - generic [ref=e295]: edit
+            - row "CL100301 tuanha avatar Hoàng Anh Tuấn Ban Quản lý (1 quyền) Ban quản lý check_circle Đang hoạt động edit" [ref=e296]:
+              - cell "CL100301" [ref=e297]:
+                - generic [ref=e298]: CL100301
+              - cell "tuanha" [ref=e300]:
+                - strong [ref=e301]: tuanha
+              - cell "avatar Hoàng Anh Tuấn" [ref=e302]:
+                - generic [ref=e303]:
+                  - img "avatar" [ref=e304]
+                  - generic [ref=e305]: Hoàng Anh Tuấn
+              - cell "Ban Quản lý (1 quyền)" [ref=e306]:
+                - generic [ref=e307]: Ban Quản lý (1 quyền)
+              - cell "Ban quản lý" [ref=e308]
+              - cell "check_circle Đang hoạt động" [ref=e309]:
+                - generic [ref=e310]:
+                  - generic [ref=e311]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e312]:
+                - button "edit" [ref=e313] [cursor=pointer]:
+                  - generic [ref=e314]: edit
+            - row "CL100303 trangpt avatar Phan Thu Trang Nhân viên bán vé (2 quyền) Nhân viên bán vé check_circle Đang hoạt động edit" [ref=e315]:
+              - cell "CL100303" [ref=e316]:
+                - generic [ref=e317]: CL100303
+              - cell "trangpt" [ref=e319]:
+                - strong [ref=e320]: trangpt
+              - cell "avatar Phan Thu Trang" [ref=e321]:
+                - generic [ref=e322]:
+                  - img "avatar" [ref=e323]
+                  - generic [ref=e324]: Phan Thu Trang
+              - cell "Nhân viên bán vé (2 quyền)" [ref=e325]:
+                - generic [ref=e326]: Nhân viên bán vé (2 quyền)
+              - cell "Nhân viên bán vé" [ref=e327]
+              - cell "check_circle Đang hoạt động" [ref=e328]:
+                - generic [ref=e329]:
+                  - generic [ref=e330]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e331]:
+                - button "edit" [ref=e332] [cursor=pointer]:
+                  - generic [ref=e333]: edit
+            - row "NVBV100001 banve1 TT Phan Thu Trang Nhân viên bán vé (2 quyền) Nhân viên bán vé check_circle Đang hoạt động edit" [ref=e334]:
+              - cell "NVBV100001" [ref=e335]:
+                - generic [ref=e336]: NVBV100001
+              - cell "banve1" [ref=e338]:
+                - strong [ref=e339]: banve1
+              - cell "TT Phan Thu Trang" [ref=e340]:
+                - generic [ref=e341]:
+                  - generic [ref=e342]: TT
+                  - generic [ref=e343]: Phan Thu Trang
+              - cell "Nhân viên bán vé (2 quyền)" [ref=e344]:
+                - generic [ref=e345]: Nhân viên bán vé (2 quyền)
+              - cell "Nhân viên bán vé" [ref=e346]
+              - cell "check_circle Đang hoạt động" [ref=e347]:
+                - generic [ref=e348]:
+                  - generic [ref=e349]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e350]:
+                - button "edit" [ref=e351] [cursor=pointer]:
+                  - generic [ref=e352]: edit
+            - row "NVDP001 dieuphoi1 ĐP Nguyễn Văn Điều Phối Nhân viên Điều phối (1 quyền) Nhân viên điều phối check_circle Đang hoạt động edit" [ref=e353]:
+              - cell "NVDP001" [ref=e354]:
+                - generic [ref=e355]: NVDP001
+              - cell "dieuphoi1" [ref=e357]:
+                - strong [ref=e358]: dieuphoi1
+              - cell "ĐP Nguyễn Văn Điều Phối" [ref=e359]:
+                - generic [ref=e360]:
+                  - generic [ref=e361]: ĐP
+                  - generic [ref=e362]: Nguyễn Văn Điều Phối
+              - cell "Nhân viên Điều phối (1 quyền)" [ref=e363]:
+                - generic [ref=e364]: Nhân viên Điều phối (1 quyền)
+              - cell "Nhân viên điều phối" [ref=e365]
+              - cell "check_circle Đang hoạt động" [ref=e366]:
+                - generic [ref=e367]:
+                  - generic [ref=e368]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e369]:
+                - button "edit" [ref=e370] [cursor=pointer]:
+                  - generic [ref=e371]: edit
+            - row "NVDP100001 dieuphoi1 DP Nguyen Van Dieu Phoi Nhân viên Điều phối (1 quyền) Nhân viên điều phối check_circle Đang hoạt động edit" [ref=e372]:
+              - cell "NVDP100001" [ref=e373]:
+                - generic [ref=e374]: NVDP100001
+              - cell "dieuphoi1" [ref=e376]:
+                - strong [ref=e377]: dieuphoi1
+              - cell "DP Nguyen Van Dieu Phoi" [ref=e378]:
+                - generic [ref=e379]:
+                  - generic [ref=e380]: DP
+                  - generic [ref=e381]: Nguyen Van Dieu Phoi
+              - cell "Nhân viên Điều phối (1 quyền)" [ref=e382]:
+                - generic [ref=e383]: Nhân viên Điều phối (1 quyền)
+              - cell "Nhân viên điều phối" [ref=e384]
+              - cell "check_circle Đang hoạt động" [ref=e385]:
+                - generic [ref=e386]:
+                  - generic [ref=e387]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e388]:
+                - button "edit" [ref=e389] [cursor=pointer]:
+                  - generic [ref=e390]: edit
+            - row "QTV100001 admin1 AN Nguyen An Ninh Quản trị viên (6 quyền) Quản trị viên check_circle Đang hoạt động edit" [ref=e391]:
+              - cell "QTV100001" [ref=e392]:
+                - generic [ref=e393]: QTV100001
+              - cell "admin1" [ref=e395]:
+                - strong [ref=e396]: admin1
+              - cell "AN Nguyen An Ninh" [ref=e397]:
+                - generic [ref=e398]:
+                  - generic [ref=e399]: AN
+                  - generic [ref=e400]: Nguyen An Ninh
+              - cell "Quản trị viên (6 quyền)" [ref=e401]:
+                - generic [ref=e402]: Quản trị viên (6 quyền)
+              - cell "Quản trị viên" [ref=e403]
+              - cell "check_circle Đang hoạt động" [ref=e404]:
+                - generic [ref=e405]:
+                  - generic [ref=e406]: check_circle
+                  - text: Đang hoạt động
+              - cell "edit" [ref=e407]:
+                - button "edit" [ref=e408] [cursor=pointer]:
+                  - generic [ref=e409]: edit
+        - generic [ref=e410]:
+          - generic [ref=e411]:
+            - button "chevron_left" [disabled] [ref=e412]:
+              - generic [ref=e413]: chevron_left
+            - button "1" [ref=e414] [cursor=pointer]
+            - button "chevron_right" [disabled] [ref=e415]:
+              - generic [ref=e416]: chevron_right
+          - combobox [ref=e418] [cursor=pointer]:
+            - option "5 / trang"
+            - option "10 / trang" [selected]
+            - option "20 / trang"
+            - option "50 / trang"
+      - generic [ref=e420]:
+        - generic [ref=e421]:
+          - heading "Tạo tài khoản mới" [level=3] [ref=e423]
+          - button "close" [ref=e424] [cursor=pointer]:
+            - generic [ref=e425]: close
+        - generic [ref=e426]:
+          - button "Thông tin cơ bản" [ref=e427] [cursor=pointer]
+          - button "Phân quyền" [ref=e428] [cursor=pointer]
+          - button "Thông tin liên hệ" [ref=e429] [cursor=pointer]
+        - generic [ref=e431]:
+          - generic [ref=e433]:
+            - generic [ref=e434]: Tên truy cập *
+            - textbox "Nhập tên truy cập..." [ref=e435]
+          - generic [ref=e436]:
+            - generic [ref=e437]:
+              - generic [ref=e438]: Mật khẩu *
+              - generic [ref=e439]:
+                - textbox "Nhập mật khẩu..." [ref=e440]
+                - button "visibility" [ref=e441] [cursor=pointer]:
+                  - generic [ref=e442]: visibility
+            - generic [ref=e443]:
+              - generic [ref=e444]: Nhập lại mật khẩu *
+              - generic [ref=e445]:
+                - textbox "Nhập lại mật khẩu..." [ref=e446]
+                - button "visibility" [ref=e447] [cursor=pointer]:
+                  - generic [ref=e448]: visibility
+          - generic [ref=e450]:
+            - generic [ref=e451]:
+              - generic [ref=e452]: Họ và tên đệm *
+              - 'textbox "Ví dụ: Nguyễn Văn" [ref=e453]'
+            - generic [ref=e454]:
+              - generic [ref=e455]: Tên *
+              - 'textbox "Ví dụ: A" [ref=e456]'
+          - generic [ref=e457]:
+            - generic [ref=e458]: Tên hiển thị *
+            - 'textbox "Ví dụ: Nguyễn Văn A" [ref=e459]'
+          - generic [ref=e460]:
+            - generic [ref=e461]: Chức vụ mặc định *
+            - combobox [ref=e463]:
+              - option "Quản trị viên"
+              - option "Ban quản lý"
+              - option "Nhân viên điều phối"
+              - option "Nhân viên bán vé" [selected]
+          - generic [ref=e464]:
+            - generic [ref=e465]:
+              - generic [ref=e466]: Giới tính
+              - combobox [ref=e468]:
+                - option "Nam" [selected]
+                - option "Nữ"
+                - option "Khác"
+            - generic [ref=e469]:
+              - generic [ref=e470]: Ngày sinh
+              - textbox [ref=e471]
+          - generic [ref=e472]:
+            - generic [ref=e473]: Ảnh đại diện
+            - generic [ref=e475] [cursor=pointer]:
+              - generic [ref=e476]: file_upload
+              - generic [ref=e477]: Tải ảnh lên
+          - generic [ref=e478]:
+            - generic [ref=e479]: Ghi chú
+            - textbox "Nhập ghi chú hoặc mô tả ngắn..." [ref=e480]
+        - generic [ref=e482]:
+          - button "Hủy" [ref=e483] [cursor=pointer]
+          - button "save Tạo tài khoản" [ref=e484] [cursor=pointer]:
+            - generic [ref=e485]: save
+            - text: Tạo tài khoản

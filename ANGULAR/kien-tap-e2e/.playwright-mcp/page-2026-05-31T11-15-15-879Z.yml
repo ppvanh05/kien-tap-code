@@ -1,0 +1,150 @@
+- generic [ref=e4]:
+  - complementary [ref=e5]:
+    - img "TXP Logo" [ref=e8]
+    - navigation [ref=e9]:
+      - generic [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]: home
+        - generic [ref=e13]: Trang chủ
+      - generic [ref=e15] [cursor=pointer]:
+        - generic [ref=e16]: article
+        - generic [ref=e17]: Quản lý tin tức
+      - generic [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: groups
+        - generic [ref=e21]: Quản lý khách hàng
+      - generic [ref=e23] [cursor=pointer]:
+        - generic [ref=e24]: engineering
+        - generic [ref=e25]: Quản lý nhân viên
+      - generic [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: policy
+        - generic [ref=e29]: Quản lý chính sách
+      - generic [ref=e31] [cursor=pointer]:
+        - generic [ref=e32]: block
+        - generic [ref=e33]: Quản lý từ khóa cấm
+      - generic [ref=e35] [cursor=pointer]:
+        - generic [ref=e36]: history_edu
+        - generic [ref=e37]: Quản lý nhật ký
+    - generic [ref=e39] [cursor=pointer]:
+      - generic [ref=e41]: account_circle
+      - generic [ref=e42]:
+        - generic [ref=e43]: Nguyen An Ninh
+        - generic [ref=e44]: Quản trị viên
+  - main [ref=e45]:
+    - generic [ref=e46]:
+      - button "menu" [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: menu
+      - generic [ref=e50]:
+        - generic [ref=e52] [cursor=pointer]: notifications
+        - generic [ref=e54]: Chủ Nhật, 31/05/2026
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - heading "Chào buổi tối, Nguyen An Ninh! 👋" [level=1] [ref=e60]
+          - paragraph [ref=e61]:
+            - generic [ref=e62]: verified_user
+            - text: Quản trị viên
+        - generic [ref=e63]:
+          - generic [ref=e64]: today
+          - generic [ref=e65]: Chủ Nhật, 31/05/2026
+      - generic [ref=e66]:
+        - heading "bolt Thao tác nhanh" [level=2] [ref=e67]:
+          - generic [ref=e68]: bolt
+          - text: Thao tác nhanh
+        - generic [ref=e69]:
+          - link "manage_accounts Quản lý nhân viên arrow_forward" [ref=e70] [cursor=pointer]:
+            - /url: /admin/quan-ly-nhan-vien
+            - generic [ref=e72]: manage_accounts
+            - generic [ref=e73]: Quản lý nhân viên
+            - generic [ref=e74]: arrow_forward
+          - link "history_edu Nhật ký hệ thống arrow_forward" [ref=e75] [cursor=pointer]:
+            - /url: /admin/quan-ly-nhat-ky
+            - generic [ref=e77]: history_edu
+            - generic [ref=e78]: Nhật ký hệ thống
+            - generic [ref=e79]: arrow_forward
+          - link "article Tin tức arrow_forward" [ref=e80] [cursor=pointer]:
+            - /url: /admin/quan-ly-tin-tuc
+            - generic [ref=e82]: article
+            - generic [ref=e83]: Tin tức
+            - generic [ref=e84]: arrow_forward
+          - link "policy Chính sách arrow_forward" [ref=e85] [cursor=pointer]:
+            - /url: /admin/quan-ly-chinh-sach
+            - generic [ref=e87]: policy
+            - generic [ref=e88]: Chính sách
+            - generic [ref=e89]: arrow_forward
+          - link "block Từ khóa cấm arrow_forward" [ref=e90] [cursor=pointer]:
+            - /url: /admin/quan-ly-tu-khoa-cam
+            - generic [ref=e92]: block
+            - generic [ref=e93]: Từ khóa cấm
+            - generic [ref=e94]: arrow_forward
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - generic [ref=e98]: badge
+          - generic [ref=e99]:
+            - generic [ref=e100]: Tổng nhân viên
+            - generic [ref=e101]: "4"
+            - generic [ref=e102]:
+              - generic [ref=e103]: trending_up
+              - text: Tất cả đang hoạt động
+        - generic [ref=e104]:
+          - generic [ref=e106]: star_outline
+          - generic [ref=e107]:
+            - generic [ref=e108]: Đánh giá chưa phản hồi
+            - generic [ref=e109]: "12"
+            - generic [ref=e110]:
+              - generic [ref=e111]: trending_down
+              - text: +3 hôm nay
+        - generic [ref=e112]:
+          - generic [ref=e114]: history
+          - generic [ref=e115]:
+            - generic [ref=e116]: Thao tác hôm nay
+            - generic [ref=e117]: "38"
+            - generic [ref=e118]:
+              - generic [ref=e119]: trending_up
+              - text: Từ 4 người dùng
+        - generic [ref=e120]:
+          - generic [ref=e122]: report
+          - generic [ref=e123]:
+            - generic [ref=e124]: Báo cáo vi phạm
+            - generic [ref=e125]: "2"
+            - generic [ref=e126]:
+              - generic [ref=e127]: trending_down
+              - text: Chờ xử lý
+      - generic [ref=e129]:
+        - heading "admin_panel_settings Công việc quản trị" [level=2] [ref=e131]:
+          - generic [ref=e132]: admin_panel_settings
+          - text: Công việc quản trị
+        - generic [ref=e133]:
+          - link "manage_accounts Tài khoản nhân viên Tạo, khóa/mở khóa và phân quyền nhân sự nội bộ. arrow_forward" [ref=e134] [cursor=pointer]:
+            - /url: /admin/quan-ly-nhan-vien
+            - generic [ref=e136]: manage_accounts
+            - generic [ref=e137]:
+              - generic [ref=e138]: Tài khoản nhân viên
+              - generic [ref=e139]: Tạo, khóa/mở khóa và phân quyền nhân sự nội bộ.
+            - generic [ref=e140]: arrow_forward
+          - link "history_edu Nhật ký hệ thống Theo dõi thao tác đăng nhập, cập nhật dữ liệu và lỗi nghiệp vụ. arrow_forward" [ref=e141] [cursor=pointer]:
+            - /url: /admin/quan-ly-nhat-ky
+            - generic [ref=e143]: history_edu
+            - generic [ref=e144]:
+              - generic [ref=e145]: Nhật ký hệ thống
+              - generic [ref=e146]: Theo dõi thao tác đăng nhập, cập nhật dữ liệu và lỗi nghiệp vụ.
+            - generic [ref=e147]: arrow_forward
+          - link "article Tin tức Quản lý nội dung hiển thị bài viết tin tức, thông báo cho khách hàng. arrow_forward" [ref=e148] [cursor=pointer]:
+            - /url: /admin/quan-ly-tin-tuc
+            - generic [ref=e150]: article
+            - generic [ref=e151]:
+              - generic [ref=e152]: Tin tức
+              - generic [ref=e153]: Quản lý nội dung hiển thị bài viết tin tức, thông báo cho khách hàng.
+            - generic [ref=e154]: arrow_forward
+          - link "policy Chính sách Quản lý quy định vận hành, quy định hủy vé và các điều khoản dịch vụ. arrow_forward" [ref=e155] [cursor=pointer]:
+            - /url: /admin/quan-ly-chinh-sach
+            - generic [ref=e157]: policy
+            - generic [ref=e158]:
+              - generic [ref=e159]: Chính sách
+              - generic [ref=e160]: Quản lý quy định vận hành, quy định hủy vé và các điều khoản dịch vụ.
+            - generic [ref=e161]: arrow_forward
+          - link "block Từ khóa cấm Kiểm soát nội dung vi phạm trong đánh giá và phản hồi. arrow_forward" [ref=e162] [cursor=pointer]:
+            - /url: /admin/quan-ly-tu-khoa-cam
+            - generic [ref=e164]: block
+            - generic [ref=e165]:
+              - generic [ref=e166]: Từ khóa cấm
+              - generic [ref=e167]: Kiểm soát nội dung vi phạm trong đánh giá và phản hồi.
+            - generic [ref=e168]: arrow_forward

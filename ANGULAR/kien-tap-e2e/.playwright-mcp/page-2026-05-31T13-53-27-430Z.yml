@@ -1,0 +1,197 @@
+- generic [ref=e69]:
+  - complementary [ref=e70]:
+    - img "TXP Logo" [ref=e73]
+    - navigation [ref=e74]:
+      - generic [ref=e76] [cursor=pointer]:
+        - generic [ref=e77]: home
+        - generic [ref=e78]: Trang chủ
+      - generic [ref=e80] [cursor=pointer]:
+        - generic [ref=e81]: article
+        - generic [ref=e82]: Quản lý tin tức
+      - generic [ref=e84] [cursor=pointer]:
+        - generic [ref=e85]: groups
+        - generic [ref=e86]: Quản lý khách hàng
+      - generic [ref=e88] [cursor=pointer]:
+        - generic [ref=e89]: engineering
+        - generic [ref=e90]: Quản lý nhân viên
+      - generic [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: policy
+        - generic [ref=e94]: Quản lý chính sách
+      - generic [ref=e96] [cursor=pointer]:
+        - generic [ref=e97]: block
+        - generic [ref=e98]: Quản lý từ khóa cấm
+      - generic [ref=e100] [cursor=pointer]:
+        - generic [ref=e101]: history_edu
+        - generic [ref=e102]: Quản lý nhật ký
+    - generic [ref=e104] [cursor=pointer]:
+      - generic [ref=e106]: account_circle
+      - generic [ref=e107]:
+        - generic [ref=e108]: Nguyen An Ninh
+        - generic [ref=e109]: Quản trị viên
+  - main [ref=e110]:
+    - generic [ref=e111]:
+      - button "menu" [ref=e113] [cursor=pointer]:
+        - generic [ref=e114]: menu
+      - generic [ref=e115]:
+        - generic [ref=e117] [cursor=pointer]: notifications
+        - generic [ref=e119]: Chủ Nhật, 31/05/2026
+    - generic [ref=e122]:
+      - generic [ref=e123]:
+        - generic [ref=e124]:
+          - generic [ref=e125]: Quản lý chính sách
+          - generic [ref=e126]: /
+          - generic [ref=e127]: Chính sách nhà xe
+        - heading "Chính sách nhà xe" [level=1] [ref=e128]
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - button "Tất cả" [ref=e131] [cursor=pointer]
+          - button "Đang hoạt động" [ref=e132] [cursor=pointer]
+          - button "Đã khóa" [ref=e133] [cursor=pointer]
+        - button "add Thêm chính sách mới arrow_drop_down" [ref=e136] [cursor=pointer]:
+          - generic [ref=e137]: add
+          - text: Thêm chính sách mới
+          - generic [ref=e138]: arrow_drop_down
+        - generic [ref=e139]:
+          - generic [ref=e140]:
+            - generic [ref=e141]: search
+            - textbox "Tìm theo tên chính sách..." [ref=e142]
+          - combobox [ref=e144] [cursor=pointer]:
+            - option "Tất cả loại chính sách" [selected]
+            - option "Chính sách bảo hiểm"
+            - option "Chính sách thanh toán"
+            - option "Chính sách hủy vé"
+            - option "Chính sách khác"
+          - button "Tìm kiếm" [ref=e145] [cursor=pointer]
+        - table [ref=e147]:
+          - rowgroup [ref=e148]:
+            - row "Mã chính sách Tên chính sách Loại chính sách Ngày cập nhật Trạng thái Chức năng" [ref=e149]:
+              - columnheader "Mã chính sách" [ref=e150]
+              - columnheader "Tên chính sách" [ref=e151]
+              - columnheader "Loại chính sách" [ref=e152]
+              - columnheader "Ngày cập nhật" [ref=e153]
+              - columnheader "Trạng thái" [ref=e154]
+              - columnheader "Chức năng" [ref=e155]
+          - rowgroup [ref=e156]:
+            - row "CSHV100001 Hủy vé trước 24h Chính sách hủy vé 23-05-2026 Đang hiển thị edit_note" [ref=e157]:
+              - cell "CSHV100001" [ref=e158]
+              - cell "Hủy vé trước 24h" [ref=e159]:
+                - generic [ref=e160]: Hủy vé trước 24h
+              - cell "Chính sách hủy vé" [ref=e161]
+              - cell "23-05-2026" [ref=e162]
+              - cell "Đang hiển thị" [ref=e163]:
+                - generic [ref=e164]: Đang hiển thị
+              - cell "edit_note" [ref=e165]:
+                - button "edit_note" [ref=e166] [cursor=pointer]:
+                  - generic [ref=e167]: edit_note
+            - row "CSHV100002 Hủy vé từ 12h đến dưới 24h Chính sách hủy vé 23-05-2026 Đang hiển thị edit_note" [ref=e168]:
+              - cell "CSHV100002" [ref=e169]
+              - cell "Hủy vé từ 12h đến dưới 24h" [ref=e170]:
+                - generic [ref=e171]: Hủy vé từ 12h đến dưới 24h
+              - cell "Chính sách hủy vé" [ref=e172]
+              - cell "23-05-2026" [ref=e173]
+              - cell "Đang hiển thị" [ref=e174]:
+                - generic [ref=e175]: Đang hiển thị
+              - cell "edit_note" [ref=e176]:
+                - button "edit_note" [ref=e177] [cursor=pointer]:
+                  - generic [ref=e178]: edit_note
+            - row "CSHV100003 Hủy vé thường dưới 12h (sát giờ xe chạy) Chính sách hủy vé 23-05-2026 Đang hiển thị edit_note" [ref=e179]:
+              - cell "CSHV100003" [ref=e180]
+              - cell "Hủy vé thường dưới 12h (sát giờ xe chạy)" [ref=e181]:
+                - generic [ref=e182]: Hủy vé thường dưới 12h (sát giờ xe chạy)
+              - cell "Chính sách hủy vé" [ref=e183]
+              - cell "23-05-2026" [ref=e184]
+              - cell "Đang hiển thị" [ref=e185]:
+                - generic [ref=e186]: Đang hiển thị
+              - cell "edit_note" [ref=e187]:
+                - button "edit_note" [ref=e188] [cursor=pointer]:
+                  - generic [ref=e189]: edit_note
+            - row "CS100002 CHÍNH SÁCH CHỈNH SỬA THÔNG TIN VÉ ĐÃ ĐẶT Chính sách khác 23-05-2026 Đang hiển thị edit_note" [ref=e190]:
+              - cell "CS100002" [ref=e191]
+              - cell "CHÍNH SÁCH CHỈNH SỬA THÔNG TIN VÉ ĐÃ ĐẶT" [ref=e192]:
+                - generic [ref=e193]: CHÍNH SÁCH CHỈNH SỬA THÔNG TIN VÉ ĐÃ ĐẶT
+              - cell "Chính sách khác" [ref=e194]
+              - cell "23-05-2026" [ref=e195]
+              - cell "Đang hiển thị" [ref=e196]:
+                - generic [ref=e197]: Đang hiển thị
+              - cell "edit_note" [ref=e198]:
+                - button "edit_note" [ref=e199] [cursor=pointer]:
+                  - generic [ref=e200]: edit_note
+            - row "CS100003 CHÍNH SÁCH HỦY VÉ VÀ HOÀN TIỀN Chính sách hủy vé 23-05-2026 Đang hiển thị edit_note" [ref=e201]:
+              - cell "CS100003" [ref=e202]
+              - cell "CHÍNH SÁCH HỦY VÉ VÀ HOÀN TIỀN" [ref=e203]:
+                - generic [ref=e204]: CHÍNH SÁCH HỦY VÉ VÀ HOÀN TIỀN
+              - cell "Chính sách hủy vé" [ref=e205]
+              - cell "23-05-2026" [ref=e206]
+              - cell "Đang hiển thị" [ref=e207]:
+                - generic [ref=e208]: Đang hiển thị
+              - cell "edit_note" [ref=e209]:
+                - button "edit_note" [ref=e210] [cursor=pointer]:
+                  - generic [ref=e211]: edit_note
+            - row "CS100004 CHÍNH SÁCH CAM KẾT DỊCH VỤ VÀ BỒI THƯỜNG TRƯỜNG HỢP SỰ CỐ Chính sách khác 23-05-2026 Đang hiển thị edit_note" [ref=e212]:
+              - cell "CS100004" [ref=e213]
+              - cell "CHÍNH SÁCH CAM KẾT DỊCH VỤ VÀ BỒI THƯỜNG TRƯỜNG HỢP SỰ CỐ" [ref=e214]:
+                - generic [ref=e215]: CHÍNH SÁCH CAM KẾT DỊCH VỤ VÀ BỒI THƯỜNG TRƯỜNG HỢP SỰ CỐ
+              - cell "Chính sách khác" [ref=e216]
+              - cell "23-05-2026" [ref=e217]
+              - cell "Đang hiển thị" [ref=e218]:
+                - generic [ref=e219]: Đang hiển thị
+              - cell "edit_note" [ref=e220]:
+                - button "edit_note" [ref=e221] [cursor=pointer]:
+                  - generic [ref=e222]: edit_note
+            - row "CS100005 CHÍNH SÁCH PHẢN HỒI VÀ ĐÁNH GIÁ CHUYẾN ĐI Chính sách khác 23-05-2026 Đang hiển thị edit_note" [ref=e223]:
+              - cell "CS100005" [ref=e224]
+              - cell "CHÍNH SÁCH PHẢN HỒI VÀ ĐÁNH GIÁ CHUYẾN ĐI" [ref=e225]:
+                - generic [ref=e226]: CHÍNH SÁCH PHẢN HỒI VÀ ĐÁNH GIÁ CHUYẾN ĐI
+              - cell "Chính sách khác" [ref=e227]
+              - cell "23-05-2026" [ref=e228]
+              - cell "Đang hiển thị" [ref=e229]:
+                - generic [ref=e230]: Đang hiển thị
+              - cell "edit_note" [ref=e231]:
+                - button "edit_note" [ref=e232] [cursor=pointer]:
+                  - generic [ref=e233]: edit_note
+            - row "CS100006 CHÍNH SÁCH THU THẬP VÀ PHÂN LOẠI DỮ LIỆU CÁ NHÂN Chính sách khác 23-05-2026 Đang hiển thị edit_note" [ref=e234]:
+              - cell "CS100006" [ref=e235]
+              - cell "CHÍNH SÁCH THU THẬP VÀ PHÂN LOẠI DỮ LIỆU CÁ NHÂN" [ref=e236]:
+                - generic [ref=e237]: CHÍNH SÁCH THU THẬP VÀ PHÂN LOẠI DỮ LIỆU CÁ NHÂN
+              - cell "Chính sách khác" [ref=e238]
+              - cell "23-05-2026" [ref=e239]
+              - cell "Đang hiển thị" [ref=e240]:
+                - generic [ref=e241]: Đang hiển thị
+              - cell "edit_note" [ref=e242]:
+                - button "edit_note" [ref=e243] [cursor=pointer]:
+                  - generic [ref=e244]: edit_note
+            - row "CS100007 MỤC ĐÍCH SỬ DỤNG VÀ XỬ LÝ DỮ LIỆU HỆ THỐNG Chính sách khác 23-05-2026 Đang hiển thị edit_note" [ref=e245]:
+              - cell "CS100007" [ref=e246]
+              - cell "MỤC ĐÍCH SỬ DỤNG VÀ XỬ LÝ DỮ LIỆU HỆ THỐNG" [ref=e247]:
+                - generic [ref=e248]: MỤC ĐÍCH SỬ DỤNG VÀ XỬ LÝ DỮ LIỆU HỆ THỐNG
+              - cell "Chính sách khác" [ref=e249]
+              - cell "23-05-2026" [ref=e250]
+              - cell "Đang hiển thị" [ref=e251]:
+                - generic [ref=e252]: Đang hiển thị
+              - cell "edit_note" [ref=e253]:
+                - button "edit_note" [ref=e254] [cursor=pointer]:
+                  - generic [ref=e255]: edit_note
+            - row "CS100008 CHÍNH SÁCH CHIA SẺ VÀ TIẾT LỘ THÔNG TIN BẢO MẬT Chính sách khác 23-05-2026 Đang hiển thị edit_note" [ref=e256]:
+              - cell "CS100008" [ref=e257]
+              - cell "CHÍNH SÁCH CHIA SẺ VÀ TIẾT LỘ THÔNG TIN BẢO MẬT" [ref=e258]:
+                - generic [ref=e259]: CHÍNH SÁCH CHIA SẺ VÀ TIẾT LỘ THÔNG TIN BẢO MẬT
+              - cell "Chính sách khác" [ref=e260]
+              - cell "23-05-2026" [ref=e261]
+              - cell "Đang hiển thị" [ref=e262]:
+                - generic [ref=e263]: Đang hiển thị
+              - cell "edit_note" [ref=e264]:
+                - button "edit_note" [ref=e265] [cursor=pointer]:
+                  - generic [ref=e266]: edit_note
+        - generic [ref=e267]:
+          - generic [ref=e268]:
+            - button "chevron_left" [disabled] [ref=e269]:
+              - generic [ref=e270]: chevron_left
+            - button "1" [ref=e271] [cursor=pointer]
+            - button "2" [ref=e272] [cursor=pointer]
+            - button "chevron_right" [ref=e273] [cursor=pointer]:
+              - generic [ref=e274]: chevron_right
+          - combobox [ref=e276] [cursor=pointer]:
+            - option "5 / trang"
+            - option "10 / trang" [selected]
+            - option "20 / trang"
+            - option "50 / trang"

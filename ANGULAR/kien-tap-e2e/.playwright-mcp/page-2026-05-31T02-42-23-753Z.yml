@@ -1,0 +1,170 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - img "TXP Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "TRANG CHỦ" [ref=e8] [cursor=pointer]:
+          - /url: /home
+        - link "TRA CỨU VÉ" [ref=e9] [cursor=pointer]:
+          - /url: /tra-cuu-ve
+        - link "TIN TỨC" [ref=e10] [cursor=pointer]:
+          - /url: /tin-tuc
+        - link "ĐÁNH GIÁ" [ref=e11] [cursor=pointer]:
+          - /url: /danh-gia
+        - button "GIỚI THIỆU expand_more" [ref=e13]:
+          - text: GIỚI THIỆU
+          - generic [ref=e14]: expand_more
+      - button "Đăng nhập / Đăng ký" [ref=e16]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e23]:
+          - button "radio_button_checked Một chiều" [ref=e24]:
+            - generic [ref=e25]: radio_button_checked
+            - text: Một chiều
+          - button "radio_button_unchecked Khứ hồi" [ref=e26]:
+            - generic [ref=e27]: radio_button_unchecked
+            - text: Khứ hồi
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - text: Điểm đi
+            - generic [ref=e30]:
+              - generic [ref=e31]: radio_button_checked
+              - textbox "Nhập điểm đi" [ref=e32] [cursor=pointer]: Bình Định
+              - generic: arrow_drop_down
+          - button "sync_alt" [ref=e34]:
+            - generic [ref=e35]: sync_alt
+          - generic [ref=e36]:
+            - text: Điểm đến
+            - generic [ref=e37]:
+              - generic [ref=e38]: location_on
+              - textbox "Nhập điểm đến" [ref=e39] [cursor=pointer]: TP. Hồ Chí Minh
+              - generic: arrow_drop_down
+          - generic [ref=e40]:
+            - text: Ngày đi
+            - generic [ref=e41] [cursor=pointer]:
+              - generic [ref=e42]: calendar_month
+              - textbox [ref=e43]: 20/05/2026
+          - generic [ref=e44]:
+            - generic [ref=e45]: Số vé
+            - generic [ref=e46]:
+              - generic [ref=e47]: confirmation_number
+              - combobox [ref=e48] [cursor=pointer]:
+                - option "1 vé" [selected]
+                - option "2 vé"
+                - option "3 vé"
+                - option "4 vé"
+                - option "5 vé"
+        - generic [ref=e50]: "Tìm kiếm gần đây:"
+        - button "TÌM KIẾM" [ref=e52]
+      - generic [ref=e53]:
+        - complementary [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - heading "filter_alt BỘ LỌC TÌM KIẾM" [level=3] [ref=e57]:
+                - generic [ref=e58]: filter_alt
+                - text: BỘ LỌC TÌM KIẾM
+              - button "delete Bỏ lọc" [ref=e59]:
+                - generic [ref=e60]: delete
+                - text: Bỏ lọc
+            - generic [ref=e61]:
+              - heading "Giờ đi" [level=4] [ref=e62]
+              - generic [ref=e63]:
+                - generic [ref=e64] [cursor=pointer]:
+                  - checkbox "Sáng sớm 00:00 - 06:00" [ref=e65]
+                  - generic [ref=e66]: Sáng sớm 00:00 - 06:00
+                - generic [ref=e67] [cursor=pointer]:
+                  - checkbox "Buổi sáng 06:00 - 12:00" [ref=e68]
+                  - generic [ref=e69]: Buổi sáng 06:00 - 12:00
+                - generic [ref=e70] [cursor=pointer]:
+                  - checkbox "Buổi chiều 12:00 - 18:00" [ref=e71]
+                  - generic [ref=e72]: Buổi chiều 12:00 - 18:00
+                - generic [ref=e73] [cursor=pointer]:
+                  - checkbox "Buổi tối 18:00 - 24:00" [ref=e74]
+                  - generic [ref=e75]: Buổi tối 18:00 - 24:00
+            - generic [ref=e76]:
+              - heading "Tầng" [level=4] [ref=e77]
+              - generic [ref=e78]:
+                - button "Tầng trên" [ref=e79]
+                - button "Tầng dưới" [ref=e80]
+            - generic [ref=e81]:
+              - heading "Hàng ghế" [level=4] [ref=e82]
+              - generic [ref=e83]:
+                - generic [ref=e84] [cursor=pointer]:
+                  - checkbox "Hàng đầu (Ghế 1-4)" [ref=e85]
+                  - generic [ref=e86]: Hàng đầu (Ghế 1-4)
+                - generic [ref=e87] [cursor=pointer]:
+                  - checkbox "Hàng giữa (Ghế 5-8)" [ref=e88]
+                  - generic [ref=e89]: Hàng giữa (Ghế 5-8)
+                - generic [ref=e90] [cursor=pointer]:
+                  - checkbox "Hàng cuối (Ghế 9-12)" [ref=e91]
+                  - generic [ref=e92]: Hàng cuối (Ghế 9-12)
+            - generic [ref=e93]:
+              - heading "Giá vé" [level=4] [ref=e94]
+              - generic [ref=e95]:
+                - generic [ref=e96] [cursor=pointer]:
+                  - checkbox "Dưới 500.000đ" [ref=e97]
+                  - generic [ref=e98]: Dưới 500.000đ
+                - generic [ref=e99] [cursor=pointer]:
+                  - checkbox "Từ 500.000đ trở lên" [ref=e100]
+                  - generic [ref=e101]: Từ 500.000đ trở lên
+        - generic [ref=e102]:
+          - heading "Bình Định - TP. Hồ Chí Minh (0 chuyến)" [level=2] [ref=e103]
+          - generic [ref=e104]:
+            - generic [ref=e105]: directions_bus
+            - heading "Không tìm thấy chuyến xe" [level=3] [ref=e106]
+            - paragraph [ref=e107]: Vui lòng điều chỉnh lại bộ lọc tìm kiếm hoặc quay lại sau để tìm chuyến đi phù hợp của bạn.
+            - button "Đặt lại bộ lọc" [ref=e108]
+  - contentinfo [ref=e110]:
+    - generic [ref=e111]:
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - img "TXP Logo" [ref=e114]
+          - paragraph [ref=e115]: Công ty TNHH Tân Xuân Phúc
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: location_on
+            - generic [ref=e119]: Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai
+          - generic [ref=e120]:
+            - generic [ref=e121]: phone_iphone
+            - generic [ref=e122]: 0982 541 160 - 0932 334 446
+          - generic [ref=e123]:
+            - generic [ref=e124]: mail
+            - generic [ref=e125]: nhaxetanxuanphuc@gmail.com
+      - generic [ref=e126]:
+        - heading "HỖ TRỢ" [level=4] [ref=e127]
+        - list [ref=e128]:
+          - listitem [ref=e129]:
+            - link "Câu hỏi FAQs" [ref=e130] [cursor=pointer]:
+              - /url: /faqs
+          - listitem [ref=e131]:
+            - link "Hướng dẫn mua vé" [ref=e132] [cursor=pointer]:
+              - /url: /huong-dan-mua-ve
+      - generic [ref=e133]:
+        - heading "GIỚI THIỆU" [level=4] [ref=e134]
+        - list [ref=e135]:
+          - listitem [ref=e136]:
+            - link "Về chúng tôi" [ref=e137] [cursor=pointer]:
+              - /url: /gioi-thieu/ve-chung-toi
+          - listitem [ref=e138]:
+            - link "Điều khoản" [ref=e139] [cursor=pointer]:
+              - /url: /gioi-thieu/chinh-sach
+      - generic [ref=e140]:
+        - generic [ref=e141]:
+          - heading "HOTLINE LIÊN HỆ" [level=4] [ref=e142]
+          - generic [ref=e143]:
+            - generic [ref=e145]: call
+            - generic [ref=e146]: 1900 989 867
+        - generic [ref=e147]:
+          - heading "KẾT NỐI VỚI CHÚNG TÔI" [level=4] [ref=e148]
+          - generic [ref=e149]:
+            - link "" [ref=e150] [cursor=pointer]:
+              - /url: https://www.facebook.com/minhtoai.tran.58
+              - generic [ref=e151]: 
+            - link "" [ref=e152] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc
+              - generic [ref=e153]: 
+            - button "share" [ref=e154] [cursor=pointer]:
+              - generic [ref=e155]: share
+        - img "Đã thông báo Bộ Công Thương" [ref=e157]
+    - paragraph [ref=e159]: "© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234"

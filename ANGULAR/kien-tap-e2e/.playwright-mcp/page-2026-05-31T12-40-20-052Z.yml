@@ -1,0 +1,220 @@
+- generic [ref=e69]:
+  - complementary [ref=e70]:
+    - img "TXP Logo" [ref=e73]
+    - navigation [ref=e74]:
+      - generic [ref=e76] [cursor=pointer]:
+        - generic [ref=e77]: home
+        - generic [ref=e78]: Trang chủ
+      - generic [ref=e80] [cursor=pointer]:
+        - generic [ref=e81]: article
+        - generic [ref=e82]: Quản lý tin tức
+      - generic [ref=e84] [cursor=pointer]:
+        - generic [ref=e85]: groups
+        - generic [ref=e86]: Quản lý khách hàng
+      - generic [ref=e88] [cursor=pointer]:
+        - generic [ref=e89]: engineering
+        - generic [ref=e90]: Quản lý nhân viên
+      - generic [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: policy
+        - generic [ref=e94]: Quản lý chính sách
+      - generic [ref=e96] [cursor=pointer]:
+        - generic [ref=e97]: block
+        - generic [ref=e98]: Quản lý từ khóa cấm
+      - generic [ref=e100] [cursor=pointer]:
+        - generic [ref=e101]: history_edu
+        - generic [ref=e102]: Quản lý nhật ký
+    - generic [ref=e104] [cursor=pointer]:
+      - generic [ref=e106]: account_circle
+      - generic [ref=e107]:
+        - generic [ref=e108]: Nguyen An Ninh
+        - generic [ref=e109]: Quản trị viên
+  - main [ref=e110]:
+    - generic [ref=e111]:
+      - button "menu" [ref=e113] [cursor=pointer]:
+        - generic [ref=e114]: menu
+      - generic [ref=e115]:
+        - generic [ref=e117] [cursor=pointer]: notifications
+        - generic [ref=e119]: Chủ Nhật, 31/05/2026
+    - generic [ref=e122]:
+      - generic [ref=e123]:
+        - generic [ref=e124]:
+          - generic [ref=e125]: Bảng điều hành
+          - generic [ref=e126]: /
+          - generic [ref=e127]: Quản lý tin tức
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - heading "Quản lý bài viết & tin tức" [level=1] [ref=e130]
+            - paragraph [ref=e131]: Đăng tải thông báo, cập nhật chặng đường, chèn hình ảnh và lên lịch xuất bản tự động chuẩn phong cách mạng xã hội
+          - button "add Đăng bài viết mới" [ref=e132] [cursor=pointer]:
+            - generic [ref=e133]: add
+            - text: Đăng bài viết mới
+      - generic [ref=e134]:
+        - generic [ref=e136]:
+          - button "Tất cả bài viết 5" [ref=e137] [cursor=pointer]:
+            - text: Tất cả bài viết
+            - generic [ref=e138]: "5"
+          - button "Đang hiển thị 5" [ref=e139] [cursor=pointer]:
+            - text: Đang hiển thị
+            - generic [ref=e140]: "5"
+          - button "Lịch hẹn đăng 0" [ref=e141] [cursor=pointer]:
+            - text: Lịch hẹn đăng
+            - generic [ref=e142]: "0"
+          - button "Bản nháp 0" [ref=e143] [cursor=pointer]:
+            - text: Bản nháp
+            - generic [ref=e144]: "0"
+          - button "Đã ẩn 0" [ref=e145] [cursor=pointer]:
+            - text: Đã ẩn
+            - generic [ref=e146]: "0"
+        - generic [ref=e147]:
+          - generic [ref=e148]:
+            - generic [ref=e149]: search
+            - textbox "Tìm kiếm tin tức nhanh theo tiêu đề hoặc nội dung..." [ref=e150]
+          - generic [ref=e151]:
+            - generic [ref=e152]: "Sắp xếp:"
+            - combobox [ref=e153] [cursor=pointer]:
+              - option "Mới nhất tạo trước" [selected]
+              - option "Cũ nhất tạo trước"
+              - option "Tên tiêu đề A - Z"
+        - table [ref=e155]:
+          - rowgroup [ref=e156]:
+            - row "Ảnh bìa Tiêu đề Loại tin tức Người đăng Lên lịch / Ngày đăng Trạng thái Chức năng" [ref=e157]:
+              - columnheader "Ảnh bìa" [ref=e158]
+              - columnheader "Tiêu đề" [ref=e159]
+              - columnheader "Loại tin tức" [ref=e160]
+              - columnheader "Người đăng" [ref=e161]
+              - columnheader "Lên lịch / Ngày đăng" [ref=e162]
+              - columnheader "Trạng thái" [ref=e163]
+              - columnheader "Chức năng" [ref=e164]
+          - rowgroup [ref=e165]:
+            - row "Cover TT100011 star Nổi bật TXP mo them chuyen Ha Noi - Quang Ninh Thông báo Nguyễn Hoài Nam (Admin) 30-05-2026 fiber_manual_record Đang hiển thị edit" [ref=e166]:
+              - cell "Cover" [ref=e167]:
+                - img "Cover" [ref=e169]
+              - cell "TT100011 star Nổi bật TXP mo them chuyen Ha Noi - Quang Ninh" [ref=e170]:
+                - generic [ref=e171]:
+                  - generic [ref=e172]:
+                    - generic [ref=e173]: TT100011
+                    - generic [ref=e174]:
+                      - generic [ref=e175]: star
+                      - text: Nổi bật
+                  - heading "TXP mo them chuyen Ha Noi - Quang Ninh" [level=4] [ref=e176]
+              - cell "Thông báo" [ref=e177]:
+                - generic [ref=e178]: Thông báo
+              - cell "Nguyễn Hoài Nam (Admin)" [ref=e179]
+              - cell "30-05-2026" [ref=e180]
+              - cell "fiber_manual_record Đang hiển thị" [ref=e181]:
+                - generic [ref=e182]:
+                  - generic [ref=e183]: fiber_manual_record
+                  - text: Đang hiển thị
+              - cell "edit" [ref=e184]:
+                - button "edit" [ref=e186] [cursor=pointer]:
+                  - generic [ref=e187]: edit
+            - row "Cover TT100002 star Nổi bật Tân Xuân Phúc Cập Nhật Lịch Trình 6 Chuyến Cố Định Mỗi Ngày Tăng Cường Phục Vụ Hành Khách Thông báo Nguyễn Hoài Nam (Admin) 24-05-2026 fiber_manual_record Đang hiển thị edit" [ref=e188]:
+              - cell "Cover" [ref=e189]:
+                - img "Cover" [ref=e191]
+              - cell "TT100002 star Nổi bật Tân Xuân Phúc Cập Nhật Lịch Trình 6 Chuyến Cố Định Mỗi Ngày Tăng Cường Phục Vụ Hành Khách" [ref=e192]:
+                - generic [ref=e193]:
+                  - generic [ref=e194]:
+                    - generic [ref=e195]: TT100002
+                    - generic [ref=e196]:
+                      - generic [ref=e197]: star
+                      - text: Nổi bật
+                  - heading "Tân Xuân Phúc Cập Nhật Lịch Trình 6 Chuyến Cố Định Mỗi Ngày Tăng Cường Phục Vụ Hành Khách" [level=4] [ref=e198]
+              - cell "Thông báo" [ref=e199]:
+                - generic [ref=e200]: Thông báo
+              - cell "Nguyễn Hoài Nam (Admin)" [ref=e201]
+              - cell "24-05-2026" [ref=e202]
+              - cell "fiber_manual_record Đang hiển thị" [ref=e203]:
+                - generic [ref=e204]:
+                  - generic [ref=e205]: fiber_manual_record
+                  - text: Đang hiển thị
+              - cell "edit" [ref=e206]:
+                - button "edit" [ref=e208] [cursor=pointer]:
+                  - generic [ref=e209]: edit
+            - 'row "Cover TT100004 star Nổi bật Ưu Đãi Hè Rực Rỡ: Giảm Ngay 10% Giá Vé Phòng Limousine Khi Đặt Vé Khứ Hồi Khuyến mãi Nguyễn Hoài Nam (Admin) 24-05-2026 fiber_manual_record Đang hiển thị edit" [ref=e210]':
+              - cell "Cover" [ref=e211]:
+                - img "Cover" [ref=e213]
+              - 'cell "TT100004 star Nổi bật Ưu Đãi Hè Rực Rỡ: Giảm Ngay 10% Giá Vé Phòng Limousine Khi Đặt Vé Khứ Hồi" [ref=e214]':
+                - generic [ref=e215]:
+                  - generic [ref=e216]:
+                    - generic [ref=e217]: TT100004
+                    - generic [ref=e218]:
+                      - generic [ref=e219]: star
+                      - text: Nổi bật
+                  - 'heading "Ưu Đãi Hè Rực Rỡ: Giảm Ngay 10% Giá Vé Phòng Limousine Khi Đặt Vé Khứ Hồi" [level=4] [ref=e220]'
+              - cell "Khuyến mãi" [ref=e221]:
+                - generic [ref=e222]: Khuyến mãi
+              - cell "Nguyễn Hoài Nam (Admin)" [ref=e223]
+              - cell "24-05-2026" [ref=e224]
+              - cell "fiber_manual_record Đang hiển thị" [ref=e225]:
+                - generic [ref=e226]:
+                  - generic [ref=e227]: fiber_manual_record
+                  - text: Đang hiển thị
+              - cell "edit" [ref=e228]:
+                - button "edit" [ref=e230] [cursor=pointer]:
+                  - generic [ref=e231]: edit
+            - row "Cover TT100003 star Nổi bật Mở Rộng Lộ Trình Đón Trả Khách Tận Nơi Tại Khu Vực Bến Xe Bến Cát (Bình Dương) Thông báo Nguyễn Hoài Nam (Admin) 24-05-2026 fiber_manual_record Đang hiển thị edit" [ref=e232]:
+              - cell "Cover" [ref=e233]:
+                - img "Cover" [ref=e235]
+              - cell "TT100003 star Nổi bật Mở Rộng Lộ Trình Đón Trả Khách Tận Nơi Tại Khu Vực Bến Xe Bến Cát (Bình Dương)" [ref=e236]:
+                - generic [ref=e237]:
+                  - generic [ref=e238]:
+                    - generic [ref=e239]: TT100003
+                    - generic [ref=e240]:
+                      - generic [ref=e241]: star
+                      - text: Nổi bật
+                  - heading "Mở Rộng Lộ Trình Đón Trả Khách Tận Nơi Tại Khu Vực Bến Xe Bến Cát (Bình Dương)" [level=4] [ref=e242]
+              - cell "Thông báo" [ref=e243]:
+                - generic [ref=e244]: Thông báo
+              - cell "Nguyễn Hoài Nam (Admin)" [ref=e245]
+              - cell "24-05-2026" [ref=e246]
+              - cell "fiber_manual_record Đang hiển thị" [ref=e247]:
+                - generic [ref=e248]:
+                  - generic [ref=e249]: fiber_manual_record
+                  - text: Đang hiển thị
+              - cell "edit" [ref=e250]:
+                - button "edit" [ref=e252] [cursor=pointer]:
+                  - generic [ref=e253]: edit
+            - row "Cover TT100001 star Nổi bật Tân Xuân Phúc Chính Thức Vận Hành Dòng Xe THACO Mobihome 22 Phòng Premium Cao Cấp Thông báo Nguyễn Hoài Nam (Admin) 24-05-2026 fiber_manual_record Đang hiển thị edit" [ref=e254]:
+              - cell "Cover" [ref=e255]:
+                - img "Cover" [ref=e257]
+              - cell "TT100001 star Nổi bật Tân Xuân Phúc Chính Thức Vận Hành Dòng Xe THACO Mobihome 22 Phòng Premium Cao Cấp" [ref=e258]:
+                - generic [ref=e259]:
+                  - generic [ref=e260]:
+                    - generic [ref=e261]: TT100001
+                    - generic [ref=e262]:
+                      - generic [ref=e263]: star
+                      - text: Nổi bật
+                  - heading "Tân Xuân Phúc Chính Thức Vận Hành Dòng Xe THACO Mobihome 22 Phòng Premium Cao Cấp" [level=4] [ref=e264]
+              - cell "Thông báo" [ref=e265]:
+                - generic [ref=e266]: Thông báo
+              - cell "Nguyễn Hoài Nam (Admin)" [ref=e267]
+              - cell "24-05-2026" [ref=e268]
+              - cell "fiber_manual_record Đang hiển thị" [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e271]: fiber_manual_record
+                  - text: Đang hiển thị
+              - cell "edit" [ref=e272]:
+                - button "edit" [ref=e274] [cursor=pointer]:
+                  - generic [ref=e275]: edit
+        - generic [ref=e276]:
+          - generic [ref=e277]:
+            - text: Hiển thị từ
+            - strong [ref=e278]: "1"
+            - text: đến
+            - strong [ref=e279]: "5"
+            - text: trong tổng số
+            - strong [ref=e280]: "5"
+            - text: bài viết.
+          - generic [ref=e281]:
+            - generic [ref=e282]:
+              - generic [ref=e283]: "Dòng hiển thị:"
+              - combobox [ref=e284] [cursor=pointer]:
+                - option "5 dòng / trang" [selected]
+                - option "10 dòng / trang"
+                - option "20 dòng / trang"
+            - generic [ref=e285]:
+              - button "chevron_left" [disabled] [ref=e286]:
+                - generic [ref=e287]: chevron_left
+              - button "1" [ref=e288] [cursor=pointer]
+              - button "chevron_right" [disabled] [ref=e289]:
+                - generic [ref=e290]: chevron_right

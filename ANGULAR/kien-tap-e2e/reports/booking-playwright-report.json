@@ -1,0 +1,1917 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\playwright.config.ts",
+    "rootDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/src/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 8
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/src/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/src/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/PC/kien-tap-code/ANGULAR/kien-tap-e2e/src/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ],
+      [
+        "line"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.60.0",
+    "workers": 8,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "customer\\booking.spec.ts",
+      "file": "customer/booking.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Phân Hệ Khách Hàng - Module Đặt vé & Thanh toán (Booking & Payment)",
+          "file": "customer/booking.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TXP_BK_TC_001: Happy Path - Khách hàng giữ ghế trống hợp lệ thành công",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5418,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.833Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-aaa420c181100e54ae46",
+              "file": "customer/booking.spec.ts",
+              "line": 181,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_002: Negative - Giữ ghế đang bị giữ bởi người khác và còn hiệu lực giữ chỗ",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7398,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.786Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-ec592e2771f57a44ba25",
+              "file": "customer/booking.spec.ts",
+              "line": 202,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_003: Negative - Giữ ghế đã được bán thành công",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 8123,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.843Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-8cdea0f0b4e218f3a223",
+              "file": "customer/booking.spec.ts",
+              "line": 223,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_004: Negative - Giữ ghế không tồn tại trong lịch trình chuyến xe",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6708,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.785Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-fa9ecc0e2a5b3a8da1c7",
+              "file": "customer/booking.spec.ts",
+              "line": 244,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_005: Alternate Path - Giữ lại ghế đã hết hạn giữ chỗ (trên 15 phút)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 9294,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.818Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-f705e467998052a98504",
+              "file": "customer/booking.spec.ts",
+              "line": 255,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_006: Validation - Gọi API giữ ghế khi bỏ trống thông tin bắt buộc",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7654,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.900Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-2d64ab2f55810632368e",
+              "file": "customer/booking.spec.ts",
+              "line": 278,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_007: Edge Case - Giữ đồng thời nhiều ghế trong đó có một ghế đã bị bán",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 4197,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.804Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-e4ffeac6b8f45a724687",
+              "file": "customer/booking.spec.ts",
+              "line": 288,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_008: Happy Path - Cron job tự động giải phóng ghế quá hạn 15 phút chưa thanh toán",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "failed",
+                      "duration": 8596,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:337:47",
+                        "location": {
+                          "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                          "column": 47,
+                          "line": 337
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 335 |\u001b[39m\n \u001b[90m 336 |\u001b[39m     \u001b[90m// Assert\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 337 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bookingPage\u001b[33m.\u001b[39mexpirationModal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 338 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 339 |\u001b[39m\n \u001b[90m 340 |\u001b[39m   test(\u001b[32m'TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ bookingPage\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                            "column": 47,
+                            "line": 337
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n\n  335 |\n  336 |     // Assert\n> 337 |     await expect(bookingPage.expirationModal).toBeVisible();\n      |                                               ^\n  338 |   });\n  339 |\n  340 |   test('TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn', async ({ bookingPage, page }) => {\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:337:47"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 599\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 598\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 597\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 596\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 595\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:01.811Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-1e5ae-hạn-15-phút-chưa-thanh-toán-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-1e5ae-hạn-15-phút-chưa-thanh-toán-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                        "column": 47,
+                        "line": 337
+                      }
+                    },
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 7,
+                      "status": "failed",
+                      "duration": 8502,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:337:47",
+                        "location": {
+                          "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                          "column": 47,
+                          "line": 337
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 335 |\u001b[39m\n \u001b[90m 336 |\u001b[39m     \u001b[90m// Assert\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 337 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bookingPage\u001b[33m.\u001b[39mexpirationModal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 338 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 339 |\u001b[39m\n \u001b[90m 340 |\u001b[39m   test(\u001b[32m'TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ bookingPage\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                            "column": 47,
+                            "line": 337
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n\n  335 |\n  336 |     // Assert\n> 337 |     await expect(bookingPage.expirationModal).toBeVisible();\n      |                                               ^\n  338 |   });\n  339 |\n  340 |   test('TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn', async ({ bookingPage, page }) => {\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:337:47"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 599\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 598\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 597\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 596\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 595\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2026-05-31T07:29:11.273Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-1e5ae-hạn-15-phút-chưa-thanh-toán-chromium-retry1\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-1e5ae-hạn-15-phút-chưa-thanh-toán-chromium-retry1\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                        "column": 47,
+                        "line": 337
+                      }
+                    },
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 7,
+                      "status": "failed",
+                      "duration": 8561,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:337:47",
+                        "location": {
+                          "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                          "column": 47,
+                          "line": 337
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 335 |\u001b[39m\n \u001b[90m 336 |\u001b[39m     \u001b[90m// Assert\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 337 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bookingPage\u001b[33m.\u001b[39mexpirationModal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 338 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 339 |\u001b[39m\n \u001b[90m 340 |\u001b[39m   test(\u001b[32m'TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ bookingPage\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                            "column": 47,
+                            "line": 337
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n\n  335 |\n  336 |     // Assert\n> 337 |     await expect(bookingPage.expirationModal).toBeVisible();\n      |                                               ^\n  338 |   });\n  339 |\n  340 |   test('TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn', async ({ bookingPage, page }) => {\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:337:47"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 599\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 598\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 597\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 596\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 595\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 2,
+                      "startTime": "2026-05-31T07:29:21.467Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-1e5ae-hạn-15-phút-chưa-thanh-toán-chromium-retry2\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-1e5ae-hạn-15-phút-chưa-thanh-toán-chromium-retry2\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                        "column": 47,
+                        "line": 337
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-6807ed0853fc2d3fb607",
+              "file": "customer/booking.spec.ts",
+              "line": 313,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_009: Happy Path - Cron job tự động hủy đơn hàng ChoThanhToan khi ghế tương ứng hết hạn",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 5473,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:06.180Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-a1c0846a9d05d46e539f",
+              "file": "customer/booking.spec.ts",
+              "line": 340,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_010: Boundary - Ghế ở trạng thái GiuCho sát biên giới hạn 15 phút (14 phút 59 giây)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2480,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:07.482Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-2128fb5f7c57dbc0cd1a",
+              "file": "customer/booking.spec.ts",
+              "line": 369,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_011: Boundary - Ghế ở trạng thái GiuCho vừa chạm mốc 15 phút 01 giây",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6908,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:409:47",
+                        "location": {
+                          "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                          "column": 47,
+                          "line": 409
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 407 |\u001b[39m\n \u001b[90m 408 |\u001b[39m     \u001b[90m// Assert\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 409 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bookingPage\u001b[33m.\u001b[39mexpirationModal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 410 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 411 |\u001b[39m\n \u001b[90m 412 |\u001b[39m   test(\u001b[32m'TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ bookingPage\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                            "column": 47,
+                            "line": 409
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n\n  407 |\n  408 |     // Assert\n> 409 |     await expect(bookingPage.expirationModal).toBeVisible();\n      |                                               ^\n  410 |   });\n  411 |\n  412 |   test('TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh', async ({ bookingPage, page }) => {\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:409:47"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 599\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 598\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 597\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 596\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 595\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:08.667Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-39254-ừa-chạm-mốc-15-phút-01-giây-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-39254-ừa-chạm-mốc-15-phút-01-giây-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                        "column": 47,
+                        "line": 409
+                      }
+                    },
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 8623,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:409:47",
+                        "location": {
+                          "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                          "column": 47,
+                          "line": 409
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 407 |\u001b[39m\n \u001b[90m 408 |\u001b[39m     \u001b[90m// Assert\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 409 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bookingPage\u001b[33m.\u001b[39mexpirationModal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 410 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 411 |\u001b[39m\n \u001b[90m 412 |\u001b[39m   test(\u001b[32m'TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ bookingPage\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                            "column": 47,
+                            "line": 409
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n\n  407 |\n  408 |     // Assert\n> 409 |     await expect(bookingPage.expirationModal).toBeVisible();\n      |                                               ^\n  410 |   });\n  411 |\n  412 |   test('TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh', async ({ bookingPage, page }) => {\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:409:47"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 599\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 598\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 597\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 596\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 595\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2026-05-31T07:29:16.425Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-39254-ừa-chạm-mốc-15-phút-01-giây-chromium-retry1\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-39254-ừa-chạm-mốc-15-phút-01-giây-chromium-retry1\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                        "column": 47,
+                        "line": 409
+                      }
+                    },
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 6657,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:409:47",
+                        "location": {
+                          "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                          "column": 47,
+                          "line": 409
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 407 |\u001b[39m\n \u001b[90m 408 |\u001b[39m     \u001b[90m// Assert\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 409 |\u001b[39m     \u001b[36mawait\u001b[39m expect(bookingPage\u001b[33m.\u001b[39mexpirationModal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 410 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 411 |\u001b[39m\n \u001b[90m 412 |\u001b[39m   test(\u001b[32m'TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ bookingPage\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                            "column": 47,
+                            "line": 409
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.fixed.inset-0:has-text(\"Đơn hàng đã hết hạn thanh toán\")')\u001b[22m\n\n\n  407 |\n  408 |     // Assert\n> 409 |     await expect(bookingPage.expirationModal).toBeVisible();\n      |                                               ^\n  410 |   });\n  411 |\n  412 |   test('TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh', async ({ bookingPage, page }) => {\n    at C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts:409:47"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 599\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 598\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 597\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 596\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Timer ticking. Current timeLeft: 595\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 2,
+                      "startTime": "2026-05-31T07:29:25.999Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-39254-ừa-chạm-mốc-15-phút-01-giây-chromium-retry2\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\test-results\\customer-booking-Phân-Hệ-K-39254-ừa-chạm-mốc-15-phút-01-giây-chromium-retry2\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\PC\\kien-tap-code\\ANGULAR\\kien-tap-e2e\\src\\tests\\customer\\booking.spec.ts",
+                        "column": 47,
+                        "line": 409
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-480a2bfbf6e338e97dca",
+              "file": "customer/booking.spec.ts",
+              "line": 389,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_012: Edge Case - Ghế GiuCho đã quá 15 phút nhưng đơn hàng liên quan đã ở trạng thái ChoKhoiHanh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5712,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:09.357Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-dd903cc0023854788dfc",
+              "file": "customer/booking.spec.ts",
+              "line": 412,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_013: Happy Path - Tạo đơn hàng thành công cho khách hàng đã đăng nhập (Thanh toán trực tiếp)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 4483,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Payment create-order payload: {MaKhachHang: KH001, MaLichTrinh: LT9999, DanhSachMaGheChuyen: Array(1), HoTenNguoiDi: Nguyễn Văn A, SdtNguoiDi: 0912549925}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:09.844Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-c20c21d28fa260d1be13",
+              "file": "customer/booking.spec.ts",
+              "line": 444,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_014: Alternate Path - Tạo đơn hàng cho khách vãng lai hoàn toàn mới",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5352,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Payment create-order payload: {MaKhachHang: KH001, MaLichTrinh: LT9999, DanhSachMaGheChuyen: Array(1), HoTenNguoiDi: Khách Guest, SdtNguoiDi: 0988777666}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:09.975Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-4d8780dc228670a33c4a",
+              "file": "customer/booking.spec.ts",
+              "line": 512,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_015: Alternate Path - Tạo đơn hàng cho khách vãng lai trùng số điện thoại đã tồn tại",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4257,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Payment create-order payload: {MaKhachHang: KH001, MaLichTrinh: LT9999, DanhSachMaGheChuyen: Array(1), HoTenNguoiDi: Khách Trùng SĐT, SdtNguoiDi: 0912345678}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:10.201Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-27309fdfd0542b151cdb",
+              "file": "customer/booking.spec.ts",
+              "line": 551,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_016: Validation - Tạo đơn hàng thiếu thông tin người đi bắt buộc",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4877,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:11.315Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-3e677a6a1e764a461c18",
+              "file": "customer/booking.spec.ts",
+              "line": 589,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_017: Validation - Tạo đơn hàng với phương thức thanh toán không được hỗ trợ",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 7365,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:11.679Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-4c0ea11227f45d497d02",
+              "file": "customer/booking.spec.ts",
+              "line": 618,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_018: Negative - Tạo đơn hàng khi ghế đã bị đặt bởi người khác (DaBan)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6296,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Payment create-order payload: {MaKhachHang: KH001, MaLichTrinh: LT9999, DanhSachMaGheChuyen: Array(1), HoTenNguoiDi: Nguyễn Văn A, SdtNguoiDi: 0912345678}\n"
+                        },
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 400 (Bad Request)\n"
+                        },
+                        {
+                          "text": "[Browser Console error] Failed to create order and pay Ze\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:14.340Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-b3d212d1e8d18544bef0",
+              "file": "customer/booking.spec.ts",
+              "line": 640,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_019: Negative - Tạo đơn hàng khi lịch trình chuyến xe không tồn tại",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5414,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:14.478Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-23aecf7336e6b87d728c",
+              "file": "customer/booking.spec.ts",
+              "line": 677,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_020: Negative - Tạo đơn hàng khi ghế được chọn không tồn tại trong DB",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2986,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:15.085Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-2e8793527a6fc7342411",
+              "file": "customer/booking.spec.ts",
+              "line": 696,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_021: Boundary - Tạo đơn hàng đặt tối đa 5 ghế đồng thời",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5979,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Payment create-order payload: {MaKhachHang: KH001, MaLichTrinh: LT9999, DanhSachMaGheChuyen: Array(5), HoTenNguoiDi: Nguyễn Văn A, SdtNguoiDi: 0912345678}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:15.338Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-3334e34921a88628fb88",
+              "file": "customer/booking.spec.ts",
+              "line": 715,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_022: Edge Case - Đơn hàng bị lỗi trong giao dịch khi tạo vé điện tử",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3318,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:16.232Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-87e7271c8b89892493a5",
+              "file": "customer/booking.spec.ts",
+              "line": 766,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_023: Happy Path - Tạo giao dịch thanh toán thành công",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5444,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:18.090Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-ff4a27dbd6b6058e2cdd",
+              "file": "customer/booking.spec.ts",
+              "line": 795,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_024: Negative - Tạo giao dịch thanh toán khi đơn hàng không ở trạng thái ChoThanhToan",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 2449,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 400 (Bad Request)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:19.062Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-8d0fa27874fc4d8f1916",
+              "file": "customer/booking.spec.ts",
+              "line": 820,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_025: Callback thanh toán thành công chuyển đổi trạng thái đơn hàng & vé",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3631,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] Payment create-order payload: {MaKhachHang: KH001, MaLichTrinh: LT9999, DanhSachMaGheChuyen: Array(1), HoTenNguoiDi: Nguyễn Văn A, SdtNguoiDi: 0912345678}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:19.584Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-b84d7cb3a83b53c83423",
+              "file": "customer/booking.spec.ts",
+              "line": 839,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_026: Happy Path - Callback thanh toán thành công lần 2 (Idempotency)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4327,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:19.931Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-cdea1ff162f294c5cbc4",
+              "file": "customer/booking.spec.ts",
+              "line": 877,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_027: Callback thanh toán thất bại giải phóng ghế và hủy đơn hàng",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5290,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] startCountdown called. timeLeft: 600\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] API response: {success: true, data: Array(1)}\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] response.data.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] allTrips.length: 1\n"
+                        },
+                        {
+                          "text": "[Browser Console log] [searchTrips] filteredTrips.length (render): 1\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:20.665Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-4e462c5b0a7b91994935",
+              "file": "customer/booking.spec.ts",
+              "line": 905,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_028: Negative - Callback thanh toán với mã giao dịch không tồn tại",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5820,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:21.333Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-1431043d1d9c21806133",
+              "file": "customer/booking.spec.ts",
+              "line": 934,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_029: Negative - Callback thanh toán với mã đơn hàng không tồn tại",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 5640,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 404 (Not Found)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:21.542Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-000ab555f1379e029966",
+              "file": "customer/booking.spec.ts",
+              "line": 953,
+              "column": 7
+            },
+            {
+              "title": "TXP_BK_TC_030: Edge Case - Lỗi kết nối DB trong quá trình xử lý callback success",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2881,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[Browser Console error] Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-31T07:29:23.242Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a6fad35db6656b5ea7af-a2ea2e298fb75aed1c2c",
+              "file": "customer/booking.spec.ts",
+              "line": 972,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-05-31T07:29:00.877Z",
+    "duration": 32147.356,
+    "expected": 28,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

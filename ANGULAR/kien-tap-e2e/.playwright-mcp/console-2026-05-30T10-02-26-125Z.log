@@ -1,0 +1,12 @@
+[      54ms] [ERROR] Lỗi khi đồng bộ thông tin phân quyền: Ze @ https://kien-tap-code.vercel.app/chunk-KJGEKI5E.js:0
+[   34385ms] [ERROR] Lỗi khi đồng bộ thông tin phân quyền: Ze @ https://kien-tap-code.vercel.app/chunk-KJGEKI5E.js:0
+[   34559ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://kien-tap-code.vercel.app/admin-login:0
+[   34771ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://kien-tap-code.vercel.app/admin-login:0
+[   36128ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://kien-tap-code.onrender.com/admin/auth/login:0
+[   61121ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://kien-tap-code.vercel.app/admin-login:0
+[   61459ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://kien-tap-code.onrender.com/admin/auth/login:0
+[   91285ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://kien-tap-code.vercel.app/admin-login:0
+[   91824ms] [ERROR] Lỗi khi đồng bộ thông tin phân quyền: Ze @ https://kien-tap-code.vercel.app/chunk-KJGEKI5E.js:0
+[  589536ms] [LOG] LỊCH TRÌNH DATA RECEIVED: 20 [Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object] @ https://kien-tap-code.vercel.app/chunk-N7FEI7I4.js:0
+[  637628ms] [LOG] LỊCH TRÌNH DATA RECEIVED: 20 [Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object] @ https://kien-tap-code.vercel.app/chunk-N7FEI7I4.js:0
+[  672523ms] [LOG] LỊCH TRÌNH DATA RECEIVED: 20 [Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object] @ https://kien-tap-code.vercel.app/chunk-N7FEI7I4.js:0

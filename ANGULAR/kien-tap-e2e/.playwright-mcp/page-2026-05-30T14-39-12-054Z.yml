@@ -1,0 +1,127 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - img "TXP Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "TRANG CHỦ" [ref=e8] [cursor=pointer]:
+          - /url: /home
+        - link "TRA CỨU VÉ" [ref=e9] [cursor=pointer]:
+          - /url: /tra-cuu-ve
+        - link "TIN TỨC" [ref=e10] [cursor=pointer]:
+          - /url: /tin-tuc
+        - link "ĐÁNH GIÁ" [ref=e11] [cursor=pointer]:
+          - /url: /danh-gia
+        - button "GIỚI THIỆU expand_more" [ref=e13]:
+          - text: GIỚI THIỆU
+          - generic [ref=e14]: expand_more
+      - button "Đăng nhập / Đăng ký" [ref=e16]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - heading "Chính Sách & Quy Định" [level=1] [ref=e21]
+      - paragraph [ref=e22]: Thông tin minh bạch giúp hành trình của bạn trọn vẹn và an tâm hơn.
+    - generic [ref=e23]:
+      - generic [ref=e25]:
+        - paragraph [ref=e27]: Danh mục chính sách
+        - generic [ref=e28]:
+          - button "payments Quy định đặt vé & Thanh toán" [ref=e29]:
+            - generic [ref=e30]: payments
+            - generic [ref=e31]: Quy định đặt vé & Thanh toán
+          - button "edit_note Chính sách chỉnh sửa vé" [ref=e32]:
+            - generic [ref=e33]: edit_note
+            - generic [ref=e34]: Chính sách chỉnh sửa vé
+          - button "account_balance_wallet Chính sách hủy vé & Hoàn tiền" [ref=e35]:
+            - generic [ref=e36]: account_balance_wallet
+            - generic [ref=e37]: Chính sách hủy vé & Hoàn tiền
+          - button "verified_user Cam kết dịch vụ & Bồi thường" [ref=e38]:
+            - generic [ref=e39]: verified_user
+            - generic [ref=e40]: Cam kết dịch vụ & Bồi thường
+          - button "security Chính sách bảo mật dữ liệu" [ref=e41]:
+            - generic [ref=e42]: security
+            - generic [ref=e43]: Chính sách bảo mật dữ liệu
+      - generic [ref=e45]:
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - paragraph [ref=e48]: Quy định đặt vé & Thanh toán
+            - heading "CHÍNH SÁCH THANH TOÁN VÀ ĐẶT GIỮ CHỖ TRỰC TUYẾN" [level=2] [ref=e49]
+          - generic [ref=e50]:
+            - generic [ref=e51]: search
+            - textbox "Tìm nhanh..." [ref=e52]
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - generic [ref=e56]: "1"
+            - paragraph [ref=e59]: "Quy trình Đặt giữ chỗ: Khi hành khách thực hiện đặt vé trên hệ thống (hoặc thông qua nhân viên bán vé/tổng đài), ghế lựa chọn sẽ được tạm giữ trạng thái \"Đang giữ\" trong thời gian tối đa là 15 phút. Đơn hàng lúc này mang trạng thái \"Chờ thanh toán\"."
+          - generic [ref=e60]:
+            - generic [ref=e62]: "2"
+            - paragraph [ref=e65]: "Xác nhận đặt giữ chỗ: Đơn hàng chỉ được xác nhận thành công và chuyển sang trạng thái \"Chờ khởi hành\" sau khi hệ thống nhận được thông báo giao dịch thành công từ cổng thanh toán (Mã QR hoặc thẻ nội địa NAPAS). Quá 15 phút quy định, hệ thống tự động hủy đơn và giải phóng ghế về trạng thái \"Trống\"."
+          - generic [ref=e66]:
+            - generic [ref=e68]: "3"
+            - paragraph [ref=e71]: "Thông tin hành khách: Họ tên và số điện thoại là thông tin bắt buộc, phải cung cấp chính xác để hệ thống phát hành vé điện tử và gửi thông báo xác nhận qua SMS/Zalo. Nhà xe có quyền từ chối phục vụ nếu hành khách cung cấp sai thông tin hoặc không thể liên lạc được."
+          - generic [ref=e72]:
+            - generic [ref=e74]: "4"
+            - paragraph [ref=e76]: "Nguyên tắc xếp chỗ: Hệ thống hỗ trợ khách hàng chọn vị trí ghế mong muốn theo sơ đồ thời gian thực. Tuy nhiên, nhà xe bảo lưu quyền điều phối, sắp xếp lại vị trí ghế trong các trường hợp bất khả kháng liên quan đến an toàn giao thông, quy định của cơ quan quản lý hoặc sự cố vận hành của phương tiện."
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - heading "Bạn vẫn còn thắc mắc về chính sách?" [level=4] [ref=e80]
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - generic [ref=e83]: call
+                - text: "Hotline: 1900 1234"
+              - generic [ref=e84]:
+                - generic [ref=e85]: mail
+                - text: "Email: hotro@tanxuanphuc.vn"
+          - button "chat Chat ngay với chúng tôi" [ref=e86]:
+            - generic [ref=e87]: chat
+            - text: Chat ngay với chúng tôi
+  - contentinfo [ref=e89]:
+    - generic [ref=e90]:
+      - generic [ref=e91]:
+        - generic [ref=e92]:
+          - img "TXP Logo" [ref=e93]
+          - paragraph [ref=e94]: Công ty TNHH Tân Xuân Phúc
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: location_on
+            - generic [ref=e98]: Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai
+          - generic [ref=e99]:
+            - generic [ref=e100]: phone_iphone
+            - generic [ref=e101]: 0982 541 160 - 0932 334 446
+          - generic [ref=e102]:
+            - generic [ref=e103]: mail
+            - generic [ref=e104]: nhaxetanxuanphuc@gmail.com
+      - generic [ref=e105]:
+        - heading "HỖ TRỢ" [level=4] [ref=e106]
+        - list [ref=e107]:
+          - listitem [ref=e108]:
+            - link "Câu hỏi FAQs" [ref=e109] [cursor=pointer]:
+              - /url: /faqs
+          - listitem [ref=e110]:
+            - link "Hướng dẫn mua vé" [ref=e111] [cursor=pointer]:
+              - /url: /huong-dan-mua-ve
+      - generic [ref=e112]:
+        - heading "GIỚI THIỆU" [level=4] [ref=e113]
+        - list [ref=e114]:
+          - listitem [ref=e115]:
+            - link "Về chúng tôi" [ref=e116] [cursor=pointer]:
+              - /url: /gioi-thieu/ve-chung-toi
+          - listitem [ref=e117]:
+            - link "Điều khoản" [ref=e118] [cursor=pointer]:
+              - /url: /gioi-thieu/chinh-sach
+      - generic [ref=e119]:
+        - generic [ref=e120]:
+          - heading "HOTLINE LIÊN HỆ" [level=4] [ref=e121]
+          - generic [ref=e122]:
+            - generic [ref=e124]: call
+            - generic [ref=e125]: 1900 989 867
+        - generic [ref=e126]:
+          - heading "KẾT NỐI VỚI CHÚNG TÔI" [level=4] [ref=e127]
+          - generic [ref=e128]:
+            - link "" [ref=e129] [cursor=pointer]:
+              - /url: https://www.facebook.com/minhtoai.tran.58
+              - generic [ref=e130]: 
+            - link "" [ref=e131] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc
+              - generic [ref=e132]: 
+            - button "share" [ref=e133] [cursor=pointer]:
+              - generic [ref=e134]: share
+        - img "Đã thông báo Bộ Công Thương" [ref=e136]
+    - paragraph [ref=e138]: "© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234"

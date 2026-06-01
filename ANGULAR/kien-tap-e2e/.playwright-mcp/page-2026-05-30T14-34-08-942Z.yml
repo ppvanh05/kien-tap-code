@@ -1,0 +1,132 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - img "TXP Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "TRANG CHỦ" [ref=e8] [cursor=pointer]:
+          - /url: /home
+        - link "TRA CỨU VÉ" [ref=e9] [cursor=pointer]:
+          - /url: /tra-cuu-ve
+        - link "TIN TỨC" [ref=e10] [cursor=pointer]:
+          - /url: /tin-tuc
+        - link "ĐÁNH GIÁ" [ref=e11] [cursor=pointer]:
+          - /url: /danh-gia
+        - button "GIỚI THIỆU expand_more" [ref=e13]:
+          - text: GIỚI THIỆU
+          - generic [ref=e14]: expand_more
+      - button "Đăng nhập / Đăng ký" [ref=e16]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - img "Xe khách Tân Xuân Phúc" [ref=e22]
+      - generic [ref=e24]:
+        - heading "TÂN XUÂN PHÚC VẠN DẶM BÌNH AN" [level=1] [ref=e25]:
+          - text: TÂN XUÂN PHÚC
+          - text: VẠN DẶM BÌNH AN
+        - paragraph [ref=e26]: Sứ mệnh mang đến những hành trình an toàn, trọn vẹn và đầy ắp niềm vui cho mọi khách hàng. Chúng tôi không chỉ vận chuyển, chúng tôi kết nối yêu thương.
+        - generic [ref=e27]:
+          - button "Đặt vé ngay" [ref=e28]
+          - button "Tìm hiểu thêm" [ref=e29]
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e34]: Câu chuyện của chúng tôi
+          - heading "Khởi nguồn từ tâm, vươn tầm bằng sự tử tế" [level=2] [ref=e35]
+        - generic [ref=e36]:
+          - paragraph [ref=e37]: Khởi đầu từ một đơn vị vận tải tư nhân với số lượng đầu xe giới hạn, Công ty TNHH Vận tải Tân Xuân Phúc (TXP) được thành lập từ sự thấu hiểu sâu sắc về nhu cầu di chuyển an toàn, tiện lợi và tiết kiệm của mỗi hành khách.
+          - paragraph [ref=e38]: Chúng tôi hiểu rằng, đằng sau mỗi tấm vé không chỉ là một chuyến đi, mà là những cuộc hành trình trở về nhà đoàn tụ, những chuyến công tác quan trọng hay những kỳ nghỉ ý nghĩa bên người thân.
+          - generic [ref=e39]: "\"Sứ mệnh của chúng tôi là thực thi triết lý 'Vạn Dặm Bình An'. Chúng tôi cam kết mang lại sự an tâm tuyệt đối cho khách hàng bằng sự tận tâm của đội ngũ lái xe và sự hiện đại của trang thiết bị.\""
+          - paragraph [ref=e40]: Suốt nhiều năm hoạt động, TXP đã không ngừng cải tiến quy trình, đầu tư vào công nghệ quản lý hiện đại để đảm bảo tính minh bạch và công bằng cho mọi hành khách.
+      - generic:
+        - img "Không gian xe khách" [ref=e42]
+        - generic [ref=e43]:
+          - generic [ref=e44]: 15+
+          - generic [ref=e45]: Năm kinh nghiệm
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - heading "Giá Trị Cốt Lõi" [level=2] [ref=e49]
+        - paragraph [ref=e50]: Chúng tôi xây dựng thương hiệu dựa trên những nền tảng vững chắc nhất.
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - generic [ref=e54]: verified_user
+          - heading "An Toàn Là Trên Hết" [level=3] [ref=e55]
+          - paragraph [ref=e56]: Đội ngũ tài xế được tuyển chọn khắt khe, tuân thủ nghiêm ngặt luật giao thông, nói không với phóng nhanh vượt ẩu.
+        - generic [ref=e57]:
+          - generic [ref=e59]: volunteer_activism
+          - heading "Trách Nhiệm & Chu Đáo" [level=3] [ref=e60]
+          - paragraph [ref=e61]: Phục vụ tận tâm, lịch sự, luôn sẵn sàng hỗ trợ hành khách trong mọi tình huống với tinh thần trách nhiệm cao nhất.
+        - generic [ref=e62]:
+          - generic [ref=e64]: airport_shuttle
+          - heading "Hiện Đại & Tiện Nghi" [level=3] [ref=e65]
+          - paragraph [ref=e66]: "Hệ thống xe đời mới, sạch sẽ, đầy đủ tiện ích: wifi tốc độ cao, cổng sạc, nước uống và khăn lạnh miễn phí."
+        - generic [ref=e67]:
+          - generic [ref=e69]: balance
+          - heading "Công Bằng & Minh Bạch" [level=3] [ref=e70]
+          - paragraph [ref=e71]: Đặt vé online minh bạch, cam kết giữ đúng chỗ, chạy đúng tuyến, đúng giờ và tuyệt đối không nhồi nhét khách.
+    - generic [ref=e74]:
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - img "Đội ngũ lái xe"
+          - img "Xe limousine"
+        - generic [ref=e77]:
+          - img "Văn phòng nhà xe"
+          - img "Hành trình"
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e80]: Tầm nhìn 2030
+          - heading "Trở thành biểu tượng của sự tin cậy trên mọi hành trình" [level=2] [ref=e81]
+        - generic [ref=e82]:
+          - paragraph [ref=e83]: Tân Xuân Phúc hướng tới mục tiêu trở thành một trong những nhà xe tư nhân được yêu thích và tin tưởng nhất trên các tuyến đường trọng điểm mà chúng tôi khai thác.
+          - paragraph [ref=e84]: Bằng việc kết hợp giữa chất lượng dịch vụ truyền thống chu đáo và hệ thống quản lý công nghệ hiện đại, TXP tự tin sẽ là người bạn đồng hành tin cậy của mọi hành khách trên mọi nẻo đường.
+  - contentinfo [ref=e86]:
+    - generic [ref=e87]:
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - img "TXP Logo" [ref=e90]
+          - paragraph [ref=e91]: Công ty TNHH Tân Xuân Phúc
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]: location_on
+            - generic [ref=e95]: Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai
+          - generic [ref=e96]:
+            - generic [ref=e97]: phone_iphone
+            - generic [ref=e98]: 0982 541 160 - 0932 334 446
+          - generic [ref=e99]:
+            - generic [ref=e100]: mail
+            - generic [ref=e101]: nhaxetanxuanphuc@gmail.com
+      - generic [ref=e102]:
+        - heading "HỖ TRỢ" [level=4] [ref=e103]
+        - list [ref=e104]:
+          - listitem [ref=e105]:
+            - link "Câu hỏi FAQs" [ref=e106] [cursor=pointer]:
+              - /url: /faqs
+          - listitem [ref=e107]:
+            - link "Hướng dẫn mua vé" [ref=e108] [cursor=pointer]:
+              - /url: /huong-dan-mua-ve
+      - generic [ref=e109]:
+        - heading "GIỚI THIỆU" [level=4] [ref=e110]
+        - list [ref=e111]:
+          - listitem [ref=e112]:
+            - link "Về chúng tôi" [ref=e113] [cursor=pointer]:
+              - /url: /gioi-thieu/ve-chung-toi
+          - listitem [ref=e114]:
+            - link "Điều khoản" [ref=e115] [cursor=pointer]:
+              - /url: /gioi-thieu/chinh-sach
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - heading "HOTLINE LIÊN HỆ" [level=4] [ref=e118]
+          - generic [ref=e119]:
+            - generic [ref=e121]: call
+            - generic [ref=e122]: 1900 989 867
+        - generic [ref=e123]:
+          - heading "KẾT NỐI VỚI CHÚNG TÔI" [level=4] [ref=e124]
+          - generic [ref=e125]:
+            - link "" [ref=e126] [cursor=pointer]:
+              - /url: https://www.facebook.com/minhtoai.tran.58
+              - generic [ref=e127]: 
+            - link "" [ref=e128] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc
+              - generic [ref=e129]: 
+            - button "share" [ref=e130] [cursor=pointer]:
+              - generic [ref=e131]: share
+        - img "Đã thông báo Bộ Công Thương" [ref=e133]
+    - paragraph [ref=e135]: "© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234"

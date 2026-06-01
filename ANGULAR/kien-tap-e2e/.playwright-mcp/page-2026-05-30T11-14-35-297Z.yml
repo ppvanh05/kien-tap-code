@@ -1,0 +1,470 @@
+- generic [ref=e69]:
+  - complementary [ref=e70]:
+    - img "TXP Logo" [ref=e73]
+    - navigation [ref=e74]:
+      - generic [ref=e76] [cursor=pointer]:
+        - generic [ref=e77]: home
+        - generic [ref=e78]: Trang chủ
+      - generic [ref=e79]:
+        - generic [ref=e80] [cursor=pointer]:
+          - generic [ref=e81]: settings_input_component
+          - generic [ref=e82]: Quản lý điều hành
+          - generic [ref=e83]: expand_more
+        - generic [ref=e84]:
+          - generic [ref=e85] [cursor=pointer]:
+            - generic [ref=e86]: route
+            - generic [ref=e87]: Quản lý tuyến xe
+          - generic [ref=e88] [cursor=pointer]:
+            - generic [ref=e89]: calendar_month
+            - generic [ref=e90]: Quản lý lịch trình
+          - generic [ref=e91] [cursor=pointer]:
+            - generic [ref=e92]: directions_bus
+            - generic [ref=e93]: Quản lý phương tiện
+          - generic [ref=e94] [cursor=pointer]:
+            - generic [ref=e95]: badge
+            - generic [ref=e96]: Quản lý tài xế & phụ xe
+          - generic [ref=e97] [cursor=pointer]:
+            - generic [ref=e98]: location_on
+            - generic [ref=e99]: Quản lý điểm đón trả dừng
+    - generic [ref=e101] [cursor=pointer]:
+      - generic [ref=e103]: account_circle
+      - generic [ref=e104]:
+        - generic [ref=e105]: Nguyen Van Dieu Phoi
+        - generic [ref=e106]: Nhân viên điều phối
+  - main [ref=e107]:
+    - generic [ref=e108]:
+      - button "menu" [ref=e110] [cursor=pointer]:
+        - generic [ref=e111]: menu
+      - generic [ref=e112]:
+        - generic [ref=e114] [cursor=pointer]: notifications
+        - generic [ref=e116]: Thứ Bảy, 30/05/2026
+    - generic [ref=e119]:
+      - generic [ref=e120]: Quản lý điều hành / Quản lý lịch trình
+      - generic [ref=e121]:
+        - generic [ref=e122]:
+          - button "Tất cả" [ref=e123] [cursor=pointer]
+          - button "Đang chạy" [ref=e124] [cursor=pointer]
+          - button "Chờ khởi hành" [ref=e125] [cursor=pointer]
+          - button "Hoàn thành" [ref=e126] [cursor=pointer]
+          - button "Đã khóa" [ref=e127] [cursor=pointer]
+        - generic [ref=e129]:
+          - generic [ref=e134] [cursor=pointer]: Lọc theo tuyến xe
+          - button "clear_all Xóa lọc" [ref=e136] [cursor=pointer]:
+            - generic [ref=e137]: clear_all
+            - text: Xóa lọc
+          - button "add Thêm lịch trình mới" [ref=e138] [cursor=pointer]:
+            - generic [ref=e139]: add
+            - text: Thêm lịch trình mới
+        - table [ref=e141]:
+          - rowgroup [ref=e150]:
+            - row "STT Tuyến đường Phương tiện Tài xế & Phụ xe Thời gian khởi hành Trạng thái Chức năng" [ref=e151]:
+              - columnheader "STT" [ref=e152]
+              - columnheader "Tuyến đường" [ref=e153]
+              - columnheader "Phương tiện" [ref=e154]
+              - columnheader "Tài xế & Phụ xe" [ref=e155]
+              - columnheader "Thời gian khởi hành" [ref=e156]
+              - columnheader "Trạng thái" [ref=e157]
+              - columnheader "Chức năng" [ref=e158]
+          - rowgroup [ref=e159]:
+            - 'row "1 Đập Đá - Bến xe miền Đông 77B-09842 Tài xế: Trần Hoàng Long calendar_today 10/06/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e160]':
+              - cell "1" [ref=e161]
+              - cell "Đập Đá - Bến xe miền Đông" [ref=e162]: Đập Đá - Bến xe miền Đông
+              - cell "77B-09842" [ref=e164]
+              - 'cell "Tài xế: Trần Hoàng Long" [ref=e165]':
+                - generic [ref=e167]: "Tài xế: Trần Hoàng Long"
+              - cell "calendar_today 10/06/2026 schedule 01:00" [ref=e168]:
+                - generic [ref=e169]:
+                  - generic [ref=e170]:
+                    - generic [ref=e171]: calendar_today
+                    - text: 10/06/2026
+                  - generic [ref=e172]:
+                    - generic [ref=e173]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e174]:
+                - generic [ref=e175]: Chờ khởi hành
+              - cell "edit_note" [ref=e176]:
+                - button "edit_note" [ref=e177] [cursor=pointer]:
+                  - generic [ref=e178]: edit_note
+            - 'row "2 Phù Cát - An Sương 77B-06021 Tài xế: Nguyễn Văn Nam Phụ xe: Lê Thế Hùng calendar_today 09/06/2026 schedule 11:00 Chờ khởi hành edit_note" [ref=e179]':
+              - cell "2" [ref=e180]
+              - cell "Phù Cát - An Sương" [ref=e181]: Phù Cát - An Sương
+              - cell "77B-06021" [ref=e183]
+              - 'cell "Tài xế: Nguyễn Văn Nam Phụ xe: Lê Thế Hùng" [ref=e184]':
+                - generic [ref=e185]:
+                  - generic [ref=e186]: "Tài xế: Nguyễn Văn Nam"
+                  - generic [ref=e187]: "Phụ xe: Lê Thế Hùng"
+              - cell "calendar_today 09/06/2026 schedule 11:00" [ref=e188]:
+                - generic [ref=e189]:
+                  - generic [ref=e190]:
+                    - generic [ref=e191]: calendar_today
+                    - text: 09/06/2026
+                  - generic [ref=e192]:
+                    - generic [ref=e193]: schedule
+                    - text: 11:00
+              - cell "Chờ khởi hành" [ref=e194]:
+                - generic [ref=e195]: Chờ khởi hành
+              - cell "edit_note" [ref=e196]:
+                - button "edit_note" [ref=e197] [cursor=pointer]:
+                  - generic [ref=e198]: edit_note
+            - 'row "3 Nhơn Khánh - Ngã tư An Sương 77B-02082 Tài xế: Nguyễn Văn Nam Phụ xe: Nguyễn Đức Minh calendar_today 31/05/2026 schedule 18:00 Hoàn thành edit_note" [ref=e199]':
+              - cell "3" [ref=e200]
+              - cell "Nhơn Khánh - Ngã tư An Sương" [ref=e201]: Nhơn Khánh - Ngã tư An Sương
+              - cell "77B-02082" [ref=e203]
+              - 'cell "Tài xế: Nguyễn Văn Nam Phụ xe: Nguyễn Đức Minh" [ref=e204]':
+                - generic [ref=e205]:
+                  - generic [ref=e206]: "Tài xế: Nguyễn Văn Nam"
+                  - generic [ref=e207]: "Phụ xe: Nguyễn Đức Minh"
+              - cell "calendar_today 31/05/2026 schedule 18:00" [ref=e208]:
+                - generic [ref=e209]:
+                  - generic [ref=e210]:
+                    - generic [ref=e211]: calendar_today
+                    - text: 31/05/2026
+                  - generic [ref=e212]:
+                    - generic [ref=e213]: schedule
+                    - text: 18:00
+              - cell "Hoàn thành" [ref=e214]:
+                - generic [ref=e215]: Hoàn thành
+              - cell "edit_note" [ref=e216]:
+                - button "edit_note" [ref=e217] [cursor=pointer]:
+                  - generic [ref=e218]: edit_note
+            - 'row "4 Nhơn Khánh - Ngã tư An Sương 77B-01764 Tài xế: Lý Mẫn Hạo Phụ xe: Lê Thế Hùng calendar_today 30/05/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e219]':
+              - cell "4" [ref=e220]
+              - cell "Nhơn Khánh - Ngã tư An Sương" [ref=e221]: Nhơn Khánh - Ngã tư An Sương
+              - cell "77B-01764" [ref=e223]
+              - 'cell "Tài xế: Lý Mẫn Hạo Phụ xe: Lê Thế Hùng" [ref=e224]':
+                - generic [ref=e225]:
+                  - generic [ref=e226]: "Tài xế: Lý Mẫn Hạo"
+                  - generic [ref=e227]: "Phụ xe: Lê Thế Hùng"
+              - cell "calendar_today 30/05/2026 schedule 01:00" [ref=e228]:
+                - generic [ref=e229]:
+                  - generic [ref=e230]:
+                    - generic [ref=e231]: calendar_today
+                    - text: 30/05/2026
+                  - generic [ref=e232]:
+                    - generic [ref=e233]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e234]:
+                - generic [ref=e235]: Chờ khởi hành
+              - cell "edit_note" [ref=e236]:
+                - button "edit_note" [ref=e237] [cursor=pointer]:
+                  - generic [ref=e238]: edit_note
+            - 'row "5 Diêu Trì- Bến xe Miền Đông 77B-09842 Tài xế: calendar_today 30/05/2026 schedule 14:30 Chờ khởi hành edit_note" [ref=e239]':
+              - cell "5" [ref=e240]
+              - cell "Diêu Trì- Bến xe Miền Đông" [ref=e241]: Diêu Trì- Bến xe Miền Đông
+              - cell "77B-09842" [ref=e243]
+              - cell "Tài xế:" [ref=e244]:
+                - generic [ref=e246]: "Tài xế:"
+              - cell "calendar_today 30/05/2026 schedule 14:30" [ref=e247]:
+                - generic [ref=e248]:
+                  - generic [ref=e249]:
+                    - generic [ref=e250]: calendar_today
+                    - text: 30/05/2026
+                  - generic [ref=e251]:
+                    - generic [ref=e252]: schedule
+                    - text: 14:30
+              - cell "Chờ khởi hành" [ref=e253]:
+                - generic [ref=e254]: Chờ khởi hành
+              - cell "edit_note" [ref=e255]:
+                - button "edit_note" [ref=e256] [cursor=pointer]:
+                  - generic [ref=e257]: edit_note
+            - 'row "6 Phù Cát - An Sương 77B-02082 Tài xế: Trần Hoàng Long Phụ xe: Phạm Minh Đức calendar_today 30/05/2026 schedule 13:00 Đang chạy edit_note" [ref=e258]':
+              - cell "6" [ref=e259]
+              - cell "Phù Cát - An Sương" [ref=e260]: Phù Cát - An Sương
+              - cell "77B-02082" [ref=e262]
+              - 'cell "Tài xế: Trần Hoàng Long Phụ xe: Phạm Minh Đức" [ref=e263]':
+                - generic [ref=e264]:
+                  - generic [ref=e265]: "Tài xế: Trần Hoàng Long"
+                  - generic [ref=e266]: "Phụ xe: Phạm Minh Đức"
+              - cell "calendar_today 30/05/2026 schedule 13:00" [ref=e267]:
+                - generic [ref=e268]:
+                  - generic [ref=e269]:
+                    - generic [ref=e270]: calendar_today
+                    - text: 30/05/2026
+                  - generic [ref=e271]:
+                    - generic [ref=e272]: schedule
+                    - text: 13:00
+              - cell "Đang chạy" [ref=e273]:
+                - generic [ref=e274]: Đang chạy
+              - cell "edit_note" [ref=e275]:
+                - button "edit_note" [ref=e276] [cursor=pointer]:
+                  - generic [ref=e277]: edit_note
+            - 'row "7 Diêu Trì- Bến xe Miền Đông 77B-01764 Tài xế: Nguyễn Văn Nam Phụ xe: Lê Thế Hùng calendar_today 30/05/2026 schedule 08:30 Chờ khởi hành edit_note" [ref=e278]':
+              - cell "7" [ref=e279]
+              - cell "Diêu Trì- Bến xe Miền Đông" [ref=e280]: Diêu Trì- Bến xe Miền Đông
+              - cell "77B-01764" [ref=e282]
+              - 'cell "Tài xế: Nguyễn Văn Nam Phụ xe: Lê Thế Hùng" [ref=e283]':
+                - generic [ref=e284]:
+                  - generic [ref=e285]: "Tài xế: Nguyễn Văn Nam"
+                  - generic [ref=e286]: "Phụ xe: Lê Thế Hùng"
+              - cell "calendar_today 30/05/2026 schedule 08:30" [ref=e287]:
+                - generic [ref=e288]:
+                  - generic [ref=e289]:
+                    - generic [ref=e290]: calendar_today
+                    - text: 30/05/2026
+                  - generic [ref=e291]:
+                    - generic [ref=e292]: schedule
+                    - text: 08:30
+              - cell "Chờ khởi hành" [ref=e293]:
+                - generic [ref=e294]: Chờ khởi hành
+              - cell "edit_note" [ref=e295]:
+                - button "edit_note" [ref=e296] [cursor=pointer]:
+                  - generic [ref=e297]: edit_note
+            - 'row "8 Phù Cát - An Sương 77B-06021 Tài xế: calendar_today 29/05/2026 schedule 09:00 Chờ khởi hành edit_note" [ref=e298]':
+              - cell "8" [ref=e299]
+              - cell "Phù Cát - An Sương" [ref=e300]: Phù Cát - An Sương
+              - cell "77B-06021" [ref=e302]
+              - cell "Tài xế:" [ref=e303]:
+                - generic [ref=e305]: "Tài xế:"
+              - cell "calendar_today 29/05/2026 schedule 09:00" [ref=e306]:
+                - generic [ref=e307]:
+                  - generic [ref=e308]:
+                    - generic [ref=e309]: calendar_today
+                    - text: 29/05/2026
+                  - generic [ref=e310]:
+                    - generic [ref=e311]: schedule
+                    - text: 09:00
+              - cell "Chờ khởi hành" [ref=e312]:
+                - generic [ref=e313]: Chờ khởi hành
+              - cell "edit_note" [ref=e314]:
+                - button "edit_note" [ref=e315] [cursor=pointer]:
+                  - generic [ref=e316]: edit_note
+            - 'row "9 Phù Cát - An Sương 77B-02082 Tài xế: Nguyễn Văn Nam calendar_today 28/05/2026 schedule 01:00 Hoàn thành edit_note" [ref=e317]':
+              - cell "9" [ref=e318]
+              - cell "Phù Cát - An Sương" [ref=e319]: Phù Cát - An Sương
+              - cell "77B-02082" [ref=e321]
+              - 'cell "Tài xế: Nguyễn Văn Nam" [ref=e322]':
+                - generic [ref=e324]: "Tài xế: Nguyễn Văn Nam"
+              - cell "calendar_today 28/05/2026 schedule 01:00" [ref=e325]:
+                - generic [ref=e326]:
+                  - generic [ref=e327]:
+                    - generic [ref=e328]: calendar_today
+                    - text: 28/05/2026
+                  - generic [ref=e329]:
+                    - generic [ref=e330]: schedule
+                    - text: 01:00
+              - cell "Hoàn thành" [ref=e331]:
+                - generic [ref=e332]: Hoàn thành
+              - cell "edit_note" [ref=e333]:
+                - button "edit_note" [ref=e334] [cursor=pointer]:
+                  - generic [ref=e335]: edit_note
+            - 'row "10 Tuy Phước - Bến xe Thành Công 77B-09842 Tài xế: calendar_today 28/05/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e336]':
+              - cell "10" [ref=e337]
+              - cell "Tuy Phước - Bến xe Thành Công" [ref=e338]: Tuy Phước - Bến xe Thành Công
+              - cell "77B-09842" [ref=e340]
+              - cell "Tài xế:" [ref=e341]:
+                - generic [ref=e343]: "Tài xế:"
+              - cell "calendar_today 28/05/2026 schedule 01:00" [ref=e344]:
+                - generic [ref=e345]:
+                  - generic [ref=e346]:
+                    - generic [ref=e347]: calendar_today
+                    - text: 28/05/2026
+                  - generic [ref=e348]:
+                    - generic [ref=e349]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e350]:
+                - generic [ref=e351]: Chờ khởi hành
+              - cell "edit_note" [ref=e352]:
+                - button "edit_note" [ref=e353] [cursor=pointer]:
+                  - generic [ref=e354]: edit_note
+            - 'row "11 Tuy Phước - Bến xe Thành Công 77B-09842 Tài xế: calendar_today 28/05/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e355]':
+              - cell "11" [ref=e356]
+              - cell "Tuy Phước - Bến xe Thành Công" [ref=e357]: Tuy Phước - Bến xe Thành Công
+              - cell "77B-09842" [ref=e359]
+              - cell "Tài xế:" [ref=e360]:
+                - generic [ref=e362]: "Tài xế:"
+              - cell "calendar_today 28/05/2026 schedule 01:00" [ref=e363]:
+                - generic [ref=e364]:
+                  - generic [ref=e365]:
+                    - generic [ref=e366]: calendar_today
+                    - text: 28/05/2026
+                  - generic [ref=e367]:
+                    - generic [ref=e368]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e369]:
+                - generic [ref=e370]: Chờ khởi hành
+              - cell "edit_note" [ref=e371]:
+                - button "edit_note" [ref=e372] [cursor=pointer]:
+                  - generic [ref=e373]: edit_note
+            - 'row "12 Tuy Phước - Bến xe Thành Công 77B-09842 Tài xế: calendar_today 28/05/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e374]':
+              - cell "12" [ref=e375]
+              - cell "Tuy Phước - Bến xe Thành Công" [ref=e376]: Tuy Phước - Bến xe Thành Công
+              - cell "77B-09842" [ref=e378]
+              - cell "Tài xế:" [ref=e379]:
+                - generic [ref=e381]: "Tài xế:"
+              - cell "calendar_today 28/05/2026 schedule 01:00" [ref=e382]:
+                - generic [ref=e383]:
+                  - generic [ref=e384]:
+                    - generic [ref=e385]: calendar_today
+                    - text: 28/05/2026
+                  - generic [ref=e386]:
+                    - generic [ref=e387]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e388]:
+                - generic [ref=e389]: Chờ khởi hành
+              - cell "edit_note" [ref=e390]:
+                - button "edit_note" [ref=e391] [cursor=pointer]:
+                  - generic [ref=e392]: edit_note
+            - 'row "13 Tuy Phước - Bến xe Thành Công 77B-09842 Tài xế: calendar_today 28/05/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e393]':
+              - cell "13" [ref=e394]
+              - cell "Tuy Phước - Bến xe Thành Công" [ref=e395]: Tuy Phước - Bến xe Thành Công
+              - cell "77B-09842" [ref=e397]
+              - cell "Tài xế:" [ref=e398]:
+                - generic [ref=e400]: "Tài xế:"
+              - cell "calendar_today 28/05/2026 schedule 01:00" [ref=e401]:
+                - generic [ref=e402]:
+                  - generic [ref=e403]:
+                    - generic [ref=e404]: calendar_today
+                    - text: 28/05/2026
+                  - generic [ref=e405]:
+                    - generic [ref=e406]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e407]:
+                - generic [ref=e408]: Chờ khởi hành
+              - cell "edit_note" [ref=e409]:
+                - button "edit_note" [ref=e410] [cursor=pointer]:
+                  - generic [ref=e411]: edit_note
+            - 'row "14 Tây Sơn (An Nhơn)- Bến Cát Bình Dương 77B-06085 Tài xế: Lý Mẫn Hạo calendar_today 27/05/2026 schedule 01:00 Chờ khởi hành edit_note" [ref=e412]':
+              - cell "14" [ref=e413]
+              - cell "Tây Sơn (An Nhơn)- Bến Cát Bình Dương" [ref=e414]: Tây Sơn (An Nhơn)- Bến Cát Bình Dương
+              - cell "77B-06085" [ref=e416]
+              - 'cell "Tài xế: Lý Mẫn Hạo" [ref=e417]':
+                - generic [ref=e419]: "Tài xế: Lý Mẫn Hạo"
+              - cell "calendar_today 27/05/2026 schedule 01:00" [ref=e420]:
+                - generic [ref=e421]:
+                  - generic [ref=e422]:
+                    - generic [ref=e423]: calendar_today
+                    - text: 27/05/2026
+                  - generic [ref=e424]:
+                    - generic [ref=e425]: schedule
+                    - text: 01:00
+              - cell "Chờ khởi hành" [ref=e426]:
+                - generic [ref=e427]: Chờ khởi hành
+              - cell "edit_note" [ref=e428]:
+                - button "edit_note" [ref=e429] [cursor=pointer]:
+                  - generic [ref=e430]: edit_note
+            - 'row "15 Diêu Trì- Bến xe Miền Đông 77B-01764 Tài xế: Trần Hoàng Long Phụ xe: Lê Thế Hùng calendar_today 27/05/2026 schedule 01:00 Đang chạy edit_note" [ref=e431]':
+              - cell "15" [ref=e432]
+              - cell "Diêu Trì- Bến xe Miền Đông" [ref=e433]: Diêu Trì- Bến xe Miền Đông
+              - cell "77B-01764" [ref=e435]
+              - 'cell "Tài xế: Trần Hoàng Long Phụ xe: Lê Thế Hùng" [ref=e436]':
+                - generic [ref=e437]:
+                  - generic [ref=e438]: "Tài xế: Trần Hoàng Long"
+                  - generic [ref=e439]: "Phụ xe: Lê Thế Hùng"
+              - cell "calendar_today 27/05/2026 schedule 01:00" [ref=e440]:
+                - generic [ref=e441]:
+                  - generic [ref=e442]:
+                    - generic [ref=e443]: calendar_today
+                    - text: 27/05/2026
+                  - generic [ref=e444]:
+                    - generic [ref=e445]: schedule
+                    - text: 01:00
+              - cell "Đang chạy" [ref=e446]:
+                - generic [ref=e447]: Đang chạy
+              - cell "edit_note" [ref=e448]:
+                - button "edit_note" [ref=e449] [cursor=pointer]:
+                  - generic [ref=e450]: edit_note
+            - 'row "16 Tuy Phước - Bến xe Thành Công 77B-06085 Tài xế: Nguyễn Văn Nam Phụ xe: Lê Thế Hùng calendar_today 26/05/2026 schedule 17:30 Đã khóa edit_note" [ref=e451]':
+              - cell "16" [ref=e452]
+              - cell "Tuy Phước - Bến xe Thành Công" [ref=e453]: Tuy Phước - Bến xe Thành Công
+              - cell "77B-06085" [ref=e455]
+              - 'cell "Tài xế: Nguyễn Văn Nam Phụ xe: Lê Thế Hùng" [ref=e456]':
+                - generic [ref=e457]:
+                  - generic [ref=e458]: "Tài xế: Nguyễn Văn Nam"
+                  - generic [ref=e459]: "Phụ xe: Lê Thế Hùng"
+              - cell "calendar_today 26/05/2026 schedule 17:30" [ref=e460]:
+                - generic [ref=e461]:
+                  - generic [ref=e462]:
+                    - generic [ref=e463]: calendar_today
+                    - text: 26/05/2026
+                  - generic [ref=e464]:
+                    - generic [ref=e465]: schedule
+                    - text: 17:30
+              - cell "Đã khóa" [ref=e466]:
+                - generic [ref=e467]: Đã khóa
+              - cell "edit_note" [ref=e468]:
+                - button "edit_note" [ref=e469] [cursor=pointer]:
+                  - generic [ref=e470]: edit_note
+            - 'row "17 Đập Đá - Bến xe miền Đông 77B-09842 Tài xế: Lý Mẫn Hạo calendar_today 25/05/2026 schedule 22:00 Hoàn thành edit_note" [ref=e471]':
+              - cell "17" [ref=e472]
+              - cell "Đập Đá - Bến xe miền Đông" [ref=e473]: Đập Đá - Bến xe miền Đông
+              - cell "77B-09842" [ref=e475]
+              - 'cell "Tài xế: Lý Mẫn Hạo" [ref=e476]':
+                - generic [ref=e478]: "Tài xế: Lý Mẫn Hạo"
+              - cell "calendar_today 25/05/2026 schedule 22:00" [ref=e479]:
+                - generic [ref=e480]:
+                  - generic [ref=e481]:
+                    - generic [ref=e482]: calendar_today
+                    - text: 25/05/2026
+                  - generic [ref=e483]:
+                    - generic [ref=e484]: schedule
+                    - text: 22:00
+              - cell "Hoàn thành" [ref=e485]:
+                - generic [ref=e486]: Hoàn thành
+              - cell "edit_note" [ref=e487]:
+                - button "edit_note" [ref=e488] [cursor=pointer]:
+                  - generic [ref=e489]: edit_note
+            - 'row "18 La Hai - Bến xe Miền Đông 77B-06085 Tài xế: Lý Mẫn Hạo calendar_today 02/05/2026 schedule 08:00 Đang chạy edit_note" [ref=e490]':
+              - cell "18" [ref=e491]
+              - cell "La Hai - Bến xe Miền Đông" [ref=e492]: La Hai - Bến xe Miền Đông
+              - cell "77B-06085" [ref=e494]
+              - 'cell "Tài xế: Lý Mẫn Hạo" [ref=e495]':
+                - generic [ref=e497]: "Tài xế: Lý Mẫn Hạo"
+              - cell "calendar_today 02/05/2026 schedule 08:00" [ref=e498]:
+                - generic [ref=e499]:
+                  - generic [ref=e500]:
+                    - generic [ref=e501]: calendar_today
+                    - text: 02/05/2026
+                  - generic [ref=e502]:
+                    - generic [ref=e503]: schedule
+                    - text: 08:00
+              - cell "Đang chạy" [ref=e504]:
+                - generic [ref=e505]: Đang chạy
+              - cell "edit_note" [ref=e506]:
+                - button "edit_note" [ref=e507] [cursor=pointer]:
+                  - generic [ref=e508]: edit_note
+            - 'row "19 La Hai - Bến xe Miền Đông 77B-01764 Tài xế: Lý Mẫn Hạo calendar_today 01/05/2026 schedule 01:00 Hoàn thành edit_note" [ref=e509]':
+              - cell "19" [ref=e510]
+              - cell "La Hai - Bến xe Miền Đông" [ref=e511]: La Hai - Bến xe Miền Đông
+              - cell "77B-01764" [ref=e513]
+              - 'cell "Tài xế: Lý Mẫn Hạo" [ref=e514]':
+                - generic [ref=e516]: "Tài xế: Lý Mẫn Hạo"
+              - cell "calendar_today 01/05/2026 schedule 01:00" [ref=e517]:
+                - generic [ref=e518]:
+                  - generic [ref=e519]:
+                    - generic [ref=e520]: calendar_today
+                    - text: 01/05/2026
+                  - generic [ref=e521]:
+                    - generic [ref=e522]: schedule
+                    - text: 01:00
+              - cell "Hoàn thành" [ref=e523]:
+                - generic [ref=e524]: Hoàn thành
+              - cell "edit_note" [ref=e525]:
+                - button "edit_note" [ref=e526] [cursor=pointer]:
+                  - generic [ref=e527]: edit_note
+            - 'row "20 Tuy Phước - Bến xe Thành Công 77B-06085 Tài xế: Lý Mẫn Hạo calendar_today 30/04/2026 schedule 01:00 Hoàn thành edit_note" [ref=e528]':
+              - cell "20" [ref=e529]
+              - cell "Tuy Phước - Bến xe Thành Công" [ref=e530]: Tuy Phước - Bến xe Thành Công
+              - cell "77B-06085" [ref=e532]
+              - 'cell "Tài xế: Lý Mẫn Hạo" [ref=e533]':
+                - generic [ref=e535]: "Tài xế: Lý Mẫn Hạo"
+              - cell "calendar_today 30/04/2026 schedule 01:00" [ref=e536]:
+                - generic [ref=e537]:
+                  - generic [ref=e538]:
+                    - generic [ref=e539]: calendar_today
+                    - text: 30/04/2026
+                  - generic [ref=e540]:
+                    - generic [ref=e541]: schedule
+                    - text: 01:00
+              - cell "Hoàn thành" [ref=e542]:
+                - generic [ref=e543]: Hoàn thành
+              - cell "edit_note" [ref=e544]:
+                - button "edit_note" [ref=e545] [cursor=pointer]:
+                  - generic [ref=e546]: edit_note
+        - generic [ref=e547]:
+          - generic [ref=e548]: Hiển thị 20 lịch trình
+          - generic [ref=e549]:
+            - button "chevron_left" [ref=e550] [cursor=pointer]:
+              - generic [ref=e551]: chevron_left
+            - button "1" [ref=e552] [cursor=pointer]
+            - button "chevron_right" [ref=e553] [cursor=pointer]:
+              - generic [ref=e554]: chevron_right

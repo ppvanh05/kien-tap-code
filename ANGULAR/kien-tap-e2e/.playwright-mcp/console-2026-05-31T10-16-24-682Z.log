@@ -1,0 +1,3 @@
+[     703ms] [LOG] [DEBUG] Home News Response: {success: true, message: Lấy tin tức trang chủ thành công!, data: Array(3)} @ https://kien-tap-code.vercel.app/chunk-YTIOTDKQ.js:0
+[     839ms] [LOG] [DEBUG] Home Reviews Response: {success: true, message: Lấy đánh giá trang chủ thành công!, data: Array(2)} @ https://kien-tap-code.vercel.app/chunk-YTIOTDKQ.js:0
+[   67109ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "username"): (More info: https://goo.gl/9p2vKq) %o @ https://kien-tap-code.vercel.app/home:0

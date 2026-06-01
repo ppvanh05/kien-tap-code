@@ -1,0 +1,303 @@
+- generic [ref=e69]:
+  - complementary [ref=e70]:
+    - img "TXP Logo" [ref=e73]
+    - navigation [ref=e74]:
+      - generic [ref=e76] [cursor=pointer]:
+        - generic [ref=e77]: home
+        - generic [ref=e78]: Trang chủ
+      - generic [ref=e80] [cursor=pointer]:
+        - generic [ref=e81]: article
+        - generic [ref=e82]: Quản lý tin tức
+      - generic [ref=e84] [cursor=pointer]:
+        - generic [ref=e85]: groups
+        - generic [ref=e86]: Quản lý khách hàng
+      - generic [ref=e88] [cursor=pointer]:
+        - generic [ref=e89]: engineering
+        - generic [ref=e90]: Quản lý nhân viên
+      - generic [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: policy
+        - generic [ref=e94]: Quản lý chính sách
+      - generic [ref=e96] [cursor=pointer]:
+        - generic [ref=e97]: block
+        - generic [ref=e98]: Quản lý từ khóa cấm
+      - generic [ref=e100] [cursor=pointer]:
+        - generic [ref=e101]: history_edu
+        - generic [ref=e102]: Quản lý nhật ký
+    - generic [ref=e104] [cursor=pointer]:
+      - generic [ref=e106]: account_circle
+      - generic [ref=e107]:
+        - generic [ref=e108]: Nguyen An Ninh
+        - generic [ref=e109]: Quản trị viên
+  - main [ref=e110]:
+    - generic [ref=e111]:
+      - button "menu" [ref=e113] [cursor=pointer]:
+        - generic [ref=e114]: menu
+      - generic [ref=e115]:
+        - generic [ref=e117] [cursor=pointer]: notifications
+        - generic [ref=e119]: Chủ Nhật, 31/05/2026
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e125]: Cấu hình hệ thống
+            - generic [ref=e126]: /
+            - generic [ref=e127]: Quản lý từ khóa hạn chế
+          - heading "Quản lý từ khóa hạn chế" [level=1] [ref=e128]
+        - generic [ref=e129]:
+          - generic [ref=e130]:
+            - generic [ref=e132]: gavel
+            - generic [ref=e133]:
+              - generic [ref=e134]: Tổng số từ khóa
+              - generic [ref=e135]: "12"
+          - generic [ref=e136]:
+            - generic [ref=e138]: check_circle
+            - generic [ref=e139]:
+              - generic [ref=e140]: Đang áp dụng
+              - generic [ref=e141]: "10"
+          - generic [ref=e142]:
+            - generic [ref=e144]: report_problem
+            - generic [ref=e145]:
+              - generic [ref=e146]: "Mức độ: Nặng"
+              - generic [ref=e147]: "6"
+          - generic [ref=e148]:
+            - generic [ref=e150]: warning
+            - generic [ref=e151]:
+              - generic [ref=e152]: "Mức độ: Trung bình"
+              - generic [ref=e153]: "4"
+          - generic [ref=e154]:
+            - generic [ref=e156]: info
+            - generic [ref=e157]:
+              - generic [ref=e158]: "Mức độ: Nhẹ"
+              - generic [ref=e159]: "2"
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - button "Tất cả" [ref=e162] [cursor=pointer]
+            - button "Đang áp dụng" [ref=e163] [cursor=pointer]
+            - button "Ngưng áp dụng" [ref=e164] [cursor=pointer]
+          - button "add Thêm từ khóa mới" [active] [ref=e166] [cursor=pointer]:
+            - generic [ref=e167]: add
+            - text: Thêm từ khóa mới
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - generic: search
+              - textbox "Tìm kiếm theo từ khóa hoặc mã số..." [ref=e170]
+            - combobox [ref=e172] [cursor=pointer]:
+              - option "Tất cả mức độ" [selected]
+              - option "Nặng"
+              - option "Trung bình"
+              - option "Nhẹ"
+            - button "Tìm kiếm" [ref=e173] [cursor=pointer]
+          - table [ref=e175]:
+            - rowgroup [ref=e176]:
+              - row "MÃ TỪ KHÓA NỘI DUNG TỪ KHÓA MỨC ĐỘ VI PHẠM TRẠNG THÁI CẬP NHẬT CUỐI NGƯỜI THỰC HIỆN CHỨC NĂNG" [ref=e177]:
+                - columnheader "MÃ TỪ KHÓA" [ref=e178]
+                - columnheader "NỘI DUNG TỪ KHÓA" [ref=e179]
+                - columnheader "MỨC ĐỘ VI PHẠM" [ref=e180]
+                - columnheader "TRẠNG THÁI" [ref=e181]
+                - columnheader "CẬP NHẬT CUỐI" [ref=e182]
+                - columnheader "NGƯỜI THỰC HIỆN" [ref=e183]
+                - columnheader "CHỨC NĂNG" [ref=e184]
+            - rowgroup [ref=e185]:
+              - row "TKC100012 auto_dup_1780205763540 fiber_manual_record Trung bình Đang áp dụng 2026-05-31 12:36 H Hệ thống edit_note" [ref=e186]:
+                - cell "TKC100012" [ref=e187]
+                - cell "auto_dup_1780205763540" [ref=e188]
+                - cell "fiber_manual_record Trung bình" [ref=e189]:
+                  - generic [ref=e190]:
+                    - generic [ref=e191]: fiber_manual_record
+                    - text: Trung bình
+                - cell "Đang áp dụng" [ref=e192]:
+                  - generic [ref=e193]: Đang áp dụng
+                - cell "2026-05-31 12:36" [ref=e194]
+                - cell "H Hệ thống" [ref=e195]:
+                  - generic [ref=e196]: H
+                  - text: Hệ thống
+                - cell "edit_note" [ref=e197]:
+                  - button "edit_note" [ref=e198] [cursor=pointer]:
+                    - generic [ref=e199]: edit_note
+              - row "TKC100011 auto_tkc_inspect_1780205736663 fiber_manual_record Nặng Đang áp dụng 2026-05-31 12:35 H Hệ thống edit_note" [ref=e200]:
+                - cell "TKC100011" [ref=e201]
+                - cell "auto_tkc_inspect_1780205736663" [ref=e202]
+                - cell "fiber_manual_record Nặng" [ref=e203]:
+                  - generic [ref=e204]:
+                    - generic [ref=e205]: fiber_manual_record
+                    - text: Nặng
+                - cell "Đang áp dụng" [ref=e206]:
+                  - generic [ref=e207]: Đang áp dụng
+                - cell "2026-05-31 12:35" [ref=e208]
+                - cell "H Hệ thống" [ref=e209]:
+                  - generic [ref=e210]: H
+                  - text: Hệ thống
+                - cell "edit_note" [ref=e211]:
+                  - button "edit_note" [ref=e212] [cursor=pointer]:
+                    - generic [ref=e213]: edit_note
+              - row "TKC100010 cheat fiber_manual_record Trung bình Đang áp dụng 2026-05-24 03:53 Q QTV100001 edit_note" [ref=e214]:
+                - cell "TKC100010" [ref=e215]
+                - cell "cheat" [ref=e216]
+                - cell "fiber_manual_record Trung bình" [ref=e217]:
+                  - generic [ref=e218]:
+                    - generic [ref=e219]: fiber_manual_record
+                    - text: Trung bình
+                - cell "Đang áp dụng" [ref=e220]:
+                  - generic [ref=e221]: Đang áp dụng
+                - cell "2026-05-24 03:53" [ref=e222]
+                - cell "Q QTV100001" [ref=e223]:
+                  - generic [ref=e224]: Q
+                  - text: QTV100001
+                - cell "edit_note" [ref=e225]:
+                  - button "edit_note" [ref=e226] [cursor=pointer]:
+                    - generic [ref=e227]: edit_note
+              - row "TKC100009 hack fiber_manual_record Trung bình Đang áp dụng 2026-05-24 03:53 Q QTV100001 edit_note" [ref=e228]:
+                - cell "TKC100009" [ref=e229]
+                - cell "hack" [ref=e230]
+                - cell "fiber_manual_record Trung bình" [ref=e231]:
+                  - generic [ref=e232]:
+                    - generic [ref=e233]: fiber_manual_record
+                    - text: Trung bình
+                - cell "Đang áp dụng" [ref=e234]:
+                  - generic [ref=e235]: Đang áp dụng
+                - cell "2026-05-24 03:53" [ref=e236]
+                - cell "Q QTV100001" [ref=e237]:
+                  - generic [ref=e238]: Q
+                  - text: QTV100001
+                - cell "edit_note" [ref=e239]:
+                  - button "edit_note" [ref=e240] [cursor=pointer]:
+                    - generic [ref=e241]: edit_note
+              - row "TKC100008 spam fiber_manual_record Nhẹ Đang áp dụng 2026-05-24 03:53 Q QTV100001 edit_note" [ref=e242]:
+                - cell "TKC100008" [ref=e243]
+                - cell "spam" [ref=e244]
+                - cell "fiber_manual_record Nhẹ" [ref=e245]:
+                  - generic [ref=e246]:
+                    - generic [ref=e247]: fiber_manual_record
+                    - text: Nhẹ
+                - cell "Đang áp dụng" [ref=e248]:
+                  - generic [ref=e249]: Đang áp dụng
+                - cell "2026-05-24 03:53" [ref=e250]
+                - cell "Q QTV100001" [ref=e251]:
+                  - generic [ref=e252]: Q
+                  - text: QTV100001
+                - cell "edit_note" [ref=e253]:
+                  - button "edit_note" [ref=e254] [cursor=pointer]:
+                    - generic [ref=e255]: edit_note
+              - row "TKC100007 quảng cáo fiber_manual_record Nhẹ Đang áp dụng 2026-05-24 03:53 Q QTV100001 edit_note" [ref=e256]:
+                - cell "TKC100007" [ref=e257]
+                - cell "quảng cáo" [ref=e258]
+                - cell "fiber_manual_record Nhẹ" [ref=e259]:
+                  - generic [ref=e260]:
+                    - generic [ref=e261]: fiber_manual_record
+                    - text: Nhẹ
+                - cell "Đang áp dụng" [ref=e262]:
+                  - generic [ref=e263]: Đang áp dụng
+                - cell "2026-05-24 03:53" [ref=e264]
+                - cell "Q QTV100001" [ref=e265]:
+                  - generic [ref=e266]: Q
+                  - text: QTV100001
+                - cell "edit_note" [ref=e267]:
+                  - button "edit_note" [ref=e268] [cursor=pointer]:
+                    - generic [ref=e269]: edit_note
+              - row "TKC100006 phản cảm fiber_manual_record Trung bình Ngưng áp dụng 2026-05-24 13:47 H Hệ thống edit_note" [ref=e270]:
+                - cell "TKC100006" [ref=e271]
+                - cell "phản cảm" [ref=e272]
+                - cell "fiber_manual_record Trung bình" [ref=e273]:
+                  - generic [ref=e274]:
+                    - generic [ref=e275]: fiber_manual_record
+                    - text: Trung bình
+                - cell "Ngưng áp dụng" [ref=e276]:
+                  - generic [ref=e277]: Ngưng áp dụng
+                - cell "2026-05-24 13:47" [ref=e278]
+                - cell "H Hệ thống" [ref=e279]:
+                  - generic [ref=e280]: H
+                  - text: Hệ thống
+                - cell "edit_note" [ref=e281]:
+                  - button "edit_note" [ref=e282] [cursor=pointer]:
+                    - generic [ref=e283]: edit_note
+              - row "TKC100005 chửi bậy fiber_manual_record Nặng Đang áp dụng 2026-05-24 03:53 Q QTV100001 edit_note" [ref=e284]:
+                - cell "TKC100005" [ref=e285]
+                - cell "chửi bậy" [ref=e286]
+                - cell "fiber_manual_record Nặng" [ref=e287]:
+                  - generic [ref=e288]:
+                    - generic [ref=e289]: fiber_manual_record
+                    - text: Nặng
+                - cell "Đang áp dụng" [ref=e290]:
+                  - generic [ref=e291]: Đang áp dụng
+                - cell "2026-05-24 03:53" [ref=e292]
+                - cell "Q QTV100001" [ref=e293]:
+                  - generic [ref=e294]: Q
+                  - text: QTV100001
+                - cell "edit_note" [ref=e295]:
+                  - button "edit_note" [ref=e296] [cursor=pointer]:
+                    - generic [ref=e297]: edit_note
+              - row "TKC100004 độc hại fiber_manual_record Nặng Đang áp dụng 2026-05-24 03:53 Q QTV100001 edit_note" [ref=e298]:
+                - cell "TKC100004" [ref=e299]
+                - cell "độc hại" [ref=e300]
+                - cell "fiber_manual_record Nặng" [ref=e301]:
+                  - generic [ref=e302]:
+                    - generic [ref=e303]: fiber_manual_record
+                    - text: Nặng
+                - cell "Đang áp dụng" [ref=e304]:
+                  - generic [ref=e305]: Đang áp dụng
+                - cell "2026-05-24 03:53" [ref=e306]
+                - cell "Q QTV100001" [ref=e307]:
+                  - generic [ref=e308]: Q
+                  - text: QTV100001
+                - cell "edit_note" [ref=e309]:
+                  - button "edit_note" [ref=e310] [cursor=pointer]:
+                    - generic [ref=e311]: edit_note
+              - row "TKC100003 bịp bợm fiber_manual_record Nặng Ngưng áp dụng 2026-05-27 15:28 H Hệ thống edit_note" [ref=e312]:
+                - cell "TKC100003" [ref=e313]
+                - cell "bịp bợm" [ref=e314]
+                - cell "fiber_manual_record Nặng" [ref=e315]:
+                  - generic [ref=e316]:
+                    - generic [ref=e317]: fiber_manual_record
+                    - text: Nặng
+                - cell "Ngưng áp dụng" [ref=e318]:
+                  - generic [ref=e319]: Ngưng áp dụng
+                - cell "2026-05-27 15:28" [ref=e320]
+                - cell "H Hệ thống" [ref=e321]:
+                  - generic [ref=e322]: H
+                  - text: Hệ thống
+                - cell "edit_note" [ref=e323]:
+                  - button "edit_note" [ref=e324] [cursor=pointer]:
+                    - generic [ref=e325]: edit_note
+          - generic [ref=e326]:
+            - generic [ref=e327]:
+              - text: Hiển thị
+              - strong [ref=e328]: "1"
+              - text: "-"
+              - strong [ref=e329]: "10"
+              - text: trong tổng số
+              - strong [ref=e330]: "12"
+              - text: kết quả
+            - generic [ref=e331]:
+              - button "chevron_left" [disabled] [ref=e332]:
+                - generic [ref=e333]: chevron_left
+              - button "1" [ref=e334] [cursor=pointer]
+              - button "2" [ref=e335] [cursor=pointer]
+              - button "chevron_right" [ref=e336] [cursor=pointer]:
+                - generic [ref=e337]: chevron_right
+            - combobox [ref=e339] [cursor=pointer]:
+              - option "5 / trang"
+              - option "10 / trang" [selected]
+              - option "20 / trang"
+              - option "50 / trang"
+      - generic [ref=e341]:
+        - generic [ref=e342]:
+          - heading "Thêm từ khóa hạn chế mới" [level=3] [ref=e344]
+          - button "close" [ref=e345] [cursor=pointer]:
+            - generic [ref=e346]: close
+        - generic [ref=e347]:
+          - generic [ref=e348]:
+            - generic [ref=e349]: Nội dung từ khóa *
+            - textbox "Nội dung từ khóa *" [ref=e350]:
+              - /placeholder: "Ví dụ: lừa đảo, giả tạo, quảng cáo..."
+            - paragraph [ref=e351]: Hệ thống sẽ thực hiện kiểm tra không phân biệt chữ hoa, chữ thường.
+          - generic [ref=e352]:
+            - generic [ref=e353]: Mức độ vi phạm
+            - combobox "Mức độ vi phạm" [ref=e354]:
+              - option "Nhẹ - Nhắc nhở vi phạm (không chặn)"
+              - option "Trung bình - Yêu cầu chỉnh sửa nội dung" [selected]
+              - option "Nặng - Chặn gửi, bắt buộc nhập lại"
+        - generic [ref=e356]:
+          - button "Hủy" [ref=e357] [cursor=pointer]
+          - button "save Lưu thông tin" [ref=e358] [cursor=pointer]:
+            - generic [ref=e359]: save
+            - text: Lưu thông tin

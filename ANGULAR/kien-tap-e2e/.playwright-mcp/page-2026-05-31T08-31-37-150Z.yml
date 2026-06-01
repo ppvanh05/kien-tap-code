@@ -1,0 +1,321 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - img "TXP Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "TRANG CHỦ" [ref=e8] [cursor=pointer]:
+          - /url: /home
+        - link "TRA CỨU VÉ" [ref=e9] [cursor=pointer]:
+          - /url: /tra-cuu-ve
+        - link "TIN TỨC" [ref=e10] [cursor=pointer]:
+          - /url: /tin-tuc
+        - link "ĐÁNH GIÁ" [ref=e11] [cursor=pointer]:
+          - /url: /danh-gia
+        - button "GIỚI THIỆU expand_more" [ref=e13]:
+          - text: GIỚI THIỆU
+          - generic [ref=e14]: expand_more
+      - button "Đăng nhập / Đăng ký" [ref=e16]
+  - main [ref=e70]:
+    - generic [ref=e76]:
+      - generic [ref=e78]:
+        - button "radio_button_checked Một chiều" [ref=e79]:
+          - generic [ref=e80]: radio_button_checked
+          - text: Một chiều
+        - button "radio_button_unchecked Khứ hồi" [ref=e81]:
+          - generic [ref=e82]: radio_button_unchecked
+          - text: Khứ hồi
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - text: Điểm đi
+          - generic [ref=e85]:
+            - generic [ref=e86]: radio_button_checked
+            - textbox "Nhập điểm đi" [ref=e87] [cursor=pointer]: Đập Đá
+            - generic: arrow_drop_down
+        - button "sync_alt" [ref=e89]:
+          - generic [ref=e90]: sync_alt
+        - generic [ref=e91]:
+          - text: Điểm đến
+          - generic [ref=e92]:
+            - generic [ref=e93]: location_on
+            - textbox "Nhập điểm đến" [ref=e94] [cursor=pointer]: Bến xe Miền Đông
+            - generic: arrow_drop_down
+        - generic [ref=e95]:
+          - text: Ngày đi
+          - generic [ref=e96] [cursor=pointer]:
+            - generic [ref=e97]: calendar_month
+            - textbox "Thêm ngày đi" [active] [ref=e98]
+          - generic [ref=e241]:
+            - generic [ref=e242]:
+              - button "chevron_left" [ref=e243]:
+                - generic [ref=e244]: chevron_left
+              - generic [ref=e245]: THÁNG 5/2026
+              - button "chevron_right" [ref=e246]:
+                - generic [ref=e247]: chevron_right
+            - generic [ref=e248]:
+              - generic [ref=e249]: T2
+              - generic [ref=e250]: T3
+              - generic [ref=e251]: T4
+              - generic [ref=e252]: T5
+              - generic [ref=e253]: T6
+              - generic [ref=e254]: T7
+              - generic [ref=e255]: CN
+            - generic [ref=e256]:
+              - generic [ref=e261]:
+                - generic [ref=e262]: "15"
+                - generic [ref=e263]: "1"
+              - generic [ref=e264]:
+                - generic [ref=e265]: "4"
+                - generic [ref=e266]: "2"
+              - generic [ref=e267]:
+                - generic [ref=e268]: "5"
+                - generic [ref=e269]: "3"
+              - generic [ref=e270]:
+                - generic [ref=e271]: "6"
+                - generic [ref=e272]: "4"
+              - generic [ref=e273]:
+                - generic [ref=e274]: "7"
+                - generic [ref=e275]: "5"
+              - generic [ref=e276]:
+                - generic [ref=e277]: "8"
+                - generic [ref=e278]: "6"
+              - generic [ref=e279]:
+                - generic [ref=e280]: "9"
+                - generic [ref=e281]: "7"
+              - generic [ref=e282]:
+                - generic [ref=e283]: "10"
+                - generic [ref=e284]: "8"
+              - generic [ref=e285]:
+                - generic [ref=e286]: "11"
+                - generic [ref=e287]: "9"
+              - generic [ref=e288]:
+                - generic [ref=e289]: "12"
+                - generic [ref=e290]: "10"
+              - generic [ref=e291]:
+                - generic [ref=e292]: "13"
+                - generic [ref=e293]: "11"
+              - generic [ref=e294]:
+                - generic [ref=e295]: "14"
+                - generic [ref=e296]: "12"
+              - generic [ref=e297]:
+                - generic [ref=e298]: "15"
+                - generic [ref=e299]: "13"
+              - generic [ref=e300]:
+                - generic [ref=e301]: "16"
+                - generic [ref=e302]: "14"
+              - generic [ref=e303]:
+                - generic [ref=e304]: "17"
+                - generic [ref=e305]: "15"
+              - generic [ref=e306]:
+                - generic [ref=e307]: "18"
+                - generic [ref=e308]: "16"
+              - generic [ref=e309]:
+                - generic [ref=e310]: 1/4
+                - generic [ref=e311]: "17"
+              - generic [ref=e312]:
+                - generic [ref=e313]: "20"
+                - generic [ref=e314]: "18"
+              - generic [ref=e315]:
+                - generic [ref=e316]: "21"
+                - generic [ref=e317]: "19"
+              - generic [ref=e318]:
+                - generic [ref=e319]: "22"
+                - generic [ref=e320]: "20"
+              - generic [ref=e321]:
+                - generic [ref=e322]: "23"
+                - generic [ref=e323]: "21"
+              - generic [ref=e324]:
+                - generic [ref=e325]: "6"
+                - generic [ref=e326]: "22"
+              - generic [ref=e327]:
+                - generic [ref=e328]: "25"
+                - generic [ref=e329]: "23"
+              - generic [ref=e330]:
+                - generic [ref=e331]: "26"
+                - generic [ref=e332]: "24"
+              - generic [ref=e333]:
+                - generic [ref=e334]: "27"
+                - generic [ref=e335]: "25"
+              - generic [ref=e336]:
+                - generic [ref=e337]: "28"
+                - generic [ref=e338]: "26"
+              - generic [ref=e339]:
+                - generic [ref=e340]: "29"
+                - generic [ref=e341]: "27"
+              - generic [ref=e342]:
+                - generic [ref=e343]: "30"
+                - generic [ref=e344]: "28"
+              - generic [ref=e345]:
+                - generic [ref=e346]: 1/5
+                - generic [ref=e347]: "29"
+              - generic [ref=e348]:
+                - generic [ref=e349]: "2"
+                - generic [ref=e350]: "30"
+              - generic [ref=e351] [cursor=pointer]:
+                - generic [ref=e352]: "3"
+                - generic [ref=e353]: "31"
+        - generic [ref=e99]:
+          - generic [ref=e100]: Số vé
+          - generic [ref=e101]:
+            - generic [ref=e102]: confirmation_number
+            - combobox [ref=e103] [cursor=pointer]:
+              - option "1 vé" [selected]
+              - option "2 vé"
+              - option "3 vé"
+              - option "4 vé"
+              - option "5 vé"
+      - generic [ref=e105]: "Tìm kiếm gần đây:"
+      - button "TÌM KIẾM" [ref=e107]
+    - generic [ref=e109]:
+      - generic [ref=e110]:
+        - generic [ref=e112]: king_bed
+        - heading "Tiện nghi cao cấp" [level=3] [ref=e113]
+        - paragraph [ref=e114]: Hệ thống xe Limousine đời mới nhất với ghế massage, wifi tốc độ cao, và cổng sạc riêng biệt.
+      - generic [ref=e115]:
+        - generic [ref=e117]: schedule
+        - heading "Nhanh chóng & Đúng giờ" [level=3] [ref=e118]
+        - paragraph [ref=e119]: Tối ưu hóa hành trình, cam kết khởi hành và đến nơi đúng khung giờ đã thông báo cho quý khách.
+      - generic [ref=e120]:
+        - generic [ref=e122]: verified_user
+        - heading "An tâm tuyệt đối" [level=3] [ref=e123]
+        - paragraph [ref=e124]: Đội ngũ lái xe kinh nghiệm, nhiệt tình và được đào tạo bài bản về an toàn giao thông đường dài.
+    - generic [ref=e126]:
+      - heading "Tuyến xe phổ biến" [level=2] [ref=e127]
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - img "Bình Định - Bình Dương" [ref=e131]
+          - generic [ref=e132]:
+            - heading "Bình Định → Bình Dương" [level=4] [ref=e133]
+            - paragraph [ref=e134]: Từ 250.000đ
+            - button "Đặt vé ngay" [ref=e135]
+        - generic [ref=e136]:
+          - img "Bình Định - TP. Hồ Chí Minh" [ref=e138]
+          - generic [ref=e139]:
+            - heading "Bình Định → TP. Hồ Chí Minh" [level=4] [ref=e140]
+            - paragraph [ref=e141]: Từ 250.000đ
+            - button "Đặt vé ngay" [ref=e142]
+        - generic [ref=e143]:
+          - img "Phú Yên - TP. Hồ Chí Minh" [ref=e145]
+          - generic [ref=e146]:
+            - heading "Phú Yên → TP. Hồ Chí Minh" [level=4] [ref=e147]
+            - paragraph [ref=e148]: Từ 250.000đ
+            - button "Đặt vé ngay" [ref=e149]
+    - generic [ref=e152]:
+      - img [ref=e154]
+      - generic [ref=e155]:
+        - generic [ref=e156]:
+          - heading "Khách hàng nói gì về Tân Xuân Phúc?" [level=2] [ref=e157]
+          - link "Xem tất cả >" [ref=e158] [cursor=pointer]:
+            - /url: /danh-gia
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - img "Đỗ Thanh Phương" [ref=e164]
+              - generic [ref=e165]:
+                - heading "Đỗ Thanh Phương" [level=4] [ref=e166]
+                - generic [ref=e167]:
+                  - generic [ref=e168]: star
+                  - generic [ref=e169]: star
+                  - generic [ref=e170]: star
+                  - generic [ref=e171]: star
+                  - generic [ref=e172]: star
+            - paragraph [ref=e173]: "\"Nhân viên phục vụ nhiệt tình, hướng dẫn chỗ ngồi chu đáo, 5 sao cho nhà xe.\""
+            - paragraph [ref=e174]: "Tuyến: Đập Đá - Bến xe miền Đông"
+          - generic [ref=e175]:
+            - generic [ref=e176]:
+              - img "Đỗ Thanh Phương" [ref=e178]
+              - generic [ref=e179]:
+                - heading "Đỗ Thanh Phương" [level=4] [ref=e180]
+                - generic [ref=e181]:
+                  - generic [ref=e182]: star
+                  - generic [ref=e183]: star
+                  - generic [ref=e184]: star
+                  - generic [ref=e185]: star
+                  - generic [ref=e186]: star
+            - paragraph [ref=e187]: "\"Xe chạy rất êm, tài xế lái xe cẩn thận và đón đúng giờ. Sẽ tiếp tục ủng hộ!\""
+            - paragraph [ref=e188]: "Tuyến: Đập Đá - Bến xe miền Đông"
+    - generic [ref=e189]:
+      - generic [ref=e190]:
+        - heading "TIN TỨC MỚI" [level=2] [ref=e191]
+        - link "Xem tất cả >" [ref=e192] [cursor=pointer]:
+          - /url: /tin-tuc#latest-news
+      - generic [ref=e193]:
+        - generic [ref=e194] [cursor=pointer]:
+          - img "TXP mo them chuyen Ha Noi - Quang Ninh" [ref=e196]
+          - generic [ref=e197]:
+            - text: 30/05/2026
+            - heading "TXP mo them chuyen Ha Noi - Quang Ninh" [level=4] [ref=e198]
+            - paragraph [ref=e199]: Tang cuong chuyen cuoi tuan phuc vu nhu cau di lai.
+            - button "Chi Tiết chevron_right" [ref=e200]:
+              - text: Chi Tiết
+              - generic [ref=e201]: chevron_right
+        - generic [ref=e202] [cursor=pointer]:
+          - img "Tân Xuân Phúc Cập Nhật Lịch Trình 6 Chuyến Cố Định Mỗi Ngày Tăng Cường Phục Vụ Hành Khách" [ref=e204]
+          - generic [ref=e205]:
+            - text: 24/05/2026
+            - heading "Tân Xuân Phúc Cập Nhật Lịch Trình 6 Chuyến Cố Định Mỗi Ngày Tăng Cường Phục Vụ Hành Khách" [level=4] [ref=e206]
+            - paragraph [ref=e207]: Nhằm đáp ứng nhu cầu đi lại ngày càng cao của hành khách, nhà xe Tân Xuân Phúc chính thức vận hành ổn định tần suất 6 chuyến/ngày cả hai chiều đi và về.
+            - button "Chi Tiết chevron_right" [ref=e208]:
+              - text: Chi Tiết
+              - generic [ref=e209]: chevron_right
+        - generic [ref=e210] [cursor=pointer]:
+          - 'img "Ưu Đãi Hè Rực Rỡ: Giảm Ngay 10% Giá Vé Phòng Limousine Khi Đặt Vé Khứ Hồi" [ref=e212]'
+          - generic [ref=e213]:
+            - text: 24/05/2026
+            - 'heading "Ưu Đãi Hè Rực Rỡ: Giảm Ngay 10% Giá Vé Phòng Limousine Khi Đặt Vé Khứ Hồi" [level=4] [ref=e214]'
+            - paragraph [ref=e215]: Đón mùa du lịch hè 2026, Tân Xuân Phúc tung chương trình ưu đãi cực lớn, giảm thẳng 10% giá vé cho chiều về khi khách hàng đặt combo vé khứ hồi.
+            - button "Chi Tiết chevron_right" [ref=e216]:
+              - text: Chi Tiết
+              - generic [ref=e217]: chevron_right
+  - contentinfo [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - img "TXP Logo" [ref=e22]
+          - paragraph [ref=e23]: Công ty TNHH Tân Xuân Phúc
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: location_on
+            - generic [ref=e27]: Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai
+          - generic [ref=e28]:
+            - generic [ref=e29]: phone_iphone
+            - generic [ref=e30]: 0982 541 160 - 0932 334 446
+          - generic [ref=e31]:
+            - generic [ref=e32]: mail
+            - generic [ref=e33]: nhaxetanxuanphuc@gmail.com
+      - generic [ref=e34]:
+        - heading "HỖ TRỢ" [level=4] [ref=e35]
+        - list [ref=e36]:
+          - listitem [ref=e37]:
+            - link "Câu hỏi FAQs" [ref=e38] [cursor=pointer]:
+              - /url: /faqs
+          - listitem [ref=e39]:
+            - link "Hướng dẫn mua vé" [ref=e40] [cursor=pointer]:
+              - /url: /huong-dan-mua-ve
+      - generic [ref=e41]:
+        - heading "GIỚI THIỆU" [level=4] [ref=e42]
+        - list [ref=e43]:
+          - listitem [ref=e44]:
+            - link "Về chúng tôi" [ref=e45] [cursor=pointer]:
+              - /url: /gioi-thieu/ve-chung-toi
+          - listitem [ref=e46]:
+            - link "Điều khoản" [ref=e47] [cursor=pointer]:
+              - /url: /gioi-thieu/chinh-sach
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - heading "HOTLINE LIÊN HỆ" [level=4] [ref=e50]
+          - generic [ref=e51]:
+            - generic [ref=e53]: call
+            - generic [ref=e54]: 1900 989 867
+        - generic [ref=e55]:
+          - heading "KẾT NỐI VỚI CHÚNG TÔI" [level=4] [ref=e56]
+          - generic [ref=e57]:
+            - link "" [ref=e58] [cursor=pointer]:
+              - /url: https://www.facebook.com/minhtoai.tran.58
+              - generic [ref=e59]: 
+            - link "" [ref=e60] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc
+              - generic [ref=e61]: 
+            - button "share" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]: share
+        - img "Đã thông báo Bộ Công Thương" [ref=e65]
+    - paragraph [ref=e67]: "© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234"

@@ -1,0 +1,3 @@
+[     573ms] [LOG] [searchTrips] API response: {success: true, message: Tìm kiếm chuyến xe thành công!, data: Array(0)} @ https://kien-tap-code.vercel.app/chunk-UQYVLEPT.js:0
+[     573ms] [LOG] [searchTrips] response.data.length: 0 @ https://kien-tap-code.vercel.app/chunk-UQYVLEPT.js:0
+[     573ms] [LOG] [searchTrips] filteredTrips.length (render): 0 @ https://kien-tap-code.vercel.app/chunk-UQYVLEPT.js:0

@@ -1,0 +1,160 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - img "TXP Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "TRANG CHỦ" [ref=e8] [cursor=pointer]:
+          - /url: /home
+        - link "TRA CỨU VÉ" [ref=e9] [cursor=pointer]:
+          - /url: /tra-cuu-ve
+        - link "TIN TỨC" [ref=e10] [cursor=pointer]:
+          - /url: /tin-tuc
+        - link "ĐÁNH GIÁ" [ref=e11] [cursor=pointer]:
+          - /url: /danh-gia
+        - button "GIỚI THIỆU expand_more" [ref=e13]:
+          - text: GIỚI THIỆU
+          - generic [ref=e14]: expand_more
+      - button "Đăng nhập / Đăng ký" [ref=e16]
+  - main [ref=e70]:
+    - generic [ref=e71]:
+      - heading "Chính Sách & Quy Định" [level=1] [ref=e72]
+      - paragraph [ref=e73]: Thông tin minh bạch giúp hành trình của bạn trọn vẹn và an tâm hơn.
+    - generic [ref=e74]:
+      - generic [ref=e76]:
+        - paragraph [ref=e78]: Danh mục chính sách
+        - generic [ref=e79]:
+          - button "policy Chính sách khác" [ref=e80]:
+            - generic [ref=e81]: policy
+            - generic [ref=e82]: Chính sách khác
+          - button "cancel Chính sách hủy vé & Hoàn tiền" [ref=e83]:
+            - generic [ref=e84]: cancel
+            - generic [ref=e85]: Chính sách hủy vé & Hoàn tiền
+          - button "policy Chính sách khác" [ref=e86]:
+            - generic [ref=e87]: policy
+            - generic [ref=e88]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e89]:
+            - generic [ref=e90]: policy
+            - generic [ref=e91]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e92]:
+            - generic [ref=e93]: policy
+            - generic [ref=e94]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e95]:
+            - generic [ref=e96]: policy
+            - generic [ref=e97]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e98]:
+            - generic [ref=e99]: policy
+            - generic [ref=e100]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e101]:
+            - generic [ref=e102]: policy
+            - generic [ref=e103]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e104]:
+            - generic [ref=e105]: policy
+            - generic [ref=e106]: Chính sách khác
+          - button "cancel Chính sách hủy vé & Hoàn tiền" [ref=e107]:
+            - generic [ref=e108]: cancel
+            - generic [ref=e109]: Chính sách hủy vé & Hoàn tiền
+          - button "policy Chính sách khác" [ref=e110]:
+            - generic [ref=e111]: policy
+            - generic [ref=e112]: Chính sách khác
+          - button "policy Chính sách khác" [ref=e113]:
+            - generic [ref=e114]: policy
+            - generic [ref=e115]: Chính sách khác
+          - button "cancel Chính sách hủy vé & Hoàn tiền" [ref=e116]:
+            - generic [ref=e117]: cancel
+            - generic [ref=e118]: Chính sách hủy vé & Hoàn tiền
+          - button "cancel Chính sách hủy vé & Hoàn tiền" [ref=e119]:
+            - generic [ref=e120]: cancel
+            - generic [ref=e121]: Chính sách hủy vé & Hoàn tiền
+          - button "cancel Chính sách hủy vé & Hoàn tiền" [ref=e122]:
+            - generic [ref=e123]: cancel
+            - generic [ref=e124]: Chính sách hủy vé & Hoàn tiền
+      - generic [ref=e126]:
+        - generic [ref=e127]:
+          - generic [ref=e128]:
+            - paragraph [ref=e129]: Chính sách khác
+            - heading "CHÍNH SÁCH CHỈNH SỬA THÔNG TIN VÉ ĐÃ ĐẶT" [level=2] [ref=e130]
+          - generic [ref=e131]:
+            - generic [ref=e132]: search
+            - textbox "Tìm nhanh..." [ref=e133]
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e137]: "1"
+            - paragraph [ref=e140]: "Điều kiện áp dụng: Chỉ áp dụng cho các vé điện tử đang ở trạng thái \"Chờ khởi hành\" và đã thanh toán thành công. Không áp dụng cho vé đã hủy hoặc chuyến đi đã hoàn thành."
+          - generic [ref=e141]:
+            - generic [ref=e143]: "2"
+            - paragraph [ref=e146]: "Giới hạn thời gian: Hành khách (hoặc nhân viên bán vé thao tác hộ) chỉ được phép chỉnh sửa thông tin vé khi thời gian còn lại đến giờ khởi hành của chuyến xe còn ít nhất 2 tiếng."
+          - generic [ref=e147]:
+            - generic [ref=e149]: "3"
+            - paragraph [ref=e151]: "Giới hạn số lần: Mỗi cặp vé/đơn hàng chỉ được phép chỉnh sửa thông tin tối đa 02 lần trong suốt vòng đời của vé."
+          - generic [ref=e152]:
+            - generic [ref=e154]: "4"
+            - paragraph [ref=e156]: "Phạm vi thông tin được sửa: Hành khách được phép thay đổi"
+          - generic [ref=e157]:
+            - generic [ref=e159]: "5"
+            - paragraph [ref=e161]: "Biểu phí chỉnh sửa: Nhà xe không áp dụng phụ phí cho hoạt động chỉnh sửa thông tin vé nếu thỏa mãn đầy đủ các điều kiện nêu trên."
+        - generic [ref=e163]:
+          - generic [ref=e164]:
+            - heading "Bạn vẫn còn thắc mắc về chính sách?" [level=4] [ref=e165]
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - generic [ref=e168]: call
+                - text: "Hotline: 1900 1234"
+              - generic [ref=e169]:
+                - generic [ref=e170]: mail
+                - text: "Email: hotro@tanxuanphuc.vn"
+          - button "chat Chat ngay với chúng tôi" [ref=e171]:
+            - generic [ref=e172]: chat
+            - text: Chat ngay với chúng tôi
+  - contentinfo [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - img "TXP Logo" [ref=e22]
+          - paragraph [ref=e23]: Công ty TNHH Tân Xuân Phúc
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: location_on
+            - generic [ref=e27]: Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai
+          - generic [ref=e28]:
+            - generic [ref=e29]: phone_iphone
+            - generic [ref=e30]: 0982 541 160 - 0932 334 446
+          - generic [ref=e31]:
+            - generic [ref=e32]: mail
+            - generic [ref=e33]: nhaxetanxuanphuc@gmail.com
+      - generic [ref=e34]:
+        - heading "HỖ TRỢ" [level=4] [ref=e35]
+        - list [ref=e36]:
+          - listitem [ref=e37]:
+            - link "Câu hỏi FAQs" [ref=e38] [cursor=pointer]:
+              - /url: /faqs
+          - listitem [ref=e39]:
+            - link "Hướng dẫn mua vé" [ref=e40] [cursor=pointer]:
+              - /url: /huong-dan-mua-ve
+      - generic [ref=e41]:
+        - heading "GIỚI THIỆU" [level=4] [ref=e42]
+        - list [ref=e43]:
+          - listitem [ref=e44]:
+            - link "Về chúng tôi" [ref=e45] [cursor=pointer]:
+              - /url: /gioi-thieu/ve-chung-toi
+          - listitem [ref=e46]:
+            - link "Điều khoản" [ref=e47] [cursor=pointer]:
+              - /url: /gioi-thieu/chinh-sach
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - heading "HOTLINE LIÊN HỆ" [level=4] [ref=e50]
+          - generic [ref=e51]:
+            - generic [ref=e53]: call
+            - generic [ref=e54]: 1900 989 867
+        - generic [ref=e55]:
+          - heading "KẾT NỐI VỚI CHÚNG TÔI" [level=4] [ref=e56]
+          - generic [ref=e57]:
+            - link "" [ref=e58] [cursor=pointer]:
+              - /url: https://www.facebook.com/minhtoai.tran.58
+              - generic [ref=e59]: 
+            - link "" [ref=e60] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc
+              - generic [ref=e61]: 
+            - button "share" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]: share
+        - img "Đã thông báo Bộ Công Thương" [ref=e65]
+    - paragraph [ref=e67]: "© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234"

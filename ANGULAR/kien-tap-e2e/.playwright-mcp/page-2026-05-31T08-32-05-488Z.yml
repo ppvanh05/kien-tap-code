@@ -1,0 +1,192 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - img "TXP Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "TRANG CHỦ" [ref=e8] [cursor=pointer]:
+          - /url: /home
+        - link "TRA CỨU VÉ" [ref=e9] [cursor=pointer]:
+          - /url: /tra-cuu-ve
+        - link "TIN TỨC" [ref=e10] [cursor=pointer]:
+          - /url: /tin-tuc
+        - link "ĐÁNH GIÁ" [ref=e11] [cursor=pointer]:
+          - /url: /danh-gia
+        - button "GIỚI THIỆU expand_more" [ref=e13]:
+          - text: GIỚI THIỆU
+          - generic [ref=e14]: expand_more
+      - button "Đăng nhập / Đăng ký" [ref=e16]
+  - main [ref=e356]:
+    - generic [ref=e357]:
+      - generic [ref=e358]:
+        - generic [ref=e360]:
+          - button "radio_button_checked Một chiều" [ref=e361]:
+            - generic [ref=e362]: radio_button_checked
+            - text: Một chiều
+          - button "radio_button_unchecked Khứ hồi" [ref=e363]:
+            - generic [ref=e364]: radio_button_unchecked
+            - text: Khứ hồi
+        - generic [ref=e365]:
+          - generic [ref=e366]:
+            - text: Điểm đi
+            - generic [ref=e367]:
+              - generic [ref=e368]: radio_button_checked
+              - textbox "Nhập điểm đi" [ref=e369] [cursor=pointer]: Đập Đá
+              - generic: arrow_drop_down
+          - button "sync_alt" [ref=e371]:
+            - generic [ref=e372]: sync_alt
+          - generic [ref=e373]:
+            - text: Điểm đến
+            - generic [ref=e374]:
+              - generic [ref=e375]: location_on
+              - textbox "Nhập điểm đến" [ref=e376] [cursor=pointer]: Bến xe Miền Đông
+              - generic: arrow_drop_down
+          - generic [ref=e377]:
+            - text: Ngày đi
+            - generic [ref=e378] [cursor=pointer]:
+              - generic [ref=e379]: calendar_month
+              - textbox [ref=e380]: 31/05/2026
+          - generic [ref=e381]:
+            - generic [ref=e382]: Số vé
+            - generic [ref=e383]:
+              - generic [ref=e384]: confirmation_number
+              - combobox [ref=e385] [cursor=pointer]:
+                - option "1 vé" [selected]
+                - option "2 vé"
+                - option "3 vé"
+                - option "4 vé"
+                - option "5 vé"
+        - generic [ref=e386]:
+          - generic [ref=e387]: "Tìm kiếm gần đây:"
+          - generic [ref=e389] [cursor=pointer]: Đập Đá → Bến xe Miền Đông 31/05/2026
+        - button "TÌM KIẾM" [ref=e391]
+      - generic [ref=e392]:
+        - complementary [ref=e393]:
+          - generic [ref=e394]:
+            - generic [ref=e395]:
+              - heading "filter_alt BỘ LỌC TÌM KIẾM" [level=3] [ref=e396]:
+                - generic [ref=e397]: filter_alt
+                - text: BỘ LỌC TÌM KIẾM
+              - button "delete Bỏ lọc" [ref=e398]:
+                - generic [ref=e399]: delete
+                - text: Bỏ lọc
+            - generic [ref=e400]:
+              - heading "Giờ đi" [level=4] [ref=e401]
+              - generic [ref=e402]:
+                - generic [ref=e403] [cursor=pointer]:
+                  - checkbox "Sáng sớm 00:00 - 06:00" [ref=e404]
+                  - generic [ref=e405]: Sáng sớm 00:00 - 06:00
+                - generic [ref=e406] [cursor=pointer]:
+                  - checkbox "Buổi sáng 06:00 - 12:00" [ref=e407]
+                  - generic [ref=e408]: Buổi sáng 06:00 - 12:00
+                - generic [ref=e409] [cursor=pointer]:
+                  - checkbox "Buổi chiều 12:00 - 18:00" [ref=e410]
+                  - generic [ref=e411]: Buổi chiều 12:00 - 18:00
+                - generic [ref=e412] [cursor=pointer]:
+                  - checkbox "Buổi tối 18:00 - 24:00" [ref=e413]
+                  - generic [ref=e414]: Buổi tối 18:00 - 24:00
+            - generic [ref=e415]:
+              - heading "Tầng" [level=4] [ref=e416]
+              - generic [ref=e417]:
+                - button "Tầng trên" [ref=e418]
+                - button "Tầng dưới" [ref=e419]
+            - generic [ref=e420]:
+              - heading "Hàng ghế" [level=4] [ref=e421]
+              - generic [ref=e422]:
+                - generic [ref=e423] [cursor=pointer]:
+                  - checkbox "Hàng đầu (Ghế 1-4)" [ref=e424]
+                  - generic [ref=e425]: Hàng đầu (Ghế 1-4)
+                - generic [ref=e426] [cursor=pointer]:
+                  - checkbox "Hàng giữa (Ghế 5-8)" [ref=e427]
+                  - generic [ref=e428]: Hàng giữa (Ghế 5-8)
+                - generic [ref=e429] [cursor=pointer]:
+                  - checkbox "Hàng cuối (Ghế 9-12)" [ref=e430]
+                  - generic [ref=e431]: Hàng cuối (Ghế 9-12)
+            - generic [ref=e432]:
+              - heading "Giá vé" [level=4] [ref=e433]
+              - generic [ref=e434]:
+                - generic [ref=e435] [cursor=pointer]:
+                  - checkbox "Dưới 500.000đ" [ref=e436]
+                  - generic [ref=e437]: Dưới 500.000đ
+                - generic [ref=e438] [cursor=pointer]:
+                  - checkbox "Từ 500.000đ trở lên" [ref=e439]
+                  - generic [ref=e440]: Từ 500.000đ trở lên
+        - generic [ref=e441]:
+          - heading "Đập Đá - Bến xe Miền Đông (1 chuyến)" [level=2] [ref=e442]
+          - generic [ref=e444]:
+            - generic [ref=e445] [cursor=pointer]:
+              - generic [ref=e446]:
+                - generic [ref=e447]: 05:00
+                - generic [ref=e448]:
+                  - generic [ref=e449]: "-18:-30 h -"
+                  - generic [ref=e453]: location_on
+                - generic [ref=e454]: 11:30
+                - generic [ref=e455]:
+                  - generic [ref=e456]: •
+                  - generic [ref=e457]: Limousine
+                  - generic [ref=e458]: •
+                  - generic [ref=e459]: 21 chỗ trống
+              - generic [ref=e460]:
+                - generic [ref=e461]: Đập Đá
+                - generic [ref=e462]: Bến xe Miền Đông
+                - generic [ref=e463]: 350.000đ
+            - generic [ref=e464]:
+              - generic [ref=e465]:
+                - button "Chọn ghế" [ref=e466]
+                - button "Lịch trình" [ref=e467]
+                - button "Đón/Trả" [ref=e468]
+                - button "Tiện ích" [ref=e469]
+                - button "Chính sách" [ref=e470]
+              - button "Chọn chuyến" [ref=e471]
+  - contentinfo [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - img "TXP Logo" [ref=e22]
+          - paragraph [ref=e23]: Công ty TNHH Tân Xuân Phúc
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: location_on
+            - generic [ref=e27]: Khu vực Tiên Hội, Phường An Nhơn Bắc, tỉnh Gia Lai
+          - generic [ref=e28]:
+            - generic [ref=e29]: phone_iphone
+            - generic [ref=e30]: 0982 541 160 - 0932 334 446
+          - generic [ref=e31]:
+            - generic [ref=e32]: mail
+            - generic [ref=e33]: nhaxetanxuanphuc@gmail.com
+      - generic [ref=e34]:
+        - heading "HỖ TRỢ" [level=4] [ref=e35]
+        - list [ref=e36]:
+          - listitem [ref=e37]:
+            - link "Câu hỏi FAQs" [ref=e38] [cursor=pointer]:
+              - /url: /faqs
+          - listitem [ref=e39]:
+            - link "Hướng dẫn mua vé" [ref=e40] [cursor=pointer]:
+              - /url: /huong-dan-mua-ve
+      - generic [ref=e41]:
+        - heading "GIỚI THIỆU" [level=4] [ref=e42]
+        - list [ref=e43]:
+          - listitem [ref=e44]:
+            - link "Về chúng tôi" [ref=e45] [cursor=pointer]:
+              - /url: /gioi-thieu/ve-chung-toi
+          - listitem [ref=e46]:
+            - link "Điều khoản" [ref=e47] [cursor=pointer]:
+              - /url: /gioi-thieu/chinh-sach
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - heading "HOTLINE LIÊN HỆ" [level=4] [ref=e50]
+          - generic [ref=e51]:
+            - generic [ref=e53]: call
+            - generic [ref=e54]: 1900 989 867
+        - generic [ref=e55]:
+          - heading "KẾT NỐI VỚI CHÚNG TÔI" [level=4] [ref=e56]
+          - generic [ref=e57]:
+            - link "" [ref=e58] [cursor=pointer]:
+              - /url: https://www.facebook.com/minhtoai.tran.58
+              - generic [ref=e59]: 
+            - link "" [ref=e60] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@tn.xun.phc.77?is_from_webapp=1&sender_device=pc
+              - generic [ref=e61]: 
+            - button "share" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]: share
+        - img "Đã thông báo Bộ Công Thương" [ref=e65]
+    - paragraph [ref=e67]: "© 2024 CÔNG TY TNHH TÂN XUÂN PHÚC. Hotline: 1900 1234"

@@ -1,0 +1,7 @@
+[     716ms] [LOG] [DEBUG] Home News Response: {success: true, message: Lấy tin tức trang chủ thành công!, data: Array(3)} @ https://kien-tap-code.vercel.app/chunk-44TSO6SA.js:0
+[     748ms] [LOG] [DEBUG] Home Reviews Response: {success: true, message: Lấy đánh giá trang chủ thành công!, data: Array(2)} @ https://kien-tap-code.vercel.app/chunk-44TSO6SA.js:0
+[   32554ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "username"): (More info: https://goo.gl/9p2vKq) %o @ https://kien-tap-code.vercel.app/home:0
+[   80807ms] [LOG] Auth login payload: {phoneOrEmail: 0987654321, MatKhau: 123456} @ https://kien-tap-code.vercel.app/chunk-7ZECBCUT.js:0
+[   81153ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://kien-tap-code.onrender.com/customer/auth/login:0
+[   81154ms] [WARNING] Customer session expired or unauthorized. Logging out... @ https://kien-tap-code.vercel.app/main-JIYRQBBB.js:0
+[   81157ms] [ERROR] Login error: Ze @ https://kien-tap-code.vercel.app/chunk-7ZECBCUT.js:0

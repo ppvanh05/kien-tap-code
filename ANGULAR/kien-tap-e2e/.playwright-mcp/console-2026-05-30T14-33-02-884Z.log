@@ -1,0 +1,2 @@
+[     968ms] [LOG] [DEBUG] Home News Response: {success: true, message: Lấy tin tức trang chủ thành công!, data: Array(3)} @ https://kien-tap-code.vercel.app/chunk-44TSO6SA.js:0
+[    1076ms] [LOG] [DEBUG] Home Reviews Response: {success: true, message: Lấy đánh giá trang chủ thành công!, data: Array(2)} @ https://kien-tap-code.vercel.app/chunk-44TSO6SA.js:0
